@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "lib": ["ESNext", "DOM"],
+        "target": "ESNext",
+        "module": "ESNext",
+        "useDefineForClassFields": true,
+        "allowJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "pretty": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "Bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "sourceMap": true,
+        "noEmit": false,
+        "declaration": false,
+        "baseUrl": "./",
+        "outDir": "./dist",
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["src", ".eslintrc.js"],
+    "exclude": ["dist", "node_modules"]
+}

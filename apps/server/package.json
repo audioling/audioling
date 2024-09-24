@@ -1,0 +1,49 @@
+{
+    "name": "@audioling/server",
+    "version": "1.0.0",
+    "private": false,
+    "description": "",
+    "license": "GPL-3.0-only",
+    "author": "",
+    "type": "module",
+    "scripts": {
+        "build": "tsc -p tsconfig.cjs.json && tsc-alias -p tsconfig.cjs.json",
+        "db:init": "pwsh -c 'Remove-Item ./app.db' && pnpm run db:push",
+        "dev": "cross-env NODE_ENV=development APP_LOG_LEVEL=debug bun --watch run ./src/index.ts",
+        "dev:trace": "cross-env NODE_ENV=development APP_LOG_LEVEL=trace bun --watch run ./src/index.ts",
+        "lint": "eslint . --ext .js,.ts --fix",
+        "package": "bun build --compile --minify --sourcemap ./src/index.ts --outfile ./dist/audioling"
+    },
+    "dependencies": {
+        "@audioling/open-subsonic-api-client": "^2.0.2",
+        "@hono/zod-openapi": "^0.16.0",
+        "@paralleldrive/cuid2": "^2.2.2",
+        "@repo/logger": "workspace:*",
+        "@repo/shared-types": "workspace:*",
+        "@scalar/hono-api-reference": "^0.5.147",
+        "axios": "^1.7.7",
+        "bcryptjs": "^2.4.3",
+        "configstore": "^7.0.0",
+        "dayjs": "^1.11.13",
+        "hono": "^4.6.3",
+        "lodash": "^4.17.21",
+        "md5": "^2.3.0",
+        "normalize-text": "^2.5.0",
+        "sharp": "^0.33.5",
+        "thumbhash": "^0.1.1",
+        "zod": "^3.23.8",
+        "zod-validation-error": "^3.4.0"
+    },
+    "devDependencies": {
+        "@repo/eslint-config-internal": "workspace:*",
+        "@types/bcryptjs": "^2.4.6",
+        "@types/better-queue": "^3.8.6",
+        "@types/configstore": "^6.0.2",
+        "@types/lodash": "^4.17.9",
+        "@types/md5": "^2.3.5",
+        "@types/node": "^22.6.1",
+        "cross-env": "^7.0.3",
+        "tsc-alias": "^1.8.10",
+        "typescript": "^5.6.2"
+    }
+}

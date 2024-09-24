@@ -1,0 +1,43 @@
+{
+    "cssVariables.lookupFiles": [
+        "**/*.css",
+        "**/*.scss",
+        "**/*.sass",
+        "**/*.less",
+        "node_modules/@mantine/core/styles.css"
+    ],
+    "files.associations": {
+        "*.css": "postcss"
+    },
+    "typescript.tsc.autoDetect": "off",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+    "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/core", "@mantine/hooks"],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll.stylelint": "explicit",
+        "source.organizeImports": "never",
+        "source.formatDocument": "explicit"
+    },
+    "eslint.validate": ["typescript", "typescriptreact", "javascript", "javascriptreact"],
+    "eslint.workingDirectories": [{ "mode": "auto" }],
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "**/dist": true,
+        "**/out-web": true,
+        "**/out-server": true
+    },
+    "css.validate": false,
+    "less.validate": false,
+    "scss.validate": false,
+    "stylelint.validate": ["css", "scss"],
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.tabSize": 4
+}

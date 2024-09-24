@@ -1,0 +1,39 @@
+@use '@/styles/base';
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.color-default {
+  svg {
+    color: base.$font-color;
+  }
+}
+
+.color-success {
+  svg {
+    color: base.$success-color;
+  }
+}
+
+.color-error {
+  svg {
+    color: base.$danger-color;
+  }
+}
+
+.color-info {
+  svg {
+    color: base.$info-color;
+  }
+}
+
+.color-warn {
+  svg {
+    color: base.$warning-color;
+  }
+}

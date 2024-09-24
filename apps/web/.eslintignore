@@ -1,0 +1,3 @@
+src/api/queries/*
+src/api/requests/*
+src/vite.config.ts

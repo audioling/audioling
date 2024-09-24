@@ -1,0 +1,10 @@
+{
+  "extends": ["@repo/eslint-config-internal/web.js"],
+  "rules": {
+    "react-perf/jsx-no-new-object-as-prop": "off",
+    "react-perf/jsx-no-new-function-as-prop": "off",
+    "react/no-children-prop": "off",
+    "react-perf/jsx-no-new-array-as-prop": "off"
+  },
+  "root": true
+}

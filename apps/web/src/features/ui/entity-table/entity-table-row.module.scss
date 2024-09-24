@@ -1,0 +1,10 @@
+.list-row {
+  z-index: 2;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.selected {
+  color: var(--table-row-selected-font-color);
+  background-color: var(--table-row-selected-background-color);
+}

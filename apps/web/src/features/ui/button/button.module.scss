@@ -1,0 +1,85 @@
+@use '@/styles/base';
+
+.root {
+    font-weight: base.$font-weight-lg;
+    transition: all 0.15s ease-in-out;
+
+    &:active {
+        transform: scale(0.98);
+    }
+
+    &:focus,
+    &:focus-visible {
+        outline: none;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.size-xs {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.size-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.size-md {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.size-lg {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
+
+.size-xl {
+    padding: 0.75rem 1.25rem;
+    font-size: 1.125rem;
+}
+
+.radius-xs {
+    border-radius: base.$border-radius-xs;
+}
+
+.radius-sm {
+    border-radius: base.$border-radius-sm;
+}
+
+.radius-md {
+    border-radius: base.$border-radius-md;
+}
+
+.radius-lg {
+    border-radius: base.$border-radius-lg;
+}
+
+.radius-xl {
+    border-radius: base.$border-radius-xl;
+}
+
+.filled-variant {
+    @include base.button-filled-variant;
+}
+
+.default-variant {
+    @include base.button-default-variant;
+}
+
+.danger-variant {
+    @include base.button-danger-variant;
+}
+
+.label {
+    font-weight: base.$font-weight-lg;
+}

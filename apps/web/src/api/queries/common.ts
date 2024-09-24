@@ -1,0 +1,53 @@
+// generated with @7nohe/openapi-react-query-codegen@1.4.1 
+
+import { UseQueryResult } from "@tanstack/react-query";
+import { AlbumsService, AuthService, JobsService, LibrariesService, RootService, UsersService } from "../requests/services.gen";
+export type RootServiceGetPingDefaultResponse = Awaited<ReturnType<typeof RootService.getPing>>;
+export type RootServiceGetPingQueryResult<TData = RootServiceGetPingDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useRootServiceGetPingKey = "RootServiceGetPing";
+export const UseRootServiceGetPingKeyFn = (queryKey?: Array<unknown>) => [useRootServiceGetPingKey, ...(queryKey ?? [])];
+export type UsersServiceGetApiUsersDefaultResponse = Awaited<ReturnType<typeof UsersService.getApiUsers>>;
+export type UsersServiceGetApiUsersQueryResult<TData = UsersServiceGetApiUsersDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useUsersServiceGetApiUsersKey = "UsersServiceGetApiUsers";
+export const UseUsersServiceGetApiUsersKeyFn = (queryKey?: Array<unknown>) => [useUsersServiceGetApiUsersKey, ...(queryKey ?? [])];
+export type UsersServiceGetApiUsersByIdDefaultResponse = Awaited<ReturnType<typeof UsersService.getApiUsersById>>;
+export type UsersServiceGetApiUsersByIdQueryResult<TData = UsersServiceGetApiUsersByIdDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useUsersServiceGetApiUsersByIdKey = "UsersServiceGetApiUsersById";
+export const UseUsersServiceGetApiUsersByIdKeyFn = (queryKey?: Array<unknown>) => [useUsersServiceGetApiUsersByIdKey, ...(queryKey ?? [])];
+export type LibrariesServiceGetApiLibrariesDefaultResponse = Awaited<ReturnType<typeof LibrariesService.getApiLibraries>>;
+export type LibrariesServiceGetApiLibrariesQueryResult<TData = LibrariesServiceGetApiLibrariesDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useLibrariesServiceGetApiLibrariesKey = "LibrariesServiceGetApiLibraries";
+export const UseLibrariesServiceGetApiLibrariesKeyFn = (queryKey?: Array<unknown>) => [useLibrariesServiceGetApiLibrariesKey, ...(queryKey ?? [])];
+export type LibrariesServiceGetApiLibrariesByIdDefaultResponse = Awaited<ReturnType<typeof LibrariesService.getApiLibrariesById>>;
+export type LibrariesServiceGetApiLibrariesByIdQueryResult<TData = LibrariesServiceGetApiLibrariesByIdDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useLibrariesServiceGetApiLibrariesByIdKey = "LibrariesServiceGetApiLibrariesById";
+export const UseLibrariesServiceGetApiLibrariesByIdKeyFn = (queryKey?: Array<unknown>) => [useLibrariesServiceGetApiLibrariesByIdKey, ...(queryKey ?? [])];
+export type JobsServiceGetApiJobsDefaultResponse = Awaited<ReturnType<typeof JobsService.getApiJobs>>;
+export type JobsServiceGetApiJobsQueryResult<TData = JobsServiceGetApiJobsDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useJobsServiceGetApiJobsKey = "JobsServiceGetApiJobs";
+export const UseJobsServiceGetApiJobsKeyFn = (queryKey?: Array<unknown>) => [useJobsServiceGetApiJobsKey, ...(queryKey ?? [])];
+export type AlbumsServiceGetApiAlbumsDefaultResponse = Awaited<ReturnType<typeof AlbumsService.getApiAlbums>>;
+export type AlbumsServiceGetApiAlbumsQueryResult<TData = AlbumsServiceGetApiAlbumsDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useAlbumsServiceGetApiAlbumsKey = "AlbumsServiceGetApiAlbums";
+export const UseAlbumsServiceGetApiAlbumsKeyFn = ({ libraryId, limit, offset, orderBy }: {
+  libraryId?: string[];
+  limit: string;
+  offset: string;
+  orderBy?: string[];
+}, queryKey?: Array<unknown>) => [useAlbumsServiceGetApiAlbumsKey, ...(queryKey ?? [{ libraryId, limit, offset, orderBy }])];
+export type AlbumsServiceGetApiAlbumsByIdDefaultResponse = Awaited<ReturnType<typeof AlbumsService.getApiAlbumsById>>;
+export type AlbumsServiceGetApiAlbumsByIdQueryResult<TData = AlbumsServiceGetApiAlbumsByIdDefaultResponse, TError = unknown> = UseQueryResult<TData, TError>;
+export const useAlbumsServiceGetApiAlbumsByIdKey = "AlbumsServiceGetApiAlbumsById";
+export const UseAlbumsServiceGetApiAlbumsByIdKeyFn = ({ id }: {
+  id: string;
+}, queryKey?: Array<unknown>) => [useAlbumsServiceGetApiAlbumsByIdKey, ...(queryKey ?? [{ id }])];
+export type AuthServicePostAuthSignInMutationResult = Awaited<ReturnType<typeof AuthService.postAuthSignIn>>;
+export type AuthServicePostAuthSignOutMutationResult = Awaited<ReturnType<typeof AuthService.postAuthSignOut>>;
+export type UsersServicePostApiUsersMutationResult = Awaited<ReturnType<typeof UsersService.postApiUsers>>;
+export type LibrariesServicePostApiLibrariesMutationResult = Awaited<ReturnType<typeof LibrariesService.postApiLibraries>>;
+export type JobsServicePostApiJobsMutationResult = Awaited<ReturnType<typeof JobsService.postApiJobs>>;
+export type UsersServicePutApiUsersByIdMutationResult = Awaited<ReturnType<typeof UsersService.putApiUsersById>>;
+export type LibrariesServicePutApiLibrariesByIdMutationResult = Awaited<ReturnType<typeof LibrariesService.putApiLibrariesById>>;
+export type UsersServiceDeleteApiUsersByIdMutationResult = Awaited<ReturnType<typeof UsersService.deleteApiUsersById>>;
+export type LibrariesServiceDeleteApiLibrariesByIdMutationResult = Awaited<ReturnType<typeof LibrariesService.deleteApiLibrariesById>>;
+export type JobsServiceDeleteApiJobsByIdMutationResult = Awaited<ReturnType<typeof JobsService.deleteApiJobsById>>;

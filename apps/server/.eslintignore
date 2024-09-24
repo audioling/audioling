@@ -1,0 +1,5 @@
+dist
+*.log
+*.db
+package.json
+node_modules

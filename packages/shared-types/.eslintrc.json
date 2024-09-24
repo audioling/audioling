@@ -1,0 +1,4 @@
+{
+    "extends": ["@repo/eslint-config-internal/server.js"],
+    "root": true
+}

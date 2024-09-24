@@ -1,0 +1,23 @@
+{
+    "plugins": ["prettier-plugin-packagejson"],
+    "printWidth": 100,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "useTabs": false,
+    "overrides": [
+        {
+            "files": ["**/*.css", "**/*.scss", "**/*.html"],
+            "options": {
+                "singleQuote": true
+            }
+        }
+    ],
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "proseWrap": "never",
+    "htmlWhitespaceSensitivity": "strict",
+    "endOfLine": "lf",
+    "singleAttributePerLine": true
+}

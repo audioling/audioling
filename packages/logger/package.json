@@ -1,0 +1,33 @@
+{
+    "name": "@repo/logger",
+    "version": "0.0.1",
+    "type": "module",
+    "exports": {
+        "import": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "require": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.cjs"
+        }
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**"
+    ],
+    "scripts": {
+        "build": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
+        "lint": "eslint . --ext .js,.ts --fix"
+    },
+    "dependencies": {
+        "winston": "^3.14.2"
+    },
+    "devDependencies": {
+        "@repo/eslint-config-internal": "workspace:*",
+        "tsup": "^8.2.4",
+        "typescript": "^5.5.4"
+    }
+}

@@ -1,0 +1,56 @@
+@mixin button-default-variant() {
+  color: var(--button-default-font-color);
+  background-color: var(--button-default-background-color);
+  border: var(--button-default-border);
+
+  svg {
+    color: var(--button-default-font-color);
+    fill: var(--button-default-font-color);
+  }
+
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    color: var(--button-default-hover-font-color);
+    background-color: var(--button-default-hover-background-color);
+    border: var(--button-default-hover-border);
+  }
+}
+
+@mixin button-filled-variant() {
+  color: var(--button-filled-font-color);
+  background-color: var(--button-filled-background-color);
+  border: var(--button-filled-border);
+
+  svg {
+    color: var(--button-filled-font-color);
+    fill: var(--button-filled-font-color);
+  }
+
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    color: var(--button-filled-hover-font-color);
+    background-color: var(--button-filled-hover-background-color);
+    border: var(--button-filled-hover-border);
+  }
+}
+
+@mixin button-danger-variant() {
+  color: var(--button-danger-font-color);
+  background-color: var(--button-danger-background-color);
+  border: var(--button-danger-border);
+
+  svg {
+    color: var(--button-danger-font-color);
+    fill: var(--button-danger-font-color);
+  }
+
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    color: var(--button-danger-hover-font-color);
+    background-color: var(--button-danger-hover-background-color);
+    border: var(--button-danger-hover-border);
+  }
+}

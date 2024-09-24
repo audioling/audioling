@@ -1,0 +1,20 @@
+{
+    "name": "@audioling/core",
+    "type": "module",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "build:apps": "bun --filter './apps/**' build",
+        "build:packages": "bun --filter './packages/**' build",
+        "lint:apps": "bun --filter './apps/**' lint",
+        "lint:packages": "bun --filter './packages/** lint"
+    },
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    }
+}

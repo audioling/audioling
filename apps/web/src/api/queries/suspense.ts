@@ -1,0 +1,20 @@
+// generated with @7nohe/openapi-react-query-codegen@1.4.1 
+
+import { UseQueryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { AlbumsService, JobsService, LibrariesService, RootService, UsersService } from "../requests/services.gen";
+import * as Common from "./common";
+export const useRootServiceGetPingSuspense = <TData = Common.RootServiceGetPingDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>(queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseRootServiceGetPingKeyFn(queryKey), queryFn: () => RootService.getPing() as TData, ...options });
+export const useUsersServiceGetApiUsersSuspense = <TData = Common.UsersServiceGetApiUsersDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>(queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseUsersServiceGetApiUsersKeyFn(queryKey), queryFn: () => UsersService.getApiUsers() as TData, ...options });
+export const useUsersServiceGetApiUsersByIdSuspense = <TData = Common.UsersServiceGetApiUsersByIdDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>(queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseUsersServiceGetApiUsersByIdKeyFn(queryKey), queryFn: () => UsersService.getApiUsersById() as TData, ...options });
+export const useLibrariesServiceGetApiLibrariesSuspense = <TData = Common.LibrariesServiceGetApiLibrariesDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>(queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseLibrariesServiceGetApiLibrariesKeyFn(queryKey), queryFn: () => LibrariesService.getApiLibraries() as TData, ...options });
+export const useLibrariesServiceGetApiLibrariesByIdSuspense = <TData = Common.LibrariesServiceGetApiLibrariesByIdDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>(queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseLibrariesServiceGetApiLibrariesByIdKeyFn(queryKey), queryFn: () => LibrariesService.getApiLibrariesById() as TData, ...options });
+export const useJobsServiceGetApiJobsSuspense = <TData = Common.JobsServiceGetApiJobsDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>(queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseJobsServiceGetApiJobsKeyFn(queryKey), queryFn: () => JobsService.getApiJobs() as TData, ...options });
+export const useAlbumsServiceGetApiAlbumsSuspense = <TData = Common.AlbumsServiceGetApiAlbumsDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>({ libraryId, limit, offset, orderBy }: {
+  libraryId?: string[];
+  limit: string;
+  offset: string;
+  orderBy?: string[];
+}, queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseAlbumsServiceGetApiAlbumsKeyFn({ libraryId, limit, offset, orderBy }, queryKey), queryFn: () => AlbumsService.getApiAlbums({ libraryId, limit, offset, orderBy }) as TData, ...options });
+export const useAlbumsServiceGetApiAlbumsByIdSuspense = <TData = Common.AlbumsServiceGetApiAlbumsByIdDefaultResponse, TError = unknown, TQueryKey extends Array<unknown> = unknown[]>({ id }: {
+  id: string;
+}, queryKey?: TQueryKey, options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">) => useSuspenseQuery<TData, TError>({ queryKey: Common.UseAlbumsServiceGetApiAlbumsByIdKeyFn({ id }, queryKey), queryFn: () => AlbumsService.getApiAlbumsById({ id }) as TData, ...options });
