@@ -83,6 +83,7 @@ export const initApplication = async (options: ApplicationOptions) => {
 
                 return c.json(
                     {
+                        cause: err.cause,
                         message: unauthError.message,
                         name: unauthError.name,
                         stack: unauthError.stack,
@@ -94,6 +95,7 @@ export const initApplication = async (options: ApplicationOptions) => {
 
             return c.json(
                 {
+                    cause: err.cause,
                     message: err.message,
                     name: err.name,
                     stack: err.stack,
@@ -105,6 +107,7 @@ export const initApplication = async (options: ApplicationOptions) => {
 
         return c.json(
             {
+                cause: err.cause,
                 message: err.message,
                 name: err.name,
                 stack: err.stack,

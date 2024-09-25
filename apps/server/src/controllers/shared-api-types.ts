@@ -28,6 +28,7 @@ export const EmptyBodySchema = z.object({});
 export const createErrorResponseSchema = (opts: { name: string; status: number }) => {
     return z
         .object({
+            cause: z.string().optional().openapi({ example: 'Error cause' }),
             message: z.string().openapi({ example: 'Error message' }),
             name: z.string().openapi({ example: opts.name }),
             stack: z.string().optional().openapi({ example: 'Stack trace' }),
@@ -143,10 +144,6 @@ export const paginationQuery = {
 
 export const libraryIdQuery = {
     libraryId: z.string(),
-};
-
-export const orderByQuery = {
-    orderBy: z.string().array().optional(),
 };
 
 export const relatedAlbum = z.object({
