@@ -8,11 +8,23 @@
     "scripts": {
         "build:apps": "bun --filter './apps/**' build",
         "build:packages": "bun --filter './packages/**' build",
+        "commit": "git-cz",
         "lint:apps": "bun --filter './apps/**' lint",
-        "lint:packages": "bun --filter './packages/** lint"
+        "lint:packages": "bun --filter './packages/** lint",
+        "prepare": "husky"
+    },
+    "config": {
+        "commitizen": {
+            "path": "@commitlint/cz-commitlint"
+        }
     },
     "devDependencies": {
-        "@types/bun": "latest"
+        "@commitlint/cli": "^19.5.0",
+        "@commitlint/config-conventional": "^19.5.0",
+        "@commitlint/cz-commitlint": "^19.5.0",
+        "@types/bun": "latest",
+        "husky": "^9.1.6",
+        "inquirer": "9"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
