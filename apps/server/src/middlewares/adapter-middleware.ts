@@ -3,6 +3,7 @@ import { initRemoteAdapter } from '@/adapters/index.js';
 import type { AdapterApi } from '@/adapters/types/index.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { LibraryService } from '@/services/library/library-service.js';
+import type { AppDatabase } from '../database/init-database';
 
 export type AdapterVariables = {
     adapter: AdapterApi;
@@ -12,7 +13,7 @@ type AdapterMiddlewareContext = {
     Variables: AdapterVariables;
 };
 
-export const adapterMiddleware = (libraryService: LibraryService) => {
+export const adapterMiddleware = (db: AppDatabase, libraryService: LibraryService) => {
     return createMiddleware<AdapterMiddlewareContext>(async (c, next) => {
         const libraryId = c.req.param('libraryId');
 
@@ -39,7 +40,7 @@ export const adapterMiddleware = (libraryService: LibraryService) => {
             });
         }
 
-        const adapter = initRemoteAdapter(library, {
+        const adapter = initRemoteAdapter(db, library, {
             credential: library.scanCredential,
             username: library.scanUsername,
         });

@@ -68,7 +68,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     app.route('/auth', authController);
     app.route('/api/users', userController);
     app.route('/api/libraries', libraryController);
-    app.use('/api/:libraryId/*', adapterMiddleware(service.library));
+    app.use('/api/:libraryId/*', adapterMiddleware(db, service.library));
 
     app.onError((err, c) => {
         writeLog.error(err.message, {

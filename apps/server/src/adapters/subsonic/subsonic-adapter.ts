@@ -1,46 +1,29 @@
 import type { OpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
 import { initOpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
-import { LibraryType } from '@repo/shared-types';
+import { AlbumListSortOptions, LibraryType } from '@repo/shared-types';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import sortBy from 'lodash/sortBy.js';
 import md5 from 'md5';
+import { adapterHelpers } from '@/adapters/adapter-helpers.js';
 import { subsonicHelpers } from '@/adapters/subsonic/subsonic-adapter-helpers.js';
 import type { AdapterAlbumListResponse } from '@/adapters/types/adapter-album-types.js';
-import { AdapterAlbumListSort } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
-import type { AdapterPlaylist } from '@/adapters/types/adapter-playlist-types.js';
+import type {
+    AdapterPlaylist,
+    PlaylistTrackListQuery,
+} from '@/adapters/types/adapter-playlist-types.js';
 import type { AuthenticationResponse } from '@/adapters/types/adapter-server-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { AdapterApi, AdapterAuthentication, RemoteAdapter } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
+import type { AppDatabase } from '@/database/init-database.js';
 import type { DbLibrary } from '@/database/library-database.js';
 import { writeLog } from '@/middlewares/logger-middleware.js';
 import { utils } from '@/utils/index.js';
 import { generateRandomString } from '@/utils/random-string.js';
 
-// const formatImageUrl = (
-//   args: {
-//     coverArtId: string | null;
-//     credential: string;
-//     url: string;
-//   },
-//   library: DBLibrary,
-// ) => {
-//   const { credential, coverArtId, url } = args;
-
-//   if (!coverArtId) {
-//     return null;
-//   }
-
-//   return `${url}/rest/getCoverArt.view?id=${coverArtId}&${credential}&v=1.13.0&c=${CONSTANTS.APP_NAME}`;
-// };
-
-const adapterErrorMessage = (library: DbLibrary, route: string) => {
-    return `Remote adapter ${library.baseUrl}@${library.id}@${library.type} failed on ${route}`;
-};
-
-export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
+export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDatabase) => {
     const username = library.scanUsername;
     const password = library.scanCredential;
 
@@ -141,7 +124,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'clearPlaylist'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'clearPlaylist'));
                 return [
                     {
                         code: result.status,
@@ -153,14 +136,37 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
 
             return [null, null];
         },
+        getAlbumArtistDetail: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getArtist.get({
+                fetchOptions,
+                query: {
+                    id: query.id,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistDetail'));
+                return [
+                    {
+                        code: result.status,
+                        message: result.body as string,
+                    },
+                    null,
+                ];
+            }
+
+            return [null, subsonicHelpers.converter.artistToAdapter(result.body.artist)];
+        },
         getAlbumArtistList: async (request, fetchOptions) => {
             const { query } = request;
 
             const clientParams = {
                 fetchOptions,
                 query: {
-                    musicFolderId: query.musicFolderId,
-                    offset: query.startIndex,
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    offset: query.offset,
                     size: query.limit,
                 },
             };
@@ -170,7 +176,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getAlbumArtistList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistList'));
 
                 return [
                     {
@@ -191,10 +197,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 }));
             });
 
-            const artists = flattenedArtists.slice(
-                query.startIndex,
-                query.startIndex + query.limit,
-            );
+            const artists = flattenedArtists.slice(query.offset, query.offset + query.limit);
 
             const items = artists.map(subsonicHelpers.converter.artistToAdapter);
 
@@ -202,7 +205,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 null,
                 {
                     items,
-                    startIndex: query.startIndex,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: flattenedArtists.length,
                 },
             ];
@@ -213,14 +217,16 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             const clientParams = {
                 fetchOptions,
                 query: {
-                    musicFolderId: query.musicFolderId,
+                    musicFolderId: query.folderId?.length ? query.folderId[0] : undefined,
                 },
             };
 
             const result = await apiClient.getArtists.get(clientParams);
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getAlbumArtistListCount'));
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistListCount'),
+                );
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -231,6 +237,30 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
 
             return [null, artistCount];
         },
+        getAlbumDetail: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getAlbum.get({
+                fetchOptions,
+                query: {
+                    id: query.id,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumDetail'));
+                return [
+                    {
+                        code: result.status,
+                        message: result.body as string,
+                    },
+                    null,
+                ];
+            }
+
+            const album = subsonicHelpers.converter.albumToAdapter(result.body.album);
+            return [null, album];
+        },
         getAlbumList: async (request, fetchOptions) => {
             const { query } = request;
 
@@ -238,19 +268,19 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 'alphabeticalByName';
 
             switch (query.sortBy) {
-                case AdapterAlbumListSort.DATE_ADDED:
+                case AlbumListSortOptions.DATE_ADDED:
                     sortType = 'newest';
                     break;
-                case AdapterAlbumListSort.DATE_PLAYED:
+                case AlbumListSortOptions.DATE_PLAYED:
                     sortType = 'recent';
                     break;
-                case AdapterAlbumListSort.NAME:
+                case AlbumListSortOptions.NAME:
                     sortType = 'alphabeticalByName';
                     break;
-                case AdapterAlbumListSort.PLAY_COUNT:
+                case AlbumListSortOptions.PLAY_COUNT:
                     sortType = 'frequent';
                     break;
-                case AdapterAlbumListSort.YEAR:
+                case AlbumListSortOptions.YEAR:
                     sortType = 'byYear';
                     break;
                 default:
@@ -261,15 +291,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             const result = await apiClient.getAlbumList2.get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.musicFolderId,
-                    offset: query.startIndex,
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    offset: query.offset,
                     size: query.limit,
                     type: sortType,
                 },
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getAlbumList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -277,24 +307,35 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 subsonicHelpers.converter.albumToAdapter,
             );
 
+            const [err, totalRecordCount] = await initSubsonicAdapter(
+                library,
+                db,
+            ).getAlbumListCount({
+                query,
+            });
+
+            if (err) {
+                return [err, null];
+            }
+
             return [
                 null,
                 {
                     items,
-                    startIndex: query.startIndex,
-                    totalRecordCount: null,
+                    limit: query.limit,
+                    offset: query.offset,
+                    totalRecordCount,
                 },
             ];
         },
         getAlbumListCount: async (request, fetchOptions) => {
             const { query } = request;
-            const limit = 500;
 
-            const getPageItemCount = async (page: number): Promise<number> => {
+            async function getPageItemCount(page: number, limit: number): Promise<number> {
                 const result = await apiClient.getAlbumList2.get({
                     fetchOptions,
                     query: {
-                        musicFolderId: query.musicFolderId,
+                        musicFolderId: query.folderId ? query.folderId[0] : undefined,
                         offset: page * limit,
                         size: limit,
                         type: 'alphabeticalByName',
@@ -305,43 +346,34 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return result.body.albumList2.album.length;
-            };
+                return result.body.albumList2.album?.length || 0;
+            }
 
-            const fetchRecursive = async (
-                page: number,
-                itemsPerPage: number,
-                currentPage: number,
-                totalItems: number,
-            ): Promise<number> => {
-                const itemCount = await getPageItemCount(page);
-                totalItems += itemCount;
+            try {
+                const totalRecordCount = await adapterHelpers.db.getCount(db, getPageItemCount, {
+                    expiration: 1440,
+                    libraryId: library.id,
+                    query,
+                    type: 'album',
+                });
 
-                if (itemCount < itemsPerPage) {
-                    return totalItems;
-                } else {
-                    return fetchRecursive(page + 1, itemsPerPage, currentPage + 1, totalItems);
-                }
-            };
-
-            const fetchPaginatedItemCount = async () => {
-                return fetchRecursive(0, limit, 0, 0);
-            };
-
-            const totalItems = await fetchPaginatedItemCount();
-            return [null, totalItems];
+                return [null, totalRecordCount];
+            } catch (err) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumListCount'));
+                return [{ code: 500, message: err as string }, null];
+            }
         },
         getArtistList: async (request, fetchOptions) => {
             const { query } = request;
             const result = await apiClient.getArtists.get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.musicFolderId,
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
                 },
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getArtistList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getArtistList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -354,10 +386,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 }));
             });
 
-            const artists = flattenedArtists.slice(
-                query.startIndex,
-                query.startIndex + query.limit,
-            );
+            const artists = flattenedArtists.slice(query.offset, query.offset + query.limit);
 
             const items: AdapterAlbumArtist[] = artists.map((artist) =>
                 subsonicHelpers.converter.artistToAdapter({
@@ -370,7 +399,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 null,
                 {
                     items,
-                    startIndex: query.startIndex,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: flattenedArtists.length,
                 },
             ];
@@ -381,7 +411,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             const clientParams = {
                 fetchOptions,
                 query: {
-                    musicFolderId: query.musicFolderId,
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
                 },
             };
 
@@ -390,7 +420,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getArtistListCount'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getArtistListCount'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -406,11 +436,13 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
 
             const result = await apiClient.getStarred2.get({
                 fetchOptions,
-                query,
+                query: {
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                },
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getFavoriteAlbumList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getFavoriteAlbumList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -464,7 +496,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 null,
                 {
                     items,
-                    startIndex: 0,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: result.body.starred2?.album.length || 0,
                 },
             ];
@@ -474,11 +507,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
 
             const result = await apiClient.getStarred2.get({
                 fetchOptions,
-                query,
+                query: {
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                },
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getFavoriteArtistList'));
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getFavoriteArtistList'),
+                );
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -507,7 +544,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 null,
                 {
                     items,
-                    startIndex: 0,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: result.body.starred2?.artist.length || 0,
                 },
             ];
@@ -517,11 +555,13 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
 
             const result = await apiClient.getStarred2.get({
                 fetchOptions,
-                query,
+                query: {
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                },
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getFavoriteTrackList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getFavoriteTrackList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -533,7 +573,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 null,
                 {
                     items,
-                    startIndex: 0,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: result.body.starred2?.song.length || 0,
                 },
             ];
@@ -550,41 +591,49 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getGenreList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getGenreList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
+
+            const items = (result.body.genres?.genre || []).map((genre) => ({
+                id: genre.value,
+                imageUrl: null,
+                name: genre.value,
+            }));
 
             return [
                 null,
                 {
-                    items: result.body.genres.genre.map((genre) => ({
-                        id: genre.value,
-                        imageUrl: null,
-                        name: genre.value,
-                    })),
-                    startIndex: 0,
+                    items,
+                    limit: query.limit,
+                    offset: 0,
                     totalRecordCount: result.body.genres.genre.length,
                 },
             ];
         },
-        getMusicFolderList: async (_request, fetchOptions) => {
+        getMusicFolderList: async (request, fetchOptions) => {
+            const { query } = request;
+
             const result = await apiClient.getMusicFolders.get({
                 ...fetchOptions,
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getMusicFolderList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getMusicFolderList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
+
+            const items = (result.body.musicFolders?.musicFolder || []).map((folder) => ({
+                id: folder.id,
+                name: folder.name,
+            }));
 
             return [
                 null,
                 {
-                    items: result.body.musicFolders.musicFolder.map((folder) => ({
-                        id: folder.id,
-                        name: folder.name,
-                    })),
-                    startIndex: 0,
+                    items,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: result.body.musicFolders.musicFolder.length,
                 },
             ];
@@ -600,14 +649,14 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getPlaylistList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getPlaylistList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
             const playlistResult = result.body.playlists.playlist;
 
             let playlists: AdapterPlaylist[] = playlistResult
-                .slice(query.startIndex, query.limit)
+                .slice(query.offset, query.limit)
                 .map((playlist) => ({
                     description: playlist.note || null,
                     duration: playlist.duration,
@@ -636,13 +685,25 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 null,
                 {
                     items: playlists,
-                    startIndex: query.startIndex,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: playlistResult.length,
                 },
             ];
         },
         getPlaylistListCount: async (request, fetchOptions) => {
             const { query } = request;
+
+            const totalRecordCountFromDb = adapterHelpers.db.getCountWithoutFetch(db, {
+                libraryId: library.id,
+                query,
+                type: 'playlist',
+            });
+
+            if (totalRecordCountFromDb) {
+                return [null, totalRecordCountFromDb];
+            }
+
             const result = await apiClient.getPlaylists.get({
                 fetchOptions,
                 query: {
@@ -651,7 +712,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getPlaylistListCount'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getPlaylistListCount'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -668,92 +729,50 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getPlaylistSongList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getPlaylistSongList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
             const songs: AdapterTrack[] = result.body.playlist.entry
-                .slice(query.startIndex, query.limit)
-                .map((song) => {
-                    const splitPath = song.path?.split('/');
-                    const fileName = splitPath[splitPath.length - 1];
-
-                    return {
-                        album: song.album,
-                        albumId: song.albumId,
-                        artistId: song.artist || null,
-                        artistName: song.artist || '',
-                        artists: [
-                            ...(song.artistId
-                                ? [{ id: song.artistId, imageUrl: null, name: song.artist || '' }]
-                                : []),
-                        ],
-                        bitrate: song.bitRate ?? null,
-                        bpm: null,
-                        channels: song.channelCount ?? null,
-                        comment: null,
-                        container: song.suffix,
-                        createdAt: song.created,
-                        discNumber: song.discNumber ? String(song.discNumber) : '1',
-                        discSubtitle: null,
-                        duration: song.duration,
-                        external: {
-                            musicbrainz: {
-                                id: null,
-                                name: null,
-                            },
-                        },
-                        fileName,
-                        filePath: song.path,
-                        fileSize: song.size,
-                        genres: [...(song.genre ? [{ id: song.genre, name: song.genre }] : [])],
-                        id: song.id,
-                        imageUrl: song.coverArt,
-                        isCompilation: false,
-                        isFavorite: Boolean(song.starred),
-                        lastPlayedAt: song.played || null,
-                        lyrics: null,
-                        mbzId: null,
-                        name: song.title,
-                        peak: null,
-                        playCount: song.playCount || 0,
-                        releaseDate: utils.date.format(String(song.year || 0), 'YYYY-MM-DD'),
-                        releaseYear: song.year || 0,
-                        replayGain: {
-                            albumGain: null,
-                            albumPeak: null,
-                            trackGain: null,
-                            trackPeak: null,
-                        },
-                        samplerate: song.samplingRate ?? null,
-                        songCount: null,
-                        trackNumber: song.track || 1,
-                        updatedAt: song.created,
-                        userFavorite: Boolean(song.starred),
-                        userRating: song.userRating ?? null,
-                    };
-                });
+                .slice(query.offset, query.limit)
+                .map(subsonicHelpers.converter.trackToAdapter);
 
             return [
                 null,
                 {
                     items: songs,
-                    startIndex: query.startIndex,
+                    limit: query.limit,
+                    offset: query.offset,
                     totalRecordCount: null,
                 },
             ];
         },
         getPlaylistTrackListCount: async (request, fetchOptions) => {
             const { query } = request;
+
+            const sanitizedQuery: Pick<PlaylistTrackListQuery, 'id'> = {
+                id: query.id,
+            };
+
+            const totalRecordCountFromDb = adapterHelpers.db.getCountWithoutFetch(db, {
+                libraryId: library.id,
+                query: sanitizedQuery,
+                type: 'playlistDetail',
+            });
+
+            if (totalRecordCountFromDb) {
+                return [null, totalRecordCountFromDb];
+            }
+
             const result = await apiClient.getPlaylist.get({
                 fetchOptions,
-                query: {
-                    id: query.id,
-                },
+                query,
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getPlaylistSongListCount'));
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getPlaylistTrackListCount'),
+                );
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -765,96 +784,51 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             const result = await apiClient.search3.get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.musicFolderId,
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
                     query: '',
                     songCount: query.limit,
-                    songOffset: query.startIndex,
+                    songOffset: query.offset,
                 },
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'getSongList'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getTrackList'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items: AdapterTrack[] = (result.body.searchResult3.song || []).map((song) => {
-                const splitPath = song.path?.split('/');
-                const fileName = splitPath[splitPath.length - 1];
+            const items: AdapterTrack[] = (result.body.searchResult3.song || []).map(
+                subsonicHelpers.converter.trackToAdapter,
+            );
 
-                return {
-                    album: song.album,
-                    albumId: song.albumId,
-                    artistId: song.artistId || null,
-                    artistName: song.artist || '',
-                    artists: [
-                        ...(song.artistId
-                            ? [{ id: song.artistId, imageUrl: null, name: song.artist || '' }]
-                            : []),
-                    ],
-                    bitrate: song.bitRate ?? null,
-                    bpm: null,
-                    channels: song.channelCount ?? null,
-                    comment: null,
-                    container: song.suffix,
-                    createdAt: song.created,
-                    discNumber: song.discNumber ? String(song.discNumber) : '1',
-                    discSubtitle: null,
-                    duration: song.duration,
-                    external: {
-                        musicbrainz: {
-                            id: null,
-                            name: null,
-                        },
-                    },
-                    fileName,
-                    filePath: song.path,
-                    fileSize: song.size,
-                    genres: [...(song.genre ? [{ id: song.genre, name: song.genre }] : [])],
-                    id: song.id,
-                    imageUrl: song.coverArt,
-                    isCompilation: false,
-                    isFavorite: Boolean(song.starred),
-                    lastPlayedAt: song.played || null,
-                    lyrics: null,
-                    mbzId: null,
-                    name: song.title,
-                    peak: null,
-                    playCount: song.playCount || 0,
-                    releaseDate: utils.date.format(String(song.year || 0), 'YYYY-MM-DD'),
-                    releaseYear: song.year || 0,
-                    replayGain: {
-                        albumGain: null,
-                        albumPeak: null,
-                        trackGain: null,
-                        trackPeak: null,
-                    },
-                    samplerate: song.samplingRate ?? null,
-                    songCount: null,
-                    trackNumber: song.track || 1,
-                    updatedAt: song.created,
-                    userFavorite: Boolean(song.starred),
-                    userRating: song.userRating ?? null,
-                };
+            const [err, totalRecordCount] = await initSubsonicAdapter(
+                library,
+                db,
+            ).getTrackListCount({
+                query,
             });
+
+            if (err) {
+                return [err, null];
+            }
 
             return [
                 null,
                 {
                     items,
-                    startIndex: query.startIndex,
-                    totalRecordCount: null,
+                    limit: query.limit,
+                    offset: query.offset,
+                    totalRecordCount,
                 },
             ];
         },
         getTrackListCount: async (request, fetchOptions) => {
             const { query } = request;
-            const limit = 500;
 
-            const getPageItemCount = async (page: number): Promise<number> => {
+            const getPageItemCount = async (page: number, limit: number): Promise<number> => {
                 const result = await apiClient.search3.get({
                     fetchOptions,
                     query: {
-                        musicFolderId: query.musicFolderId,
+                        musicFolderId: query.folderId ? query.folderId[0] : undefined,
                         query: '',
                         songCount: limit,
                         songOffset: page * limit,
@@ -862,35 +836,25 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 });
 
                 if (result.status !== 200) {
-                    writeLog.error(adapterErrorMessage(library, 'getSongListCount'));
-                    return 0;
+                    throw new Error(JSON.stringify(result.body));
                 }
 
                 return result.body.searchResult3.song?.length || 0;
             };
 
-            const fetchRecursive = async (
-                page: number,
-                itemsPerPage: number,
-                currentPage: number,
-                totalItems: number,
-            ): Promise<number> => {
-                const itemCount = await getPageItemCount(page);
-                totalItems += itemCount;
+            try {
+                const totalRecordCount = await adapterHelpers.db.getCount(db, getPageItemCount, {
+                    expiration: 1440,
+                    libraryId: library.id,
+                    query,
+                    type: 'track',
+                });
 
-                if (itemCount < itemsPerPage) {
-                    return totalItems;
-                } else {
-                    return fetchRecursive(page + 1, itemsPerPage, currentPage + 1, totalItems);
-                }
-            };
-
-            const fetchPaginatedItemCount = async () => {
-                return fetchRecursive(0, limit, 0, 0);
-            };
-
-            const totalItems = await fetchPaginatedItemCount();
-            return [null, totalItems];
+                return [null, totalRecordCount];
+            } catch (err) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getTrackListCount'));
+                return [{ code: 500, message: err as string }, null];
+            }
         },
         removeFromPlaylist: async (request, fetchOptions) => {
             const { query, body } = request;
@@ -904,7 +868,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'removeFromPlaylist'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'removeFromPlaylist'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -921,7 +885,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'scrobble'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'scrobble'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -976,7 +940,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 });
 
                 if (result.status !== 200) {
-                    writeLog.error(adapterErrorMessage(library, 'setFavorite'));
+                    writeLog.error(adapterHelpers.adapterErrorMessage(library, 'setFavorite'));
                     return [{ code: result.status, message: result.body as string }, null];
                 }
             }
@@ -992,7 +956,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 });
 
                 if (result.status !== 200) {
-                    writeLog.error(adapterErrorMessage(library, 'setFavorite'));
+                    writeLog.error(adapterHelpers.adapterErrorMessage(library, 'setFavorite'));
                     return [{ code: result.status, message: result.body as string }, null];
                 }
             }
@@ -1012,7 +976,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
                 });
 
                 if (result.status !== 200) {
-                    writeLog.error(adapterErrorMessage(library, 'setRating'));
+                    writeLog.error(adapterHelpers.adapterErrorMessage(library, 'setRating'));
                     return [{ code: result.status, message: result.body as string }, null];
                 }
             }
@@ -1029,7 +993,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary) => {
             });
 
             if (result.status !== 200) {
-                writeLog.error(adapterErrorMessage(library, 'stream'));
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'stream'));
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
@@ -1082,7 +1046,7 @@ export const subsonicAuthenticationAdapter: AdapterAuthentication = {
                     s: salt,
                     t: token,
                     u: body.username,
-                    v: '1.13.0',
+                    v: '1.16.0',
                 },
             },
         );
@@ -1107,7 +1071,7 @@ export const subsonicAuthenticationAdapter: AdapterAuthentication = {
                         s: salt,
                         t: token,
                         u: body.username,
-                        v: '1.13.0',
+                        v: '1.16.0',
                     },
                 },
             );
@@ -1135,7 +1099,7 @@ export const subsonicAuthenticationAdapter: AdapterAuthentication = {
                         s: salt,
                         t: token,
                         u: body.username,
-                        v: '1.13.0',
+                        v: '1.16.0',
                     },
                 });
 

@@ -1,6 +1,6 @@
+import type { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import type { AdapterRelatedArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
-import type { AdapterSortOrder } from '@/adapters/types/index.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterTrack {
@@ -75,18 +75,21 @@ export enum AdapterTrackListSort {
 export type AdapterTrackListQuery = {
     albumIds?: string[];
     artistIds?: string[];
+    folderId?: string[];
     imageSize?: number;
-    limit?: number;
-    musicFolderId?: string;
+    limit: number;
+    offset: number;
     searchTerm?: string;
-    sortBy: AdapterTrackListSort;
-    sortOrder: AdapterSortOrder;
-    startIndex: number;
+    sortBy: TrackListSortOptions;
+    sortOrder: ListSortOrder;
 };
 
 export type AdapterTrackListRequest = { query: AdapterTrackListQuery };
 
-export type AdapterTrackListCountQuery = AdapterTrackListQuery;
+export type AdapterTrackListCountQuery = Omit<
+    AdapterTrackListQuery,
+    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+>;
 
 export type AdapterTrackListCountRequest = QueryRequest<AdapterTrackListCountQuery>;
 
@@ -109,11 +112,11 @@ export type AdapterTopTrackListQuery = {
 export type AdapterTopTrackListRequest = QueryRequest<AdapterTopTrackListQuery>;
 
 export type AdapterRandomTrackListQuery = {
+    folderId?: string[];
     genre?: string;
     limit?: number;
     maxYear?: number;
     minYear?: number;
-    musicFolderId?: string;
 };
 
 export type AdapterRandomTrackListRequest = QueryRequest<AdapterRandomTrackListQuery>;

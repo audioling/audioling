@@ -1,6 +1,7 @@
 export interface PaginatedResponse<T> {
     items: T[];
-    startIndex: number;
+    limit: number;
+    offset: number;
     totalRecordCount: number | null;
 }
 

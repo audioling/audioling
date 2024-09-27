@@ -1,4 +1,4 @@
-import type { AdapterSortOrder } from '@/adapters/types/index.js';
+import type { ListSortOrder } from '@repo/shared-types';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterGenre {
@@ -14,11 +14,12 @@ export interface AdapterRelatedGenre {
 export type AdapterGenreListResponse = PaginatedResponse<AdapterGenre>;
 
 export type AdapterGenreListQuery = {
+    folderId?: string[];
     limit: number;
-    musicFolderId?: string;
+    offset: number;
+    searchTerm?: string;
     sortBy: AdapterGenreListSort;
-    sortOrder: AdapterSortOrder;
-    startIndex: number;
+    sortOrder: ListSortOrder;
 };
 
 export type AdapterGenreListRequest = QueryRequest<AdapterGenreListQuery>;
@@ -26,3 +27,10 @@ export type AdapterGenreListRequest = QueryRequest<AdapterGenreListQuery>;
 export enum AdapterGenreListSort {
     NAME = 'name',
 }
+
+export type AdapterGenreListCountQuery = Omit<
+    AdapterGenreListQuery,
+    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+>;
+
+export type AdapterGenreListCountRequest = QueryRequest<AdapterGenreListCountQuery>;

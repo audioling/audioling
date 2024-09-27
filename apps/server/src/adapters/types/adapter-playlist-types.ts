@@ -1,6 +1,6 @@
+import type { ListSortOrder } from '@repo/shared-types';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
 import type { AdapterTrack, AdapterTrackListSort } from '@/adapters/types/adapter-track-types.js';
-import type { AdapterSortOrder } from '@/adapters/types/index.js';
 import type {
     PaginatedResponse,
     QueryMutation,
@@ -112,16 +112,19 @@ export enum PlaylistListSort {
 
 export type PlaylistListQuery = {
     limit: number;
+    offset: number;
     searchTerm?: string;
     sortBy: PlaylistListSort;
-    sortOrder: AdapterSortOrder;
-    startIndex: number;
+    sortOrder: ListSortOrder;
     userId?: string;
 };
 
 export type PlaylistListRequest = QueryRequest<PlaylistListQuery>;
 
-export type PlaylistListCountQuery = PlaylistListQuery;
+export type PlaylistListCountQuery = Omit<
+    PlaylistListQuery,
+    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+>;
 
 export type PlaylistListCountRequest = QueryRequest<PlaylistListCountQuery>;
 
@@ -137,18 +140,18 @@ export type PlaylistDetailRequest = QueryRequest<PlaylistDetailQuery>;
 
 export type PlaylistTrackListResponse = PaginatedResponse<AdapterTrack>;
 
-export type PlaylistSongListQuery = {
+export type PlaylistTrackListQuery = {
     id: string;
     limit: number;
+    offset: number;
     sortBy?: AdapterTrackListSort;
-    sortOrder?: AdapterSortOrder;
-    startIndex: number;
+    sortOrder?: ListSortOrder;
 };
 
-export type PlaylistTrackListRequest = QueryRequest<PlaylistSongListQuery>;
+export type PlaylistTrackListRequest = QueryRequest<PlaylistTrackListQuery>;
 
-export type PlaylistSongListCountQuery = PlaylistSongListQuery;
+export type PlaylistTrackListCountQuery = PlaylistTrackListQuery;
 
-export type PlaylistTrackListCountRequest = QueryRequest<PlaylistSongListCountQuery>;
+export type PlaylistTrackListCountRequest = QueryRequest<PlaylistTrackListCountQuery>;
 
 export type PlaylistTrackListCountResponse = number;

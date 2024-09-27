@@ -1,6 +1,6 @@
+import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
 import type { AdapterRelatedAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
-import type { AdapterSortOrder } from '@/adapters/types/index.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterAlbum {
@@ -32,38 +32,30 @@ export interface AdapterAlbum {
 
 export type AdapterAlbumListResponse = PaginatedResponse<AdapterAlbum>;
 
-export enum AdapterAlbumListSort {
-    DATE_ADDED = 'dateAdded',
-    DATE_PLAYED = 'datePlayed',
-    DURATION = 'duration',
-    FAVORITED = 'favorited',
-    NAME = 'name',
-    PLAY_COUNT = 'playCount',
-    RATING = 'rating',
-    RELEASE_DATE = 'releaseDate',
-    YEAR = 'year',
-}
-
 export type AdapterAlbumListQuery = {
+    folderId?: string[];
     limit: number;
-    musicFolderId?: string;
-    sortBy: AdapterAlbumListSort;
-    sortOrder: AdapterSortOrder;
-    startIndex: number;
+    offset: number;
+    searchTerm?: string;
+    sortBy: AlbumListSortOptions;
+    sortOrder: ListSortOrder;
 };
 
 export type AdapterAlbumListRequest = QueryRequest<AdapterAlbumListQuery>;
 
-export type AdapterAlbumListCountQuery = {
-    musicFolderId?: string;
-};
+export type AdapterAlbumListCountQuery = Omit<
+    AdapterAlbumListQuery,
+    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+>;
 
 export type AdapterAlbumListCountRequest = QueryRequest<AdapterAlbumListCountQuery>;
 
 export type AdapterAlbumListCountResponse = number;
 
-export type AdapterAlbumDetailResponse = AdapterAlbum;
-
-export type AdapterAlbumDetailQuery = { id: string };
+export type AdapterAlbumDetailQuery = {
+    id: string;
+};
 
 export type AdapterAlbumDetailRequest = QueryRequest<AdapterAlbumDetailQuery>;
+
+export type AdapterAlbumDetailResponse = AdapterAlbum;

@@ -1,12 +1,16 @@
 import type { FetchOptions } from '@audioling/open-subsonic-api-client';
 import type { LibraryType } from '@repo/shared-types';
 import type {
+    AdapterAlbumDetailRequest,
+    AdapterAlbumDetailResponse,
     AdapterAlbumListCountRequest,
     AdapterAlbumListCountResponse,
     AdapterAlbumListRequest,
     AdapterAlbumListResponse,
 } from '@/adapters/types/adapter-album-types.js';
 import type {
+    AdapterArtistDetailRequest,
+    AdapterArtistDetailResponse,
     AdapterArtistListCountRequest,
     AdapterArtistListCountResponse,
     AdapterArtistListRequest,
@@ -50,12 +54,8 @@ import type {
     AdapterTrackListRequest,
     AdapterTrackListResponse,
 } from '@/adapters/types/adapter-track-types.js';
+import type { AppDatabase } from '@/database/init-database.js';
 import type { DbLibrary } from '@/database/library-database.js';
-
-export enum AdapterSortOrder {
-    ASC = 'asc',
-    DESC = 'desc',
-}
 
 export interface AdapterUser {
     id: string;
@@ -76,11 +76,13 @@ export type AdapterApi = {
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AddToPlaylistRequest, AddToPlaylistResponse>;
     clearPlaylist: AdapterFn<ClearPlaylistRequest, ClearPlaylistResponse>;
+    getAlbumArtistDetail: AdapterFn<AdapterArtistDetailRequest, AdapterArtistDetailResponse>;
     getAlbumArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
     getAlbumArtistListCount: AdapterFn<
         AdapterArtistListCountRequest,
         AdapterArtistListCountResponse
     >;
+    getAlbumDetail: AdapterFn<AdapterAlbumDetailRequest, AdapterAlbumDetailResponse>;
     getAlbumList: AdapterFn<AdapterAlbumListRequest, AdapterAlbumListResponse>;
     getAlbumListCount: AdapterFn<AdapterAlbumListCountRequest, AdapterAlbumListCountResponse>;
     getArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
@@ -106,10 +108,7 @@ export type AdapterApi = {
     stream: AdapterFn<StreamRequest, StreamResponse>;
 };
 
-export type RemoteAdapter = (
-    library: DbLibrary,
-    user?: { credential: string; username: string },
-) => AdapterApi;
+export type RemoteAdapter = (library: DbLibrary, db: AppDatabase) => AdapterApi;
 
 export type AdapterAuthentication = {
     authenticate: (

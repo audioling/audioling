@@ -54,12 +54,16 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
             };
 
             const adapter = initRemoteAdapter(
+                db,
                 { ...libraryWithoutFolders, createdAt: '', folders: [], updatedAt: '' },
                 authResult.auth,
             );
 
             const [foldersErr, folders] = await adapter.getMusicFolderList({
-                query: null,
+                query: {
+                    limit: 500,
+                    offset: 0,
+                },
             });
 
             if (foldersErr) {
@@ -69,7 +73,7 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
             const library: DbLibraryInsert = {
                 ...libraryWithoutFolders,
                 folders: folders.items.map((item) => ({
-                    id: item.id,
+                    id: String(item.id),
                     isEnabled: true,
                     name: item.name,
                 })),
@@ -128,13 +132,16 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
                 throw new apiError.badRequest({ message: 'Library scan credentials not found' });
             }
 
-            const adapter = initRemoteAdapter(library, {
+            const adapter = initRemoteAdapter(db, library, {
                 credential: library.scanCredential,
                 username: library.scanUsername,
             });
 
             const [foldersErr, folders] = await adapter.getMusicFolderList({
-                query: null,
+                query: {
+                    limit: 500,
+                    offset: 0,
+                },
             });
 
             if (foldersErr) {

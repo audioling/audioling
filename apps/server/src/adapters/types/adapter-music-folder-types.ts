@@ -7,6 +7,9 @@ export interface AdapterMusicFolder {
 
 export type MusicFolderListResponse = PaginatedResponse<AdapterMusicFolder>;
 
-export type MusicFolderListQuery = null;
+export type MusicFolderListQuery = {
+    limit: number;
+    offset: number;
+};
 
 export type MusicFolderListRequest = QueryRequest<MusicFolderListQuery>;

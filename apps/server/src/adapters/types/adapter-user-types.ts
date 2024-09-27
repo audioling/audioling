@@ -1,4 +1,5 @@
-import type { AdapterSortOrder, AdapterUser } from '@/adapters/types/index.js';
+import type { ListSortOrder } from '@repo/shared-types';
+import type { AdapterUser } from '@/adapters/types/index.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export type UserListResponse = PaginatedResponse<AdapterUser>;
@@ -9,10 +10,10 @@ export enum UserListSort {
 
 export type UserListQuery = {
     limit?: number;
+    offset: number;
     searchTerm?: string;
     sortBy: UserListSort;
-    sortOrder: AdapterSortOrder;
-    startIndex: number;
+    sortOrder: ListSortOrder;
 };
 
 export type UserListRequest = QueryRequest<UserListQuery>;

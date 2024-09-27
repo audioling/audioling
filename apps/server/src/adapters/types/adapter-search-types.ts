@@ -5,33 +5,33 @@ import type { QueryRequest } from '@/adapters/types/shared-types.js';
 
 export type SearchQuery = {
     albumArtistLimit?: number;
-    albumArtistStartIndex?: number;
+    albumArtistOffset?: number;
     albumLimit?: number;
-    albumStartIndex?: number;
-    musicFolderId?: string;
+    albumOffset?: number;
+    folderId?: string[];
     query?: string;
     songLimit?: number;
-    songStartIndex?: number;
+    songOffset?: number;
 };
 
 export type SearchSongsQuery = {
-    musicFolderId?: string;
+    folderId?: string[];
     query?: string;
     songLimit?: number;
-    songStartIndex?: number;
+    songOffset?: number;
 };
 
 export type SearchAlbumsQuery = {
     albumLimit?: number;
-    albumStartIndex?: number;
-    musicFolderId?: string;
+    albumOffset?: number;
+    folderId?: string[];
     query?: string;
 };
 
 export type SearchAlbumArtistsQuery = {
     albumArtistLimit?: number;
-    albumArtistStartIndex?: number;
-    musicFolderId?: string;
+    albumArtistOffset?: number;
+    folderId?: string[];
     query?: string;
 };
 

@@ -1,5 +1,5 @@
+import type { ListSortOrder } from '@repo/shared-types';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
-import type { AdapterSortOrder } from '@/adapters/types/index.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterAlbumArtist {
@@ -51,19 +51,29 @@ export enum AdapterArtistListSort {
 }
 
 export type AdapterArtistListQuery = {
+    folderId?: string[];
     limit: number;
-    musicFolderId?: string;
+    offset: number;
+    searchTerm?: string;
     sortBy: AdapterArtistListSort;
-    sortOrder: AdapterSortOrder;
-    startIndex: number;
+    sortOrder: ListSortOrder;
 };
 
 export type AdapterArtistListRequest = QueryRequest<AdapterArtistListQuery>;
 
-export type AdapterArtistListCountQuery = {
-    musicFolderId?: string;
-};
+export type AdapterArtistListCountQuery = Omit<
+    AdapterArtistListQuery,
+    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+>;
 
 export type AdapterArtistListCountRequest = QueryRequest<AdapterArtistListCountQuery>;
 
 export type AdapterArtistListCountResponse = number;
+
+export type AdapterArtistDetailQuery = {
+    id: string;
+};
+
+export type AdapterArtistDetailRequest = QueryRequest<AdapterArtistDetailQuery>;
+
+export type AdapterArtistDetailResponse = AdapterAlbumArtist;
