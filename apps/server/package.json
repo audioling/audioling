@@ -15,12 +15,12 @@
         "package": "bun build --compile --minify --sourcemap ./src/index.ts --outfile ./dist/audioling"
     },
     "dependencies": {
-        "@audioling/open-subsonic-api-client": "^2.0.2",
-        "@hono/zod-openapi": "^0.16.0",
+        "@audioling/open-subsonic-api-client": "^2.0.3",
+        "@hono/zod-openapi": "^0.16.2",
         "@paralleldrive/cuid2": "^2.2.2",
         "@repo/logger": "workspace:*",
         "@repo/shared-types": "workspace:*",
-        "@scalar/hono-api-reference": "^0.5.147",
+        "@scalar/hono-api-reference": "^0.5.149",
         "axios": "^1.7.7",
         "bcryptjs": "^2.4.3",
         "configstore": "^7.0.0",
@@ -29,6 +29,7 @@
         "lodash": "^4.17.21",
         "md5": "^2.3.0",
         "normalize-text": "^2.5.0",
+        "safe-stable-stringify": "^2.5.0",
         "sharp": "^0.33.5",
         "thumbhash": "^0.1.1",
         "zod": "^3.23.8",
@@ -41,7 +42,7 @@
         "@types/configstore": "^6.0.2",
         "@types/lodash": "^4.17.9",
         "@types/md5": "^2.3.5",
-        "@types/node": "^22.6.1",
+        "@types/node": "^22.7.3",
         "cross-env": "^7.0.3",
         "tsc-alias": "^1.8.10",
         "typescript": "^5.6.2"
