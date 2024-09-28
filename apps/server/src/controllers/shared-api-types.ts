@@ -54,10 +54,8 @@ export const createPaginatedResponseSchema = <TAttributes extends z.ZodTypeAny>(
     return z.object({
         data: opts.attributes.array(),
         meta: z.object({
-            next: z.string().nullable().openapi({ example: '/api/users?limit=50&offset=100' }),
-            prev: z.string().nullable().openapi({ example: '/api/users?limit=50&offset=0' }),
-            recordCount: z.number().openapi({ example: 100 }),
-            self: z.string().openapi({ example: '/api/users?limit=50&offset=50' }),
+            next: z.boolean().openapi({ example: true }),
+            prev: z.boolean().openapi({ example: false }),
             totalRecordCount: z.number().openapi({ example: 1000 }),
         }),
     });
