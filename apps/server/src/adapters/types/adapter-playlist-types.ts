@@ -1,6 +1,6 @@
-import type { ListSortOrder } from '@repo/shared-types';
+import type { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
-import type { AdapterTrack, AdapterTrackListSort } from '@/adapters/types/adapter-track-types.js';
+import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type {
     PaginatedResponse,
     QueryMutation,
@@ -23,47 +23,50 @@ export interface AdapterPlaylist {
     // sync?: boolean | null;
 }
 
-type ClearPlaylistQuery = {
+type AdapterClearPlaylistQuery = {
     id: string;
 };
 
-export type ClearPlaylistRequest = QueryRequest<ClearPlaylistQuery>;
+export type AdapterClearPlaylistRequest = QueryRequest<AdapterClearPlaylistQuery>;
 
-export type ClearPlaylistResponse = null;
+export type AdapterClearPlaylistResponse = null;
 
-export type AddToPlaylistResponse = null;
+export type AdapterAddToPlaylistResponse = null;
 
-type AddToPlaylistQuery = {
+type AdapterAddToPlaylistQuery = {
     id: string;
 };
 
-type AddToPlaylistBody = {
+type AdapterAddToPlaylistBody = {
     entry: {
         id: string;
         type: 'album' | 'song';
     }[];
 };
 
-export type AddToPlaylistRequest = QueryMutation<AddToPlaylistQuery, AddToPlaylistBody>;
+export type AdapterAddToPlaylistRequest = QueryMutation<
+    AdapterAddToPlaylistQuery,
+    AdapterAddToPlaylistBody
+>;
 
-export type RemoveFromPlaylistResponse = null;
+export type AdapterRemoveFromPlaylistResponse = null;
 
-export type RemoveFromPlaylistQuery = {
+export type AdapterRemoveFromPlaylistQuery = {
     id: string;
 };
 
-export type RemoveFromPlaylistBody = {
+export type AdapterRemoveFromPlaylistBody = {
     entry: string[];
 };
 
-export type RemoveFromPlaylistRequest = QueryMutation<
-    RemoveFromPlaylistQuery,
-    RemoveFromPlaylistBody
+export type AdapterRemoveFromPlaylistRequest = QueryMutation<
+    AdapterRemoveFromPlaylistQuery,
+    AdapterRemoveFromPlaylistBody
 >;
 
-export type CreatePlaylistResponse = null;
+export type AdapterCreatePlaylistResponse = null;
 
-export type CreatePlaylistBody = {
+export type AdapterCreatePlaylistBody = {
     comment?: string;
     name: string;
     owner?: string;
@@ -73,15 +76,18 @@ export type CreatePlaylistBody = {
     sync?: boolean;
 };
 
-export type CreatePlaylistRequest = QueryMutation<CreatePlaylistResponse, CreatePlaylistBody>;
+export type AdapterCreatePlaylistRequest = QueryMutation<
+    AdapterCreatePlaylistResponse,
+    AdapterCreatePlaylistBody
+>;
 
-export type UpdatePlaylistResponse = null;
+export type AdapterUpdatePlaylistResponse = null;
 
-export type UpdatePlaylistQuery = {
+export type AdapterUpdatePlaylistQuery = {
     id: string;
 };
 
-export type UpdatePlaylistBody = {
+export type AdapterUpdatePlaylistBody = {
     comment?: string;
     name: string;
     owner?: string;
@@ -91,17 +97,20 @@ export type UpdatePlaylistBody = {
     sync?: boolean;
 };
 
-export type UpdatePlaylistRequest = QueryMutation<UpdatePlaylistQuery, UpdatePlaylistBody>;
+export type AdapterUpdatePlaylistRequest = QueryMutation<
+    AdapterUpdatePlaylistQuery,
+    AdapterUpdatePlaylistBody
+>;
 
-export type DeletePlaylistResponse = null;
+export type AdapterDeletePlaylistResponse = null;
 
-export type DeletePlaylistQuery = { id: string };
+export type AdapterDeletePlaylistQuery = { id: string };
 
-export type DeletePlaylistRequest = QueryMutation<DeletePlaylistQuery>;
+export type AdapterDeletePlaylistRequest = QueryMutation<AdapterDeletePlaylistQuery>;
 
-export type PlaylistListResponse = PaginatedResponse<AdapterPlaylist>;
+export type AdapterPlaylistListResponse = PaginatedResponse<AdapterPlaylist>;
 
-export enum PlaylistListSort {
+export enum AdapterPlaylistListSort {
     DURATION = 'duration',
     NAME = 'name',
     OWNER = 'owner',
@@ -110,48 +119,49 @@ export enum PlaylistListSort {
     UPDATED_AT = 'updatedAt',
 }
 
-export type PlaylistListQuery = {
+export type AdapterPlaylistListQuery = {
     limit: number;
     offset: number;
     searchTerm?: string;
-    sortBy: PlaylistListSort;
+    sortBy: AdapterPlaylistListSort;
     sortOrder: ListSortOrder;
     userId?: string;
 };
 
-export type PlaylistListRequest = QueryRequest<PlaylistListQuery>;
+export type AdapterPlaylistListRequest = QueryRequest<AdapterPlaylistListQuery>;
 
-export type PlaylistListCountQuery = Omit<
-    PlaylistListQuery,
+export type AdapterPlaylistListCountQuery = Omit<
+    AdapterPlaylistListQuery,
     'sortBy' | 'sortOrder' | 'limit' | 'offset'
 >;
 
-export type PlaylistListCountRequest = QueryRequest<PlaylistListCountQuery>;
+export type AdapterPlaylistListCountRequest = QueryRequest<AdapterPlaylistListCountQuery>;
 
-export type PlaylistListCountResponse = number;
+export type AdapterPlaylistListCountResponse = number;
 
-export type PlaylistDetailResponse = AdapterPlaylist;
+export type AdapterPlaylistDetailResponse = AdapterPlaylist;
 
-export type PlaylistDetailQuery = {
+export type AdapterPlaylistDetailQuery = {
     id: string;
 };
 
-export type PlaylistDetailRequest = QueryRequest<PlaylistDetailQuery>;
+export type AdapterPlaylistDetailRequest = QueryRequest<AdapterPlaylistDetailQuery>;
 
-export type PlaylistTrackListResponse = PaginatedResponse<AdapterTrack>;
+export type AdapterPlaylistTrackListResponse = PaginatedResponse<AdapterTrack>;
 
-export type PlaylistTrackListQuery = {
+export type AdapterPlaylistTrackListQuery = {
     id: string;
     limit: number;
     offset: number;
-    sortBy?: AdapterTrackListSort;
+    searchTerm?: string;
+    sortBy?: TrackListSortOptions;
     sortOrder?: ListSortOrder;
 };
 
-export type PlaylistTrackListRequest = QueryRequest<PlaylistTrackListQuery>;
+export type AdapterPlaylistTrackListRequest = QueryRequest<AdapterPlaylistTrackListQuery>;
 
-export type PlaylistTrackListCountQuery = PlaylistTrackListQuery;
+export type AdapterPlaylistTrackListCountQuery = AdapterPlaylistTrackListQuery;
 
-export type PlaylistTrackListCountRequest = QueryRequest<PlaylistTrackListCountQuery>;
+export type AdapterPlaylistTrackListCountRequest = QueryRequest<AdapterPlaylistTrackListCountQuery>;
 
-export type PlaylistTrackListCountResponse = number;
+export type AdapterPlaylistTrackListCountResponse = number;

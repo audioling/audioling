@@ -1,10 +1,10 @@
 import type { QueryMutation } from '@/adapters/types/shared-types.js';
 
-export type SetRatingResponse = null;
+export type AdapterSetRatingResponse = null;
 
-export type SetRatingQuery = null;
+export type AdapterSetRatingQuery = null;
 
-export type SetRatingBody = {
+export type AdapterSetRatingBody = {
     entry: {
         id: string;
         rating: number;
@@ -12,4 +12,4 @@ export type SetRatingBody = {
     }[];
 };
 
-export type SetRatingRequest = QueryMutation<SetRatingQuery, SetRatingBody>;
+export type AdapterSetRatingRequest = QueryMutation<AdapterSetRatingQuery, AdapterSetRatingBody>;

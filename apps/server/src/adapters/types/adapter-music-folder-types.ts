@@ -5,11 +5,11 @@ export interface AdapterMusicFolder {
     name: string;
 }
 
-export type MusicFolderListResponse = PaginatedResponse<AdapterMusicFolder>;
+export type AdapterMusicFolderListResponse = PaginatedResponse<AdapterMusicFolder>;
 
-export type MusicFolderListQuery = {
+export type AdapterMusicFolderListQuery = {
     limit: number;
     offset: number;
 };
 
-export type MusicFolderListRequest = QueryRequest<MusicFolderListQuery>;
+export type AdapterMusicFolderListRequest = QueryRequest<AdapterMusicFolderListQuery>;

@@ -2,7 +2,7 @@ export interface PaginatedResponse<T> {
     items: T[];
     limit: number;
     offset: number;
-    totalRecordCount: number | null;
+    totalRecordCount: number;
 }
 
 export type ApiClientArgs = {

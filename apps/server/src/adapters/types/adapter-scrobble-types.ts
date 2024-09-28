@@ -1,14 +1,14 @@
 import type { QueryMutation } from '@/adapters/types/shared-types.js';
 
-export type ScrobbleResponse = null;
+export type AdapterScrobbleResponse = null;
 
-export type ScrobbleRequest = QueryMutation<ScrobbleQuery, ScrobbleBody>;
+export type AdapterScrobbleRequest = QueryMutation<AdapterScrobbleQuery, AdapterScrobbleBody>;
 
-export type ScrobbleQuery = {
+export type AdapterScrobbleQuery = {
     id: string;
 };
 
-export type ScrobbleBody = {
+export type AdapterScrobbleBody = {
     event?: 'pause' | 'unpause' | 'timeupdate' | 'start';
     position?: number;
     submission: boolean;

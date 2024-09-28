@@ -1,11 +1,11 @@
 import type { QueryRequest } from '@/adapters/types/shared-types.js';
 
-export type StreamQuery = {
+export type AdapterStreamQuery = {
     bitRate?: number;
     format?: string;
     id: string;
 };
 
-export type StreamRequest = QueryRequest<StreamQuery>;
+export type AdapterStreamRequest = QueryRequest<AdapterStreamQuery>;
 
-export type StreamResponse = string;
+export type AdapterStreamResponse = string;

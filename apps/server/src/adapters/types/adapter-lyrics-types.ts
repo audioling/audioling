@@ -1,77 +1,77 @@
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { BaseEndpointArgs, QueryRequest } from './shared-types.js';
 
-export type LyricsQuery = {
+export type AdapterLyricsQuery = {
     songId: string;
 };
 
-export type LyricsRequest = QueryRequest<LyricsQuery>;
+export type AdapterLyricsRequest = QueryRequest<AdapterLyricsQuery>;
 
-export type SynchronizedLyricsArray = Array<[number, string]>;
+export type AdapterSynchronizedLyricsArray = Array<[number, string]>;
 
-export type LyricsResponse = SynchronizedLyricsArray | string;
+export type AdapterLyricsResponse = AdapterSynchronizedLyricsArray | string;
 
-export type InternetProviderLyricResponse = {
+export type AdapterInternetProviderLyricResponse = {
     artist: string;
     id: string;
     lyrics: string;
     name: string;
-    source: LyricSource;
+    source: AdapterLyricSource;
 };
 
-export type InternetProviderLyricSearchResponse = {
+export type AdapterInternetProviderLyricSearchResponse = {
     artist: string;
     id: string;
     name: string;
     score?: number;
-    source: LyricSource;
+    source: AdapterLyricSource;
 };
 
-export type FullLyricsMetadata = {
-    lyrics: LyricsResponse;
+export type AdapterFullLyricsMetadata = {
+    lyrics: AdapterLyricsResponse;
     remote: boolean;
     source: string;
-} & Omit<InternetProviderLyricResponse, 'id' | 'lyrics' | 'source'>;
+} & Omit<AdapterInternetProviderLyricResponse, 'id' | 'lyrics' | 'source'>;
 
-export type LyricOverride = Omit<InternetProviderLyricResponse, 'lyrics'>;
+export type AdapterLyricOverride = Omit<AdapterInternetProviderLyricResponse, 'lyrics'>;
 
-export type LyricSearchQuery = {
+export type AdapterLyricSearchQuery = {
     album?: string;
     artist?: string;
     duration?: number;
     name?: string;
 };
 
-export type LyricGetQuery = {
+export type AdapterLyricGetQuery = {
     remoteSongId: string;
-    remoteSource: LyricSource;
+    remoteSource: AdapterLyricSource;
     song: AdapterTrack;
 };
 
-export enum LyricSource {
+export enum AdapterLyricSource {
     GENIUS = 'Genius',
     LRCLIB = 'lrclib.net',
     NETEASE = 'NetEase',
 }
 
-export type LyricsOverride = Omit<FullLyricsMetadata, 'lyrics'> & { id: string };
+export type AdapterLyricsOverride = Omit<AdapterFullLyricsMetadata, 'lyrics'> & { id: string };
 
-export type StructuredLyricsRequest = {
-    query: LyricsQuery;
+export type AdapterStructuredLyricsRequest = {
+    query: AdapterLyricsQuery;
 } & BaseEndpointArgs;
 
-export type StructuredUnsyncedLyric = {
+export type AdapterStructuredUnsyncedLyric = {
     lyrics: string;
     synced: false;
-} & Omit<FullLyricsMetadata, 'lyrics'>;
+} & Omit<AdapterFullLyricsMetadata, 'lyrics'>;
 
-export type StructuredSyncedLyric = {
-    lyrics: SynchronizedLyricsArray;
+export type AdapterStructuredSyncedLyric = {
+    lyrics: AdapterSynchronizedLyricsArray;
     synced: true;
-} & Omit<FullLyricsMetadata, 'lyrics'>;
+} & Omit<AdapterFullLyricsMetadata, 'lyrics'>;
 
-export type StructuredLyric = {
+export type AdapterStructuredLyric = {
     lang: string;
-} & (StructuredUnsyncedLyric | StructuredSyncedLyric);
+} & (AdapterStructuredUnsyncedLyric | AdapterStructuredSyncedLyric);
 
-export type StructuredLyricResponse = StructuredLyric[];
+export type AdapterStructuredLyricResponse = AdapterStructuredLyric[];

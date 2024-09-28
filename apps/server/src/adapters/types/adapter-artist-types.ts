@@ -7,19 +7,17 @@ export interface AdapterAlbumArtist {
     biography: string | null;
     createdAt: string | null;
     duration: number | null;
-    external: {
-        musicbrainz: {
-            id: string | null;
-            name: string | null;
-        };
-    };
+    external: Record<string, unknown>;
     genres: AdapterRelatedGenre[];
     id: string;
     name: string;
     songCount: number | null;
     updatedAt: string | null;
     userFavorite: boolean;
+    userFavoriteDate: string | null;
+    userLastPlayedDate: string | null;
     userRating: number | null;
+    userRatingDate: string | null;
 }
 
 export interface AdapterRelatedArtist {

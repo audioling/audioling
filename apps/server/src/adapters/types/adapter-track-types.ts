@@ -51,30 +51,7 @@ export interface AdapterTrack {
 
 export type AdapterTrackListResponse = PaginatedResponse<AdapterTrack>;
 
-export enum AdapterTrackListSort {
-    ALBUM = 'album',
-    ALBUM_ARTIST = 'albumArtist',
-    ARTIST = 'artist',
-    BPM = 'bpm',
-    CHANNELS = 'channels',
-    COMMENT = 'comment',
-    DURATION = 'duration',
-    FAVORITED = 'favorited',
-    GENRE = 'genre',
-    ID = 'id',
-    NAME = 'name',
-    PLAY_COUNT = 'playCount',
-    RANDOM = 'random',
-    RATING = 'rating',
-    RECENTLY_ADDED = 'recentlyAdded',
-    RECENTLY_PLAYED = 'recentlyPlayed',
-    RELEASE_DATE = 'releaseDate',
-    YEAR = 'year',
-}
-
 export type AdapterTrackListQuery = {
-    albumIds?: string[];
-    artistIds?: string[];
     folderId?: string[];
     imageSize?: number;
     limit: number;

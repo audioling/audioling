@@ -25,29 +25,38 @@ import type {
     AdapterGenreListResponse,
 } from '@/adapters/types/adapter-genre-types.js';
 import type {
-    MusicFolderListRequest,
-    MusicFolderListResponse,
+    AdapterMusicFolderListRequest,
+    AdapterMusicFolderListResponse,
 } from '@/adapters/types/adapter-music-folder-types.js';
 import type {
-    AddToPlaylistRequest,
-    AddToPlaylistResponse,
-    ClearPlaylistRequest,
-    ClearPlaylistResponse,
-    PlaylistListCountRequest,
-    PlaylistListCountResponse,
-    PlaylistListRequest,
-    PlaylistListResponse,
-    PlaylistTrackListCountRequest,
-    PlaylistTrackListCountResponse,
-    PlaylistTrackListRequest,
-    PlaylistTrackListResponse,
-    RemoveFromPlaylistRequest,
-    RemoveFromPlaylistResponse,
+    AdapterAddToPlaylistRequest,
+    AdapterAddToPlaylistResponse,
+    AdapterClearPlaylistRequest,
+    AdapterClearPlaylistResponse,
+    AdapterPlaylistListCountRequest,
+    AdapterPlaylistListCountResponse,
+    AdapterPlaylistListRequest,
+    AdapterPlaylistListResponse,
+    AdapterPlaylistTrackListCountRequest,
+    AdapterPlaylistTrackListCountResponse,
+    AdapterPlaylistTrackListRequest,
+    AdapterPlaylistTrackListResponse,
+    AdapterRemoveFromPlaylistRequest,
+    AdapterRemoveFromPlaylistResponse,
 } from '@/adapters/types/adapter-playlist-types.js';
-import type { SetRatingRequest, SetRatingResponse } from '@/adapters/types/adapter-rating-types.js';
-import type { ScrobbleRequest, ScrobbleResponse } from '@/adapters/types/adapter-scrobble-types.js';
-import type { AuthenticationResponse } from '@/adapters/types/adapter-server-types.js';
-import type { StreamRequest, StreamResponse } from '@/adapters/types/adapter-stream-types.js';
+import type {
+    AdapterSetRatingRequest,
+    AdapterSetRatingResponse,
+} from '@/adapters/types/adapter-rating-types.js';
+import type {
+    AdapterScrobbleRequest,
+    AdapterScrobbleResponse,
+} from '@/adapters/types/adapter-scrobble-types.js';
+import type { AdapterAuthenticationResponse } from '@/adapters/types/adapter-server-types.js';
+import type {
+    AdapterStreamRequest,
+    AdapterStreamResponse,
+} from '@/adapters/types/adapter-stream-types.js';
 import type {
     AdapterTrackListCountRequest,
     AdapterTrackListCountResponse,
@@ -74,8 +83,8 @@ type AdapterFn<TRequest, TResponse> = (
 
 export type AdapterApi = {
     _getType: () => LibraryType;
-    addToPlaylist: AdapterFn<AddToPlaylistRequest, AddToPlaylistResponse>;
-    clearPlaylist: AdapterFn<ClearPlaylistRequest, ClearPlaylistResponse>;
+    addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
+    clearPlaylist: AdapterFn<AdapterClearPlaylistRequest, AdapterClearPlaylistResponse>;
     getAlbumArtistDetail: AdapterFn<AdapterArtistDetailRequest, AdapterArtistDetailResponse>;
     getAlbumArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
     getAlbumArtistListCount: AdapterFn<
@@ -91,21 +100,30 @@ export type AdapterApi = {
     getFavoriteArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
     getFavoriteTrackList: AdapterFn<AdapterTrackListRequest, AdapterTrackListResponse>;
     getGenreList: AdapterFn<AdapterGenreListRequest, AdapterGenreListResponse>;
-    getMusicFolderList: AdapterFn<MusicFolderListRequest, MusicFolderListResponse>;
-    getPlaylistList: AdapterFn<PlaylistListRequest, PlaylistListResponse>;
-    getPlaylistListCount: AdapterFn<PlaylistListCountRequest, PlaylistListCountResponse>;
-    getPlaylistTrackList: AdapterFn<PlaylistTrackListRequest, PlaylistTrackListResponse>;
+    getMusicFolderList: AdapterFn<AdapterMusicFolderListRequest, AdapterMusicFolderListResponse>;
+    getPlaylistList: AdapterFn<AdapterPlaylistListRequest, AdapterPlaylistListResponse>;
+    getPlaylistListCount: AdapterFn<
+        AdapterPlaylistListCountRequest,
+        AdapterPlaylistListCountResponse
+    >;
+    getPlaylistTrackList: AdapterFn<
+        AdapterPlaylistTrackListRequest,
+        AdapterPlaylistTrackListResponse
+    >;
     getPlaylistTrackListCount: AdapterFn<
-        PlaylistTrackListCountRequest,
-        PlaylistTrackListCountResponse
+        AdapterPlaylistTrackListCountRequest,
+        AdapterPlaylistTrackListCountResponse
     >;
     getTrackList: AdapterFn<AdapterTrackListRequest, AdapterTrackListResponse>;
     getTrackListCount: AdapterFn<AdapterTrackListCountRequest, AdapterTrackListCountResponse>;
-    removeFromPlaylist: AdapterFn<RemoveFromPlaylistRequest, RemoveFromPlaylistResponse>;
-    scrobble: AdapterFn<ScrobbleRequest, ScrobbleResponse>;
+    removeFromPlaylist: AdapterFn<
+        AdapterRemoveFromPlaylistRequest,
+        AdapterRemoveFromPlaylistResponse
+    >;
+    scrobble: AdapterFn<AdapterScrobbleRequest, AdapterScrobbleResponse>;
     setFavorite: AdapterFn<AdapterSetFavoriteRequest, AdapterSetFavoriteResponse>;
-    setRating: AdapterFn<SetRatingRequest, SetRatingResponse>;
-    stream: AdapterFn<StreamRequest, StreamResponse>;
+    setRating: AdapterFn<AdapterSetRatingRequest, AdapterSetRatingResponse>;
+    stream: AdapterFn<AdapterStreamRequest, AdapterStreamResponse>;
 };
 
 export type RemoteAdapter = (library: DbLibrary, db: AppDatabase) => AdapterApi;
@@ -114,6 +132,6 @@ export type AdapterAuthentication = {
     authenticate: (
         url: string,
         body: { password: string; username: string },
-    ) => Promise<AuthenticationResponse>;
+    ) => Promise<AdapterAuthenticationResponse>;
     ping: () => Promise<boolean>;
 };

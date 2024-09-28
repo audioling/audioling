@@ -3,7 +3,7 @@ import type { AdapterAlbumArtist } from '@/adapters/types/adapter-artist-types.j
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { QueryRequest } from '@/adapters/types/shared-types.js';
 
-export type SearchQuery = {
+export type AdapterSearchQuery = {
     albumArtistLimit?: number;
     albumArtistOffset?: number;
     albumLimit?: number;
@@ -14,30 +14,30 @@ export type SearchQuery = {
     songOffset?: number;
 };
 
-export type SearchSongsQuery = {
+export type AdapterSearchSongsQuery = {
     folderId?: string[];
     query?: string;
     songLimit?: number;
     songOffset?: number;
 };
 
-export type SearchAlbumsQuery = {
+export type AdapterSearchAlbumsQuery = {
     albumLimit?: number;
     albumOffset?: number;
     folderId?: string[];
     query?: string;
 };
 
-export type SearchAlbumArtistsQuery = {
+export type AdapterSearchAlbumArtistsQuery = {
     albumArtistLimit?: number;
     albumArtistOffset?: number;
     folderId?: string[];
     query?: string;
 };
 
-export type SearchRequest = QueryRequest<SearchQuery>;
+export type AdapterSearchRequest = QueryRequest<AdapterSearchQuery>;
 
-export type SearchResponse = {
+export type AdapterSearchResponse = {
     albums: AdapterAlbum[];
     artists: AdapterAlbumArtist[];
     songs: AdapterTrack[];

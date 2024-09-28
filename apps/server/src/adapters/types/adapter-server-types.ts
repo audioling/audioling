@@ -1,15 +1,15 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import type { BaseEndpointArgs } from '@/adapters/types/shared-types.js';
 
-export type ServerInfoRequest = BaseEndpointArgs;
+export type AdapterServerInfoRequest = BaseEndpointArgs;
 
-export type ServerInfo = {
+export type AdapterServerInfo = {
     features: LibraryFeatures;
     id?: string;
     version: string;
 };
 
-export type AuthenticationResponse = {
+export type AdapterAuthenticationResponse = {
     auth: {
         credential: string;
         username: string;
