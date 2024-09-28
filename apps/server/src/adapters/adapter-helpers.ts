@@ -1,4 +1,7 @@
+import type { TrackListSortOptions } from '@repo/shared-types';
+import { LibraryItemType } from '@repo/shared-types';
 import dayjs from 'dayjs';
+import orderBy from 'lodash/orderBy.js';
 import md5 from 'md5';
 import stringify from 'safe-stable-stringify';
 import type { AppDatabase } from '@/database/init-database.js';
@@ -131,7 +134,104 @@ const adapterErrorMessage = (library: DbLibrary, route: string) => {
     return `Remote adapter ${library.baseUrl}@${library.id}@${library.type} failed on ${route}`;
 };
 
+const sortBy = {
+    track: <TValue>(
+        array: TValue[],
+        key: TrackListSortOptions,
+        order: 'asc' | 'desc',
+        type: LibraryItemType,
+    ) => {
+        let value = array;
+
+        switch (key) {
+            case 'album': {
+                value = orderBy(value, ['album'], [order]);
+                break;
+            }
+            case 'albumArtist': {
+                if (type === LibraryItemType.ALBUM) {
+                    value = orderBy(value, ['albumArtistId'], [order]);
+                } else {
+                    value = orderBy(value, ['artistId'], [order]);
+                }
+                break;
+            }
+            case 'artist': {
+                value = orderBy(value, ['artistId'], [order]);
+                break;
+            }
+            case 'bpm': {
+                value = orderBy(value, ['bpm'], [order]);
+                break;
+            }
+            case 'channels': {
+                value = orderBy(value, ['channels'], [order]);
+                break;
+            }
+            case 'comment': {
+                value = orderBy(value, ['comment'], [order]);
+                break;
+            }
+            case 'duration': {
+                value = orderBy(value, ['duration'], [order]);
+                break;
+            }
+            case 'favorited': {
+                value = orderBy(value, ['favorited'], [order]);
+                break;
+            }
+            case 'genre': {
+                value = orderBy(value, ['genre'], [order]);
+                break;
+            }
+            case 'id': {
+                break;
+            }
+            case 'name': {
+                value = orderBy(value, ['name'], [order]);
+                break;
+            }
+            case 'playCount': {
+                value = orderBy(value, ['playCount'], [order]);
+                break;
+            }
+            case 'random': {
+                value = orderBy(value, ['random'], [order]);
+                break;
+            }
+            case 'rating': {
+                value = orderBy(value, ['rating'], [order]);
+                break;
+            }
+            case 'recentlyAdded': {
+                value = orderBy(value, ['recentlyAdded'], [order]);
+                break;
+            }
+            case 'recentlyPlayed': {
+                value = orderBy(value, ['recentlyPlayed'], [order]);
+                break;
+            }
+            case 'releaseDate': {
+                value = orderBy(value, ['releaseDate'], [order]);
+                break;
+            }
+            case 'year': {
+                value = orderBy(value, ['year'], [order]);
+                break;
+            }
+        }
+
+        return value;
+    },
+};
+
+const paginate = <T>(array: T[], offset: number, limit: number) => {
+    return array.slice(offset, offset + limit);
+};
+
 export const adapterHelpers = {
     adapterErrorMessage,
     db,
+    paginate,
+    sortBy,
 };
