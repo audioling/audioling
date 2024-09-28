@@ -82,7 +82,7 @@ export const paginationQuery = {
                 });
             }
 
-            if (parsed > 5000) {
+            if (parsed > 500) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.too_big,
                     inclusive: true,
