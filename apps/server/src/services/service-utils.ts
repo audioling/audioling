@@ -1,3 +1,5 @@
+import type { ListSortOrder } from '@repo/shared-types';
+
 export interface ServiceHelpers {
     create: <TValues>(args: InsertServiceArgs<TValues>) => Promise<TValues>;
     deleteById: (args: DeleteByIdServiceArgs) => Promise<void>;
@@ -32,10 +34,10 @@ export interface SetFavoriteServiceArgs {
     values: { id: string; isFavorite: boolean }[];
 }
 
-export interface FindManyServiceArgs<TModel> {
+export interface FindManyServiceArgs<TSortOptions> {
+    folderId?: string[];
     limit?: number;
     offset?: number;
-    orderBy?: {
-        [key in keyof TModel]?: 'asc' | 'desc';
-    }[];
+    sortBy?: TSortOptions;
+    sortOrder?: ListSortOrder;
 }
