@@ -5,6 +5,7 @@ import type {
 import dayjs from 'dayjs';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
+import type { AdapterPlaylist } from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import { utils } from '@/utils/index.js';
 
@@ -23,6 +24,17 @@ type Artist = NonNullable<
     ClientInferResponseBody<(typeof openSubsonicApiContract)['getArtist']['get'], 200>['artist']
 >;
 
+type Playlist = NonNullable<
+    ClientInferResponseBody<(typeof openSubsonicApiContract)['getPlaylist']['get'], 200>['playlist']
+>;
+
+type PlaylistListEntry = NonNullable<
+    ClientInferResponseBody<
+        (typeof openSubsonicApiContract)['getPlaylists']['get'],
+        200
+    >['playlists']
+>['playlist'][number];
+
 type ArtistListEntry = NonNullable<
     ClientInferResponseBody<
         (typeof openSubsonicApiContract)['getArtists']['get'],
@@ -31,13 +43,9 @@ type ArtistListEntry = NonNullable<
 >;
 
 const converter = {
-    albumToAdapter: (album: Album) => {
-        const releaseDate = dayjs()
-            .year(Number(album.year || 0))
-            .startOf('year')
-            .toISOString();
-
+    albumToAdapter: (album: Album): AdapterAlbum => {
         const item: AdapterAlbum = {
+            albumArtistId: album.artistId || null,
             albumArtists: [
                 ...(album.artistId
                     ? [
@@ -50,56 +58,85 @@ const converter = {
                     : []),
             ],
             comment: null,
-            createdAt: album.created,
+            createdDate: album.created,
+            description: null,
+            discTitles: album.discTitles || [],
             duration: album.duration,
             external: {
-                musicbrainz: {
-                    id: null,
-                    name: null,
-                },
+                musicBrainzId: album.musicBrainzId || null,
             },
             genres: [...(album.genre ? [{ id: album.genre, name: album.genre }] : [])],
             id: album.id,
             imageUrl: album.coverArt,
-            isCompilation: null,
-            isFavorite: Boolean(album.starred),
-            lastPlayedAt: null,
+            isCompilation: album.isCompilation || false,
+            moods: album.moods?.map((mood) => ({ name: mood })) || [],
             name: album.name,
-            playCount: album.playCount || 0,
-            releaseDate,
+            originalReleaseDate: {
+                day: album.originalReleaseDate?.day || null,
+                month: album.originalReleaseDate?.month || null,
+                year: Number(
+                    album.originalReleaseDate?.year || album.releaseDate?.year || album.year || 0,
+                ),
+            },
+            recordLabels: album.recordLabels || [],
+            releaseDate: {
+                day: album.releaseDate?.day || null,
+                month: album.releaseDate?.month || null,
+                year: Number(album.releaseDate?.year || album.year || 0),
+            },
+            releaseTypes: album.releaseTypes?.map((releaseType) => ({ name: releaseType })) || [],
             releaseYear: album.year || 0,
             size: null,
             songCount: album.songCount,
-            updatedAt: album.created,
+            sortName: album.sortName || album.name,
+            updatedDate: album.created,
+            userFavorite: Boolean(album.starred),
+            userFavoriteDate: album.starred || null,
+            userLastPlayedDate: dayjs(album.played).toISOString() || null,
+            userPlayCount: album.playCount || 0,
             userRating: album.userRating ?? null,
+            userRatingDate: null,
         };
 
         return item;
     },
-    artistToAdapter: (artist: Artist | ArtistListEntry) => {
+    artistToAdapter: (artist: Artist | ArtistListEntry): AdapterAlbumArtist => {
         const item: AdapterAlbumArtist = {
             albumCount: null,
             biography: null,
             createdAt: null,
             duration: 0,
-            external: {
-                musicbrainz: {
-                    id: null,
-                    name: null,
-                },
-            },
+            external: {},
             genres: [],
             id: artist.id,
             name: artist.name,
             songCount: null,
             updatedAt: null,
             userFavorite: Boolean(artist.starred),
+            userFavoriteDate: dayjs(artist.starred).toISOString() || null,
+            userLastPlayedDate: null,
             userRating: artist.userRating ?? null,
+            userRatingDate: null,
         };
 
         return item;
     },
-    trackToAdapter: (track: Track) => {
+    playlistToAdapter: (playlist: Playlist | PlaylistListEntry): AdapterPlaylist => {
+        return {
+            description: playlist.note || null,
+            duration: playlist.duration,
+            genres: [],
+            id: playlist.id,
+            imageUrl: null,
+            name: playlist.name,
+            owner: playlist.owner,
+            ownerId: playlist.owner,
+            public: playlist.public,
+            size: null,
+            songCount: playlist.songCount,
+        };
+    },
+    trackToAdapter: (track: Track): AdapterTrack => {
         const splitPath = track.path?.split('/');
         const fileName = splitPath[splitPath.length - 1];
 

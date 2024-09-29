@@ -1,30 +1,21 @@
 import { z } from '@hono/zod-openapi';
+import { EmptyResponseSchema, schemaResponse } from '@/controllers/shared-api-types.js';
 import {
-    EmptyResponseSchema,
-    orderByQuery,
-    paginationQuery,
-    schemaResponse,
-} from '@/controllers/shared-api-types.js';
-import {
-    UserDetailResponseSchema,
-    UserInsertSchema,
-    UserListResponseSchema,
-    UserUpdateSchema,
+    userDetailResponseSchema,
+    userInsertSchema,
+    userListRequestSchema,
+    userListResponseSchema,
+    userUpdateSchema,
 } from '@/controllers/user/user-api-types.js';
 
 export const userApiSchema = {
     '/': {
         get: {
-            request: {
-                query: z.object({
-                    ...orderByQuery,
-                    ...paginationQuery,
-                }),
-            },
+            request: { query: userListRequestSchema },
             responses: schemaResponse(
                 {
                     description: 'Get users',
-                    schema: UserListResponseSchema,
+                    schema: userListResponseSchema,
                     status: 200,
                 },
                 [401, 403, 422, 500],
@@ -33,12 +24,12 @@ export const userApiSchema = {
         },
         post: {
             request: {
-                body: { content: { 'application/json': { schema: UserInsertSchema } } },
+                body: { content: { 'application/json': { schema: userInsertSchema } } },
             },
             responses: schemaResponse(
                 {
                     description: 'Create user',
-                    schema: UserDetailResponseSchema,
+                    schema: userDetailResponseSchema,
                     status: 201,
                 },
                 [400, 401, 403, 409, 422, 500],
@@ -64,7 +55,7 @@ export const userApiSchema = {
             responses: schemaResponse(
                 {
                     description: 'Get user',
-                    schema: UserDetailResponseSchema,
+                    schema: userDetailResponseSchema,
                     status: 200,
                 },
                 [401, 403, 404, 500],
@@ -73,13 +64,13 @@ export const userApiSchema = {
         },
         put: {
             request: {
-                body: { content: { 'application/json': { schema: UserUpdateSchema } } },
+                body: { content: { 'application/json': { schema: userUpdateSchema } } },
                 params: z.object({ id: z.string() }),
             },
             responses: schemaResponse(
                 {
                     description: 'Update user',
-                    schema: UserDetailResponseSchema,
+                    schema: userDetailResponseSchema,
                     status: 200,
                 },
                 [400, 401, 403, 404, 422, 500],

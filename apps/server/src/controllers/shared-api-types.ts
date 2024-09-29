@@ -146,23 +146,17 @@ export const libraryIdQuery = {
 
 export const relatedAlbum = z.object({
     id: z.string(),
-    isDeleted: z.boolean(),
     name: z.string(),
-    remoteId: z.string(),
 });
 
 export const relatedAlbumArtist = z.object({
     id: z.string(),
-    isDeleted: z.boolean(),
     name: z.string(),
-    remoteId: z.string(),
 });
 
 export const relatedArtist = z.object({
     id: z.string(),
-    isDeleted: z.boolean(),
     name: z.string(),
-    remoteId: z.string(),
 });
 
 export const relatedGenre = z.object({

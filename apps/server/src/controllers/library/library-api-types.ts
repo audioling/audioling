@@ -1,8 +1,9 @@
 import { z } from '@hono/zod-openapi';
-import { LibraryType } from '@repo/shared-types';
+import { LibraryListSortOptions, LibraryType, ListSortOrder } from '@repo/shared-types';
 import {
     createIndividualResponseSchema,
     createPaginatedResponseSchema,
+    paginationQuery,
 } from '@/controllers/shared-api-types.js';
 
 export const LibraryAttributes = z.object({
@@ -34,6 +35,12 @@ export const LibraryDetailResponseSchema = createIndividualResponseSchema({
 });
 
 export type LibraryDetailResponse = z.infer<typeof LibraryDetailResponseSchema>;
+
+export const LibraryListRequestSchema = z.object({
+    ...paginationQuery,
+    sortBy: z.nativeEnum(LibraryListSortOptions),
+    sortOrder: z.nativeEnum(ListSortOrder),
+});
 
 export const LibraryListResponseSchema = createPaginatedResponseSchema({
     attributes: LibraryAttributes,

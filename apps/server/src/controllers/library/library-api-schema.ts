@@ -2,24 +2,15 @@ import { z } from '@hono/zod-openapi';
 import {
     LibraryDetailResponseSchema,
     LibraryInsertSchema,
+    LibraryListRequestSchema,
     LibraryListResponseSchema,
 } from '@/controllers/library/library-api-types.js';
-import {
-    EmptyResponseSchema,
-    orderByQuery,
-    paginationQuery,
-    schemaResponse,
-} from '@/controllers/shared-api-types.js';
+import { EmptyResponseSchema, schemaResponse } from '@/controllers/shared-api-types.js';
 
 export const libraryApiSchema = {
     '/': {
         get: {
-            request: {
-                query: z.object({
-                    ...orderByQuery,
-                    ...paginationQuery,
-                }),
-            },
+            request: { query: LibraryListRequestSchema },
             responses: schemaResponse(
                 { description: 'Get libraries', schema: LibraryListResponseSchema, status: 200 },
                 [401, 403, 404, 422, 500],
