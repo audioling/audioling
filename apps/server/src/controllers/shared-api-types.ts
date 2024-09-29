@@ -42,9 +42,7 @@ export const createIndividualResponseSchema = <TAttributes extends z.ZodTypeAny>
 }) => {
     return z.object({
         data: opts.attributes,
-        meta: z.object({
-            self: z.string().openapi({ example: '/api/users' }),
-        }),
+        meta: z.object({}),
     });
 };
 
@@ -146,21 +144,25 @@ export const libraryIdQuery = {
 
 export const relatedAlbum = z.object({
     id: z.string(),
+    imageUrl: z.string().nullable(),
     name: z.string(),
 });
 
 export const relatedAlbumArtist = z.object({
     id: z.string(),
+    imageUrl: z.string().nullable(),
     name: z.string(),
 });
 
 export const relatedArtist = z.object({
     id: z.string(),
+    imageUrl: z.string().nullable(),
     name: z.string(),
 });
 
 export const relatedGenre = z.object({
     id: z.string(),
+    imageUrl: z.string().nullable(),
     name: z.string(),
 });
 
