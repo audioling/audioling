@@ -4,49 +4,61 @@ import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.j
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterTrack {
-    album: string;
-    albumId: string;
+    album: string | null;
+    albumArtists: AdapterRelatedArtist[];
+    albumId: string | null;
     artistId: string | null;
     artistName: string | null;
     artists: AdapterRelatedArtist[];
-    bitrate: number | null;
+    bitDepth: number | null;
+    bitRate: number | null;
     bpm: number | null;
-    channels: number | null;
+    channelCount: number | null;
     comment: string | null;
-    container: string;
-    createdAt: string;
+    contributors: {
+        artist: AdapterRelatedArtist;
+        role: string;
+        subRole: string | null;
+    }[];
+    createdDate: string | null;
     discNumber: string;
     discSubtitle: string | null;
+    displayAlbumArtist: string | null;
+    displayArtist: string | null;
+    displayComposer: string | null;
     duration: number;
     external: {
-        musicbrainz: {
-            id: string | null;
-            name: string | null;
-        };
+        musicBrainzId?: string;
     };
-    fileName: string;
-    filePath: string;
-    fileSize: number;
+    fileContainer: string | null;
+    fileName: string | null;
+    filePath: string | null;
+    fileSize: number | null;
     genres: AdapterRelatedGenre[];
     id: string;
     isCompilation: boolean;
-    lastPlayedAt: string | null;
     lyrics: string | null;
+    moods: {
+        id: string;
+        name: string;
+    }[];
     name: string;
-    playCount: number;
-    releaseDate: string;
-    releaseYear: number;
-    replayGain: {
-        albumGain: number | null;
-        albumPeak: number | null;
-        trackGain: number | null;
-        trackPeak: number | null;
-    };
-    samplerate: number | null;
+    releaseYear: number | null;
+    rgAlbumGain: number | null;
+    rgAlbumPeak: number | null;
+    rgBaseGain: number | null;
+    rgTrackGain: number | null;
+    rgTrackPeak: number | null;
+    sampleRate: number | null;
+    sortName: string;
     trackNumber: number;
-    updatedAt: string;
+    updatedDate: string | null;
     userFavorite: boolean;
+    userFavoriteDate: string | null;
+    userLastPlayedDate: string | null;
+    userPlayCount: number;
     userRating: number | null;
+    userRatingDate: string | null;
 }
 
 export type AdapterTrackListResponse = PaginatedResponse<AdapterTrack>;

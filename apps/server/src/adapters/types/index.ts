@@ -7,6 +7,8 @@ import type {
     AdapterAlbumListCountResponse,
     AdapterAlbumListRequest,
     AdapterAlbumListResponse,
+    AdapterAlbumTrackListRequest,
+    AdapterAlbumTrackListResponse,
 } from '@/adapters/types/adapter-album-types.js';
 import type {
     AdapterArtistDetailRequest,
@@ -82,6 +84,7 @@ type AdapterFn<TRequest, TResponse> = (
 ) => Promise<[AdapterError, null] | [null, TResponse]>;
 
 export type AdapterApi = {
+    _getLibrary: () => DbLibrary;
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
     clearPlaylist: AdapterFn<AdapterClearPlaylistRequest, AdapterClearPlaylistResponse>;
@@ -94,6 +97,7 @@ export type AdapterApi = {
     getAlbumDetail: AdapterFn<AdapterAlbumDetailRequest, AdapterAlbumDetailResponse>;
     getAlbumList: AdapterFn<AdapterAlbumListRequest, AdapterAlbumListResponse>;
     getAlbumListCount: AdapterFn<AdapterAlbumListCountRequest, AdapterAlbumListCountResponse>;
+    getAlbumTrackList: AdapterFn<AdapterAlbumTrackListRequest, AdapterAlbumTrackListResponse>;
     getArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
     getArtistListCount: AdapterFn<AdapterArtistListCountRequest, AdapterArtistListCountResponse>;
     getFavoriteAlbumList: AdapterFn<AdapterAlbumListRequest, AdapterAlbumListResponse>;

@@ -8,17 +8,19 @@ import type {
 } from '@/adapters/types/shared-types.js';
 
 export interface AdapterPlaylist {
+    createdDate: string;
     description: string | null;
     duration: number | null;
     genres: AdapterRelatedGenre[];
     id: string;
     imageUrl: string | null;
+    isPublic: boolean;
     name: string;
     owner: string | null;
     ownerId: string | null;
-    public: boolean | null;
     size: number | null;
     songCount: number | null;
+    updatedDate: string;
     // rules?: Record<string, string | boolean> | null;
     // sync?: boolean | null;
 }

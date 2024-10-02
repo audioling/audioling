@@ -1,11 +1,13 @@
-import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
-import type { AdapterRelatedAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
+import type { AlbumListSortOptions, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type { AdapterRelatedArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
+import type { AdapterTrackListResponse } from '@/adapters/types/adapter-track-types.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterAlbum {
-    albumArtistId: string | null;
-    albumArtists: AdapterRelatedAlbumArtist[];
+    artist: string | null;
+    artistId: string | null;
+    artists: AdapterRelatedArtist[];
     comment: string | null;
     createdDate: string;
     description: string | null;
@@ -13,31 +15,35 @@ export interface AdapterAlbum {
         disc: number;
         title: string;
     }[];
+    displayArtist: string | null;
     duration: number;
-    external: Record<string, unknown>;
+    external: {
+        musicBrainzId?: string;
+    };
     genres: AdapterRelatedGenre[];
     id: string;
     imageUrl: string | null;
     isCompilation: boolean;
-    moods: { name: string }[];
+    moods: {
+        id: string;
+        name: string;
+    }[];
     name: string;
-    originalReleaseDate: {
-        day: number | null;
-        month: number | null;
-        year: number;
-    };
-    recordLabels: { name: string }[];
-    releaseDate: {
-        day: number | null;
-        month: number | null;
-        year: number;
-    };
-    releaseTypes: { name: string }[];
-    releaseYear: number;
+    originalReleaseDate: string | null;
+    recordLabels: {
+        id: string;
+        name: string;
+    }[];
+    releaseDate: string | null;
+    releaseTypes: {
+        id: string;
+        name: string;
+    }[];
+    releaseYear: number | null;
     size: number | null;
     songCount: number | null;
     sortName: string;
-    updatedDate: string;
+    updatedDate: string | null;
     userFavorite: boolean;
     userFavoriteDate: string | null;
     userLastPlayedDate: string | null;
@@ -75,3 +81,15 @@ export type AdapterAlbumDetailQuery = {
 export type AdapterAlbumDetailRequest = QueryRequest<AdapterAlbumDetailQuery>;
 
 export type AdapterAlbumDetailResponse = AdapterAlbum;
+
+export type AdapterAlbumTrackListQuery = {
+    id: string;
+    limit: number;
+    offset: number;
+    sortBy: TrackListSortOptions;
+    sortOrder: ListSortOrder;
+};
+
+export type AdapterAlbumTrackListRequest = QueryRequest<AdapterAlbumTrackListQuery>;
+
+export type AdapterAlbumTrackListResponse = AdapterTrackListResponse;

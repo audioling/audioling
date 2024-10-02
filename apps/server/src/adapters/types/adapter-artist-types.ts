@@ -2,17 +2,19 @@ import type { ListSortOrder } from '@repo/shared-types';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
-export interface AdapterAlbumArtist {
+export interface AdapterArtist {
     albumCount: number | null;
     biography: string | null;
-    createdAt: string | null;
+    createdDate: string | null;
     duration: number | null;
-    external: Record<string, unknown>;
+    external: {
+        musicBrainzId?: string;
+    };
     genres: AdapterRelatedGenre[];
     id: string;
     name: string;
     songCount: number | null;
-    updatedAt: string | null;
+    updatedDate: string | null;
     userFavorite: boolean;
     userFavoriteDate: string | null;
     userLastPlayedDate: string | null;
@@ -32,7 +34,7 @@ export interface AdapterRelatedAlbumArtist {
     name: string;
 }
 
-export type AdapterArtistListResponse = PaginatedResponse<AdapterAlbumArtist>;
+export type AdapterArtistListResponse = PaginatedResponse<AdapterArtist>;
 
 export enum AdapterArtistListSort {
     ALBUM = 'album',
@@ -74,4 +76,4 @@ export type AdapterArtistDetailQuery = {
 
 export type AdapterArtistDetailRequest = QueryRequest<AdapterArtistDetailQuery>;
 
-export type AdapterArtistDetailResponse = AdapterAlbumArtist;
+export type AdapterArtistDetailResponse = AdapterArtist;

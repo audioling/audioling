@@ -8,6 +8,7 @@ export interface AdapterGenre {
 
 export interface AdapterRelatedGenre {
     id: string;
+    imageUrl: string | null;
     name: string;
 }
 
