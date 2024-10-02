@@ -7,7 +7,7 @@ import md5 from 'md5';
 import { adapterHelpers } from '@/adapters/adapter-helpers.js';
 import { subsonicHelpers } from '@/adapters/subsonic/subsonic-adapter-helpers.js';
 import type { AdapterAlbumListQuery } from '@/adapters/types/adapter-album-types.js';
-import type { AdapterAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
+import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
 import type {
     AdapterPlaylist,
     AdapterPlaylistListQuery,
@@ -59,6 +59,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
     }
 
     const adapter: AdapterApi = {
+        _getLibrary: () => library,
         _getType: () => LibraryType.SUBSONIC,
         addToPlaylist: async (request, fetchOptions) => {
             const { query, body } = request;
@@ -78,7 +79,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             for (const albumId of albumIds) {
                 albumPromises.push(
-                    apiClient.getAlbum.get({ fetchOptions, query: { id: albumId } }),
+                    apiClient.getAlbum.os['1'].get({ fetchOptions, query: { id: albumId } }),
                 );
             }
 
@@ -102,7 +103,14 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 }
             }
 
-            await apiClient.updatePlaylist.get({
+            await apiClient.updatePlaylist.os['1'].get({
+                query: {
+                    playlistId: query.id,
+                    songIdToAdd: songIds,
+                },
+            });
+
+            await apiClient.updatePlaylist.os['1'].get({
                 fetchOptions,
                 query: {
                     playlistId: query.id,
@@ -115,7 +123,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         clearPlaylist: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.updatePlaylist.get({
+            const result = await apiClient.updatePlaylist.os['1'].get({
                 fetchOptions,
                 query: {
                     playlistId: query.id,
@@ -139,7 +147,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getAlbumArtistDetail: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getArtist.get({
+            const result = await apiClient.getArtist.os['1'].get({
                 fetchOptions,
                 query: {
                     id: query.id,
@@ -171,7 +179,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 },
             };
 
-            const result = await apiClient.getArtists.get({
+            const result = await apiClient.getArtists.os['1'].get({
                 ...clientParams,
             });
 
@@ -188,7 +196,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             const flattenedArtists = result.body.artists.index.flatMap((artist) => {
-                return artist.artist.map((artist) => ({
+                return (artist.artist || []).map((artist) => ({
                     ...artist,
                     id: artist.id,
                     name: artist.name,
@@ -221,7 +229,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 },
             };
 
-            const result = await apiClient.getArtists.get(clientParams);
+            const result = await apiClient.getArtists.os['1'].get(clientParams);
 
             if (result.status !== 200) {
                 writeLog.error(
@@ -231,7 +239,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             const artistCount = result.body.artists.index.reduce((acc, artist) => {
-                acc += artist.artist.length;
+                acc += (artist.artist || []).length;
                 return acc;
             }, 0);
 
@@ -240,7 +248,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getAlbumDetail: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getAlbum.get({
+            const result = await apiClient.getAlbum.os['1'].get({
                 fetchOptions,
                 query: {
                     id: query.id,
@@ -264,8 +272,11 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getAlbumList: async (request, fetchOptions) => {
             const { query } = request;
 
-            let sortType: Parameters<typeof apiClient.getAlbumList2.get>[0]['query']['type'] =
-                'alphabeticalByName';
+            type AlbumSortType = Parameters<
+                (typeof apiClient.getAlbumList2.os)['1']['get']
+            >[0]['query']['type'];
+
+            let sortType: AlbumSortType = 'alphabeticalByName';
 
             switch (query.sortBy) {
                 case AlbumListSortOptions.DATE_ADDED:
@@ -288,7 +299,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     break;
             }
 
-            const result = await apiClient.getAlbumList2.get({
+            const result = await apiClient.getAlbumList2.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -303,7 +314,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items = result.body.albumList2.album.map(
+            const items = (result.body.albumList2.album || []).map(
                 subsonicHelpers.converter.albumToAdapter,
             );
 
@@ -337,7 +348,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             };
 
             async function getPageItemCount(page: number, limit: number): Promise<number> {
-                const result = await apiClient.getAlbumList2.get({
+                const result = await apiClient.getAlbumList2.os['1'].get({
                     fetchOptions,
                     query: {
                         musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -368,9 +379,56 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: 500, message: err as string }, null];
             }
         },
+        getAlbumTrackList: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getAlbum.os['1'].get({
+                fetchOptions,
+                query: {
+                    id: query.id,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumTrackList'));
+                return [{ code: result.status, message: result.body as string }, null];
+            }
+
+            if (result.body.album.song) {
+                let tracks = result.body.album.song.map(subsonicHelpers.converter.trackToAdapter);
+
+                if (query.offset) {
+                    tracks = tracks.slice(query.offset);
+                }
+
+                if (query.limit) {
+                    tracks = tracks.slice(0, query.limit);
+                }
+
+                return [
+                    null,
+                    {
+                        items: tracks,
+                        limit: query.limit,
+                        offset: query.offset,
+                        totalRecordCount: tracks.length,
+                    },
+                ];
+            }
+
+            return [
+                null,
+                {
+                    items: [],
+                    limit: query.limit,
+                    offset: query.offset,
+                    totalRecordCount: 0,
+                },
+            ];
+        },
         getArtistList: async (request, fetchOptions) => {
             const { query } = request;
-            const result = await apiClient.getArtists.get({
+            const result = await apiClient.getArtists.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -383,7 +441,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             const flattenedArtists = result.body.artists.index.flatMap((artist) => {
-                return artist.artist.map((artist) => ({
+                return (artist.artist || []).map((artist) => ({
                     id: artist.id,
                     name: artist.name,
                     starred: artist.starred,
@@ -393,7 +451,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             const artists = flattenedArtists.slice(query.offset, query.offset + query.limit);
 
-            const items: AdapterAlbumArtist[] = artists.map((artist) =>
+            const items: AdapterArtist[] = artists.map((artist) =>
                 subsonicHelpers.converter.artistToAdapter({
                     ...artist,
                     album: [],
@@ -428,7 +486,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [null, totalRecordCountFromDb];
             }
 
-            const result = await apiClient.getArtists.get({
+            const result = await apiClient.getArtists.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -442,11 +500,11 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             const artistCount = result.body.artists.index.reduce((acc, artist) => {
                 if (query.searchTerm) {
-                    acc += artist.artist.filter((artist) =>
+                    acc += (artist.artist || []).filter((artist) =>
                         artist.name.includes(query.searchTerm!),
                     ).length;
                 } else {
-                    acc += artist.artist.length;
+                    acc += (artist.artist || []).length;
                 }
                 return acc;
             }, 0);
@@ -456,7 +514,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getFavoriteAlbumList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getStarred2.get({
+            const result = await apiClient.getStarred2.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -478,14 +536,14 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: result.body.starred2?.album.length || 0,
+                    totalRecordCount: (result.body.starred2?.album || []).length,
                 },
             ];
         },
         getFavoriteArtistList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getStarred2.get({
+            const result = await apiClient.getStarred2.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -499,7 +557,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items: AdapterAlbumArtist[] = (result.body.starred2?.artist || []).map(
+            const items: AdapterArtist[] = (result.body.starred2?.artist || []).map(
                 subsonicHelpers.converter.artistToAdapter,
             );
 
@@ -509,14 +567,14 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: result.body.starred2?.artist.length || 0,
+                    totalRecordCount: (result.body.starred2?.artist || []).length,
                 },
             ];
         },
         getFavoriteTrackList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getStarred2.get({
+            const result = await apiClient.getStarred2.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -538,7 +596,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: result.body.starred2?.song.length || 0,
+                    totalRecordCount: (result.body.starred2.song || []).length,
                 },
             ];
         },
@@ -549,7 +607,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 fetchOptions,
                 query,
             };
-            const result = await apiClient.getGenres.get({
+            const result = await apiClient.getGenres.os['1'].get({
                 ...clientParams,
             });
 
@@ -570,14 +628,14 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: 0,
-                    totalRecordCount: result.body.genres.genre.length,
+                    totalRecordCount: (result.body.genres.genre || []).length,
                 },
             ];
         },
         getMusicFolderList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getMusicFolders.get({
+            const result = await apiClient.getMusicFolders.os['1'].get({
                 ...fetchOptions,
             });
 
@@ -588,7 +646,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             const items = (result.body.musicFolders?.musicFolder || []).map((folder) => ({
                 id: folder.id,
-                name: folder.name,
+                name: folder.name || '',
             }));
 
             return [
@@ -604,7 +662,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getPlaylistList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getPlaylists.get({
+            const result = await apiClient.getPlaylists.os['1'].get({
                 fetchOptions,
                 query: {
                     username: query.userId,
@@ -659,7 +717,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [null, totalRecordCountFromDb];
             }
 
-            const result = await apiClient.getPlaylists.get({
+            const result = await apiClient.getPlaylists.os['1'].get({
                 fetchOptions,
                 query: {
                     username: query.userId,
@@ -676,7 +734,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getPlaylistTrackList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.getPlaylist.get({
+            const result = await apiClient.getPlaylist.os['1'].get({
                 fetchOptions,
                 query: {
                     id: query.id,
@@ -688,7 +746,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            let tracks: AdapterTrack[] = result.body.playlist.entry.map(
+            let tracks: AdapterTrack[] = (result.body.playlist.entry || []).map(
                 subsonicHelpers.converter.trackToAdapter,
             );
 
@@ -717,7 +775,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items: tracks,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: result.body.playlist.entry.length,
+                    totalRecordCount: (result.body.playlist.entry || []).length,
                 },
             ];
         },
@@ -738,7 +796,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [null, totalRecordCountFromDb];
             }
 
-            const result = await apiClient.getPlaylist.get({
+            const result = await apiClient.getPlaylist.os['1'].get({
                 fetchOptions,
                 query,
             });
@@ -750,12 +808,12 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            return [null, result.body.playlist.entry.length];
+            return [null, (result.body.playlist.entry || []).length];
         },
         getTrackList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const result = await apiClient.search3.get({
+            const result = await apiClient.search3.os['1'].get({
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -804,7 +862,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             };
 
             const getPageItemCount = async (page: number, limit: number): Promise<number> => {
-                const result = await apiClient.search3.get({
+                const result = await apiClient.search3.os['1'].get({
                     fetchOptions,
                     query: {
                         musicFolderId: query.folderId ? query.folderId[0] : undefined,
@@ -818,7 +876,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return result.body.searchResult3.song?.length || 0;
+                return (result.body.searchResult3.song || []).length;
             };
 
             try {
@@ -838,7 +896,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         removeFromPlaylist: async (request, fetchOptions) => {
             const { query, body } = request;
 
-            const result = await apiClient.updatePlaylist.get({
+            const result = await apiClient.updatePlaylist.os['1'].get({
                 fetchOptions,
                 query: {
                     playlistId: query.id,
@@ -855,7 +913,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         },
         scrobble: async (request, fetchOptions) => {
             const { query } = request;
-            const result = await apiClient.scrobble.get({
+            const result = await apiClient.scrobble.os['1'].get({
                 fetchOptions,
                 query: {
                     id: query.id,
@@ -909,7 +967,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 trackIds.remove.length > 0;
 
             if (shouldAdd) {
-                const result = await apiClient.star.get({
+                const result = await apiClient.star.os['1'].get({
                     fetchOptions,
                     query: {
                         albumId: albumIds.add,
@@ -925,7 +983,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             if (shouldRemove) {
-                const result = await apiClient.star.get({
+                const result = await apiClient.star.os['1'].get({
                     fetchOptions,
                     query: {
                         albumId: albumIds.add,
@@ -946,7 +1004,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const { body } = request;
 
             for (const entry of body.entry) {
-                const result = await apiClient.setRating.get({
+                const result = await apiClient.setRating.os['1'].get({
                     fetchOptions,
                     query: {
                         id: entry.id,
@@ -964,7 +1022,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         },
         stream: async (request, fetchOptions) => {
             const { query } = request;
-            const result = await apiClient.stream.get({
+            const result = await apiClient.stream.os['1'].get({
                 fetchOptions,
                 query: {
                     id: query.id,

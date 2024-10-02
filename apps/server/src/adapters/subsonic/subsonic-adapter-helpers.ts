@@ -1,91 +1,140 @@
-import type {
-    ClientInferResponseBody,
-    openSubsonicApiContract,
-} from '@audioling/open-subsonic-api-client';
+import type { OpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
 import dayjs from 'dayjs';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
-import type { AdapterAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
+import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterPlaylist } from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
-import { utils } from '@/utils/index.js';
 
 type Track = NonNullable<
-    ClientInferResponseBody<
-        (typeof openSubsonicApiContract)['getAlbum']['get'],
-        200
-    >['album']['song']
+    Extract<
+        Awaited<ReturnType<OpenSubsonicApiClient['getAlbum']['os']['1']['get']>>,
+        { status: 200 }
+    >['body']['album']['song']
 >[number];
 
-type Album = NonNullable<
-    ClientInferResponseBody<(typeof openSubsonicApiContract)['getAlbum']['get'], 200>['album']
->;
+type Album = Extract<
+    Awaited<ReturnType<OpenSubsonicApiClient['getAlbum']['os']['1']['get']>>,
+    { status: 200 }
+>['body']['album'];
 
-type Artist = NonNullable<
-    ClientInferResponseBody<(typeof openSubsonicApiContract)['getArtist']['get'], 200>['artist']
->;
+type Artist = Extract<
+    Awaited<ReturnType<OpenSubsonicApiClient['getArtist']['os']['1']['get']>>,
+    { status: 200 }
+>['body']['artist'];
 
-type Playlist = NonNullable<
-    ClientInferResponseBody<(typeof openSubsonicApiContract)['getPlaylist']['get'], 200>['playlist']
->;
+type Playlist = Extract<
+    Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
+    { status: 200 }
+>['body']['playlists']['playlist'][number];
 
-type PlaylistListEntry = NonNullable<
-    ClientInferResponseBody<
-        (typeof openSubsonicApiContract)['getPlaylists']['get'],
-        200
-    >['playlists']
->['playlist'][number];
+type PlaylistListEntry = Extract<
+    Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
+    { status: 200 }
+>['body']['playlists']['playlist'][number];
 
 type ArtistListEntry = NonNullable<
-    ClientInferResponseBody<
-        (typeof openSubsonicApiContract)['getArtists']['get'],
-        200
-    >['artists']['index'][number]['artist'][number]
->;
+    Extract<
+        Awaited<ReturnType<OpenSubsonicApiClient['getArtists']['os']['1']['get']>>,
+        { status: 200 }
+    >['body']['artists']['index'][number]['artist']
+>[number];
+
+const getArtists = (item: Album | Track) => {
+    if (item.artists) {
+        return item.artists.map((artist) => ({
+            id: artist.id,
+            imageUrl: null,
+            name: artist.name,
+        }));
+    }
+
+    if (item.artistId) {
+        return [{ id: item.artistId, imageUrl: null, name: item.artist || '' }];
+    }
+
+    return [];
+};
+
+const getAlbumArtists = (item: Track) => {
+    if (item.albumArtists) {
+        return item.albumArtists.map((artist) => ({
+            id: artist.id,
+            imageUrl: null,
+            name: artist.name,
+        }));
+    }
+
+    if (item.artistId) {
+        return [{ id: item.artistId, imageUrl: null, name: item.artist || '' }];
+    }
+
+    return [];
+};
+
+const getGenres = (item: Album | Track) => {
+    if (item.genres) {
+        return item.genres.map((genre) => ({
+            id: genre.genre,
+            imageUrl: null,
+            name: genre.genre,
+        }));
+    }
+
+    if (item.genre) {
+        return [{ id: item.genre, imageUrl: null, name: item.genre }];
+    }
+
+    return [];
+};
+
+const getDateFromItemDate = (itemDate?: { day?: number; month?: number; year?: number }) => {
+    if (itemDate?.day && itemDate?.month && itemDate?.year) {
+        return dayjs(`${itemDate.year}-${itemDate.month}-${itemDate.day}`).toISOString();
+    }
+
+    return null;
+};
+
+const getRecordLabels = (album: Album) => {
+    if (album.recordLabels) {
+        return album.recordLabels.map((recordLabel) => ({
+            id: recordLabel.name,
+            name: recordLabel.name,
+        }));
+    }
+
+    return [];
+};
 
 const converter = {
     albumToAdapter: (album: Album): AdapterAlbum => {
         const item: AdapterAlbum = {
-            albumArtistId: album.artistId || null,
-            albumArtists: [
-                ...(album.artistId
-                    ? [
-                          {
-                              id: album.artistId,
-                              imageUrl: null,
-                              name: album.artist,
-                          },
-                      ]
-                    : []),
-            ],
+            artist: album.artist || null,
+            artistId: album.artistId || null,
+            artists: getArtists(album),
             comment: null,
             createdDate: album.created,
             description: null,
             discTitles: album.discTitles || [],
+            displayArtist: album.displayArtist || null,
             duration: album.duration,
             external: {
-                musicBrainzId: album.musicBrainzId || null,
+                musicBrainzId: album.musicBrainzId,
             },
-            genres: [...(album.genre ? [{ id: album.genre, name: album.genre }] : [])],
+            genres: getGenres(album),
             id: album.id,
-            imageUrl: album.coverArt,
+            imageUrl: album.coverArt || null,
             isCompilation: album.isCompilation || false,
-            moods: album.moods?.map((mood) => ({ name: mood })) || [],
+            moods: (album.moods || []).map((mood) => ({ id: mood, name: mood })) || [],
             name: album.name,
-            originalReleaseDate: {
-                day: album.originalReleaseDate?.day || null,
-                month: album.originalReleaseDate?.month || null,
-                year: Number(
-                    album.originalReleaseDate?.year || album.releaseDate?.year || album.year || 0,
-                ),
-            },
-            recordLabels: album.recordLabels || [],
-            releaseDate: {
-                day: album.releaseDate?.day || null,
-                month: album.releaseDate?.month || null,
-                year: Number(album.releaseDate?.year || album.year || 0),
-            },
-            releaseTypes: album.releaseTypes?.map((releaseType) => ({ name: releaseType })) || [],
-            releaseYear: album.year || 0,
+            originalReleaseDate: getDateFromItemDate(album.originalReleaseDate),
+            recordLabels: getRecordLabels(album),
+            releaseDate: getDateFromItemDate(album.releaseDate),
+            releaseTypes: (album.releaseTypes || []).map((releaseType) => ({
+                id: releaseType,
+                name: releaseType,
+            })),
+            releaseYear: album.year || null,
             size: null,
             songCount: album.songCount,
             sortName: album.sortName || album.name,
@@ -93,25 +142,25 @@ const converter = {
             userFavorite: Boolean(album.starred),
             userFavoriteDate: album.starred || null,
             userLastPlayedDate: dayjs(album.played).toISOString() || null,
-            userPlayCount: album.playCount || 0,
+            userPlayCount: album.playCount || null,
             userRating: album.userRating ?? null,
             userRatingDate: null,
         };
 
         return item;
     },
-    artistToAdapter: (artist: Artist | ArtistListEntry): AdapterAlbumArtist => {
-        const item: AdapterAlbumArtist = {
+    artistToAdapter: (artist: Artist | ArtistListEntry): AdapterArtist => {
+        const item: AdapterArtist = {
             albumCount: null,
             biography: null,
-            createdAt: null,
+            createdDate: null,
             duration: 0,
             external: {},
             genres: [],
             id: artist.id,
             name: artist.name,
             songCount: null,
-            updatedAt: null,
+            updatedDate: null,
             userFavorite: Boolean(artist.starred),
             userFavoriteDate: dayjs(artist.starred).toISOString() || null,
             userLastPlayedDate: null,
@@ -123,71 +172,82 @@ const converter = {
     },
     playlistToAdapter: (playlist: Playlist | PlaylistListEntry): AdapterPlaylist => {
         return {
-            description: playlist.note || null,
+            createdDate: dayjs(playlist.created).toISOString(),
+            description: playlist.comment || null,
             duration: playlist.duration,
             genres: [],
             id: playlist.id,
-            imageUrl: null,
+            imageUrl: playlist.coverArt || null,
+            isPublic: playlist.public || false,
             name: playlist.name,
-            owner: playlist.owner,
-            ownerId: playlist.owner,
-            public: playlist.public,
+            owner: playlist.owner || null,
+            ownerId: playlist.owner || null,
             size: null,
             songCount: playlist.songCount,
+            updatedDate: dayjs(playlist.created).toISOString(),
         };
     },
     trackToAdapter: (track: Track): AdapterTrack => {
         const splitPath = track.path?.split('/');
-        const fileName = splitPath[splitPath.length - 1];
+        const fileName = splitPath?.[splitPath.length - 1] || null;
 
         const item: AdapterTrack = {
-            album: track.album,
-            albumId: track.albumId,
+            album: track.album || null,
+            albumArtists: getAlbumArtists(track),
+            albumId: track.albumId || null,
             artistId: track.artistId || null,
             artistName: track.artist || '',
-            artists: [
-                ...(track.artistId
-                    ? [{ id: track.artistId, imageUrl: null, name: track.artist || '' }]
-                    : []),
-            ],
-            bitrate: track.bitRate ?? null,
-            bpm: null,
-            channels: track.channelCount ?? null,
+            artists: getArtists(track),
+            bitDepth: track.bitDepth ?? null,
+            bitRate: track.bitRate ?? null,
+            bpm: track.bpm ?? null,
+            channelCount: track.channelCount ?? null,
             comment: null,
-            container: track.suffix,
-            createdAt: track.created,
+            contributors: (track.contributors || []).map((contributor) => ({
+                artist: {
+                    id: contributor.artist.id,
+                    imageUrl: null,
+                    name: contributor.artist.name,
+                },
+                role: contributor.role,
+                subRole: contributor.subRole || null,
+            })),
+            createdDate: track.created || null,
             discNumber: track.discNumber ? String(track.discNumber) : '1',
             discSubtitle: null,
-            duration: track.duration,
+            displayAlbumArtist: track.displayAlbumArtist || null,
+            displayArtist: track.displayArtist || null,
+            displayComposer: track.displayComposer || null,
+            duration: track.duration ?? 0,
             external: {
-                musicbrainz: {
-                    id: null,
-                    name: null,
-                },
+                musicBrainzId: track.musicBrainzId,
             },
-            fileName,
-            filePath: track.path,
-            fileSize: track.size,
-            genres: [...(track.genre ? [{ id: track.genre, name: track.genre }] : [])],
+            fileContainer: track.suffix || null,
+            fileName: fileName,
+            filePath: track.path || null,
+            fileSize: track.size || null,
+            genres: getGenres(track),
             id: track.id,
             isCompilation: false,
-            lastPlayedAt: track.played || null,
             lyrics: null,
+            moods: track.moods?.map((mood) => ({ id: mood, name: mood })) || [],
             name: track.title,
-            playCount: track.playCount || 0,
-            releaseDate: utils.date.format(String(track.year || 0), 'YYYY-MM-DD'),
-            releaseYear: track.year || 0,
-            replayGain: {
-                albumGain: null,
-                albumPeak: null,
-                trackGain: null,
-                trackPeak: null,
-            },
-            samplerate: track.samplingRate ?? null,
+            releaseYear: track.year || null,
+            rgAlbumGain: track.replayGain?.albumGain ?? null,
+            rgAlbumPeak: track.replayGain?.albumPeak ?? null,
+            rgBaseGain: track.replayGain?.baseGain ?? null,
+            rgTrackGain: track.replayGain?.trackGain ?? null,
+            rgTrackPeak: track.replayGain?.trackPeak ?? null,
+            sampleRate: track.samplingRate ?? null,
+            sortName: track.sortName || track.title,
             trackNumber: track.track || 1,
-            updatedAt: track.created,
+            updatedDate: null,
             userFavorite: Boolean(track.starred),
+            userFavoriteDate: track.starred ? dayjs(track.starred).toISOString() : null,
+            userLastPlayedDate: track.played || null,
+            userPlayCount: track.playCount || 0,
             userRating: track.userRating ?? null,
+            userRatingDate: null,
         };
 
         return item;
