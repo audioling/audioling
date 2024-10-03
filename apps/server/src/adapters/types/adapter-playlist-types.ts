@@ -156,8 +156,8 @@ export type AdapterPlaylistTrackListQuery = {
     limit: number;
     offset: number;
     searchTerm?: string;
-    sortBy?: TrackListSortOptions;
-    sortOrder?: ListSortOrder;
+    sortBy: TrackListSortOptions;
+    sortOrder: ListSortOrder;
 };
 
 export type AdapterPlaylistTrackListRequest = QueryRequest<AdapterPlaylistTrackListQuery>;

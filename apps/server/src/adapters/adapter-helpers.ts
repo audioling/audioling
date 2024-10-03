@@ -308,7 +308,19 @@ const sortBy = {
 };
 
 const paginate = <T>(array: T[], offset: number, limit: number) => {
-    return array.slice(offset, offset + limit);
+    let result;
+
+    if (limit === -1) {
+        result = array.slice(offset);
+    } else {
+        result = array.slice(offset, offset + limit);
+    }
+
+    return {
+        items: result,
+        limit: limit === -1 ? array.length : limit,
+        offset,
+    };
 };
 
 export const adapterHelpers = {

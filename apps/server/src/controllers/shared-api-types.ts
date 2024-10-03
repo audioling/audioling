@@ -91,12 +91,12 @@ export const paginationQuery = {
                 });
             }
 
-            if (parsed < 0) {
+            if (parsed < -1) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.too_small,
                     inclusive: true,
-                    message: 'Limit must be greater than or equal to 0',
-                    minimum: 0,
+                    message: 'Limit must be greater than or equal to -1',
+                    minimum: -1,
                     type: 'number',
                 });
             }

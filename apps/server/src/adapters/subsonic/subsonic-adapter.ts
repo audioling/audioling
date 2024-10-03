@@ -179,9 +179,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             return [
                 null,
                 {
-                    items: paginated,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: albums.length,
                 },
             ];
@@ -339,9 +339,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             return [
                 null,
                 {
-                    items: paginated,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: tracks.length,
                 },
             ];
@@ -496,22 +496,16 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             if (result.body.album.song) {
-                let tracks = result.body.album.song.map(subsonicHelpers.converter.trackToAdapter);
+                const tracks = result.body.album.song.map(subsonicHelpers.converter.trackToAdapter);
 
-                if (query.offset) {
-                    tracks = tracks.slice(query.offset);
-                }
-
-                if (query.limit) {
-                    tracks = tracks.slice(0, query.limit);
-                }
+                const paginated = adapterHelpers.paginate(tracks, query.offset, query.limit);
 
                 return [
                     null,
                     {
-                        items: tracks,
-                        limit: query.limit,
-                        offset: query.offset,
+                        items: paginated.items,
+                        limit: paginated.limit,
+                        offset: paginated.offset,
                         totalRecordCount: tracks.length,
                     },
                 ];
@@ -728,20 +722,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 );
             }
 
-            if (query.sortBy) {
-                items = adapterHelpers.sortBy.genre(items, query.sortBy, query.sortOrder);
-            }
-
-            if (query.limit && query.offset) {
-                items = adapterHelpers.paginate(items, query.offset, query.limit);
-            }
+            const sorted = adapterHelpers.sortBy.genre(items, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
 
             return [
                 null,
                 {
-                    items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: (result.body.genres.genre || []).length,
                 },
             ];
@@ -870,24 +859,20 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 });
             }
 
-            if (query.sortBy) {
-                tracks = adapterHelpers.sortBy.track(
-                    tracks,
-                    query.sortBy,
-                    query.sortOrder || 'asc',
-                );
-            }
+            const sorted = adapterHelpers.sortBy.track(
+                tracks,
+                query.sortBy,
+                query.sortOrder || 'asc',
+            );
 
-            if (query.limit && query.offset) {
-                tracks = adapterHelpers.paginate(tracks, query.offset, query.limit);
-            }
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
 
             return [
                 null,
                 {
-                    items: tracks,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: (result.body.playlist.entry || []).length,
                 },
             ];
