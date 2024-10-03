@@ -1,4 +1,6 @@
+import { UserListSortOptions } from '@repo/shared-types';
 import bcrypt from 'bcryptjs';
+import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import type { DbUser, DbUserInsert, DbUserUpdate } from '@/database/user-database.js';
 import { writeLog } from '@/middlewares/logger-middleware.js';
@@ -60,10 +62,31 @@ export const initUserService = (modules: { db: AppDatabase; idFactory: IdFactory
 
             return result;
         },
-        list: async (args: FindManyServiceArgs<DbUser>) => {
+        list: async (args: FindManyServiceArgs<UserListSortOptions>) => {
+            const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
+            const offset = args.offset ?? 0;
+
+            let sortField: keyof DbUser = 'displayName';
+
+            switch (args.sortBy) {
+                case UserListSortOptions.NAME:
+                    sortField = 'displayName';
+                    break;
+                case UserListSortOptions.CREATED_AT:
+                    sortField = 'createdAt';
+                    break;
+                case UserListSortOptions.UPDATED_AT:
+                    sortField = 'updatedAt';
+                    break;
+                default:
+                    sortField = 'displayName';
+                    break;
+            }
+
             const [err, users] = db.user.findAll({
-                limit: args.limit,
-                offset: args.offset,
+                limit,
+                offset,
+                orderBy: [[sortField, args.sortOrder]],
             });
 
             if (err) {
@@ -75,6 +98,8 @@ export const initUserService = (modules: { db: AppDatabase; idFactory: IdFactory
 
             return {
                 data: users.data,
+                limit,
+                offset,
                 totalRecordCount: users.totalRecordCount,
             };
         },

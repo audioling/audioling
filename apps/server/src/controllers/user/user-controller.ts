@@ -1,7 +1,7 @@
 import { createRoute } from '@hono/zod-openapi';
+import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import { apiSchema } from '@/controllers/index.js';
 import type { UserDetailResponse, UserListResponse } from '@/controllers/user/user-api-types.js';
-import { controllerUtils } from '@/controllers/utils.js';
 import type { AuthVariables } from '@/middlewares/auth-middleware.js';
 import { isAdminMiddleware } from '@/middlewares/is-admin-middleware.js';
 import { isSelfMiddleware } from '@/middlewares/is-self-middleware.js';
@@ -31,20 +31,9 @@ export const initUserController = (modules: { service: AppService }) => {
         async (c) => {
             const query = c.req.valid('query');
 
-            const pagination = {
-                limit: controllerUtils.parseLimitQuery(query.limit),
-                offset: controllerUtils.parseOffsetQuery(query.offset),
-            };
-
             const users = await service.user.list({
-                orderBy: controllerUtils.parseOrderByQuery(query.orderBy),
-                ...pagination,
-            });
-
-            const { next, prev } = controllerUtils.parsePaginationUrls({
-                ...pagination,
-                totalRecordCount: users.totalRecordCount,
-                url: c.req.url,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
             });
 
             const response: UserListResponse = {
@@ -58,10 +47,12 @@ export const initUserController = (modules: { service: AppService }) => {
                     username: user.username,
                 })),
                 meta: {
-                    next,
-                    prev,
-                    recordCount: users.data.length,
-                    self: c.req.url,
+                    next: controllerHelpers.getIsNextPage(
+                        users.offset,
+                        users.limit,
+                        users.totalRecordCount,
+                    ),
+                    prev: controllerHelpers.getIsPrevPage(users.offset, users.limit),
                     totalRecordCount: users.totalRecordCount,
                 },
             };
