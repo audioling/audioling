@@ -1,11 +1,11 @@
 import { createRoute } from '@hono/zod-openapi';
 import type { LibraryType } from '@repo/shared-types';
+import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import { apiSchema } from '@/controllers/index.js';
 import type {
     LibraryDetailResponse,
     LibraryListResponse,
 } from '@/controllers/library/library-api-types.js';
-import { controllerUtils } from '@/controllers/utils.js';
 import type { AuthVariables } from '@/middlewares/auth-middleware.js';
 import { isAdminMiddleware } from '@/middlewares/is-admin-middleware.js';
 import { newHono } from '@/modules/hono/index.js';
@@ -34,20 +34,11 @@ export const initLibraryController = (modules: { service: AppService }) => {
         async (c) => {
             const query = c.req.valid('query');
 
-            const pagination = {
-                limit: controllerUtils.parseLimitQuery(query.limit),
-                offset: controllerUtils.parseOffsetQuery(query.offset),
-            };
-
             const libraries = await service.library.list({
-                orderBy: controllerUtils.parseOrderByQuery(query.orderBy),
-                ...pagination,
-            });
-
-            const { next, prev } = controllerUtils.parsePaginationUrls({
-                ...pagination,
-                totalRecordCount: libraries.totalRecordCount,
-                url: c.req.url,
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
             });
 
             const response: LibraryListResponse = {
@@ -61,10 +52,12 @@ export const initLibraryController = (modules: { service: AppService }) => {
                     updatedAt: library.updatedAt,
                 })),
                 meta: {
-                    next,
-                    prev,
-                    recordCount: libraries.data.length,
-                    self: c.req.url,
+                    next: controllerHelpers.getIsNextPage(
+                        libraries.offset,
+                        libraries.limit,
+                        libraries.totalRecordCount,
+                    ),
+                    prev: controllerHelpers.getIsPrevPage(libraries.offset, libraries.limit),
                     totalRecordCount: libraries.totalRecordCount,
                 },
             };

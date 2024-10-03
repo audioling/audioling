@@ -1,5 +1,7 @@
 import type { LibraryType } from '@repo/shared-types';
+import { LibraryListSortOptions } from '@repo/shared-types';
 import { authenticationAdapter, initRemoteAdapter } from '@/adapters/index.js';
+import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import type { DbLibrary, DbLibraryInsert, DbLibraryUpdate } from '@/database/library-database.js';
 import { writeLog } from '@/middlewares/logger-middleware.js';
@@ -104,11 +106,33 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
             return result;
         },
         // ANCHOR - List
-        list: async (args: FindManyServiceArgs<DbLibrary>) => {
+        list: async (args: FindManyServiceArgs<LibraryListSortOptions>) => {
+            const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
+            const offset = args.offset ?? 0;
+
+            let sortField: keyof DbLibrary = 'displayName';
+
+            switch (args.sortBy) {
+                case LibraryListSortOptions.NAME:
+                    sortField = 'displayName';
+                    break;
+                case LibraryListSortOptions.TYPE:
+                    sortField = 'type';
+                    break;
+                case LibraryListSortOptions.CREATED_AT:
+                    sortField = 'createdAt';
+                    break;
+                case LibraryListSortOptions.UPDATED_AT:
+                    sortField = 'updatedAt';
+                    break;
+                default:
+                    sortField = 'displayName';
+            }
+
             const [err, result] = db.library.findAll({
-                limit: args.limit,
-                offset: args.offset,
-                orderBy: [['createdAt', 'asc']],
+                limit,
+                offset,
+                orderBy: [[sortField, args.sortOrder]],
             });
 
             if (err) {
@@ -117,6 +141,8 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
 
             return {
                 data: result.data,
+                limit,
+                offset,
                 totalRecordCount: result.totalRecordCount,
             };
         },
