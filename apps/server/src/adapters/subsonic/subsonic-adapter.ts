@@ -933,7 +933,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 fetchOptions,
                 query: {
                     musicFolderId: query.folderId ? query.folderId[0] : undefined,
-                    query: '',
+                    query: query.searchTerm || '',
                     songCount: query.limit,
                     songOffset: query.offset,
                 },
