@@ -100,9 +100,7 @@ export const initLibraryController = (modules: { service: AppService }) => {
                     type: library.type,
                     updatedAt: library.updatedAt,
                 },
-                meta: {
-                    self: c.req.url,
-                },
+                meta: {},
             };
 
             return c.json(response, 201);
@@ -131,7 +129,7 @@ export const initLibraryController = (modules: { service: AppService }) => {
                     type: library.type,
                     updatedAt: library.updatedAt,
                 },
-                meta: { self: c.req.url },
+                meta: {},
             };
 
             return c.json(response, 200);
@@ -171,9 +169,7 @@ export const initLibraryController = (modules: { service: AppService }) => {
                     type: library.type,
                     updatedAt: library.updatedAt,
                 },
-                meta: {
-                    self: c.req.url,
-                },
+                meta: {},
             };
 
             return c.json(response, 200);

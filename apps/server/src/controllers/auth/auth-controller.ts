@@ -45,9 +45,7 @@ export const initAuthController = (modules: {
                         updatedAt: user.updatedAt,
                         username: user.username,
                     },
-                    meta: {
-                        self: c.req.url,
-                    },
+                    meta: {},
                 },
                 200,
             );

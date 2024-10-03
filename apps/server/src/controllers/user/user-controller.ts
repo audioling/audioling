@@ -95,7 +95,7 @@ export const initUserController = (modules: { service: AppService }) => {
                     updatedAt: user.updatedAt,
                     username: user.username,
                 },
-                meta: { self: c.req.url },
+                meta: {},
             };
 
             return c.json(response, 201);
@@ -118,7 +118,7 @@ export const initUserController = (modules: { service: AppService }) => {
 
             const response: UserDetailResponse = {
                 data: user,
-                meta: { self: c.req.url },
+                meta: {},
             };
 
             return c.json(response, 200);
@@ -171,7 +171,7 @@ export const initUserController = (modules: { service: AppService }) => {
 
             const response: UserDetailResponse = {
                 data: user,
-                meta: { self: c.req.url },
+                meta: {},
             };
 
             return c.json(response, 200);
