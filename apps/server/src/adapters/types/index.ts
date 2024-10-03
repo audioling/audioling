@@ -60,6 +60,8 @@ import type {
     AdapterStreamResponse,
 } from '@/adapters/types/adapter-stream-types.js';
 import type {
+    AdapterTrackDetailRequest,
+    AdapterTrackDetailResponse,
     AdapterTrackListCountRequest,
     AdapterTrackListCountResponse,
     AdapterTrackListRequest,
@@ -118,6 +120,7 @@ export type AdapterApi = {
         AdapterPlaylistTrackListCountRequest,
         AdapterPlaylistTrackListCountResponse
     >;
+    getTrackDetail: AdapterFn<AdapterTrackDetailRequest, AdapterTrackDetailResponse>;
     getTrackList: AdapterFn<AdapterTrackListRequest, AdapterTrackListResponse>;
     getTrackListCount: AdapterFn<AdapterTrackListCountRequest, AdapterTrackListCountResponse>;
     removeFromPlaylist: AdapterFn<

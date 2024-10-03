@@ -810,6 +810,23 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             return [null, (result.body.playlist.entry || []).length];
         },
+        getTrackDetail: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getSong.os['1'].get({
+                fetchOptions,
+                query,
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getTrackDetail'));
+                return [{ code: result.status, message: result.body as string }, null];
+            }
+
+            const item = subsonicHelpers.converter.trackToAdapter(result.body.song);
+
+            return [null, item];
+        },
         getTrackList: async (request, fetchOptions) => {
             const { query } = request;
 
