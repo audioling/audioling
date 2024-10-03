@@ -14,6 +14,8 @@ const IMAGE_DIR = process.env.APP_IMAGE_DIR || path.join(APP_DIR, 'image');
 
 const TEMP_DIR = process.env.APP_TEMP_DIR || path.join(os.tmpdir(), APP_NAME);
 
+const DEFAULT_PAGINATION_LIMIT = 500;
+
 const ENV = {
     DEVELOPMENT: 'development',
     PRODUCTION: 'production',
@@ -25,6 +27,7 @@ export const CONSTANTS = {
     APP_DIR,
     APP_NAME,
     CACHE_DIR,
+    DEFAULT_PAGINATION_LIMIT,
     ENV,
     IMAGE_DIR,
     NODE_ENV,

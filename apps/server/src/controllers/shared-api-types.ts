@@ -1,4 +1,5 @@
 import { z } from '@hono/zod-openapi';
+import { CONSTANTS } from '@/constants.js';
 
 type SchemaMethod = {
     request: {
@@ -80,11 +81,11 @@ export const paginationQuery = {
                 });
             }
 
-            if (parsed > 500) {
+            if (parsed > CONSTANTS.DEFAULT_PAGINATION_LIMIT) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.too_big,
                     inclusive: true,
-                    maximum: 5000,
+                    maximum: CONSTANTS.DEFAULT_PAGINATION_LIMIT,
                     message: 'Limit must be less than or equal to 5000',
                     type: 'number',
                 });
@@ -143,12 +144,6 @@ export const libraryIdQuery = {
 };
 
 export const relatedAlbum = z.object({
-    id: z.string(),
-    imageUrl: z.string().nullable(),
-    name: z.string(),
-});
-
-export const relatedAlbumArtist = z.object({
     id: z.string(),
     imageUrl: z.string().nullable(),
     name: z.string(),
