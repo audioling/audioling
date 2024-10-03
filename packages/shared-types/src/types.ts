@@ -121,7 +121,7 @@ export enum AlbumListSortOptions {
     PLAY_COUNT = 'playCount',
     RANDOM = 'random',
     RELEASE_DATE = 'releaseDate',
-    SONG_COUNT = 'songCount',
+    TRACK_COUNT = 'trackCount',
     YEAR = 'year',
 }
 
@@ -137,7 +137,7 @@ export enum ArtistListSortOptions {
     RANDOM = 'random',
     RATING = 'rating',
     RELEASE_DATE = 'releaseDate',
-    SONG_COUNT = 'songCount',
+    TRACK_COUNT = 'trackCount',
 }
 
 // Sync with LibraryFeatures[playlist][list][filter]
@@ -146,7 +146,7 @@ export enum PlaylistListSortOptions {
     NAME = 'name',
     OWNER = 'owner',
     PUBLIC = 'public',
-    SONG_COUNT = 'songCount',
+    TRACK_COUNT = 'trackCount',
     UPDATED_AT = 'updatedAt',
 }
 
