@@ -1,5 +1,12 @@
-import type { ListSortOrder } from '@repo/shared-types';
+import type {
+    AlbumListSortOptions,
+    ArtistListSortOptions,
+    ListSortOrder,
+    TrackListSortOptions,
+} from '@repo/shared-types';
+import type { AdapterAlbumListResponse } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
+import type { AdapterTrackListResponse } from '@/adapters/types/adapter-track-types.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterArtist {
@@ -36,26 +43,12 @@ export interface AdapterRelatedAlbumArtist {
 
 export type AdapterArtistListResponse = PaginatedResponse<AdapterArtist>;
 
-export enum AdapterArtistListSort {
-    ALBUM = 'album',
-    ALBUM_COUNT = 'albumCount',
-    DURATION = 'duration',
-    FAVORITED = 'favorited',
-    NAME = 'name',
-    PLAY_COUNT = 'playCount',
-    RANDOM = 'random',
-    RATING = 'rating',
-    RECENTLY_ADDED = 'recentlyAdded',
-    RELEASE_DATE = 'releaseDate',
-    SONG_COUNT = 'songCount',
-}
-
 export type AdapterArtistListQuery = {
     folderId?: string[];
     limit: number;
     offset: number;
     searchTerm?: string;
-    sortBy: AdapterArtistListSort;
+    sortBy: ArtistListSortOptions;
     sortOrder: ListSortOrder;
 };
 
@@ -77,3 +70,29 @@ export type AdapterArtistDetailQuery = {
 export type AdapterArtistDetailRequest = QueryRequest<AdapterArtistDetailQuery>;
 
 export type AdapterArtistDetailResponse = AdapterArtist;
+
+export type AdapterArtistTrackListQuery = {
+    folderId?: string[];
+    id: string;
+    limit: number;
+    offset: number;
+    sortBy: TrackListSortOptions;
+    sortOrder: ListSortOrder;
+};
+
+export type AdapterArtistTrackListRequest = QueryRequest<AdapterArtistTrackListQuery>;
+
+export type AdapterArtistTrackListResponse = AdapterTrackListResponse;
+
+export type AdapterArtistAlbumListQuery = {
+    folderId?: string[];
+    id: string;
+    limit: number;
+    offset: number;
+    sortBy: AlbumListSortOptions;
+    sortOrder: ListSortOrder;
+};
+
+export type AdapterArtistAlbumListRequest = QueryRequest<AdapterArtistAlbumListQuery>;
+
+export type AdapterArtistAlbumListResponse = AdapterAlbumListResponse;

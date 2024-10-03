@@ -11,12 +11,16 @@ import type {
     AdapterAlbumTrackListResponse,
 } from '@/adapters/types/adapter-album-types.js';
 import type {
+    AdapterArtistAlbumListRequest,
+    AdapterArtistAlbumListResponse,
     AdapterArtistDetailRequest,
     AdapterArtistDetailResponse,
     AdapterArtistListCountRequest,
     AdapterArtistListCountResponse,
     AdapterArtistListRequest,
     AdapterArtistListResponse,
+    AdapterArtistTrackListRequest,
+    AdapterArtistTrackListResponse,
 } from '@/adapters/types/adapter-artist-types.js';
 import type {
     AdapterSetFavoriteRequest,
@@ -90,11 +94,19 @@ export type AdapterApi = {
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
     clearPlaylist: AdapterFn<AdapterClearPlaylistRequest, AdapterClearPlaylistResponse>;
+    getAlbumArtistAlbumList: AdapterFn<
+        AdapterArtistAlbumListRequest,
+        AdapterArtistAlbumListResponse
+    >;
     getAlbumArtistDetail: AdapterFn<AdapterArtistDetailRequest, AdapterArtistDetailResponse>;
     getAlbumArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
     getAlbumArtistListCount: AdapterFn<
         AdapterArtistListCountRequest,
         AdapterArtistListCountResponse
+    >;
+    getAlbumArtistTrackList: AdapterFn<
+        AdapterArtistTrackListRequest,
+        AdapterArtistTrackListResponse
     >;
     getAlbumDetail: AdapterFn<AdapterAlbumDetailRequest, AdapterAlbumDetailResponse>;
     getAlbumList: AdapterFn<AdapterAlbumListRequest, AdapterAlbumListResponse>;
