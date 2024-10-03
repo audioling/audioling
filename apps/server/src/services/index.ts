@@ -2,6 +2,7 @@ import type { AppDatabase } from '@/database/init-database.js';
 import type { ConfigModule } from '@/modules/config/index.js';
 import type { IdFactoryModule } from '@/modules/id/index.js';
 import { initAlbumService } from '@/services/album/album-service.js';
+import { initAlbumArtistService } from '@/services/album-artist/album-artist-service.js';
 import { initAuthService } from '@/services/auth/auth-service';
 import { initLibraryService } from '@/services/library/library-service.js';
 import { initTrackService } from '@/services/track/track-service.js';
@@ -19,9 +20,11 @@ export const initServices = (modules: {
     const libraryService = initLibraryService({ db, idFactory });
     const albumService = initAlbumService();
     const trackService = initTrackService();
+    const albumArtistService = initAlbumArtistService();
 
     const service = {
         album: albumService,
+        albumArtist: albumArtistService,
         auth: authService,
         library: libraryService,
         track: trackService,

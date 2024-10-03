@@ -1,10 +1,11 @@
 import type { OpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
 import { initOpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
-import { AlbumListSortOptions, LibraryItemType, LibraryType } from '@repo/shared-types';
+import { AlbumListSortOptions, LibraryType } from '@repo/shared-types';
 import axios from 'axios';
 import sortBy from 'lodash/sortBy.js';
 import md5 from 'md5';
 import { adapterHelpers } from '@/adapters/adapter-helpers.js';
+import type { SubsonicAlbum } from '@/adapters/subsonic/subsonic-adapter-helpers.js';
 import { subsonicHelpers } from '@/adapters/subsonic/subsonic-adapter-helpers.js';
 import type { AdapterAlbumListQuery } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
@@ -144,6 +145,46 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             return [null, null];
         },
+        getAlbumArtistAlbumList: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getArtist.os['1'].get({
+                fetchOptions,
+                query: {
+                    id: query.id,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistAlbumList'),
+                );
+                return [
+                    {
+                        code: result.status,
+                        message: result.body as string,
+                    },
+                    null,
+                ];
+            }
+
+            const albums = (result.body.artist.album || []).map(
+                subsonicHelpers.converter.albumToAdapter,
+            );
+
+            const sorted = adapterHelpers.sortBy.album(albums, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+            return [
+                null,
+                {
+                    items: paginated,
+                    limit: query.limit,
+                    offset: query.offset,
+                    totalRecordCount: albums.length,
+                },
+            ];
+        },
         getAlbumArtistDetail: async (request, fetchOptions) => {
             const { query } = request;
 
@@ -244,6 +285,65 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }, 0);
 
             return [null, artistCount];
+        },
+        getAlbumArtistTrackList: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getArtist.os['1'].get({
+                fetchOptions,
+                query: {
+                    id: query.id,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistTrackList'),
+                );
+                return [
+                    {
+                        code: result.status,
+                        message: result.body as string,
+                    },
+                    null,
+                ];
+            }
+
+            const albumIds = (result.body.artist.album || []).map((album) => album.id);
+
+            const albumPromises = albumIds.map((albumId) =>
+                apiClient.getAlbum.os['1'].get({
+                    fetchOptions,
+                    query: { id: albumId },
+                }),
+            );
+
+            const albumResponses = await Promise.all(albumPromises);
+
+            if (albumResponses.some((album) => album.status !== 200)) {
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistTrackList'),
+                );
+                return [{ code: 500, message: 'Failed to get album details' }, null];
+            }
+
+            const tracksResponse = albumResponses.flatMap(
+                (album) => (album.body as SubsonicAlbum).song || [],
+            );
+
+            const tracks = tracksResponse.map(subsonicHelpers.converter.trackToAdapter);
+            const sorted = adapterHelpers.sortBy.track(tracks, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+            return [
+                null,
+                {
+                    items: paginated,
+                    limit: query.limit,
+                    offset: query.offset,
+                    totalRecordCount: tracks.length,
+                },
+            ];
         },
         getAlbumDetail: async (request, fetchOptions) => {
             const { query } = request;
@@ -761,7 +861,6 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     tracks,
                     query.sortBy,
                     query.sortOrder || 'asc',
-                    LibraryItemType.TRACK,
                 );
             }
 

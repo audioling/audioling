@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { CONSTANTS } from '@/constants.js';
 import { initAlbumController } from '@/controllers/album/album-controller.js';
+import { initAlbumArtistController } from '@/controllers/album-artist/album-artist-controller.js';
 import { initAuthController } from '@/controllers/auth/auth-controller.js';
 import { initLibraryController } from '@/controllers/library/library-controller.js';
 import { initRootController } from '@/controllers/root/root-controller';
@@ -67,6 +68,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     const libraryController = initLibraryController({ service });
     const albumController = initAlbumController({ service });
     const trackController = initTrackController({ service });
+    const albumArtistController = initAlbumArtistController({ service });
 
     app.route('/', rootController);
     app.route('/auth', authController);
@@ -75,6 +77,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     app.use('/api/:libraryId/*', adapterMiddleware(db, service.library));
     app.route('/api/:libraryId/albums', albumController);
     app.route('/api/:libraryId/tracks', trackController);
+    app.route('/api/:libraryId/album-artists', albumArtistController);
 
     app.onError((err, c) => {
         writeLog.error(err.message, {

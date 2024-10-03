@@ -5,24 +5,24 @@ import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterPlaylist } from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 
-type Track = NonNullable<
+export type SubsonicTrack = NonNullable<
     Extract<
         Awaited<ReturnType<OpenSubsonicApiClient['getAlbum']['os']['1']['get']>>,
         { status: 200 }
     >['body']['album']['song']
 >[number];
 
-type Album = Extract<
+export type SubsonicAlbum = Extract<
     Awaited<ReturnType<OpenSubsonicApiClient['getAlbum']['os']['1']['get']>>,
     { status: 200 }
 >['body']['album'];
 
-type Artist = Extract<
+export type SubsonicArtist = Extract<
     Awaited<ReturnType<OpenSubsonicApiClient['getArtist']['os']['1']['get']>>,
     { status: 200 }
 >['body']['artist'];
 
-type Playlist = Extract<
+export type SubsonicPlaylist = Extract<
     Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
     { status: 200 }
 >['body']['playlists']['playlist'][number];
@@ -39,7 +39,7 @@ type ArtistListEntry = NonNullable<
     >['body']['artists']['index'][number]['artist']
 >[number];
 
-const getArtists = (item: Album | Track) => {
+const getArtists = (item: SubsonicAlbum | SubsonicTrack) => {
     if (item.artists) {
         return item.artists.map((artist) => ({
             id: artist.id,
@@ -55,7 +55,7 @@ const getArtists = (item: Album | Track) => {
     return [];
 };
 
-const getAlbumArtists = (item: Track) => {
+const getAlbumArtists = (item: SubsonicTrack) => {
     if (item.albumArtists) {
         return item.albumArtists.map((artist) => ({
             id: artist.id,
@@ -71,7 +71,7 @@ const getAlbumArtists = (item: Track) => {
     return [];
 };
 
-const getGenres = (item: Album | Track) => {
+const getGenres = (item: SubsonicAlbum | SubsonicTrack) => {
     if (item.genres) {
         return item.genres.map((genre) => ({
             id: genre.genre,
@@ -95,7 +95,7 @@ const getDateFromItemDate = (itemDate?: { day?: number; month?: number; year?: n
     return null;
 };
 
-const getRecordLabels = (album: Album) => {
+const getRecordLabels = (album: SubsonicAlbum) => {
     if (album.recordLabels) {
         return album.recordLabels.map((recordLabel) => ({
             id: recordLabel.name,
@@ -107,7 +107,7 @@ const getRecordLabels = (album: Album) => {
 };
 
 const converter = {
-    albumToAdapter: (album: Album): AdapterAlbum => {
+    albumToAdapter: (album: SubsonicAlbum): AdapterAlbum => {
         const item: AdapterAlbum = {
             artist: album.artist || null,
             artistId: album.artistId || null,
@@ -149,7 +149,7 @@ const converter = {
 
         return item;
     },
-    artistToAdapter: (artist: Artist | ArtistListEntry): AdapterArtist => {
+    artistToAdapter: (artist: SubsonicArtist | ArtistListEntry): AdapterArtist => {
         const item: AdapterArtist = {
             albumCount: null,
             biography: null,
@@ -170,7 +170,7 @@ const converter = {
 
         return item;
     },
-    playlistToAdapter: (playlist: Playlist | PlaylistListEntry): AdapterPlaylist => {
+    playlistToAdapter: (playlist: SubsonicPlaylist | PlaylistListEntry): AdapterPlaylist => {
         return {
             createdDate: dayjs(playlist.created).toISOString(),
             description: playlist.comment || null,
@@ -187,7 +187,7 @@ const converter = {
             updatedDate: dayjs(playlist.created).toISOString(),
         };
     },
-    trackToAdapter: (track: Track): AdapterTrack => {
+    trackToAdapter: (track: SubsonicTrack): AdapterTrack => {
         const splitPath = track.path?.split('/');
         const fileName = splitPath?.[splitPath.length - 1] || null;
 

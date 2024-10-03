@@ -1,9 +1,11 @@
-import type { TrackListSortOptions } from '@repo/shared-types';
-import { LibraryItemType } from '@repo/shared-types';
+import { AlbumListSortOptions, TrackListSortOptions } from '@repo/shared-types';
 import dayjs from 'dayjs';
 import orderBy from 'lodash/orderBy.js';
+import shuffle from 'lodash/shuffle.js';
 import md5 from 'md5';
 import stringify from 'safe-stable-stringify';
+import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
+import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import type { DbLibrary } from '@/database/library-database.js';
 import { utils } from '@/utils/index.js';
@@ -135,88 +137,143 @@ const adapterErrorMessage = (library: DbLibrary, route: string) => {
 };
 
 const sortBy = {
-    track: <TValue>(
-        array: TValue[],
-        key: TrackListSortOptions,
-        order: 'asc' | 'desc',
-        type: LibraryItemType,
-    ) => {
+    album: (array: AdapterAlbum[], key: AlbumListSortOptions, order: 'asc' | 'desc') => {
         let value = array;
 
         switch (key) {
-            case 'album': {
-                value = orderBy(value, ['album'], [order]);
-                break;
-            }
-            case 'albumArtist': {
-                if (type === LibraryItemType.ALBUM) {
-                    value = orderBy(value, ['albumArtistId'], [order]);
-                } else {
-                    value = orderBy(value, ['artistId'], [order]);
-                }
-                break;
-            }
-            case 'artist': {
+            case AlbumListSortOptions.ALBUM_ARTIST: {
                 value = orderBy(value, ['artistId'], [order]);
                 break;
             }
-            case 'bpm': {
-                value = orderBy(value, ['bpm'], [order]);
+            case AlbumListSortOptions.ARTIST: {
+                value = orderBy(value, ['artistId'], [order]);
                 break;
             }
-            case 'channels': {
-                value = orderBy(value, ['channels'], [order]);
+            case AlbumListSortOptions.COMMUNITY_RATING: {
+                value = orderBy(value, ['userRating'], [order]);
                 break;
             }
-            case 'comment': {
-                value = orderBy(value, ['comment'], [order]);
+            case AlbumListSortOptions.CRITIC_RATING: {
+                value = orderBy(value, ['userRating'], [order]);
                 break;
             }
-            case 'duration': {
+            case AlbumListSortOptions.DATE_ADDED: {
+                value = orderBy(value, ['createdDate'], [order]);
+                break;
+            }
+            case AlbumListSortOptions.DATE_PLAYED: {
+                value = orderBy(value, ['userLastPlayedDate'], [order]);
+                break;
+            }
+            case AlbumListSortOptions.DURATION: {
                 value = orderBy(value, ['duration'], [order]);
                 break;
             }
-            case 'favorited': {
-                value = orderBy(value, ['favorited'], [order]);
+            case AlbumListSortOptions.IS_FAVORITE: {
+                value = orderBy(value, ['userFavoriteDate', 'userFavorite'], [order, order]);
                 break;
             }
-            case 'genre': {
-                value = orderBy(value, ['genre'], [order]);
-                break;
-            }
-            case 'id': {
-                break;
-            }
-            case 'name': {
+            case AlbumListSortOptions.NAME: {
                 value = orderBy(value, ['name'], [order]);
                 break;
             }
-            case 'playCount': {
-                value = orderBy(value, ['playCount'], [order]);
+            case AlbumListSortOptions.PLAY_COUNT: {
+                value = orderBy(value, ['userPlayCount'], [order]);
                 break;
             }
-            case 'random': {
-                value = orderBy(value, ['random'], [order]);
+            case AlbumListSortOptions.RANDOM: {
+                value = shuffle(value);
                 break;
             }
-            case 'rating': {
-                value = orderBy(value, ['rating'], [order]);
-                break;
-            }
-            case 'recentlyAdded': {
-                value = orderBy(value, ['recentlyAdded'], [order]);
-                break;
-            }
-            case 'recentlyPlayed': {
-                value = orderBy(value, ['recentlyPlayed'], [order]);
-                break;
-            }
-            case 'releaseDate': {
+            case AlbumListSortOptions.RELEASE_DATE: {
                 value = orderBy(value, ['releaseDate'], [order]);
                 break;
             }
-            case 'year': {
-                value = orderBy(value, ['year'], [order]);
+            case AlbumListSortOptions.SONG_COUNT: {
+                value = orderBy(value, ['songCount'], [order]);
+                break;
+            }
+            case AlbumListSortOptions.YEAR: {
+                value = orderBy(value, ['releaseYear'], [order]);
+                break;
+            }
+        }
+
+        return value;
+    },
+    track: (array: AdapterTrack[], key: TrackListSortOptions, order: 'asc' | 'desc') => {
+        let value = array;
+
+        switch (key) {
+            case TrackListSortOptions.ALBUM: {
+                value = orderBy(value, ['album'], [order]);
+                break;
+            }
+            case TrackListSortOptions.ALBUM_ARTIST: {
+                value = orderBy(value, ['artistId'], [order]);
+                break;
+            }
+            case TrackListSortOptions.ARTIST: {
+                value = orderBy(value, ['artistId'], [order]);
+                break;
+            }
+            case TrackListSortOptions.BPM: {
+                value = orderBy(value, ['bpm'], [order]);
+                break;
+            }
+            case TrackListSortOptions.CHANNELS: {
+                value = orderBy(value, ['channels'], [order]);
+                break;
+            }
+            case TrackListSortOptions.COMMENT: {
+                value = orderBy(value, ['comment'], [order]);
+                break;
+            }
+            case TrackListSortOptions.DURATION: {
+                value = orderBy(value, ['duration'], [order]);
+                break;
+            }
+            case TrackListSortOptions.GENRE: {
+                value = orderBy(value, ['genre'], [order]);
+                break;
+            }
+            case TrackListSortOptions.ID: {
+                break;
+            }
+            case TrackListSortOptions.IS_FAVORITE: {
+                value = orderBy(value, ['userFavoriteDate', 'userFavorite'], [order, order]);
+                break;
+            }
+            case TrackListSortOptions.NAME: {
+                value = orderBy(value, ['name'], [order]);
+                break;
+            }
+            case TrackListSortOptions.PLAY_COUNT: {
+                value = orderBy(value, ['userPlayCount'], [order]);
+                break;
+            }
+            case TrackListSortOptions.RANDOM: {
+                value = shuffle(value);
+                break;
+            }
+            case TrackListSortOptions.RATING: {
+                value = orderBy(value, ['userRating'], [order]);
+                break;
+            }
+            case TrackListSortOptions.RECENTLY_ADDED: {
+                value = orderBy(value, ['recentlyAdded'], [order]);
+                break;
+            }
+            case TrackListSortOptions.RECENTLY_PLAYED: {
+                value = orderBy(value, ['userLastPlayedDate'], [order]);
+                break;
+            }
+            case TrackListSortOptions.RELEASE_DATE: {
+                value = orderBy(value, ['releaseYear'], [order]);
+                break;
+            }
+            case TrackListSortOptions.YEAR: {
+                value = orderBy(value, ['releaseYear'], [order]);
                 break;
             }
         }
