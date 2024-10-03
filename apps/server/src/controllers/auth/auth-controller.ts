@@ -80,8 +80,6 @@ export const initAuthController = (modules: {
         async (c) => {
             const body = c.req.valid('json');
 
-            console.log('body', body);
-
             await service.auth.register({
                 password: body.password,
                 username: body.username,

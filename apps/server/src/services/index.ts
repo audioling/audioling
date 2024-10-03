@@ -1,8 +1,10 @@
 import type { AppDatabase } from '@/database/init-database.js';
 import type { ConfigModule } from '@/modules/config/index.js';
 import type { IdFactoryModule } from '@/modules/id/index.js';
+import { initAlbumService } from '@/services/album/album-service.js';
 import { initAuthService } from '@/services/auth/auth-service';
 import { initLibraryService } from '@/services/library/library-service.js';
+import { initTrackService } from '@/services/track/track-service.js';
 import { initUserService } from '@/services/user/user-service';
 
 export const initServices = (modules: {
@@ -15,10 +17,14 @@ export const initServices = (modules: {
     const authService = initAuthService({ config, db, idFactory });
     const userService = initUserService({ db, idFactory });
     const libraryService = initLibraryService({ db, idFactory });
+    const albumService = initAlbumService();
+    const trackService = initTrackService();
 
     const service = {
+        album: albumService,
         auth: authService,
         library: libraryService,
+        track: trackService,
         user: userService,
     };
 

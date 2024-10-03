@@ -3,9 +3,11 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
 import { CONSTANTS } from '@/constants.js';
+import { initAlbumController } from '@/controllers/album/album-controller.js';
 import { initAuthController } from '@/controllers/auth/auth-controller.js';
 import { initLibraryController } from '@/controllers/library/library-controller.js';
 import { initRootController } from '@/controllers/root/root-controller';
+import { initTrackController } from '@/controllers/track/track-controller.js';
 import { initUserController } from '@/controllers/user/user-controller.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import { adapterMiddleware } from '@/middlewares/adapter-middleware.js';
@@ -63,12 +65,16 @@ export const initApplication = async (options: ApplicationOptions) => {
     const authController = initAuthController({ service });
     const userController = initUserController({ service });
     const libraryController = initLibraryController({ service });
+    const albumController = initAlbumController({ service });
+    const trackController = initTrackController({ service });
 
     app.route('/', rootController);
     app.route('/auth', authController);
     app.route('/api/users', userController);
     app.route('/api/libraries', libraryController);
     app.use('/api/:libraryId/*', adapterMiddleware(db, service.library));
+    app.route('/api/:libraryId/albums', albumController);
+    app.route('/api/:libraryId/tracks', trackController);
 
     app.onError((err, c) => {
         writeLog.error(err.message, {
