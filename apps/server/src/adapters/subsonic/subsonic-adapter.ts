@@ -9,6 +9,7 @@ import type { SubsonicAlbum } from '@/adapters/subsonic/subsonic-adapter-helpers
 import { subsonicHelpers } from '@/adapters/subsonic/subsonic-adapter-helpers.js';
 import type { AdapterAlbumListQuery } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
+import type { AdapterGenre } from '@/adapters/types/adapter-genre-types.js';
 import type {
     AdapterPlaylist,
     AdapterPlaylistListQuery,
@@ -703,12 +704,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getGenreList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const clientParams = {
-                fetchOptions,
-                query,
-            };
             const result = await apiClient.getGenres.os['1'].get({
-                ...clientParams,
+                fetchOptions,
+                query: {},
             });
 
             if (result.status !== 200) {
@@ -716,18 +714,34 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items = (result.body.genres?.genre || []).map((genre) => ({
+            let items: AdapterGenre[] = (result.body.genres?.genre || []).map((genre) => ({
+                albumCount: genre.albumCount ?? null,
                 id: genre.value,
                 imageUrl: null,
                 name: genre.value,
+                trackCount: genre.songCount ?? null,
             }));
+
+            if (query.searchTerm) {
+                items = items.filter((item) =>
+                    item.name.toLowerCase().includes(query.searchTerm!.toLowerCase()),
+                );
+            }
+
+            if (query.sortBy) {
+                items = adapterHelpers.sortBy.genre(items, query.sortBy, query.sortOrder);
+            }
+
+            if (query.limit && query.offset) {
+                items = adapterHelpers.paginate(items, query.offset, query.limit);
+            }
 
             return [
                 null,
                 {
                     items,
                     limit: query.limit,
-                    offset: 0,
+                    offset: query.offset,
                     totalRecordCount: (result.body.genres.genre || []).length,
                 },
             ];

@@ -1,10 +1,15 @@
-import { AlbumListSortOptions, TrackListSortOptions } from '@repo/shared-types';
+import {
+    AlbumListSortOptions,
+    GenreListSortOptions,
+    TrackListSortOptions,
+} from '@repo/shared-types';
 import dayjs from 'dayjs';
 import orderBy from 'lodash/orderBy.js';
 import shuffle from 'lodash/shuffle.js';
 import md5 from 'md5';
 import stringify from 'safe-stable-stringify';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
+import type { AdapterGenre } from '@/adapters/types/adapter-genre-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import type { DbLibrary } from '@/database/library-database.js';
@@ -195,6 +200,26 @@ const sortBy = {
             }
             case AlbumListSortOptions.YEAR: {
                 value = orderBy(value, ['releaseYear'], [order]);
+                break;
+            }
+        }
+
+        return value;
+    },
+    genre: (array: AdapterGenre[], key: GenreListSortOptions, order: 'asc' | 'desc') => {
+        let value = array;
+
+        switch (key) {
+            case GenreListSortOptions.NAME: {
+                value = orderBy(value, ['name'], [order]);
+                break;
+            }
+            case GenreListSortOptions.TRACK_COUNT: {
+                value = orderBy(value, ['trackCount'], [order]);
+                break;
+            }
+            case GenreListSortOptions.ALBUM_COUNT: {
+                value = orderBy(value, ['albumCount'], [order]);
                 break;
             }
         }

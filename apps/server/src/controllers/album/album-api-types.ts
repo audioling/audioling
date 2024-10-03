@@ -28,7 +28,7 @@ export const albumAttributes = z.object({
     genres: relatedGenre.array(),
     id: z.string(),
     isCompilation: z.boolean(),
-    itemType: z.nativeEnum(LibraryItemType),
+    itemType: z.literal(LibraryItemType.ALBUM),
     libraryId: z.string(),
     moods: z
         .object({

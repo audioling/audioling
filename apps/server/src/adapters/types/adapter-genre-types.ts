@@ -1,9 +1,11 @@
-import type { ListSortOrder } from '@repo/shared-types';
+import type { GenreListSortOptions, ListSortOrder } from '@repo/shared-types';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterGenre {
+    albumCount: number | null;
     id: string;
     name: string;
+    trackCount: number | null;
 }
 
 export interface AdapterRelatedGenre {
@@ -19,15 +21,11 @@ export type AdapterGenreListQuery = {
     limit: number;
     offset: number;
     searchTerm?: string;
-    sortBy: AdapterGenreListSort;
+    sortBy: GenreListSortOptions;
     sortOrder: ListSortOrder;
 };
 
 export type AdapterGenreListRequest = QueryRequest<AdapterGenreListQuery>;
-
-export enum AdapterGenreListSort {
-    NAME = 'name',
-}
 
 export type AdapterGenreListCountQuery = Omit<
     AdapterGenreListQuery,

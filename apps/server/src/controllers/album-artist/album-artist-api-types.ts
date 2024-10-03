@@ -17,7 +17,7 @@ export const albumArtistAttributes = z.object({
     }),
     genres: relatedGenre.array(),
     id: z.string(),
-    itemType: z.nativeEnum(LibraryItemType),
+    itemType: z.literal(LibraryItemType.ALBUM_ARTIST),
     libraryId: z.string(),
     name: z.string(),
     songCount: z.number().nullable(),

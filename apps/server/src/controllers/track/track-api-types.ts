@@ -32,7 +32,7 @@ export const trackAttributes = z.object({
     genres: relatedGenre.array(),
     id: z.string(),
     isCompilation: z.boolean(),
-    itemType: z.nativeEnum(LibraryItemType),
+    itemType: z.literal(LibraryItemType.TRACK),
     libraryId: z.string(),
     name: z.string(),
     releaseYear: z.number().nullable(),

@@ -6,6 +6,7 @@ import { CONSTANTS } from '@/constants.js';
 import { initAlbumController } from '@/controllers/album/album-controller.js';
 import { initAlbumArtistController } from '@/controllers/album-artist/album-artist-controller.js';
 import { initAuthController } from '@/controllers/auth/auth-controller.js';
+import { initGenreController } from '@/controllers/genre/genre-controller.js';
 import { initLibraryController } from '@/controllers/library/library-controller.js';
 import { initRootController } from '@/controllers/root/root-controller';
 import { initTrackController } from '@/controllers/track/track-controller.js';
@@ -69,6 +70,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     const albumController = initAlbumController({ service });
     const trackController = initTrackController({ service });
     const albumArtistController = initAlbumArtistController({ service });
+    const genreController = initGenreController({ service });
 
     app.route('/', rootController);
     app.route('/auth', authController);
@@ -78,6 +80,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     app.route('/api/:libraryId/albums', albumController);
     app.route('/api/:libraryId/tracks', trackController);
     app.route('/api/:libraryId/album-artists', albumArtistController);
+    app.route('/api/:libraryId/genres', genreController);
 
     app.onError((err, c) => {
         writeLog.error(err.message, {

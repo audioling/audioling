@@ -35,7 +35,7 @@ export type LibraryFeatures = {
                 playCount: boolean;
                 random: boolean;
                 releaseDate: boolean;
-                songCount: boolean;
+                trackCount: boolean;
                 year: boolean;
             };
         };
@@ -57,7 +57,20 @@ export type LibraryFeatures = {
                 random: boolean;
                 rating: boolean;
                 releaseDate: boolean;
-                songCount: boolean;
+                trackCount: boolean;
+            };
+        };
+    };
+    genre: {
+        detail: {
+            enabled: boolean;
+        };
+        list: {
+            enabled: boolean;
+            filter: {
+                albumCount: boolean;
+                name: boolean;
+                trackCount: boolean;
             };
         };
     };
@@ -75,7 +88,7 @@ export type LibraryFeatures = {
                 name: boolean;
                 owner: boolean;
                 public: boolean;
-                songCount: boolean;
+                trackCount: boolean;
                 updatedAt: boolean;
             };
         };
@@ -170,6 +183,13 @@ export enum TrackListSortOptions {
     RECENTLY_PLAYED = 'recentlyPlayed',
     RELEASE_DATE = 'releaseDate',
     YEAR = 'year',
+}
+
+// Sync with LibraryFeatures[genre][list][filter]
+export enum GenreListSortOptions {
+    ALBUM_COUNT = 'albumCount',
+    NAME = 'name',
+    TRACK_COUNT = 'trackCount',
 }
 
 export enum LibraryListSortOptions {

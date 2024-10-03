@@ -8,8 +8,6 @@ import type { DatabaseModules } from '@/database/init-database.js';
 import { initJsonDatabase } from '@/modules/json-database/index.js';
 import { utils } from '../utils/index';
 
-export const libraryTypeSchema = z.nativeEnum(LibraryType);
-
 export const librarySchema = z.object({
     baseUrl: z.string(),
     createdAt: z.string(),

@@ -15,7 +15,7 @@ import type { AuthVariables } from '@/middlewares/auth-middleware.js';
 import { newHono } from '@/modules/hono/index.js';
 import type { AppService } from '@/services/index.js';
 
-type AlbumRouterContext = {
+type AlbumArtistRouterContext = {
     Variables: AuthVariables & AdapterVariables;
 };
 
@@ -23,7 +23,7 @@ type AlbumRouterContext = {
 export const initAlbumArtistController = (modules: { service: AppService }) => {
     const { service } = modules;
 
-    const controller = newHono<AlbumRouterContext>();
+    const controller = newHono<AlbumArtistRouterContext>();
     const defaultOpenapiTags = ['Album Artists'];
 
     // ANCHOR - GET /
