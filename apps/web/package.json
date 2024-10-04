@@ -8,7 +8,9 @@
         "build:desktop": "tauri build",
         "dev": "tauri dev",
         "dev:web": "vite",
-        "generate:query-client": "openapi-rq -i http://localhost:4544/openapi -c axios --output ./src/api/",
+        "generate:openapi": "bun run generate:openapi-json && bun run generate:openapi-client && pwsh -c ./orval-lint.ps1",
+        "generate:openapi-client": "bunx orval --config orval.config.cjs",
+        "generate:openapi-json": "curl http://localhost:4544/openapi > openapi.json",
         "lint": "eslint . --ext .ts,.tsx --fix",
         "preview": "vite preview"
     },
@@ -55,9 +57,6 @@
         "zustand-mutative": "^1.0.5"
     },
     "devDependencies": {
-        "@7nohe/openapi-react-query-codegen": "^1.6.1",
-        "@openapi-codegen/cli": "^2.0.2",
-        "@openapi-codegen/typescript": "^8.0.2",
         "@repo/eslint-config-internal": "workspace:*",
         "@tanstack/react-form": "^0.33.0",
         "@tanstack/react-query-devtools": "^5.59.0",
@@ -66,6 +65,7 @@
         "@types/react": "^18.3.11",
         "@types/react-dom": "^18.3.0",
         "@vitejs/plugin-react-swc": "^3.7.1",
+        "orval": "^7.1.1",
         "postcss": "^8.4.47",
         "postcss-preset-mantine": "^1.17.0",
         "postcss-simple-vars": "^7.0.1",
