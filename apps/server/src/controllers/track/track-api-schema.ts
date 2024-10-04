@@ -10,6 +10,7 @@ export const trackApiSchema = {
     '/': {
         get: {
             request: {
+                params: z.object({ libraryId: z.string() }),
                 query: trackListRequestSchema,
             },
             responses: schemaResponse(
@@ -26,7 +27,7 @@ export const trackApiSchema = {
     '/{id}': {
         get: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
@@ -42,7 +43,7 @@ export const trackApiSchema = {
     '/{id}/favorite': {
         delete: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
@@ -56,7 +57,7 @@ export const trackApiSchema = {
         },
         post: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {

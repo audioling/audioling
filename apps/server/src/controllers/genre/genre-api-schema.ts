@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
     genreListRequestSchema,
     genreListResponseSchema,
@@ -8,6 +9,7 @@ export const genreApiSchema = {
     '/': {
         get: {
             request: {
+                params: z.object({ libraryId: z.string() }),
                 query: genreListRequestSchema,
             },
             responses: schemaResponse(

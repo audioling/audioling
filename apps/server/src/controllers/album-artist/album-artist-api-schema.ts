@@ -18,6 +18,7 @@ export const albumArtistApiSchema = {
     '/': {
         get: {
             request: {
+                params: z.object({ libraryId: z.string() }),
                 query: albumArtistListRequestSchema,
             },
             responses: schemaResponse(
@@ -34,7 +35,7 @@ export const albumArtistApiSchema = {
     '/{id}': {
         get: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
@@ -50,7 +51,7 @@ export const albumArtistApiSchema = {
     '/{id}/albums': {
         get: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
                 query: albumListRequestSchema,
             },
             responses: schemaResponse(
@@ -66,7 +67,7 @@ export const albumArtistApiSchema = {
     '/{id}/favorite': {
         delete: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
@@ -80,7 +81,7 @@ export const albumArtistApiSchema = {
         },
         post: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
@@ -96,7 +97,7 @@ export const albumArtistApiSchema = {
     '/{id}/tracks': {
         get: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
                 query: trackListRequestSchema,
             },
             responses: schemaResponse(

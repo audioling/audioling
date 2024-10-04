@@ -14,6 +14,7 @@ export const albumApiSchema = {
     '/': {
         get: {
             request: {
+                params: z.object({ libraryId: z.string() }),
                 query: albumListRequestSchema,
             },
             responses: schemaResponse(
@@ -26,7 +27,7 @@ export const albumApiSchema = {
     '/{id}': {
         get: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 { description: 'Get album by id', schema: albumDetailResponseSchema, status: 200 },
@@ -38,7 +39,7 @@ export const albumApiSchema = {
     '/{id}/favorite': {
         delete: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
@@ -52,7 +53,7 @@ export const albumApiSchema = {
         },
         post: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
             },
             responses: schemaResponse(
                 { description: 'Add album to favorites', schema: EmptyResponseSchema, status: 204 },
@@ -64,7 +65,7 @@ export const albumApiSchema = {
     '/{id}/tracks': {
         get: {
             request: {
-                params: z.object({ id: z.string() }),
+                params: z.object({ id: z.string(), libraryId: z.string() }),
                 query: trackListRequestSchema,
             },
             responses: schemaResponse(
