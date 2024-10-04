@@ -6,12 +6,12 @@ import type { Row, Table } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { createPortal } from 'react-dom';
-import type { useDnd } from '@/components/dnd/hooks/use-dnd.tsx';
-import { EntityTableRowDragOverlay } from '@/components/entity-table/entity-table-row-drag-overlay.tsx';
+import type { useDnd } from '@/features/ui/dnd/hooks/use-dnd.tsx';
+import { EntityTableRowDragOverlay } from '@/features/ui/entity-table/entity-table-row-drag-overlay.tsx';
 import {
     DraggableEntityTableRow,
     EntityTableRow,
-} from '@/components/entity-table/entity-table-row.tsx';
+} from '@/features/ui/entity-table/entity-table-row.tsx';
 import { getRowRange } from '@/utils/get-row-range.ts';
 import { reorderElements } from '@/utils/reorder-elements.ts';
 import styles from './entity-table.module.scss';

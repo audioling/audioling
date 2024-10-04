@@ -3,8 +3,9 @@ import { forwardRef } from 'react';
 import type { ActionIconProps as MantineActionIconProps } from '@mantine/core';
 import { ActionIcon as MantineActionIcon } from '@mantine/core';
 import { clsx } from 'clsx';
+import type { AppIcon } from '@/features/ui/icon/icon.tsx';
+import { Icon } from '@/features/ui/icon/icon.tsx';
 import styles from './icon-button.module.scss';
-import { type AppIcon, Icon } from '../../features/ui/icon/icon';
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children?: React.ReactNode;

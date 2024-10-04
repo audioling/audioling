@@ -1,19 +1,19 @@
 @use 'sass:math';
 
 @function rem($value) {
-  @return #{math.div(math.div($value, $value * 0 + 1), 16)}rem;
+    @return #{math.div(math.div($value, $value * 0 + 1), 16)}rem;
 }
 
 @mixin hover {
-  @media (hover: hover) {
-    &:hover {
-      @content;
+    @media (hover: hover) {
+        &:hover {
+            @content;
+        }
     }
-  }
 
-  @media (hover: none) {
-    &:active {
-      @content;
+    @media (hover: none) {
+        &:active {
+            @content;
+        }
     }
-  }
 }

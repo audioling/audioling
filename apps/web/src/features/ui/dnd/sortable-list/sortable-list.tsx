@@ -8,8 +8,8 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { DragHandle, SortableItem } from '@/components/dnd/sortable-item/sortable-item.tsx';
-import { SortableOverlay } from '@/components/dnd/sortable-overlay/sortable-overlay.tsx';
+import { DragHandle, SortableItem } from '@/features/ui/dnd/sortable-item/sortable-item.tsx';
+import { SortableOverlay } from '@/features/ui/dnd/sortable-overlay/sortable-overlay.tsx';
 
 interface BaseItem {
     id: UniqueIdentifier;

@@ -1,5 +1,4 @@
 import { Grid as MantineGrid } from '@mantine/core';
-import { motion } from 'framer-motion';
 
 interface GridProps extends React.ComponentPropsWithoutRef<'div'> {
     align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch';
@@ -45,7 +44,7 @@ export const GridCol = (props: GridColProps) => {
     );
 };
 
-export const MotionGrid = motion(Grid);
+// export const MotionGrid = motion(Grid);
 
 Grid.displayName = 'Grid';
 

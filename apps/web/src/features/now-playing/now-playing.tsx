@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { EntityTableVirtual } from '@/components/entity-table/entity-table-virtual.tsx';
-import { useEntityTable } from '@/components/entity-table/hooks/use-entity.table.ts';
-import type { Person } from '@/components/entity-table/make-data.ts';
-import { makeData } from '@/components/entity-table/make-data.ts';
+import { EntityTableVirtual } from '@/features/ui/entity-table/entity-table-virtual.tsx';
+import { useEntityTable } from '@/features/ui/entity-table/hooks/use-entity.table.ts';
+import type { Person } from '@/features/ui/entity-table/make-data.ts';
+import { makeData } from '@/features/ui/entity-table/make-data.ts';
 import { Group } from '@/features/ui/group/group';
 
 export function ListExample() {

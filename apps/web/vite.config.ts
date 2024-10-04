@@ -1,18 +1,12 @@
-import path from 'node:path';
-import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 import eslint from 'vite-plugin-eslint';
-import pkg from './package.json';
+import path from 'node:path';
+
+const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
-export default defineConfig({
-    clearScreen: false,
-    css: {
-        modules: {
-            generateScopedName: '[name]_[local]_[hash:base64:5]',
-            localsConvention: 'camelCase',
-        },
-    },
+export default defineConfig(async () => ({
     plugins: [
         react(),
         eslint({
@@ -25,16 +19,26 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
-    server: process.env.VSCODE_DEBUG
-        ? (() => {
-              const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL);
-              return {
-                  host: url.hostname,
-                  port: +url.port,
-              };
-          })()
-        : {
-              open: false,
-              port: 5174,
-          },
-});
+
+    // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+    //
+    // 1. prevent vite from obscuring rust errors
+    clearScreen: false,
+    // 2. tauri expects a fixed port, fail if that port is not available
+    server: {
+        port: 1420,
+        strictPort: true,
+        host: host || false,
+        hmr: host
+            ? {
+                  protocol: 'ws',
+                  host,
+                  port: 1421,
+              }
+            : undefined,
+        watch: {
+            // 3. tell vite to ignore watching `src-tauri`
+            ignored: ['**/src-tauri/**'],
+        },
+    },
+}));
