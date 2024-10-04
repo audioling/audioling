@@ -8,7 +8,7 @@
         "build:desktop": "tauri build",
         "dev": "tauri dev",
         "dev:web": "vite",
-        "generate:query-client": "openapi-rq -i http://localhost:4544/doc -c axios --output ./src/api/",
+        "generate:query-client": "openapi-rq -i http://localhost:4544/openapi -c axios --output ./src/api/",
         "lint": "eslint . --ext .ts,.tsx --fix",
         "preview": "vite preview"
     },

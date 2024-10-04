@@ -3,10 +3,11 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { GetPingResponse, PostAuthSignInData, PostAuthSignInResponse, PostAuthSignOutData, PostAuthSignOutResponse, GetApiUsersResponse, PostApiUsersData, PostApiUsersResponse, GetApiUsersByIdResponse, DeleteApiUsersByIdResponse, PutApiUsersByIdData, PutApiUsersByIdResponse, GetApiLibrariesResponse, PostApiLibrariesData, PostApiLibrariesResponse, GetApiLibrariesByIdResponse, PutApiLibrariesByIdData, PutApiLibrariesByIdResponse, DeleteApiLibrariesByIdResponse, GetApiJobsResponse, PostApiJobsResponse, DeleteApiJobsByIdData, DeleteApiJobsByIdResponse, GetApiAlbumsData, GetApiAlbumsResponse, GetApiAlbumsByIdData, GetApiAlbumsByIdResponse } from './types.gen';
+import type { GetPingResponse, PostAuthSignInData, PostAuthSignInResponse, PostAuthSignOutData, PostAuthSignOutResponse, PostAuthRegisterData, PostAuthRegisterResponse, GetApiUsersData, GetApiUsersResponse, PostApiUsersData, PostApiUsersResponse, GetApiUsersByIdData, GetApiUsersByIdResponse, DeleteApiUsersByIdData, DeleteApiUsersByIdResponse, PutApiUsersByIdData, PutApiUsersByIdResponse, GetApiLibrariesData, GetApiLibrariesResponse, PostApiLibrariesData, PostApiLibrariesResponse, GetApiLibrariesByIdData, GetApiLibrariesByIdResponse, PutApiLibrariesByIdData, PutApiLibrariesByIdResponse, DeleteApiLibrariesByIdData, DeleteApiLibrariesByIdResponse, GetApiByLibraryIdAlbumsData, GetApiByLibraryIdAlbumsResponse, GetApiByLibraryIdAlbumsByIdData, GetApiByLibraryIdAlbumsByIdResponse, PostApiByLibraryIdAlbumsByIdFavoriteData, PostApiByLibraryIdAlbumsByIdFavoriteResponse, DeleteApiByLibraryIdAlbumsByIdFavoriteData, DeleteApiByLibraryIdAlbumsByIdFavoriteResponse, GetApiByLibraryIdTracksData, GetApiByLibraryIdTracksResponse, GetApiByLibraryIdTracksByIdData, GetApiByLibraryIdTracksByIdResponse, PostApiByLibraryIdTracksByIdFavoriteData, PostApiByLibraryIdTracksByIdFavoriteResponse, DeleteApiByLibraryIdTracksByIdFavoriteData, DeleteApiByLibraryIdTracksByIdFavoriteResponse, GetApiByLibraryIdAlbumArtistsData, GetApiByLibraryIdAlbumArtistsResponse, GetApiByLibraryIdAlbumArtistsByIdData, GetApiByLibraryIdAlbumArtistsByIdResponse, GetApiByLibraryIdAlbumArtistsByIdAlbumsData, GetApiByLibraryIdAlbumArtistsByIdAlbumsResponse, GetApiByLibraryIdAlbumArtistsByIdTracksData, GetApiByLibraryIdAlbumArtistsByIdTracksResponse, PostApiByLibraryIdAlbumArtistsByIdFavoriteData, PostApiByLibraryIdAlbumArtistsByIdFavoriteResponse, DeleteApiByLibraryIdAlbumArtistsByIdFavoriteData, DeleteApiByLibraryIdAlbumArtistsByIdFavoriteResponse, GetApiByLibraryIdGenresData, GetApiByLibraryIdGenresResponse } from './types.gen';
 
 export class RootService {
     /**
+     * Ping the server
      * @returns unknown Ping the server
      * @throws ApiError
      */
@@ -19,11 +20,12 @@ export class RootService {
     
 }
 
-export class AuthService {
+export class AuthenticationService {
     /**
+     * Sign in
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns unknown Sign in to a audioling server
+     * @returns unknown Sign in to an audioling server
      * @throws ApiError
      */
     public static postAuthSignIn(data: PostAuthSignInData = {}): CancelablePromise<PostAuthSignInResponse> {
@@ -31,14 +33,19 @@ export class AuthService {
             method: 'POST',
             url: '/auth/sign-in',
             body: data.requestBody,
-            mediaType: 'application/json'
+            mediaType: 'application/json',
+            errors: {
+                401: 'Unauthorized',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Sign out
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns unknown Sign in to a audioling server
+     * @returns unknown Sign out from an audioling server
      * @throws ApiError
      */
     public static postAuthSignOut(data: PostAuthSignOutData = {}): CancelablePromise<PostAuthSignOutResponse> {
@@ -46,7 +53,30 @@ export class AuthService {
             method: 'POST',
             url: '/auth/sign-out',
             body: data.requestBody,
-            mediaType: 'application/json'
+            mediaType: 'application/json',
+            errors: {
+                401: 'Unauthorized',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Register
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Register to an audioling server
+     * @throws ApiError
+     */
+    public static postAuthRegister(data: PostAuthRegisterData = {}): CancelablePromise<PostAuthRegisterResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/auth/register',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                500: 'Internal server error'
+            }
         });
     }
     
@@ -54,17 +84,36 @@ export class AuthService {
 
 export class UsersService {
     /**
+     * Get all users
+     * @param data The data for the request.
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
      * @returns unknown Get users
      * @throws ApiError
      */
-    public static getApiUsers(): CancelablePromise<GetApiUsersResponse> {
+    public static getApiUsers(data: GetApiUsersData): CancelablePromise<GetApiUsersResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/users'
+            url: '/api/users',
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Create user
      * @param data The data for the request.
      * @param data.requestBody
      * @returns unknown Create user
@@ -75,44 +124,89 @@ export class UsersService {
             method: 'POST',
             url: '/api/users',
             body: data.requestBody,
-            mediaType: 'application/json'
+            mediaType: 'application/json',
+            errors: {
+                400: 'Bad request',
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                409: 'Conflict',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Get user by id
+     * @param data The data for the request.
+     * @param data.id
      * @returns unknown Get user
      * @throws ApiError
      */
-    public static getApiUsersById(): CancelablePromise<GetApiUsersByIdResponse> {
+    public static getApiUsersById(data: GetApiUsersByIdData): CancelablePromise<GetApiUsersByIdResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/users/{id}'
+            url: '/api/users/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Delete user by id
+     * @param data The data for the request.
+     * @param data.id
      * @returns unknown Delete user
      * @throws ApiError
      */
-    public static deleteApiUsersById(): CancelablePromise<DeleteApiUsersByIdResponse> {
+    public static deleteApiUsersById(data: DeleteApiUsersByIdData): CancelablePromise<DeleteApiUsersByIdResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/users/{id}'
+            url: '/api/users/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Update user by id
      * @param data The data for the request.
+     * @param data.id
      * @param data.requestBody
      * @returns unknown Update user
      * @throws ApiError
      */
-    public static putApiUsersById(data: PutApiUsersByIdData = {}): CancelablePromise<PutApiUsersByIdResponse> {
+    public static putApiUsersById(data: PutApiUsersByIdData): CancelablePromise<PutApiUsersByIdResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/users/{id}',
+            path: {
+                id: data.id
+            },
             body: data.requestBody,
-            mediaType: 'application/json'
+            mediaType: 'application/json',
+            errors: {
+                400: 'Bad request',
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
@@ -120,18 +214,37 @@ export class UsersService {
 
 export class LibrariesService {
     /**
-     * Get libraries
+     * Get all libraries
+     * @param data The data for the request.
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
      * @returns unknown Get libraries
      * @throws ApiError
      */
-    public static getApiLibraries(): CancelablePromise<GetApiLibrariesResponse> {
+    public static getApiLibraries(data: GetApiLibrariesData): CancelablePromise<GetApiLibrariesResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/libraries'
+            url: '/api/libraries',
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Create library
      * Create a library
      * @param data The data for the request.
      * @param data.requestBody
@@ -143,87 +256,92 @@ export class LibrariesService {
             method: 'POST',
             url: '/api/libraries',
             body: data.requestBody,
-            mediaType: 'application/json'
+            mediaType: 'application/json',
+            errors: {
+                400: 'Bad request',
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                409: 'Conflict',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
-     * Get a library
+     * Get library by id
+     * @param data The data for the request.
+     * @param data.id
      * @returns unknown Get a library
      * @throws ApiError
      */
-    public static getApiLibrariesById(): CancelablePromise<GetApiLibrariesByIdResponse> {
+    public static getApiLibrariesById(data: GetApiLibrariesByIdData): CancelablePromise<GetApiLibrariesByIdResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/libraries/{id}'
+            url: '/api/libraries/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
+     * Update library by id
      * Update a library
      * @param data The data for the request.
+     * @param data.id
      * @param data.requestBody
      * @returns unknown Update a library
      * @throws ApiError
      */
-    public static putApiLibrariesById(data: PutApiLibrariesByIdData = {}): CancelablePromise<PutApiLibrariesByIdResponse> {
+    public static putApiLibrariesById(data: PutApiLibrariesByIdData): CancelablePromise<PutApiLibrariesByIdResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/libraries/{id}',
+            path: {
+                id: data.id
+            },
             body: data.requestBody,
-            mediaType: 'application/json'
+            mediaType: 'application/json',
+            errors: {
+                400: 'Bad request',
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
         });
     }
     
     /**
-     * Delete a library
+     * Delete library by id
+     * @param data The data for the request.
+     * @param data.id
      * @returns unknown Delete a library
      * @throws ApiError
      */
-    public static deleteApiLibrariesById(): CancelablePromise<DeleteApiLibrariesByIdResponse> {
+    public static deleteApiLibrariesById(data: DeleteApiLibrariesByIdData): CancelablePromise<DeleteApiLibrariesByIdResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/libraries/{id}'
-        });
-    }
-    
-}
-
-export class JobsService {
-    /**
-     * @returns unknown Get jobs
-     * @throws ApiError
-     */
-    public static getApiJobs(): CancelablePromise<GetApiJobsResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/jobs'
-        });
-    }
-    
-    /**
-     * @returns unknown Create a job
-     * @throws ApiError
-     */
-    public static postApiJobs(): CancelablePromise<PostApiJobsResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/jobs'
-        });
-    }
-    
-    /**
-     * @param data The data for the request.
-     * @param data.id
-     * @returns unknown Delete a job
-     * @throws ApiError
-     */
-    public static deleteApiJobsById(data: DeleteApiJobsByIdData): CancelablePromise<DeleteApiJobsByIdResponse> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/api/jobs/{id}',
+            url: '/api/libraries/{id}',
             path: {
                 id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
             }
         });
     }
@@ -232,39 +350,440 @@ export class JobsService {
 
 export class AlbumsService {
     /**
+     * Get all albums
      * @param data The data for the request.
+     * @param data.sortBy
+     * @param data.sortOrder
      * @param data.limit
      * @param data.offset
-     * @param data.libraryId
-     * @param data.orderBy
+     * @param data.folderId
+     * @param data.searchTerm
      * @returns unknown Get albums
      * @throws ApiError
      */
-    public static getApiAlbums(data: GetApiAlbumsData): CancelablePromise<GetApiAlbumsResponse> {
+    public static getApiByLibraryIdAlbums(data: GetApiByLibraryIdAlbumsData): CancelablePromise<GetApiByLibraryIdAlbumsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/albums',
+            url: '/api/{libraryId}/albums',
             query: {
-                libraryId: data.libraryId,
-                orderBy: data.orderBy,
                 limit: data.limit,
-                offset: data.offset
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                422: 'Validation error',
+                500: 'Internal server error'
             }
         });
     }
     
     /**
+     * Get album tracks by id
      * @param data The data for the request.
      * @param data.id
-     * @returns unknown Get album
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
+     * @param data.folderId
+     * @param data.searchTerm
+     * @returns unknown Get album tracks
      * @throws ApiError
      */
-    public static getApiAlbumsById(data: GetApiAlbumsByIdData): CancelablePromise<GetApiAlbumsByIdResponse> {
+    public static getApiByLibraryIdAlbumsById(data: GetApiByLibraryIdAlbumsByIdData): CancelablePromise<GetApiByLibraryIdAlbumsByIdResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/albums/{id}',
+            url: '/api/{libraryId}/albums/{id}',
             path: {
                 id: data.id
+            },
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Add album favorite by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Add album to favorites
+     * @throws ApiError
+     */
+    public static postApiByLibraryIdAlbumsByIdFavorite(data: PostApiByLibraryIdAlbumsByIdFavoriteData): CancelablePromise<PostApiByLibraryIdAlbumsByIdFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/{libraryId}/albums/{id}/favorite',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Remove album favorite by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Remove album from favorites
+     * @throws ApiError
+     */
+    public static deleteApiByLibraryIdAlbumsByIdFavorite(data: DeleteApiByLibraryIdAlbumsByIdFavoriteData): CancelablePromise<DeleteApiByLibraryIdAlbumsByIdFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/{libraryId}/albums/{id}/favorite',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+}
+
+export class TracksService {
+    /**
+     * Get all tracks
+     * @param data The data for the request.
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
+     * @param data.folderId
+     * @param data.searchTerm
+     * @returns unknown Get tracks
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdTracks(data: GetApiByLibraryIdTracksData): CancelablePromise<GetApiByLibraryIdTracksResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/tracks',
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Get track by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Get album by id
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdTracksById(data: GetApiByLibraryIdTracksByIdData): CancelablePromise<GetApiByLibraryIdTracksByIdResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/tracks/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Add track favorite by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Add track favorite by id
+     * @throws ApiError
+     */
+    public static postApiByLibraryIdTracksByIdFavorite(data: PostApiByLibraryIdTracksByIdFavoriteData): CancelablePromise<PostApiByLibraryIdTracksByIdFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/{libraryId}/tracks/{id}/favorite',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Remove track favorite by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Remove track favorite by id
+     * @throws ApiError
+     */
+    public static deleteApiByLibraryIdTracksByIdFavorite(data: DeleteApiByLibraryIdTracksByIdFavoriteData): CancelablePromise<DeleteApiByLibraryIdTracksByIdFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/{libraryId}/tracks/{id}/favorite',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+}
+
+export class AlbumArtistsService {
+    /**
+     * Get all album artists
+     * @param data The data for the request.
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
+     * @param data.folderId
+     * @param data.searchTerm
+     * @returns unknown Get album artists
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdAlbumArtists(data: GetApiByLibraryIdAlbumArtistsData): CancelablePromise<GetApiByLibraryIdAlbumArtistsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/album-artists',
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Get album artist by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Get album artist by id
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdAlbumArtistsById(data: GetApiByLibraryIdAlbumArtistsByIdData): CancelablePromise<GetApiByLibraryIdAlbumArtistsByIdResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/album-artists/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Get album artist albums by id
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
+     * @param data.folderId
+     * @param data.searchTerm
+     * @returns unknown Get album artist albums
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdAlbumArtistsByIdAlbums(data: GetApiByLibraryIdAlbumArtistsByIdAlbumsData): CancelablePromise<GetApiByLibraryIdAlbumArtistsByIdAlbumsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/album-artists/{id}/albums',
+            path: {
+                id: data.id
+            },
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Get album artist tracks by id
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
+     * @param data.folderId
+     * @param data.searchTerm
+     * @returns unknown Get album artist tracks
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdAlbumArtistsByIdTracks(data: GetApiByLibraryIdAlbumArtistsByIdTracksData): CancelablePromise<GetApiByLibraryIdAlbumArtistsByIdTracksResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/album-artists/{id}/tracks',
+            path: {
+                id: data.id
+            },
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                422: 'Validation error',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Add album artist favorite by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Add album artist to favorites
+     * @throws ApiError
+     */
+    public static postApiByLibraryIdAlbumArtistsByIdFavorite(data: PostApiByLibraryIdAlbumArtistsByIdFavoriteData): CancelablePromise<PostApiByLibraryIdAlbumArtistsByIdFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/{libraryId}/album-artists/{id}/favorite',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+    /**
+     * Remove album artist favorite by id
+     * @param data The data for the request.
+     * @param data.id
+     * @returns unknown Remove album artist from favorites
+     * @throws ApiError
+     */
+    public static deleteApiByLibraryIdAlbumArtistsByIdFavorite(data: DeleteApiByLibraryIdAlbumArtistsByIdFavoriteData): CancelablePromise<DeleteApiByLibraryIdAlbumArtistsByIdFavoriteResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/{libraryId}/album-artists/{id}/favorite',
+            path: {
+                id: data.id
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                404: 'Not found',
+                500: 'Internal server error'
+            }
+        });
+    }
+    
+}
+
+export class GenresService {
+    /**
+     * Get all genres
+     * @param data The data for the request.
+     * @param data.sortBy
+     * @param data.sortOrder
+     * @param data.limit
+     * @param data.offset
+     * @param data.folderId
+     * @param data.searchTerm
+     * @returns unknown Get genres
+     * @throws ApiError
+     */
+    public static getApiByLibraryIdGenres(data: GetApiByLibraryIdGenresData): CancelablePromise<GetApiByLibraryIdGenresResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/{libraryId}/genres',
+            query: {
+                limit: data.limit,
+                offset: data.offset,
+                folderId: data.folderId,
+                searchTerm: data.searchTerm,
+                sortBy: data.sortBy,
+                sortOrder: data.sortOrder
+            },
+            errors: {
+                401: 'Unauthorized',
+                403: 'Permission denied',
+                422: 'Validation error',
+                500: 'Internal server error'
             }
         });
     }

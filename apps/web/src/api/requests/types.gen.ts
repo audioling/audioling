@@ -22,21 +22,39 @@ export type PostAuthSignInResponse = {
         isEnabled: boolean;
         updatedAt: string;
         username: string;
-        refreshToken: string;
-        token: string;
+        token: {
+            id: string;
+            token: string;
+        };
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
 };
 
 export type PostAuthSignOutData = {
     requestBody?: {
-        refreshToken?: string;
+        token?: string;
     };
 };
 
 export type PostAuthSignOutResponse = unknown;
+
+export type PostAuthRegisterData = {
+    requestBody?: {
+        password: string;
+        username: string;
+    };
+};
+
+export type PostAuthRegisterResponse = unknown;
+
+export type GetApiUsersData = {
+    limit?: string;
+    offset?: string;
+    sortBy: 'createdAt' | 'displayName' | 'name' | 'updatedAt';
+    sortOrder: 'asc' | 'desc';
+};
 
 export type GetApiUsersResponse = {
     data: Array<{
@@ -48,16 +66,18 @@ export type GetApiUsersResponse = {
         updatedAt: string;
         username: string;
     }>;
-    links: {
-        next: string;
-        prev: string;
-        self: string;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
     };
 };
 
 export type PostApiUsersData = {
     requestBody?: {
         displayName?: string;
+        isAdmin?: boolean;
+        isEnabled?: boolean;
         password: string;
         username: string;
     };
@@ -73,9 +93,13 @@ export type PostApiUsersResponse = {
         updatedAt: string;
         username: string;
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
+};
+
+export type GetApiUsersByIdData = {
+    id: string;
 };
 
 export type GetApiUsersByIdResponse = {
@@ -88,18 +112,25 @@ export type GetApiUsersByIdResponse = {
         updatedAt: string;
         username: string;
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
+};
+
+export type DeleteApiUsersByIdData = {
+    id: string;
 };
 
 export type DeleteApiUsersByIdResponse = unknown;
 
 export type PutApiUsersByIdData = {
+    id: string;
     requestBody?: {
         displayName?: string;
-        password: string;
-        username: string;
+        isAdmin?: boolean;
+        isEnabled?: boolean;
+        password?: string;
+        username?: string;
     };
 };
 
@@ -113,215 +144,694 @@ export type PutApiUsersByIdResponse = {
         updatedAt: string;
         username: string;
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
+};
+
+export type GetApiLibrariesData = {
+    limit?: string;
+    offset?: string;
+    sortBy: 'createdAt' | 'name' | 'type' | 'updatedAt';
+    sortOrder: 'asc' | 'desc';
 };
 
 export type GetApiLibrariesResponse = {
     data: Array<{
+        baseUrl: string;
         createdAt: string;
+        displayName: string;
+        folders: Array<{
+            id: string;
+            name: string;
+        }>;
         id: string;
-        name: string;
-        scanUrl: string;
-        scanUsername: string;
-        type: string;
+        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
         updatedAt: string;
     }>;
-    links: {
-        next: string;
-        prev: string;
-        self: string;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
     };
 };
 
 export type PostApiLibrariesData = {
     requestBody?: {
-        name: string;
+        baseUrl: string;
+        displayName: string;
+        isPublic?: boolean;
         password: string;
-        type: string;
-        url: string;
+        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
         username: string;
     };
 };
 
 export type PostApiLibrariesResponse = {
     data: {
+        baseUrl: string;
         createdAt: string;
+        displayName: string;
+        folders: Array<{
+            id: string;
+            name: string;
+        }>;
         id: string;
-        name: string;
-        scanUrl: string;
-        scanUsername: string;
-        type: string;
+        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
         updatedAt: string;
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
+};
+
+export type GetApiLibrariesByIdData = {
+    id: string;
 };
 
 export type GetApiLibrariesByIdResponse = {
     data: {
+        baseUrl: string;
         createdAt: string;
+        displayName: string;
+        folders: Array<{
+            id: string;
+            name: string;
+        }>;
         id: string;
-        name: string;
-        scanUrl: string;
-        scanUsername: string;
-        type: string;
+        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
         updatedAt: string;
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
 };
 
 export type PutApiLibrariesByIdData = {
+    id: string;
     requestBody?: {
-        name: string;
+        baseUrl: string;
+        displayName: string;
+        isPublic?: boolean;
         password: string;
-        type: string;
-        url: string;
+        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
         username: string;
     };
 };
 
 export type PutApiLibrariesByIdResponse = {
     data: {
+        baseUrl: string;
         createdAt: string;
+        displayName: string;
+        folders: Array<{
+            id: string;
+            name: string;
+        }>;
         id: string;
-        name: string;
-        scanUrl: string;
-        scanUsername: string;
-        type: string;
+        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
         updatedAt: string;
     };
-    links: {
-        self: string;
+    [key: string]: {
+        [key: string]: unknown;
     };
+};
+
+export type DeleteApiLibrariesByIdData = {
+    id: string;
 };
 
 export type DeleteApiLibrariesByIdResponse = unknown;
 
-export type GetApiJobsResponse = {
+export type GetApiByLibraryIdAlbumsData = {
+    folderId?: Array<(string)>;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'albumArtist' | 'artist' | 'communityRating' | 'criticRating' | 'dateAdded' | 'datePlayed' | 'duration' | 'isFavorite' | 'name' | 'playCount' | 'random' | 'releaseDate' | 'trackCount' | 'year';
+    sortOrder: 'asc' | 'desc';
+};
+
+export type GetApiByLibraryIdAlbumsResponse = {
     data: Array<{
-        createdAt: string;
-        id: string;
-        libraryId: string;
-        message: string | null;
-        status: string;
-        type: string;
-        updatedAt: string;
-    }>;
-    links: {
-        next: string;
-        prev: string;
-        self: string;
-    };
-};
-
-export type PostApiJobsResponse = {
-    data: {
-        createdAt: string;
-        id: string;
-        libraryId: string;
-        message: string | null;
-        status: string;
-        type: string;
-        updatedAt: string;
-    };
-    links: {
-        self: string;
-    };
-};
-
-export type DeleteApiJobsByIdData = {
-    id: string;
-};
-
-export type DeleteApiJobsByIdResponse = unknown;
-
-export type GetApiAlbumsData = {
-    libraryId?: Array<(string)>;
-    limit: string;
-    offset: string;
-    orderBy?: Array<(string)>;
-};
-
-export type GetApiAlbumsResponse = {
-    data: Array<{
-        albumArtists: Array<{
+        artistId: string | null;
+        artists: Array<{
             id: string;
-            isDeleted: boolean;
+            imageUrl: string | null;
             name: string;
-            remoteId: string;
         }>;
-        createdAt: string;
+        comment: string | null;
+        createdDate: string;
         description: string | null;
+        discTitles: Array<{
+            disc: number;
+            title: string;
+        }>;
+        /**
+         * Duration in seconds
+         */
+        duration: number;
+        external: {
+            musicBrainzId?: string;
+        };
         genres: Array<{
             id: string;
+            imageUrl: string | null;
             name: string;
         }>;
         id: string;
         isCompilation: boolean;
-        isDeleted: boolean;
-        lastPlayedAt: string | null;
+        itemType: 'album';
         libraryId: string;
+        moods: Array<{
+            id: string;
+            name: string;
+        }>;
         name: string;
-        playCount: number;
-        releaseDate: string;
-        releaseYear: number;
-        remoteCreatedAt: string;
-        remoteId: string;
+        originalReleaseDate: string | null;
+        recordLabels: Array<{
+            id: string;
+            name: string;
+        }>;
+        releaseDate: string | null;
+        releaseTypes: Array<{
+            id: string;
+            name: string;
+        }>;
+        releaseYear: number | null;
+        size: number | null;
+        songCount: number | null;
         sortName: string;
-        updatedAt: string;
+        updatedDate: string | null;
         userFavorite: boolean;
-        userPlayCount: number;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userPlayCount: number | null;
         userRating: number | null;
+        userRatingDate: string | null;
     }>;
-    links: {
-        next: string;
-        prev: string;
-        self: string;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
     };
 };
 
-export type GetApiAlbumsByIdData = {
+export type GetApiByLibraryIdAlbumsByIdData = {
+    folderId?: Array<(string)>;
     id: string;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'album' | 'albumArtist' | 'artist' | 'bpm' | 'channels' | 'comment' | 'duration' | 'genre' | 'id' | 'isFavorite' | 'name' | 'playCount' | 'random' | 'rating' | 'recentlyAdded' | 'recentlyPlayed' | 'releaseDate' | 'year';
+    sortOrder: 'asc' | 'desc';
 };
 
-export type GetApiAlbumsByIdResponse = {
-    data: {
+export type GetApiByLibraryIdAlbumsByIdResponse = {
+    data: Array<{
+        album: string | null;
         albumArtists: Array<{
             id: string;
-            isDeleted: boolean;
+            imageUrl: string | null;
             name: string;
-            remoteId: string;
         }>;
-        createdAt: string;
-        description: string | null;
+        albumId: string | null;
+        artistId: string | null;
+        artistName: string | null;
+        artists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        bitDepth: number | null;
+        bitRate: number | null;
+        bpm: number | null;
+        channelCount: number | null;
+        comment: string | null;
+        createdDate: string | null;
+        discNumber: string | null;
+        discSubtitle: string | null;
+        duration: number;
+        external: {
+            [key: string]: unknown;
+        };
+        fileContainer: string | null;
+        fileName: string | null;
+        filePath: string | null;
+        fileSize: number | null;
         genres: Array<{
             id: string;
+            imageUrl: string | null;
             name: string;
         }>;
         id: string;
         isCompilation: boolean;
-        isDeleted: boolean;
-        lastPlayedAt: string | null;
+        itemType: 'track';
         libraryId: string;
         name: string;
-        playCount: number;
-        releaseDate: string;
-        releaseYear: number;
-        remoteCreatedAt: string;
-        remoteId: string;
+        releaseYear: number | null;
+        rgAlbumGain: number | null;
+        rgAlbumPeak: number | null;
+        rgTrackGain: number | null;
+        rgTrackPeak: number | null;
         sortName: string;
-        updatedAt: string;
+        trackNumber: number | null;
+        updatedDate: string | null;
         userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
         userPlayCount: number;
         userRating: number | null;
+    }>;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
     };
-    links: {
-        self: string;
+};
+
+export type PostApiByLibraryIdAlbumsByIdFavoriteData = {
+    id: string;
+};
+
+export type PostApiByLibraryIdAlbumsByIdFavoriteResponse = unknown;
+
+export type DeleteApiByLibraryIdAlbumsByIdFavoriteData = {
+    id: string;
+};
+
+export type DeleteApiByLibraryIdAlbumsByIdFavoriteResponse = unknown;
+
+export type GetApiByLibraryIdTracksData = {
+    folderId?: Array<(string)>;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'album' | 'albumArtist' | 'artist' | 'bpm' | 'channels' | 'comment' | 'duration' | 'genre' | 'id' | 'isFavorite' | 'name' | 'playCount' | 'random' | 'rating' | 'recentlyAdded' | 'recentlyPlayed' | 'releaseDate' | 'year';
+    sortOrder: 'asc' | 'desc';
+};
+
+export type GetApiByLibraryIdTracksResponse = {
+    data: Array<{
+        album: string | null;
+        albumArtists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        albumId: string | null;
+        artistId: string | null;
+        artistName: string | null;
+        artists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        bitDepth: number | null;
+        bitRate: number | null;
+        bpm: number | null;
+        channelCount: number | null;
+        comment: string | null;
+        createdDate: string | null;
+        discNumber: string | null;
+        discSubtitle: string | null;
+        duration: number;
+        external: {
+            [key: string]: unknown;
+        };
+        fileContainer: string | null;
+        fileName: string | null;
+        filePath: string | null;
+        fileSize: number | null;
+        genres: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        id: string;
+        isCompilation: boolean;
+        itemType: 'track';
+        libraryId: string;
+        name: string;
+        releaseYear: number | null;
+        rgAlbumGain: number | null;
+        rgAlbumPeak: number | null;
+        rgTrackGain: number | null;
+        rgTrackPeak: number | null;
+        sortName: string;
+        trackNumber: number | null;
+        updatedDate: string | null;
+        userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userPlayCount: number;
+        userRating: number | null;
+    }>;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
+    };
+};
+
+export type GetApiByLibraryIdTracksByIdData = {
+    id: string;
+};
+
+export type GetApiByLibraryIdTracksByIdResponse = {
+    data: {
+        artistId: string | null;
+        artists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        comment: string | null;
+        createdDate: string;
+        description: string | null;
+        discTitles: Array<{
+            disc: number;
+            title: string;
+        }>;
+        /**
+         * Duration in seconds
+         */
+        duration: number;
+        external: {
+            musicBrainzId?: string;
+        };
+        genres: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        id: string;
+        isCompilation: boolean;
+        itemType: 'album';
+        libraryId: string;
+        moods: Array<{
+            id: string;
+            name: string;
+        }>;
+        name: string;
+        originalReleaseDate: string | null;
+        recordLabels: Array<{
+            id: string;
+            name: string;
+        }>;
+        releaseDate: string | null;
+        releaseTypes: Array<{
+            id: string;
+            name: string;
+        }>;
+        releaseYear: number | null;
+        size: number | null;
+        songCount: number | null;
+        sortName: string;
+        updatedDate: string | null;
+        userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userPlayCount: number | null;
+        userRating: number | null;
+        userRatingDate: string | null;
+    };
+    [key: string]: {
+        [key: string]: unknown;
+    };
+};
+
+export type PostApiByLibraryIdTracksByIdFavoriteData = {
+    id: string;
+};
+
+export type PostApiByLibraryIdTracksByIdFavoriteResponse = unknown;
+
+export type DeleteApiByLibraryIdTracksByIdFavoriteData = {
+    id: string;
+};
+
+export type DeleteApiByLibraryIdTracksByIdFavoriteResponse = unknown;
+
+export type GetApiByLibraryIdAlbumArtistsData = {
+    folderId?: Array<(string)>;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'album' | 'albumCount' | 'dateAdded' | 'duration' | 'isFavorite' | 'name' | 'playCount' | 'random' | 'rating' | 'releaseDate' | 'trackCount';
+    sortOrder: 'asc' | 'desc';
+};
+
+export type GetApiByLibraryIdAlbumArtistsResponse = {
+    data: Array<{
+        albumCount: number | null;
+        biography: string | null;
+        createdDate: string | null;
+        duration: number | null;
+        external: {
+            musicBrainzId?: string;
+        };
+        genres: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        id: string;
+        itemType: 'albumArtist';
+        libraryId: string;
+        name: string;
+        songCount: number | null;
+        updatedDate: string | null;
+        userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userRating: number | null;
+        userRatingDate: string | null;
+    }>;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
+    };
+};
+
+export type GetApiByLibraryIdAlbumArtistsByIdData = {
+    id: string;
+};
+
+export type GetApiByLibraryIdAlbumArtistsByIdResponse = {
+    data: {
+        albumCount: number | null;
+        biography: string | null;
+        createdDate: string | null;
+        duration: number | null;
+        external: {
+            musicBrainzId?: string;
+        };
+        genres: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        id: string;
+        itemType: 'albumArtist';
+        libraryId: string;
+        name: string;
+        songCount: number | null;
+        updatedDate: string | null;
+        userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userRating: number | null;
+        userRatingDate: string | null;
+    };
+    [key: string]: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetApiByLibraryIdAlbumArtistsByIdAlbumsData = {
+    folderId?: Array<(string)>;
+    id: string;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'albumArtist' | 'artist' | 'communityRating' | 'criticRating' | 'dateAdded' | 'datePlayed' | 'duration' | 'isFavorite' | 'name' | 'playCount' | 'random' | 'releaseDate' | 'trackCount' | 'year';
+    sortOrder: 'asc' | 'desc';
+};
+
+export type GetApiByLibraryIdAlbumArtistsByIdAlbumsResponse = {
+    data: Array<{
+        artistId: string | null;
+        artists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        comment: string | null;
+        createdDate: string;
+        description: string | null;
+        discTitles: Array<{
+            disc: number;
+            title: string;
+        }>;
+        /**
+         * Duration in seconds
+         */
+        duration: number;
+        external: {
+            musicBrainzId?: string;
+        };
+        genres: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        id: string;
+        isCompilation: boolean;
+        itemType: 'album';
+        libraryId: string;
+        moods: Array<{
+            id: string;
+            name: string;
+        }>;
+        name: string;
+        originalReleaseDate: string | null;
+        recordLabels: Array<{
+            id: string;
+            name: string;
+        }>;
+        releaseDate: string | null;
+        releaseTypes: Array<{
+            id: string;
+            name: string;
+        }>;
+        releaseYear: number | null;
+        size: number | null;
+        songCount: number | null;
+        sortName: string;
+        updatedDate: string | null;
+        userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userPlayCount: number | null;
+        userRating: number | null;
+        userRatingDate: string | null;
+    }>;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
+    };
+};
+
+export type GetApiByLibraryIdAlbumArtistsByIdTracksData = {
+    folderId?: Array<(string)>;
+    id: string;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'album' | 'albumArtist' | 'artist' | 'bpm' | 'channels' | 'comment' | 'duration' | 'genre' | 'id' | 'isFavorite' | 'name' | 'playCount' | 'random' | 'rating' | 'recentlyAdded' | 'recentlyPlayed' | 'releaseDate' | 'year';
+    sortOrder: 'asc' | 'desc';
+};
+
+export type GetApiByLibraryIdAlbumArtistsByIdTracksResponse = {
+    data: Array<{
+        album: string | null;
+        albumArtists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        albumId: string | null;
+        artistId: string | null;
+        artistName: string | null;
+        artists: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        bitDepth: number | null;
+        bitRate: number | null;
+        bpm: number | null;
+        channelCount: number | null;
+        comment: string | null;
+        createdDate: string | null;
+        discNumber: string | null;
+        discSubtitle: string | null;
+        duration: number;
+        external: {
+            [key: string]: unknown;
+        };
+        fileContainer: string | null;
+        fileName: string | null;
+        filePath: string | null;
+        fileSize: number | null;
+        genres: Array<{
+            id: string;
+            imageUrl: string | null;
+            name: string;
+        }>;
+        id: string;
+        isCompilation: boolean;
+        itemType: 'track';
+        libraryId: string;
+        name: string;
+        releaseYear: number | null;
+        rgAlbumGain: number | null;
+        rgAlbumPeak: number | null;
+        rgTrackGain: number | null;
+        rgTrackPeak: number | null;
+        sortName: string;
+        trackNumber: number | null;
+        updatedDate: string | null;
+        userFavorite: boolean;
+        userFavoriteDate: string | null;
+        userLastPlayedDate: string | null;
+        userPlayCount: number;
+        userRating: number | null;
+    }>;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
+    };
+};
+
+export type PostApiByLibraryIdAlbumArtistsByIdFavoriteData = {
+    id: string;
+};
+
+export type PostApiByLibraryIdAlbumArtistsByIdFavoriteResponse = unknown;
+
+export type DeleteApiByLibraryIdAlbumArtistsByIdFavoriteData = {
+    id: string;
+};
+
+export type DeleteApiByLibraryIdAlbumArtistsByIdFavoriteResponse = unknown;
+
+export type GetApiByLibraryIdGenresData = {
+    folderId?: Array<(string)>;
+    limit?: string;
+    offset?: string;
+    searchTerm?: string;
+    sortBy: 'albumCount' | 'name' | 'trackCount';
+    sortOrder: 'asc' | 'desc';
+};
+
+export type GetApiByLibraryIdGenresResponse = {
+    data: Array<{
+        albumCount: number | null;
+        id: string;
+        itemType: 'genre';
+        libraryId: string;
+        name: string;
+        trackCount: number | null;
+    }>;
+    meta: {
+        next: boolean;
+        prev: boolean;
+        totalRecordCount: number;
     };
 };
 
@@ -345,7 +855,7 @@ export type $OpenApiTs = {
             req: PostAuthSignInData;
             res: {
                 /**
-                 * Sign in to a audioling server
+                 * Sign in to an audioling server
                  */
                 200: {
                     data: {
@@ -356,12 +866,34 @@ export type $OpenApiTs = {
                         isEnabled: boolean;
                         updatedAt: string;
                         username: string;
-                        refreshToken: string;
-                        token: string;
+                        token: {
+                            id: string;
+                            token: string;
+                        };
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
@@ -371,14 +903,56 @@ export type $OpenApiTs = {
             req: PostAuthSignOutData;
             res: {
                 /**
-                 * Sign in to a audioling server
+                 * Sign out from an audioling server
                  */
-                200: unknown;
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/auth/register': {
+        post: {
+            req: PostAuthRegisterData;
+            res: {
+                /**
+                 * Register to an audioling server
+                 */
+                204: unknown;
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
             };
         };
     };
     '/api/users': {
         get: {
+            req: GetApiUsersData;
             res: {
                 /**
                  * Get users
@@ -393,11 +967,51 @@ export type $OpenApiTs = {
                         updatedAt: string;
                         username: string;
                     }>;
-                    links: {
-                        next: string;
-                        prev: string;
-                        self: string;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
@@ -417,15 +1031,72 @@ export type $OpenApiTs = {
                         updatedAt: string;
                         username: string;
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Bad request
+                 */
+                400: {
+                    message: string;
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Conflict
+                 */
+                409: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
     };
     '/api/users/{id}': {
         get: {
+            req: GetApiUsersByIdData;
             res: {
                 /**
                  * Get user
@@ -440,18 +1111,99 @@ export type $OpenApiTs = {
                         updatedAt: string;
                         username: string;
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
         delete: {
+            req: DeleteApiUsersByIdData;
             res: {
                 /**
                  * Delete user
                  */
                 204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
             };
         };
         put: {
@@ -470,34 +1222,144 @@ export type $OpenApiTs = {
                         updatedAt: string;
                         username: string;
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Bad request
+                 */
+                400: {
+                    message: string;
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
     };
     '/api/libraries': {
         get: {
+            req: GetApiLibrariesData;
             res: {
                 /**
                  * Get libraries
                  */
-                201: {
+                200: {
                     data: Array<{
+                        baseUrl: string;
                         createdAt: string;
+                        displayName: string;
+                        folders: Array<{
+                            id: string;
+                            name: string;
+                        }>;
                         id: string;
-                        name: string;
-                        scanUrl: string;
-                        scanUsername: string;
-                        type: string;
+                        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
                         updatedAt: string;
                     }>;
-                    links: {
-                        next: string;
-                        prev: string;
-                        self: string;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
@@ -509,40 +1371,163 @@ export type $OpenApiTs = {
                  */
                 201: {
                     data: {
+                        baseUrl: string;
                         createdAt: string;
+                        displayName: string;
+                        folders: Array<{
+                            id: string;
+                            name: string;
+                        }>;
                         id: string;
-                        name: string;
-                        scanUrl: string;
-                        scanUsername: string;
-                        type: string;
+                        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
                         updatedAt: string;
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Bad request
+                 */
+                400: {
+                    message: string;
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Conflict
+                 */
+                409: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
     };
     '/api/libraries/{id}': {
         get: {
+            req: GetApiLibrariesByIdData;
             res: {
                 /**
                  * Get a library
                  */
                 200: {
                     data: {
+                        baseUrl: string;
                         createdAt: string;
+                        displayName: string;
+                        folders: Array<{
+                            id: string;
+                            name: string;
+                        }>;
                         id: string;
-                        name: string;
-                        scanUrl: string;
-                        scanUsername: string;
-                        type: string;
+                        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
                         updatedAt: string;
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
@@ -554,174 +1539,1368 @@ export type $OpenApiTs = {
                  */
                 200: {
                     data: {
+                        baseUrl: string;
                         createdAt: string;
+                        displayName: string;
+                        folders: Array<{
+                            id: string;
+                            name: string;
+                        }>;
                         id: string;
-                        name: string;
-                        scanUrl: string;
-                        scanUsername: string;
-                        type: string;
+                        type: 'JELLYFIN' | 'NAVIDROME' | 'SUBSONIC';
                         updatedAt: string;
                     };
-                    links: {
-                        self: string;
+                    [key: string]: {
+                        [key: string]: unknown;
                     };
+                };
+                /**
+                 * Bad request
+                 */
+                400: {
+                    message: string;
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
         delete: {
+            req: DeleteApiLibrariesByIdData;
             res: {
                 /**
                  * Delete a library
                  */
                 204: unknown;
-            };
-        };
-    };
-    '/api/jobs': {
-        get: {
-            res: {
                 /**
-                 * Get jobs
+                 * Unauthorized
                  */
-                200: {
-                    data: Array<{
-                        createdAt: string;
-                        id: string;
-                        libraryId: string;
-                        message: string | null;
-                        status: string;
-                        type: string;
-                        updatedAt: string;
-                    }>;
-                    links: {
-                        next: string;
-                        prev: string;
-                        self: string;
-                    };
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
-        post: {
-            res: {
-                /**
-                 * Create a job
-                 */
-                201: {
-                    data: {
-                        createdAt: string;
-                        id: string;
-                        libraryId: string;
-                        message: string | null;
-                        status: string;
-                        type: string;
-                        updatedAt: string;
-                    };
-                    links: {
-                        self: string;
-                    };
-                };
-            };
-        };
     };
-    '/api/jobs/{id}': {
-        delete: {
-            req: DeleteApiJobsByIdData;
-            res: {
-                /**
-                 * Delete a job
-                 */
-                200: unknown;
-            };
-        };
-    };
-    '/api/albums': {
+    '/api/{libraryId}/albums': {
         get: {
-            req: GetApiAlbumsData;
+            req: GetApiByLibraryIdAlbumsData;
             res: {
                 /**
                  * Get albums
                  */
                 200: {
                     data: Array<{
-                        albumArtists: Array<{
+                        artistId: string | null;
+                        artists: Array<{
                             id: string;
-                            isDeleted: boolean;
+                            imageUrl: string | null;
                             name: string;
-                            remoteId: string;
                         }>;
-                        createdAt: string;
+                        comment: string | null;
+                        createdDate: string;
                         description: string | null;
+                        discTitles: Array<{
+                            disc: number;
+                            title: string;
+                        }>;
+                        /**
+                         * Duration in seconds
+                         */
+                        duration: number;
+                        external: {
+                            musicBrainzId?: string;
+                        };
                         genres: Array<{
                             id: string;
+                            imageUrl: string | null;
                             name: string;
                         }>;
                         id: string;
                         isCompilation: boolean;
-                        isDeleted: boolean;
-                        lastPlayedAt: string | null;
+                        itemType: 'album';
                         libraryId: string;
+                        moods: Array<{
+                            id: string;
+                            name: string;
+                        }>;
                         name: string;
-                        playCount: number;
-                        releaseDate: string;
-                        releaseYear: number;
-                        remoteCreatedAt: string;
-                        remoteId: string;
+                        originalReleaseDate: string | null;
+                        recordLabels: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        releaseDate: string | null;
+                        releaseTypes: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        releaseYear: number | null;
+                        size: number | null;
+                        songCount: number | null;
                         sortName: string;
-                        updatedAt: string;
+                        updatedDate: string | null;
                         userFavorite: boolean;
-                        userPlayCount: number;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userPlayCount: number | null;
                         userRating: number | null;
+                        userRatingDate: string | null;
                     }>;
-                    links: {
-                        next: string;
-                        prev: string;
-                        self: string;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
     };
-    '/api/albums/{id}': {
+    '/api/{libraryId}/albums/{id}': {
         get: {
-            req: GetApiAlbumsByIdData;
+            req: GetApiByLibraryIdAlbumsByIdData;
             res: {
                 /**
-                 * Get album
+                 * Get album tracks
                  */
                 200: {
-                    data: {
+                    data: Array<{
+                        album: string | null;
                         albumArtists: Array<{
                             id: string;
-                            isDeleted: boolean;
+                            imageUrl: string | null;
                             name: string;
-                            remoteId: string;
                         }>;
-                        createdAt: string;
-                        description: string | null;
+                        albumId: string | null;
+                        artistId: string | null;
+                        artistName: string | null;
+                        artists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        bitDepth: number | null;
+                        bitRate: number | null;
+                        bpm: number | null;
+                        channelCount: number | null;
+                        comment: string | null;
+                        createdDate: string | null;
+                        discNumber: string | null;
+                        discSubtitle: string | null;
+                        duration: number;
+                        external: {
+                            [key: string]: unknown;
+                        };
+                        fileContainer: string | null;
+                        fileName: string | null;
+                        filePath: string | null;
+                        fileSize: number | null;
                         genres: Array<{
                             id: string;
+                            imageUrl: string | null;
                             name: string;
                         }>;
                         id: string;
                         isCompilation: boolean;
-                        isDeleted: boolean;
-                        lastPlayedAt: string | null;
+                        itemType: 'track';
                         libraryId: string;
                         name: string;
-                        playCount: number;
-                        releaseDate: string;
-                        releaseYear: number;
-                        remoteCreatedAt: string;
-                        remoteId: string;
+                        releaseYear: number | null;
+                        rgAlbumGain: number | null;
+                        rgAlbumPeak: number | null;
+                        rgTrackGain: number | null;
+                        rgTrackPeak: number | null;
                         sortName: string;
-                        updatedAt: string;
+                        trackNumber: number | null;
+                        updatedDate: string | null;
                         userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
                         userPlayCount: number;
                         userRating: number | null;
+                    }>;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
                     };
-                    links: {
-                        self: string;
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/albums/{id}/favorite': {
+        post: {
+            req: PostApiByLibraryIdAlbumsByIdFavoriteData;
+            res: {
+                /**
+                 * Add album to favorites
+                 */
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+        delete: {
+            req: DeleteApiByLibraryIdAlbumsByIdFavoriteData;
+            res: {
+                /**
+                 * Remove album from favorites
+                 */
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/tracks': {
+        get: {
+            req: GetApiByLibraryIdTracksData;
+            res: {
+                /**
+                 * Get tracks
+                 */
+                200: {
+                    data: Array<{
+                        album: string | null;
+                        albumArtists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        albumId: string | null;
+                        artistId: string | null;
+                        artistName: string | null;
+                        artists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        bitDepth: number | null;
+                        bitRate: number | null;
+                        bpm: number | null;
+                        channelCount: number | null;
+                        comment: string | null;
+                        createdDate: string | null;
+                        discNumber: string | null;
+                        discSubtitle: string | null;
+                        duration: number;
+                        external: {
+                            [key: string]: unknown;
+                        };
+                        fileContainer: string | null;
+                        fileName: string | null;
+                        filePath: string | null;
+                        fileSize: number | null;
+                        genres: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        id: string;
+                        isCompilation: boolean;
+                        itemType: 'track';
+                        libraryId: string;
+                        name: string;
+                        releaseYear: number | null;
+                        rgAlbumGain: number | null;
+                        rgAlbumPeak: number | null;
+                        rgTrackGain: number | null;
+                        rgTrackPeak: number | null;
+                        sortName: string;
+                        trackNumber: number | null;
+                        updatedDate: string | null;
+                        userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userPlayCount: number;
+                        userRating: number | null;
+                    }>;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
                     };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/tracks/{id}': {
+        get: {
+            req: GetApiByLibraryIdTracksByIdData;
+            res: {
+                /**
+                 * Get album by id
+                 */
+                200: {
+                    data: {
+                        artistId: string | null;
+                        artists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        comment: string | null;
+                        createdDate: string;
+                        description: string | null;
+                        discTitles: Array<{
+                            disc: number;
+                            title: string;
+                        }>;
+                        /**
+                         * Duration in seconds
+                         */
+                        duration: number;
+                        external: {
+                            musicBrainzId?: string;
+                        };
+                        genres: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        id: string;
+                        isCompilation: boolean;
+                        itemType: 'album';
+                        libraryId: string;
+                        moods: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        name: string;
+                        originalReleaseDate: string | null;
+                        recordLabels: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        releaseDate: string | null;
+                        releaseTypes: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        releaseYear: number | null;
+                        size: number | null;
+                        songCount: number | null;
+                        sortName: string;
+                        updatedDate: string | null;
+                        userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userPlayCount: number | null;
+                        userRating: number | null;
+                        userRatingDate: string | null;
+                    };
+                    [key: string]: {
+                        [key: string]: unknown;
+                    };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/tracks/{id}/favorite': {
+        post: {
+            req: PostApiByLibraryIdTracksByIdFavoriteData;
+            res: {
+                /**
+                 * Add track favorite by id
+                 */
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+        delete: {
+            req: DeleteApiByLibraryIdTracksByIdFavoriteData;
+            res: {
+                /**
+                 * Remove track favorite by id
+                 */
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/album-artists': {
+        get: {
+            req: GetApiByLibraryIdAlbumArtistsData;
+            res: {
+                /**
+                 * Get album artists
+                 */
+                200: {
+                    data: Array<{
+                        albumCount: number | null;
+                        biography: string | null;
+                        createdDate: string | null;
+                        duration: number | null;
+                        external: {
+                            musicBrainzId?: string;
+                        };
+                        genres: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        id: string;
+                        itemType: 'albumArtist';
+                        libraryId: string;
+                        name: string;
+                        songCount: number | null;
+                        updatedDate: string | null;
+                        userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userRating: number | null;
+                        userRatingDate: string | null;
+                    }>;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
+                    };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/album-artists/{id}': {
+        get: {
+            req: GetApiByLibraryIdAlbumArtistsByIdData;
+            res: {
+                /**
+                 * Get album artist by id
+                 */
+                200: {
+                    data: {
+                        albumCount: number | null;
+                        biography: string | null;
+                        createdDate: string | null;
+                        duration: number | null;
+                        external: {
+                            musicBrainzId?: string;
+                        };
+                        genres: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        id: string;
+                        itemType: 'albumArtist';
+                        libraryId: string;
+                        name: string;
+                        songCount: number | null;
+                        updatedDate: string | null;
+                        userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userRating: number | null;
+                        userRatingDate: string | null;
+                    };
+                    [key: string]: {
+                        [key: string]: unknown;
+                    };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/album-artists/{id}/albums': {
+        get: {
+            req: GetApiByLibraryIdAlbumArtistsByIdAlbumsData;
+            res: {
+                /**
+                 * Get album artist albums
+                 */
+                200: {
+                    data: Array<{
+                        artistId: string | null;
+                        artists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        comment: string | null;
+                        createdDate: string;
+                        description: string | null;
+                        discTitles: Array<{
+                            disc: number;
+                            title: string;
+                        }>;
+                        /**
+                         * Duration in seconds
+                         */
+                        duration: number;
+                        external: {
+                            musicBrainzId?: string;
+                        };
+                        genres: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        id: string;
+                        isCompilation: boolean;
+                        itemType: 'album';
+                        libraryId: string;
+                        moods: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        name: string;
+                        originalReleaseDate: string | null;
+                        recordLabels: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        releaseDate: string | null;
+                        releaseTypes: Array<{
+                            id: string;
+                            name: string;
+                        }>;
+                        releaseYear: number | null;
+                        size: number | null;
+                        songCount: number | null;
+                        sortName: string;
+                        updatedDate: string | null;
+                        userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userPlayCount: number | null;
+                        userRating: number | null;
+                        userRatingDate: string | null;
+                    }>;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
+                    };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/album-artists/{id}/tracks': {
+        get: {
+            req: GetApiByLibraryIdAlbumArtistsByIdTracksData;
+            res: {
+                /**
+                 * Get album artist tracks
+                 */
+                200: {
+                    data: Array<{
+                        album: string | null;
+                        albumArtists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        albumId: string | null;
+                        artistId: string | null;
+                        artistName: string | null;
+                        artists: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        bitDepth: number | null;
+                        bitRate: number | null;
+                        bpm: number | null;
+                        channelCount: number | null;
+                        comment: string | null;
+                        createdDate: string | null;
+                        discNumber: string | null;
+                        discSubtitle: string | null;
+                        duration: number;
+                        external: {
+                            [key: string]: unknown;
+                        };
+                        fileContainer: string | null;
+                        fileName: string | null;
+                        filePath: string | null;
+                        fileSize: number | null;
+                        genres: Array<{
+                            id: string;
+                            imageUrl: string | null;
+                            name: string;
+                        }>;
+                        id: string;
+                        isCompilation: boolean;
+                        itemType: 'track';
+                        libraryId: string;
+                        name: string;
+                        releaseYear: number | null;
+                        rgAlbumGain: number | null;
+                        rgAlbumPeak: number | null;
+                        rgTrackGain: number | null;
+                        rgTrackPeak: number | null;
+                        sortName: string;
+                        trackNumber: number | null;
+                        updatedDate: string | null;
+                        userFavorite: boolean;
+                        userFavoriteDate: string | null;
+                        userLastPlayedDate: string | null;
+                        userPlayCount: number;
+                        userRating: number | null;
+                    }>;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
+                    };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/album-artists/{id}/favorite': {
+        post: {
+            req: PostApiByLibraryIdAlbumArtistsByIdFavoriteData;
+            res: {
+                /**
+                 * Add album artist to favorites
+                 */
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+        delete: {
+            req: DeleteApiByLibraryIdAlbumArtistsByIdFavoriteData;
+            res: {
+                /**
+                 * Remove album artist from favorites
+                 */
+                204: unknown;
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Not found
+                 */
+                404: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+            };
+        };
+    };
+    '/api/{libraryId}/genres': {
+        get: {
+            req: GetApiByLibraryIdGenresData;
+            res: {
+                /**
+                 * Get genres
+                 */
+                200: {
+                    data: Array<{
+                        albumCount: number | null;
+                        id: string;
+                        itemType: 'genre';
+                        libraryId: string;
+                        name: string;
+                        trackCount: number | null;
+                    }>;
+                    meta: {
+                        next: boolean;
+                        prev: boolean;
+                        totalRecordCount: number;
+                    };
+                };
+                /**
+                 * Unauthorized
+                 */
+                401: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Permission denied
+                 */
+                403: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Validation error
+                 */
+                422: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
+                };
+                /**
+                 * Internal server error
+                 */
+                500: {
+                    cause?: string;
+                    message: string;
+                    name: string;
+                    stack?: string;
+                    status: number;
                 };
             };
         };
