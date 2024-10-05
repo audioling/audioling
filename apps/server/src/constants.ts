@@ -10,7 +10,7 @@ const USER_DIR = process.env.APP_USER_DIR || path.join(APP_DIR, 'user');
 
 const CACHE_DIR = process.env.APP_CACHE_DIR || path.join(APP_DIR, 'cache');
 
-const IMAGE_DIR = process.env.APP_IMAGE_DIR || path.join(APP_DIR, 'image');
+const IMAGE_DIR = process.env.APP_IMAGE_DIR || path.join(CACHE_DIR, 'image');
 
 const TEMP_DIR = process.env.APP_TEMP_DIR || path.join(os.tmpdir(), APP_NAME);
 
