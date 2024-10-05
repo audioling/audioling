@@ -1,5 +1,5 @@
 import type { FetchOptions } from '@audioling/open-subsonic-api-client';
-import type { LibraryType } from '@repo/shared-types';
+import type { LibraryItemType, LibraryType } from '@repo/shared-types';
 import type {
     AdapterAlbumDetailRequest,
     AdapterAlbumDetailResponse,
@@ -90,6 +90,12 @@ type AdapterFn<TRequest, TResponse> = (
 ) => Promise<[AdapterError, null] | [null, TResponse]>;
 
 export type AdapterApi = {
+    _getCoverArtUrl: (args: {
+        id: string;
+        libraryId: string;
+        size?: number;
+        type: LibraryItemType;
+    }) => string;
     _getLibrary: () => DbLibrary;
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
