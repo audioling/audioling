@@ -13,107 +13,157 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AuthenticationImport } from './routes/authentication'
-import { Route as IndexImport } from './routes/index'
-import { Route as AppDefaultImport } from './routes/app/_default'
-import { Route as AppNowPlayingIndexImport } from './routes/app/now-playing/index'
-import { Route as AppDefaultIndexImport } from './routes/app/_default..index'
+import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as DashboardLibraryIdAlbumListImport } from './routes/dashboard/$libraryId/album/list'
+import { Route as DashboardLibraryIdAlbumDetailImport } from './routes/dashboard/$libraryId/album/detail'
 
 // Create Virtual Routes
 
-const AppImport = createFileRoute('/app')()
+const AuthSignInLazyImport = createFileRoute('/auth/sign-in')()
+const AuthRegisterLazyImport = createFileRoute('/auth/register')()
 
 // Create/Update Routes
 
-const AppRoute = AppImport.update({
-  path: '/app',
+const DashboardIndexRoute = DashboardIndexImport.update({
+  path: '/dashboard/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthenticationRoute = AuthenticationImport.update({
-  path: '/authentication',
+const AuthSignInLazyRoute = AuthSignInLazyImport.update({
+  path: '/auth/sign-in',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/auth/sign-in.lazy').then((d) => d.Route))
 
-const IndexRoute = IndexImport.update({
-  path: '/',
+const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
+  path: '/auth/register',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route))
 
-const AppDefaultRoute = AppDefaultImport.update({
-  id: '/_default',
-  getParentRoute: () => AppRoute,
-} as any)
+const DashboardLibraryIdAlbumListRoute =
+  DashboardLibraryIdAlbumListImport.update({
+    path: '/dashboard/$libraryId/album/list',
+    getParentRoute: () => rootRoute,
+  } as any)
 
-const AppNowPlayingIndexRoute = AppNowPlayingIndexImport.update({
-  path: '/now-playing/',
-  getParentRoute: () => AppRoute,
-} as any)
-
-const AppDefaultIndexRoute = AppDefaultIndexImport.update({
-  path: '/',
-  getParentRoute: () => AppDefaultRoute,
-} as any)
+const DashboardLibraryIdAlbumDetailRoute =
+  DashboardLibraryIdAlbumDetailImport.update({
+    path: '/dashboard/$libraryId/album/detail',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterLazyImport
       parentRoute: typeof rootRoute
     }
-    '/authentication': {
-      id: '/authentication'
-      path: '/authentication'
-      fullPath: '/authentication'
-      preLoaderRoute: typeof AuthenticationImport
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInLazyImport
       parentRoute: typeof rootRoute
     }
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppImport
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof rootRoute
     }
-    '/app/_default': {
-      id: '/app/_default'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppDefaultImport
-      parentRoute: typeof AppRoute
+    '/dashboard/$libraryId/album/detail': {
+      id: '/dashboard/$libraryId/album/detail'
+      path: '/dashboard/$libraryId/album/detail'
+      fullPath: '/dashboard/$libraryId/album/detail'
+      preLoaderRoute: typeof DashboardLibraryIdAlbumDetailImport
+      parentRoute: typeof rootRoute
     }
-    '/app/_default/': {
-      id: '/app/_default/'
-      path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AppDefaultIndexImport
-      parentRoute: typeof AppDefaultImport
-    }
-    '/app/now-playing/': {
-      id: '/app/now-playing/'
-      path: '/now-playing'
-      fullPath: '/app/now-playing'
-      preLoaderRoute: typeof AppNowPlayingIndexImport
-      parentRoute: typeof AppImport
+    '/dashboard/$libraryId/album/list': {
+      id: '/dashboard/$libraryId/album/list'
+      path: '/dashboard/$libraryId/album/list'
+      fullPath: '/dashboard/$libraryId/album/list'
+      preLoaderRoute: typeof DashboardLibraryIdAlbumListImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  AuthenticationRoute,
-  AppRoute: AppRoute.addChildren({
-    AppDefaultRoute: AppDefaultRoute.addChildren({ AppDefaultIndexRoute }),
-    AppNowPlayingIndexRoute,
-  }),
-})
+export interface FileRoutesByFullPath {
+  '/auth/register': typeof AuthRegisterLazyRoute
+  '/auth/sign-in': typeof AuthSignInLazyRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/$libraryId/album/detail': typeof DashboardLibraryIdAlbumDetailRoute
+  '/dashboard/$libraryId/album/list': typeof DashboardLibraryIdAlbumListRoute
+}
+
+export interface FileRoutesByTo {
+  '/auth/register': typeof AuthRegisterLazyRoute
+  '/auth/sign-in': typeof AuthSignInLazyRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/$libraryId/album/detail': typeof DashboardLibraryIdAlbumDetailRoute
+  '/dashboard/$libraryId/album/list': typeof DashboardLibraryIdAlbumListRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/auth/register': typeof AuthRegisterLazyRoute
+  '/auth/sign-in': typeof AuthSignInLazyRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/$libraryId/album/detail': typeof DashboardLibraryIdAlbumDetailRoute
+  '/dashboard/$libraryId/album/list': typeof DashboardLibraryIdAlbumListRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/auth/register'
+    | '/auth/sign-in'
+    | '/dashboard'
+    | '/dashboard/$libraryId/album/detail'
+    | '/dashboard/$libraryId/album/list'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/auth/register'
+    | '/auth/sign-in'
+    | '/dashboard'
+    | '/dashboard/$libraryId/album/detail'
+    | '/dashboard/$libraryId/album/list'
+  id:
+    | '__root__'
+    | '/auth/register'
+    | '/auth/sign-in'
+    | '/dashboard/'
+    | '/dashboard/$libraryId/album/detail'
+    | '/dashboard/$libraryId/album/list'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute
+  AuthSignInLazyRoute: typeof AuthSignInLazyRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardLibraryIdAlbumDetailRoute: typeof DashboardLibraryIdAlbumDetailRoute
+  DashboardLibraryIdAlbumListRoute: typeof DashboardLibraryIdAlbumListRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthRegisterLazyRoute: AuthRegisterLazyRoute,
+  AuthSignInLazyRoute: AuthSignInLazyRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardLibraryIdAlbumDetailRoute: DashboardLibraryIdAlbumDetailRoute,
+  DashboardLibraryIdAlbumListRoute: DashboardLibraryIdAlbumListRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
@@ -123,38 +173,27 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/authentication",
-        "/app"
+        "/auth/register",
+        "/auth/sign-in",
+        "/dashboard/",
+        "/dashboard/$libraryId/album/detail",
+        "/dashboard/$libraryId/album/list"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/auth/register": {
+      "filePath": "auth/register.lazy.tsx"
     },
-    "/authentication": {
-      "filePath": "authentication.tsx"
+    "/auth/sign-in": {
+      "filePath": "auth/sign-in.lazy.tsx"
     },
-    "/app": {
-      "filePath": "app",
-      "children": [
-        "/app/_default",
-        "/app/now-playing/"
-      ]
+    "/dashboard/": {
+      "filePath": "dashboard/index.tsx"
     },
-    "/app/_default": {
-      "filePath": "app/_default.tsx",
-      "parent": "/app",
-      "children": [
-        "/app/_default/"
-      ]
+    "/dashboard/$libraryId/album/detail": {
+      "filePath": "dashboard/$libraryId/album/detail.tsx"
     },
-    "/app/_default/": {
-      "filePath": "app/_default..index.tsx",
-      "parent": "/app/_default"
-    },
-    "/app/now-playing/": {
-      "filePath": "app/now-playing/index.tsx",
-      "parent": "/app"
+    "/dashboard/$libraryId/album/list": {
+      "filePath": "dashboard/$libraryId/album/list.tsx"
     }
   }
 }

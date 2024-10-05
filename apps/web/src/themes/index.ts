@@ -73,6 +73,10 @@ export type AppThemeConfiguration = {
         'input-hover-placeholder-color': CSSProperties['color'];
         'input-placeholder-color': CSSProperties['color'];
         'layout-header-height': CSSProperties['height'];
+        'layout-nav-bar-background-color': CSSProperties['backgroundColor'];
+        'layout-nav-bar-font-color': CSSProperties['color'];
+        'layout-nav-bar-font-hover-color': CSSProperties['color'];
+        'layout-nav-bar-width': CSSProperties['width'];
         'layout-player-bar-background-color': CSSProperties['backgroundColor'];
         'layout-player-bar-border-bottom': CSSProperties['border'];
         'layout-player-bar-border-left': CSSProperties['border'];
@@ -82,12 +86,6 @@ export type AppThemeConfiguration = {
         'layout-player-bar-height': CSSProperties['height'];
         'layout-player-bar-margin': CSSProperties['margin'];
         'layout-player-bar-padding': CSSProperties['padding'];
-        'layout-side-bar-left-background-color': CSSProperties['backgroundColor'];
-        'layout-side-bar-left-font-color': CSSProperties['color'];
-        'layout-side-bar-left-font-hover-color': CSSProperties['color'];
-        'layout-side-bar-left-width': CSSProperties['width'];
-        'layout-side-bar-right-background-color': CSSProperties['backgroundColor'];
-        'layout-side-bar-right-width': CSSProperties['width'];
         'scroll-bar-size': CSSProperties['width'];
         'scroll-bar-thumb-active-background-color': CSSProperties['backgroundColor'];
         'scroll-bar-thumb-background-color': CSSProperties['backgroundColor'];

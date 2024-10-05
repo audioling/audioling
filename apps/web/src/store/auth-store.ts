@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { mutative } from 'zustand-mutative';
-import type { AuthServicePostAuthSignInMutationResult } from '@/api/queries/common.ts';
+import { immer } from 'zustand/middleware/immer';
+import type { AuthUser } from '@/api/api-types.ts';
 
 type State = {
-    user: AuthServicePostAuthSignInMutationResult | null;
+    user: AuthUser | null;
 };
 
 type Actions = {
-    signIn: (user: AuthServicePostAuthSignInMutationResult) => void;
+    signIn: (user: AuthUser) => void;
 };
 
 export type AuthSlice = State & Actions;
@@ -16,11 +16,11 @@ export type AuthSlice = State & Actions;
 export const useAuthStore = create<State & Actions>()(
     devtools(
         persist(
-            mutative((set) => ({
+            immer((set) => ({
                 signIn: (user) => {
-                    set(() => ({
-                        user: user.data,
-                    }));
+                    set((state) => {
+                        state.user = user;
+                    });
                 },
                 user: null,
             })),

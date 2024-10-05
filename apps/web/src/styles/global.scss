@@ -9,14 +9,11 @@ body {
     position: absolute;
     display: block;
     width: 100%;
-    min-width: 640px;
+    min-width: 360px;
     height: 100%;
     overflow: hidden;
     font-family: var(--global-font-family), sans-serif !important;
     color: var(--global-font-color) !important;
-    cursor: default;
-
-    // user-select: none;
     background-color: var(--global-background-color) !important;
 }
 
@@ -25,7 +22,7 @@ body {
     height: 100%;
 }
 
-@media only screen and (width <= 639px) {
+@media only screen and (width < 360px) {
     body,
     html {
         overflow-x: auto;

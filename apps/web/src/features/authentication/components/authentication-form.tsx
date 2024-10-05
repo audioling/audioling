@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Navigate } from 'react-router';
 import { CONSTANTS } from '@/constants.ts';
 import { AuthenticateServer } from '@/features/authentication/components/authenticate-server.tsx';
-import { ValidateServer } from '@/features/authentication/components/validate-server';
+import { ValidateServer } from '@/features/authentication/components/validate-server.tsx';
 import { useAuthUser } from '@/store/auth-store.ts';
 
 enum AuthenticationStep {

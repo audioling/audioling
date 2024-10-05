@@ -27,13 +27,6 @@ $screen-xl-min: 75rem; // 1200px
     }
 }
 
-/*
-@mixin smaller-than($screen) {
-  @media (min-width: $screen + 'rem') {
-    @content;
-  }
-} */
-
 @mixin smaller-than($breakpoint) {
     @media (max-width: $breakpoint) {
         @content;

@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import type { RootServiceGetPingDefaultResponse } from '@/api/queries/common.ts';
-import { OpenAPI as OpenAPIConfig } from '@/api/requests/index.ts';
-import { Icon } from '@/features/ui/icon/icon';
-import { Stack } from '@/features/ui/stack/stack';
-import { TextInput } from '@/features/ui/text-input/text-input';
-import { Title } from '@/features/ui/title/title';
-import { Button } from '@/features/ui/button/button';
-import { Grid } from '@/features/ui/grid/grid';
+import { Button } from '@/features/ui/button/button.tsx';
+import { Grid } from '@/features/ui/grid/grid.tsx';
+import { Icon } from '@/features/ui/icon/icon.tsx';
+import { Stack } from '@/features/ui/stack/stack.tsx';
+import { TextInput } from '@/features/ui/text-input/text-input.tsx';
+import { Title } from '@/features/ui/title/title.tsx';
 import { useDebouncedValue } from '@/hooks/use-debounced-value.ts';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
+import { Ping } from '@/api/api-types.ts';
 
 enum ValidationState {
     INVALID = 'invalid',
@@ -45,12 +44,9 @@ export const ValidateServer = (props: ValidateServerProps) => {
             const cleanURL = serverUrl.replace(/\/$/, '');
 
             try {
-                const response = await axios.get<RootServiceGetPingDefaultResponse>(
-                    `${cleanURL}/ping`,
-                    {
-                        method: 'GET',
-                    },
-                );
+                const response = await axios.get<Ping>(`${cleanURL}/ping`, {
+                    method: 'GET',
+                });
 
                 // Check for a valid response from the server
                 if (response.status !== 200) {

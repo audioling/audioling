@@ -26,9 +26,11 @@
         "@mantine/hooks": "^7.13.2",
         "@mantine/modals": "^7.13.2",
         "@mantine/notifications": "^7.13.2",
+        "@mantine/vanilla-extract": "^7.13.2",
         "@repo/logger": "workspace:*",
         "@tanstack/react-query": "^5.59.0",
         "@tanstack/react-query-persist-client": "^5.59.0",
+        "@tanstack/react-router": "^1.58.18",
         "@tanstack/react-table": "^8.20.5",
         "@tanstack/react-virtual": "^3.10.8",
         "@tauri-apps/api": ">=2.0.0",
@@ -51,7 +53,6 @@
         "react-icons": "^5.3.0",
         "react-player": "^2.16.0",
         "react-resizable-panels": "^2.1.4",
-        "react-router-dom": "^6.26.2",
         "zod": "^3.23.8",
         "zustand": "^4.5.5",
         "zustand-mutative": "^1.0.5"
@@ -60,6 +61,8 @@
         "@repo/eslint-config-internal": "workspace:*",
         "@tanstack/react-form": "^0.33.0",
         "@tanstack/react-query-devtools": "^5.59.0",
+        "@tanstack/router-devtools": "^1.58.18",
+        "@tanstack/router-plugin": "^1.58.12",
         "@tauri-apps/cli": "2.0.1",
         "@types/js-cookie": "^3.0.6",
         "@types/react": "^18.3.11",
@@ -77,7 +80,7 @@
         "stylelint-config-standard-scss": "^13.1.0",
         "typescript": "^5.6.2",
         "vite": "^5.4.8",
-        "vite-plugin-eslint": "^1.8.1",
+        "vite-plugin-eslint2": "^5.0.0",
         "vite-plugin-tauri": "^3.3.0"
     },
     "debug": {

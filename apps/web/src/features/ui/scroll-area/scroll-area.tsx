@@ -1,7 +1,7 @@
 import type { Ref } from 'react';
 import { forwardRef, useEffect, useRef } from 'react';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
-import { Box } from '@/features/ui/box/box';
+import { Box } from '@/features/ui/box/box.tsx';
 import { useMergedRef } from '@/hooks/use-merged-ref.ts';
 import type { PolymorphicComponentType } from '@/types.ts';
 import styles from './scroll-area.module.scss';

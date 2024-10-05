@@ -1,16 +1,16 @@
-import { useForm } from '@tanstack/react-form';
+import { Field, useForm } from '@tanstack/react-form';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
-import { useAuthServicePostAuthSignIn } from '@/api/queries/queries.ts';
+import { usePostAuthSignIn } from '@/api/openapi-generated/authentication/authentication.ts';
 import type { AuthenticationFormValues } from '@/features/authentication/components/authentication-form.tsx';
-import { Button } from '@/features/ui/button/button';
-import { Divider } from '@/features/ui/divider/divider';
-import { Group } from '@/features/ui/group/group';
+import { Button } from '@/features/ui/button/button.tsx';
+import { Divider } from '@/features/ui/divider/divider.tsx';
+import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
-import { Stack } from '@/features/ui/stack/stack';
-import { Text } from '@/features/ui/text/text';
-import { TextInput } from '@/features/ui/text-input/text-input';
-import { Title } from '@/features/ui/title/title';
+import { Stack } from '@/features/ui/stack/stack.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
+import { TextInput } from '@/features/ui/text-input/text-input.tsx';
+import { Title } from '@/features/ui/title/title.tsx';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
 import { useAuthSignIn } from '@/store/auth-store.ts';
 
@@ -22,7 +22,7 @@ interface AuthenticateServerProps {
 export const AuthenticateServer = (props: AuthenticateServerProps) => {
     const ref = useFocusTrap(true);
     const signInToStore = useAuthSignIn();
-    const { mutate } = useAuthServicePostAuthSignIn();
+    const { mutate } = usePostAuthSignIn();
 
     const { Field, handleSubmit } = useForm<AuthenticationFormValues>({
         defaultValues: {
@@ -32,16 +32,16 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
         onSubmit: (e) => {
             mutate(
                 {
-                    requestBody: {
+                    data: {
                         password: e.value.password,
                         username: e.value.username,
                     },
                 },
                 {
                     onSuccess: (res) => {
-                        Cookies.set('token', res.data.token);
-                        Cookies.set('refreshToken', res.data.refreshToken);
-                        signInToStore(res);
+                        const { data } = res.data;
+                        Cookies.set('token', data.token.token);
+                        signInToStore(data);
                     },
                 },
             );
