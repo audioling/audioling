@@ -8,9 +8,11 @@ const APP_DIR = getAppDataPath(APP_NAME);
 
 const USER_DIR = process.env.APP_USER_DIR || path.join(APP_DIR, 'user');
 
-const CACHE_DIR = process.env.APP_CACHE_DIR || path.join(APP_DIR, 'cache');
+const CACHE_DIR = (libraryId: string) =>
+    process.env.APP_CACHE_DIR || path.join(APP_DIR, libraryId, 'cache');
 
-const IMAGE_DIR = process.env.APP_IMAGE_DIR || path.join(CACHE_DIR, 'image');
+const IMAGE_DIR = (libraryId: string) =>
+    process.env.APP_IMAGE_DIR || path.join(CACHE_DIR(libraryId), 'image', libraryId);
 
 const TEMP_DIR = process.env.APP_TEMP_DIR || path.join(os.tmpdir(), APP_NAME);
 
