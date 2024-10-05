@@ -11,9 +11,11 @@ import stringify from 'safe-stable-stringify';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterGenre } from '@/adapters/types/adapter-genre-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
+import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import type { DbLibrary } from '@/database/library-database.js';
 import { utils } from '@/utils/index.js';
+import packageJson from '../../package.json';
 
 const fetchLimit = 500;
 
@@ -323,9 +325,14 @@ const paginate = <T>(array: T[], offset: number, limit: number) => {
     };
 };
 
+const getAppId = (library: DbLibrary) => {
+    return `${CONSTANTS.APP_NAME}@v${packageJson.version}—(${library.id})@${library.type}@${library.baseUrl}`;
+};
+
 export const adapterHelpers = {
     adapterErrorMessage,
     db,
+    getAppId,
     paginate,
     sortBy,
 };
