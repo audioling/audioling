@@ -61,6 +61,23 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
     }
 
     const adapter: AdapterApi = {
+        _getCoverArtUrl: (args) => {
+            const { id, size } = args;
+
+            const credentialParams = token
+                ? `t=${token}&s=${saltOrPassword}`
+                : `p=${saltOrPassword}`;
+
+            return (
+                `${library.baseUrl}/rest/getCoverArt.view` +
+                `?id=${id}` +
+                `&${credentialParams}` +
+                `&u=${username}` +
+                '&v=1.16.1' +
+                `&c=${CONSTANTS.APP_NAME}` +
+                `&size=${size}`
+            );
+        },
         _getLibrary: () => library,
         _getType: () => LibraryType.SUBSONIC,
         addToPlaylist: async (request, fetchOptions) => {
