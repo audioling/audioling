@@ -6,9 +6,10 @@ import { CONSTANTS } from '@/constants.js';
 import { initDatabase } from '@/database/init-database.js';
 import { initConfig } from '@/modules/config/index.js';
 import { initIdFactoryModule } from '@/modules/id/index.js';
+import { initImageModule } from '@/modules/image/index.js';
 
 const config = initConfig({
-    name: CONSTANTS.BRAND_NAME,
+    name: CONSTANTS.APP_NAME,
     path: path.join(CONSTANTS.APP_DIR, `config-server.json`),
 });
 
@@ -18,6 +19,7 @@ export const appLogger = initLogger({
 });
 
 const idFactory = initIdFactoryModule();
+const imageModule = initImageModule();
 
 const db = initDatabase({ idFactory });
 
@@ -26,5 +28,6 @@ await initApplication({
     modules: {
         db,
         idFactory,
+        imageModule,
     },
 });

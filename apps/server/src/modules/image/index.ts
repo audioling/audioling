@@ -7,7 +7,7 @@ import { CONSTANTS } from '@/constants.js';
 
 export const initImageModule = () => {
     return {
-        generateThumbHashBase64: async (imageBuffer: ArrayBuffer) => {
+        generateThumbHash: async (imageBuffer: ArrayBuffer) => {
             const image = sharp(imageBuffer);
             const resizedBlurImage = image.resize(100, 100, { fit: 'inside' });
             const resizedBlurImageBuffer = await resizedBlurImage
@@ -27,15 +27,24 @@ export const initImageModule = () => {
         },
         getBufferFromPath: async (path: string) => {
             const imageBuffer = await fs.readFile(path);
-            return Buffer.from(imageBuffer);
+            return {
+                arrayBuffer: imageBuffer,
+                buffer: Buffer.from(imageBuffer),
+            };
         },
         getBufferFromUrl: async (url: string) => {
             const imageResponse = await fetch(url);
             const imageBuffer = await imageResponse.arrayBuffer();
-            return Buffer.from(imageBuffer);
+            return {
+                arrayBuffer: imageBuffer,
+                buffer: Buffer.from(imageBuffer),
+            };
         },
         getCacheLocation: (id: string, libraryId: string, mimetype: string) => {
             return path.join(CONSTANTS.IMAGE_DIR(libraryId), `${id}.${mimetype}`);
+        },
+        resize: async (buffer: Buffer, width: number, height: number) => {
+            return sharp(buffer).avif().resize(width, height).toBuffer();
         },
         writeBufferToFile: async (buffer: Buffer, path: string) => {
             await fs.writeFile(path, buffer);

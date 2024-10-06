@@ -60,6 +60,14 @@ export const createPaginatedResponseSchema = <TAttributes extends z.ZodTypeAny>(
     });
 };
 
+export const stringNumberSchema = z
+    .string()
+    .superRefine((value) => {
+        const parsed = Number(value);
+        return !Number.isNaN(parsed);
+    })
+    .openapi({ example: '100' });
+
 export const paginationQuery = {
     limit: z
         .string()

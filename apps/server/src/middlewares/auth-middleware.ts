@@ -34,7 +34,7 @@ export const authMiddleware = (tokenSecret: string, modules: { db: AppDatabase }
             }
         }
 
-        const isProtectedPath = c.req.path.includes('/api/');
+        const isProtectedPath = c.req.path.includes('/api/') && !c.req.path.includes('/images/');
 
         if (isProtectedPath) {
             if (!token) {

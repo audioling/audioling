@@ -7,6 +7,7 @@ import { initAlbumController } from '@/controllers/album/album-controller.js';
 import { initAlbumArtistController } from '@/controllers/album-artist/album-artist-controller.js';
 import { initAuthController } from '@/controllers/auth/auth-controller.js';
 import { initGenreController } from '@/controllers/genre/genre-controller.js';
+import { initImageController } from '@/controllers/image/image-controller.js';
 import { initLibraryController } from '@/controllers/library/library-controller.js';
 import { initRootController } from '@/controllers/root/root-controller';
 import { initTrackController } from '@/controllers/track/track-controller.js';
@@ -19,6 +20,7 @@ import type { ConfigModule } from '@/modules/config/index.js';
 import { initConfig } from '@/modules/config/index.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { IdFactoryModule } from '@/modules/id/index.js';
+import type { ImageModule } from '@/modules/image/index.js';
 import { initOpenApiUI } from '@/modules/open-api';
 import { initServices } from '@/services/index.js';
 
@@ -27,12 +29,13 @@ type ApplicationOptions = {
     modules: {
         db: AppDatabase;
         idFactory: IdFactoryModule;
+        imageModule: ImageModule;
     };
 };
 
 export const initApplication = async (options: ApplicationOptions) => {
     const { modules } = options;
-    const { db, idFactory } = modules;
+    const { db, idFactory, imageModule } = modules;
 
     const config = initConfig({
         name: CONSTANTS.APP_NAME,
@@ -61,7 +64,7 @@ export const initApplication = async (options: ApplicationOptions) => {
         port: config.get('port') || 4544,
     });
 
-    const service = initServices({ config, db, idFactory });
+    const service = initServices({ config, db, idFactory, imageModule });
 
     const rootController = initRootController();
     const authController = initAuthController({ service });
@@ -71,6 +74,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     const trackController = initTrackController({ service });
     const albumArtistController = initAlbumArtistController({ service });
     const genreController = initGenreController({ service });
+    const imageController = initImageController({ service });
 
     app.route('/', rootController);
     app.route('/auth', authController);
@@ -81,6 +85,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     app.route('/api/:libraryId/tracks', trackController);
     app.route('/api/:libraryId/album-artists', albumArtistController);
     app.route('/api/:libraryId/genres', genreController);
+    app.route('/api/:libraryId/images', imageController);
 
     app.onError((err, c) => {
         writeLog.error(err.message, {
