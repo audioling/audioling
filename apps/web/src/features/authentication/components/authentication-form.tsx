@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Navigate } from 'react-router';
 import { CONSTANTS } from '@/constants.ts';
 import { AuthenticateServer } from '@/features/authentication/components/authenticate-server.tsx';
 import { ValidateServer } from '@/features/authentication/components/validate-server.tsx';
-import { useAuthUser } from '@/store/auth-store.ts';
 
 enum AuthenticationStep {
     VALIDATE_SERVER = 0,
@@ -19,7 +17,6 @@ export type AuthenticationFormValues = {
 const steps = [AuthenticationStep.VALIDATE_SERVER, AuthenticationStep.AUTHENTICATE];
 
 export const AuthenticationForm = () => {
-    const isAuthorized = useAuthUser();
     const [serverUrl, setServerUrl] = useState(CONSTANTS.BASE_URL);
     const [step, setStep] = useState(steps[0]);
 
@@ -31,10 +28,6 @@ export const AuthenticationForm = () => {
         setServerUrl('');
         setStep(steps[0]);
     };
-
-    if (isAuthorized) {
-        return <Navigate to="/app" />;
-    }
 
     return (
         <AnimatePresence mode="sync">

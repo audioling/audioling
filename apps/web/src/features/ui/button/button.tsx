@@ -4,7 +4,7 @@ import { Button as MantineButton } from '@mantine/core';
 import { clsx } from 'clsx';
 import styles from './button.module.scss';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children?: React.ReactNode;
     isDisabled?: boolean;
     isLoading?: boolean;

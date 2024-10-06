@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { axiosInstance } from '@/api/api-instance.ts';
+import type { Ping } from '@/api/api-types.ts';
+import { animate } from '@/features/ui/animate/animate.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Grid } from '@/features/ui/grid/grid.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
@@ -9,7 +12,6 @@ import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 import { useDebouncedValue } from '@/hooks/use-debounced-value.ts';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
-import { Ping } from '@/api/api-types.ts';
 
 enum ValidationState {
     INVALID = 'invalid',
@@ -30,7 +32,7 @@ export const ValidateServer = (props: ValidateServerProps) => {
     );
 
     const handleNext = () => {
-        OpenAPIConfig.BASE = serverUrl;
+        axiosInstance.defaults.baseURL = serverUrl;
     };
 
     useEffect(() => {
@@ -76,12 +78,7 @@ export const ValidateServer = (props: ValidateServerProps) => {
     };
 
     return (
-        <motion.div
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-        >
+        <motion.div {...animate.fadeIn}>
             <Stack
                 ref={ref}
                 as="form"

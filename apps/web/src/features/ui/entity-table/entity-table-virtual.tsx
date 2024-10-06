@@ -4,7 +4,7 @@ import type { ColumnDef, Table } from '@tanstack/react-table';
 import { VirtualDraggableEntityTableContent } from '@/features/ui/entity-table/entity-table-content.tsx';
 import { EntityTableHeader } from '@/features/ui/entity-table/entity-table-header.tsx';
 import styles from './entity-table.module.scss';
-import type { useDnd } from '../dnd/hooks/use-dnd';
+import type { useDnd } from '../dnd/hooks/use-dnd.tsx';
 
 export interface EntityTableVirtualProps<T> {
     data: {

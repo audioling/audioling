@@ -1,9 +1,12 @@
-import { Field, useForm } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import { usePostAuthSignIn } from '@/api/openapi-generated/authentication/authentication.ts';
 import type { AuthenticationFormValues } from '@/features/authentication/components/authentication-form.tsx';
+import { useAuthSignIn } from '@/features/authentication/stores/auth-store.ts';
 import { Button } from '@/features/ui/button/button.tsx';
+import { ButtonLink } from '@/features/ui/button-link.tsx/button-link.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -12,7 +15,6 @@ import { Text } from '@/features/ui/text/text.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
-import { useAuthSignIn } from '@/store/auth-store.ts';
 
 interface AuthenticateServerProps {
     onBack: () => void;
@@ -21,6 +23,7 @@ interface AuthenticateServerProps {
 
 export const AuthenticateServer = (props: AuthenticateServerProps) => {
     const ref = useFocusTrap(true);
+    const navigate = useNavigate();
     const signInToStore = useAuthSignIn();
     const { mutate } = usePostAuthSignIn();
 
@@ -38,10 +41,11 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                     },
                 },
                 {
-                    onSuccess: (res) => {
-                        const { data } = res.data;
+                    onSuccess: (response) => {
+                        const { data } = response;
                         Cookies.set('token', data.token.token);
                         signInToStore(data);
+                        navigate({ pathname: '/dashboard' }, { replace: true });
                     },
                 },
             );
@@ -119,7 +123,7 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                     Sign In
                 </Button>
                 <Divider label="Or" />
-                <Button variant="default">Create a new account</Button>
+                <ButtonLink to="/register">Create a new account</ButtonLink>
             </Stack>
         </motion.div>
     );
