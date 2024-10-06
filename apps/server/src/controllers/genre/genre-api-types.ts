@@ -12,6 +12,7 @@ export const genreAttributes = z.object({
     itemType: z.literal(LibraryItemType.GENRE),
     libraryId: z.string(),
     name: z.string(),
+    thumbHash: z.string().nullable(),
     trackCount: z.number().nullable(),
 });
 

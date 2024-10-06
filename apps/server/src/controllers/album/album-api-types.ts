@@ -55,6 +55,7 @@ export const albumAttributes = z.object({
     size: z.number().nullable(),
     songCount: z.number().nullable(),
     sortName: z.string(),
+    thumbHash: z.string().nullable(),
     updatedDate: z.string().nullable(),
     userFavorite: z.boolean(),
     userFavoriteDate: z.string().nullable(),

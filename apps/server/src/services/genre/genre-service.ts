@@ -1,12 +1,15 @@
 import { GenreListSortOptions, ListSortOrder } from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
+import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { initAlbumService } from '@/services/album/album-service.js';
 import type { FindManyServiceArgs } from '@/services/service-utils.js';
 
 // SECTION - Genre Service
-export const initGenreService = () => {
+export const initGenreService = (modules: { db: AppDatabase }) => {
+    const { db } = modules;
+
     return {
         // ANCHOR - List
         list: async (adapter: AdapterApi, args: FindManyServiceArgs<GenreListSortOptions>) => {
@@ -27,7 +30,15 @@ export const initGenreService = () => {
                 throw new apiError.internalServer({ message: err.message });
             }
 
-            return result;
+            const libraryId = adapter._getLibrary().id;
+
+            return {
+                ...result,
+                items: result.items.map((item) => ({
+                    ...item,
+                    thumbHash: db.thumbhash.findById(libraryId, item.id) || null,
+                })),
+            };
         },
     };
 };
