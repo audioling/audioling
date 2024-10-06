@@ -2,14 +2,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import eslint from 'vite-plugin-eslint2';
 import path from 'node:path';
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
     plugins: [
-        TanStackRouterVite(),
         react(),
         eslint({
             emitErrorAsWarning: true,
