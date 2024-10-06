@@ -4,7 +4,7 @@ import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { initAlbumService } from '@/services/album/album-service.js';
-import type { FindManyServiceArgs } from '@/services/service-utils.js';
+import type { FindManyServiceArgs } from '@/services/service-helpers.js';
 
 // SECTION - Genre Service
 export const initGenreService = (modules: { db: AppDatabase }) => {

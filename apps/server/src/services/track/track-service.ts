@@ -3,7 +3,7 @@ import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
-import type { FindByIdServiceArgs, FindManyServiceArgs } from '@/services/service-utils.js';
+import type { FindByIdServiceArgs, FindManyServiceArgs } from '@/services/service-helpers.js';
 
 // SECTION - Track Service
 export const initTrackService = (modules: { db: AppDatabase }) => {

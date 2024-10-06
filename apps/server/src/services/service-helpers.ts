@@ -1,4 +1,4 @@
-import type { ListSortOrder } from '@repo/shared-types';
+import type { LibraryItemType, ListSortOrder } from '@repo/shared-types';
 
 export interface ServiceHelpers {
     create: <TValues>(args: InsertServiceArgs<TValues>) => Promise<TValues>;
@@ -41,3 +41,11 @@ export interface FindManyServiceArgs<TSortOptions> {
     sortBy: TSortOptions;
     sortOrder: ListSortOrder;
 }
+
+const getImageUrl = (id: string, libraryId: string, type: LibraryItemType) => {
+    return `/api/${libraryId}/images/${id}?type=${type}`;
+};
+
+export const serviceHelpers = {
+    getImageUrl,
+};

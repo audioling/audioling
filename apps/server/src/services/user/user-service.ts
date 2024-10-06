@@ -12,7 +12,7 @@ import {
     type FindManyServiceArgs,
     type InsertServiceArgs,
     type UpdateByIdServiceArgs,
-} from '@/services/service-utils.js';
+} from '@/services/service-helpers.js';
 
 export const initUserService = (modules: { db: AppDatabase; idFactory: IdFactoryModule }) => {
     const { db, idFactory } = modules;

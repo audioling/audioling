@@ -13,7 +13,7 @@ import type {
     FindManyServiceArgs,
     InsertServiceArgs,
     UpdateByIdServiceArgs,
-} from '@/services/service-utils.js';
+} from '@/services/service-helpers.js';
 
 // SECTION - Library Service
 export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFactoryModule }) => {

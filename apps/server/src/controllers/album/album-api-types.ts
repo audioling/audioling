@@ -27,6 +27,7 @@ export const albumAttributes = z.object({
     }),
     genres: relatedGenre.array(),
     id: z.string(),
+    imageUrl: z.string(),
     isCompilation: z.boolean(),
     itemType: z.literal(LibraryItemType.ALBUM),
     libraryId: z.string(),

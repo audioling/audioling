@@ -31,6 +31,7 @@ export const trackAttributes = z.object({
     fileSize: z.number().nullable(),
     genres: relatedGenre.array(),
     id: z.string(),
+    imageUrl: z.string(),
     isCompilation: z.boolean(),
     itemType: z.literal(LibraryItemType.TRACK),
     libraryId: z.string(),

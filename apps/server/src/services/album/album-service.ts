@@ -1,9 +1,18 @@
-import { AlbumListSortOptions, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import {
+    AlbumListSortOptions,
+    LibraryItemType,
+    ListSortOrder,
+    TrackListSortOptions,
+} from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
-import type { FindByIdServiceArgs, FindManyServiceArgs } from '@/services/service-utils.js';
+import {
+    type FindByIdServiceArgs,
+    type FindManyServiceArgs,
+    serviceHelpers,
+} from '@/services/service-helpers.js';
 
 // SECTION - Album Service
 export const initAlbumService = (modules: { db: AppDatabase }) => {
@@ -19,9 +28,12 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
             }
 
             const libraryId = adapter._getLibrary().id;
-            const thumbHash = db.thumbhash.findById(libraryId, result.id) || null;
 
-            return { ...result, thumbHash };
+            return {
+                ...result,
+                imageUrl: serviceHelpers.getImageUrl(result.id, libraryId, LibraryItemType.ALBUM),
+                thumbHash: db.thumbhash.findById(libraryId, result.id) || null,
+            };
         },
         // ANCHOR - Detail track list
         detailTrackList: async (
@@ -51,6 +63,7 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                 ...result,
                 items: result.items.map((item) => ({
                     ...item,
+                    imageUrl: serviceHelpers.getImageUrl(item.id, libraryId, LibraryItemType.TRACK),
                     thumbHash: db.thumbhash.findById(libraryId, item.id) || null,
                 })),
             };
@@ -93,6 +106,7 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                 ...result,
                 items: result.items.map((item) => ({
                     ...item,
+                    imageUrl: serviceHelpers.getImageUrl(item.id, libraryId, LibraryItemType.ALBUM),
                     thumbHash: db.thumbhash.findById(libraryId, item.id) || null,
                 })),
             };
