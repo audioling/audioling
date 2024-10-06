@@ -17,8 +17,8 @@ import type {
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { apiInstance } from '../../api-instance.ts';
+import type { BodyType, ErrorType } from '../../api-instance.ts';
 import type {
     DeleteApiUsersId204,
     DeleteApiUsersId401,
@@ -54,17 +54,20 @@ import type {
     PutApiUsersIdBody,
 } from '../audioling-openapi-client.schemas.ts';
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get all users
  */
 export const getApiUsers = (
     params: GetApiUsersParams,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiUsers200>> => {
-    return axios.get(`/api/users`, {
-        ...options,
-        params: { ...params, ...options?.params },
-    });
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiUsers200>(
+        { method: 'GET', params, signal, url: `/api/users` },
+        options,
+    );
 };
 
 export const getGetApiUsersQueryKey = (params: GetApiUsersParams) => {
@@ -73,20 +76,20 @@ export const getGetApiUsersQueryKey = (params: GetApiUsersParams) => {
 
 export const getGetApiUsersQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiUsers>>,
-    TError = AxiosError<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetApiUsersQueryKey(params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
-        getApiUsers(params, { signal, ...axiosOptions });
+        getApiUsers(params, requestOptions, signal);
 
     return { queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiUsers>>,
@@ -96,46 +99,46 @@ export const getGetApiUsersQueryOptions = <
 };
 
 export type GetApiUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsers>>>;
-export type GetApiUsersQueryError = AxiosError<
+export type GetApiUsersQueryError = ErrorType<
     GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500
 >;
 
 export function useGetApiUsers<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
-    TError = AxiosError<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> &
             Pick<
                 DefinedInitialDataOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiUsers<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
-    TError = AxiosError<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> &
             Pick<
                 UndefinedInitialDataOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiUsers<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
-    TError = AxiosError<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -144,12 +147,12 @@ export function useGetApiUsers<
 
 export function useGetApiUsers<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
-    TError = AxiosError<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiUsersQueryOptions(params, options);
@@ -165,14 +168,22 @@ export function useGetApiUsers<
  * @summary Create user
  */
 export const postApiUsers = (
-    postApiUsersBody: PostApiUsersBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostApiUsers201>> => {
-    return axios.post(`/api/users`, postApiUsersBody, options);
+    postApiUsersBody: BodyType<PostApiUsersBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiUsers201>(
+        {
+            data: postApiUsersBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            url: `/api/users`,
+        },
+        options,
+    );
 };
 
 export const getPostApiUsersMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PostApiUsers400
         | PostApiUsers401
         | PostApiUsers403
@@ -182,36 +193,36 @@ export const getPostApiUsersMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiUsers>>,
         TError,
-        { data: PostApiUsersBody },
+        { data: BodyType<PostApiUsersBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postApiUsers>>,
     TError,
-    { data: PostApiUsersBody },
+    { data: BodyType<PostApiUsersBody> },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postApiUsers>>,
-        { data: PostApiUsersBody }
+        { data: BodyType<PostApiUsersBody> }
     > = (props) => {
         const { data } = props ?? {};
 
-        return postApiUsers(data, axiosOptions);
+        return postApiUsers(data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
 };
 
 export type PostApiUsersMutationResult = NonNullable<Awaited<ReturnType<typeof postApiUsers>>>;
-export type PostApiUsersMutationBody = PostApiUsersBody;
-export type PostApiUsersMutationError = AxiosError<
+export type PostApiUsersMutationBody = BodyType<PostApiUsersBody>;
+export type PostApiUsersMutationError = ErrorType<
     | PostApiUsers400
     | PostApiUsers401
     | PostApiUsers403
@@ -224,7 +235,7 @@ export type PostApiUsersMutationError = AxiosError<
  * @summary Create user
  */
 export const usePostApiUsers = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PostApiUsers400
         | PostApiUsers401
         | PostApiUsers403
@@ -234,17 +245,17 @@ export const usePostApiUsers = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiUsers>>,
         TError,
-        { data: PostApiUsersBody },
+        { data: BodyType<PostApiUsersBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postApiUsers>>,
     TError,
-    { data: PostApiUsersBody },
+    { data: BodyType<PostApiUsersBody> },
     TContext
 > => {
     const mutationOptions = getPostApiUsersMutationOptions(options);
@@ -256,9 +267,13 @@ export const usePostApiUsers = <
  */
 export const getApiUsersId = (
     id: string,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiUsersId200>> => {
-    return axios.get(`/api/users/${id}`, options);
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiUsersId200>(
+        { method: 'GET', signal, url: `/api/users/${id}` },
+        options,
+    );
 };
 
 export const getGetApiUsersIdQueryKey = (id: string) => {
@@ -267,20 +282,20 @@ export const getGetApiUsersIdQueryKey = (id: string) => {
 
 export const getGetApiUsersIdQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
-    TError = AxiosError<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetApiUsersIdQueryKey(id);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersId>>> = ({ signal }) =>
-        getApiUsersId(id, { signal, ...axiosOptions });
+        getApiUsersId(id, requestOptions, signal);
 
     return { enabled: !!id, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiUsersId>>,
@@ -290,31 +305,30 @@ export const getGetApiUsersIdQueryOptions = <
 };
 
 export type GetApiUsersIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsersId>>>;
-export type GetApiUsersIdQueryError = AxiosError<
+export type GetApiUsersIdQueryError = ErrorType<
     GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500
 >;
 
 export function useGetApiUsersId<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
-    TError = AxiosError<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>> &
             Pick<
                 DefinedInitialDataOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiUsersId<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
-    TError = AxiosError<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>> &
             Pick<
                 UndefinedInitialDataOptions<
@@ -324,16 +338,17 @@ export function useGetApiUsersId<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiUsersId<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
-    TError = AxiosError<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -342,12 +357,12 @@ export function useGetApiUsersId<
 
 export function useGetApiUsersId<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
-    TError = AxiosError<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiUsersIdQueryOptions(id, options);
@@ -362,33 +377,30 @@ export function useGetApiUsersId<
 /**
  * @summary Delete user by id
  */
-export const deleteApiUsersId = (
-    id: string,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<DeleteApiUsersId204>> => {
-    return axios.delete(`/api/users/${id}`, options);
+export const deleteApiUsersId = (id: string, options?: SecondParameter<typeof apiInstance>) => {
+    return apiInstance<DeleteApiUsersId204>({ method: 'DELETE', url: `/api/users/${id}` }, options);
 };
 
 export const getDeleteApiUsersIdMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         DeleteApiUsersId401 | DeleteApiUsersId403 | DeleteApiUsersId404 | DeleteApiUsersId500
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiUsersId>>,
         TError,
         { id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiUsersId>>,
     TError,
     { id: string },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof deleteApiUsersId>>,
@@ -396,7 +408,7 @@ export const getDeleteApiUsersIdMutationOptions = <
     > = (props) => {
         const { id } = props ?? {};
 
-        return deleteApiUsersId(id, axiosOptions);
+        return deleteApiUsersId(id, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -406,7 +418,7 @@ export type DeleteApiUsersIdMutationResult = NonNullable<
     Awaited<ReturnType<typeof deleteApiUsersId>>
 >;
 
-export type DeleteApiUsersIdMutationError = AxiosError<
+export type DeleteApiUsersIdMutationError = ErrorType<
     DeleteApiUsersId401 | DeleteApiUsersId403 | DeleteApiUsersId404 | DeleteApiUsersId500
 >;
 
@@ -414,18 +426,18 @@ export type DeleteApiUsersIdMutationError = AxiosError<
  * @summary Delete user by id
  */
 export const useDeleteApiUsersId = <
-    TError = AxiosError<
+    TError = ErrorType<
         DeleteApiUsersId401 | DeleteApiUsersId403 | DeleteApiUsersId404 | DeleteApiUsersId500
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiUsersId>>,
         TError,
         { id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof deleteApiUsersId>>,
     TError,
@@ -441,14 +453,22 @@ export const useDeleteApiUsersId = <
  */
 export const putApiUsersId = (
     id: string,
-    putApiUsersIdBody: PutApiUsersIdBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PutApiUsersId200>> => {
-    return axios.put(`/api/users/${id}`, putApiUsersIdBody, options);
+    putApiUsersIdBody: BodyType<PutApiUsersIdBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PutApiUsersId200>(
+        {
+            data: putApiUsersIdBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'PUT',
+            url: `/api/users/${id}`,
+        },
+        options,
+    );
 };
 
 export const getPutApiUsersIdMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PutApiUsersId400
         | PutApiUsersId401
         | PutApiUsersId403
@@ -458,36 +478,36 @@ export const getPutApiUsersIdMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiUsersId>>,
         TError,
-        { data: PutApiUsersIdBody; id: string },
+        { data: BodyType<PutApiUsersIdBody>; id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof putApiUsersId>>,
     TError,
-    { data: PutApiUsersIdBody; id: string },
+    { data: BodyType<PutApiUsersIdBody>; id: string },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof putApiUsersId>>,
-        { data: PutApiUsersIdBody; id: string }
+        { data: BodyType<PutApiUsersIdBody>; id: string }
     > = (props) => {
         const { id, data } = props ?? {};
 
-        return putApiUsersId(id, data, axiosOptions);
+        return putApiUsersId(id, data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
 };
 
 export type PutApiUsersIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiUsersId>>>;
-export type PutApiUsersIdMutationBody = PutApiUsersIdBody;
-export type PutApiUsersIdMutationError = AxiosError<
+export type PutApiUsersIdMutationBody = BodyType<PutApiUsersIdBody>;
+export type PutApiUsersIdMutationError = ErrorType<
     | PutApiUsersId400
     | PutApiUsersId401
     | PutApiUsersId403
@@ -500,7 +520,7 @@ export type PutApiUsersIdMutationError = AxiosError<
  * @summary Update user by id
  */
 export const usePutApiUsersId = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PutApiUsersId400
         | PutApiUsersId401
         | PutApiUsersId403
@@ -510,17 +530,17 @@ export const usePutApiUsersId = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiUsersId>>,
         TError,
-        { data: PutApiUsersIdBody; id: string },
+        { data: BodyType<PutApiUsersIdBody>; id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof putApiUsersId>>,
     TError,
-    { data: PutApiUsersIdBody; id: string },
+    { data: BodyType<PutApiUsersIdBody>; id: string },
     TContext
 > => {
     const mutationOptions = getPutApiUsersIdMutationOptions(options);

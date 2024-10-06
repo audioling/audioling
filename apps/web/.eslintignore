@@ -1,3 +1,4 @@
 vite.config.ts
 orval.config.cjs
 dist/
+src/api/openapi-generated/

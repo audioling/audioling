@@ -17,8 +17,8 @@ import type {
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { apiInstance } from '../../api-instance.ts';
+import type { BodyType, ErrorType } from '../../api-instance.ts';
 import type {
     DeleteApiLibrariesId204,
     DeleteApiLibrariesId401,
@@ -58,17 +58,20 @@ import type {
     PutApiLibrariesIdBody,
 } from '../audioling-openapi-client.schemas.ts';
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get all libraries
  */
 export const getApiLibraries = (
     params: GetApiLibrariesParams,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiLibraries200>> => {
-    return axios.get(`/api/libraries`, {
-        ...options,
-        params: { ...params, ...options?.params },
-    });
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraries200>(
+        { method: 'GET', params, signal, url: `/api/libraries` },
+        options,
+    );
 };
 
 export const getGetApiLibrariesQueryKey = (params: GetApiLibrariesParams) => {
@@ -77,7 +80,7 @@ export const getGetApiLibrariesQueryKey = (params: GetApiLibrariesParams) => {
 
 export const getGetApiLibrariesQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
         | GetApiLibraries404
@@ -87,18 +90,18 @@ export const getGetApiLibrariesQueryOptions = <
 >(
     params: GetApiLibrariesParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibrariesQueryKey(params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraries>>> = ({ signal }) =>
-        getApiLibraries(params, { signal, ...axiosOptions });
+        getApiLibraries(params, requestOptions, signal);
 
     return { queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraries>>,
@@ -108,7 +111,7 @@ export const getGetApiLibrariesQueryOptions = <
 };
 
 export type GetApiLibrariesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiLibraries>>>;
-export type GetApiLibrariesQueryError = AxiosError<
+export type GetApiLibrariesQueryError = ErrorType<
     | GetApiLibraries401
     | GetApiLibraries403
     | GetApiLibraries404
@@ -118,7 +121,7 @@ export type GetApiLibrariesQueryError = AxiosError<
 
 export function useGetApiLibraries<
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
         | GetApiLibraries404
@@ -128,7 +131,6 @@ export function useGetApiLibraries<
 >(
     params: GetApiLibrariesParams,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         > &
@@ -140,11 +142,12 @@ export function useGetApiLibraries<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraries<
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
         | GetApiLibraries404
@@ -154,7 +157,6 @@ export function useGetApiLibraries<
 >(
     params: GetApiLibrariesParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         > &
@@ -166,11 +168,12 @@ export function useGetApiLibraries<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraries<
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
         | GetApiLibraries404
@@ -180,10 +183,10 @@ export function useGetApiLibraries<
 >(
     params: GetApiLibrariesParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -192,7 +195,7 @@ export function useGetApiLibraries<
 
 export function useGetApiLibraries<
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
         | GetApiLibraries404
@@ -202,10 +205,10 @@ export function useGetApiLibraries<
 >(
     params: GetApiLibrariesParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiLibrariesQueryOptions(params, options);
@@ -222,14 +225,22 @@ export function useGetApiLibraries<
  * @summary Create library
  */
 export const postApiLibraries = (
-    postApiLibrariesBody: PostApiLibrariesBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostApiLibraries201>> => {
-    return axios.post(`/api/libraries`, postApiLibrariesBody, options);
+    postApiLibrariesBody: BodyType<PostApiLibrariesBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibraries201>(
+        {
+            data: postApiLibrariesBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            url: `/api/libraries`,
+        },
+        options,
+    );
 };
 
 export const getPostApiLibrariesMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PostApiLibraries400
         | PostApiLibraries401
         | PostApiLibraries403
@@ -240,28 +251,28 @@ export const getPostApiLibrariesMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiLibraries>>,
         TError,
-        { data: PostApiLibrariesBody },
+        { data: BodyType<PostApiLibrariesBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postApiLibraries>>,
     TError,
-    { data: PostApiLibrariesBody },
+    { data: BodyType<PostApiLibrariesBody> },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postApiLibraries>>,
-        { data: PostApiLibrariesBody }
+        { data: BodyType<PostApiLibrariesBody> }
     > = (props) => {
         const { data } = props ?? {};
 
-        return postApiLibraries(data, axiosOptions);
+        return postApiLibraries(data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -270,8 +281,8 @@ export const getPostApiLibrariesMutationOptions = <
 export type PostApiLibrariesMutationResult = NonNullable<
     Awaited<ReturnType<typeof postApiLibraries>>
 >;
-export type PostApiLibrariesMutationBody = PostApiLibrariesBody;
-export type PostApiLibrariesMutationError = AxiosError<
+export type PostApiLibrariesMutationBody = BodyType<PostApiLibrariesBody>;
+export type PostApiLibrariesMutationError = ErrorType<
     | PostApiLibraries400
     | PostApiLibraries401
     | PostApiLibraries403
@@ -285,7 +296,7 @@ export type PostApiLibrariesMutationError = AxiosError<
  * @summary Create library
  */
 export const usePostApiLibraries = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PostApiLibraries400
         | PostApiLibraries401
         | PostApiLibraries403
@@ -296,17 +307,17 @@ export const usePostApiLibraries = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiLibraries>>,
         TError,
-        { data: PostApiLibrariesBody },
+        { data: BodyType<PostApiLibrariesBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postApiLibraries>>,
     TError,
-    { data: PostApiLibrariesBody },
+    { data: BodyType<PostApiLibrariesBody> },
     TContext
 > => {
     const mutationOptions = getPostApiLibrariesMutationOptions(options);
@@ -318,9 +329,13 @@ export const usePostApiLibraries = <
  */
 export const getApiLibrariesId = (
     id: string,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiLibrariesId200>> => {
-    return axios.get(`/api/libraries/${id}`, options);
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibrariesId200>(
+        { method: 'GET', signal, url: `/api/libraries/${id}` },
+        options,
+    );
 };
 
 export const getGetApiLibrariesIdQueryKey = (id: string) => {
@@ -329,7 +344,7 @@ export const getGetApiLibrariesIdQueryKey = (id: string) => {
 
 export const getGetApiLibrariesIdQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibrariesId401
         | GetApiLibrariesId403
         | GetApiLibrariesId404
@@ -339,18 +354,18 @@ export const getGetApiLibrariesIdQueryOptions = <
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibrariesIdQueryKey(id);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibrariesId>>> = ({ signal }) =>
-        getApiLibrariesId(id, { signal, ...axiosOptions });
+        getApiLibrariesId(id, requestOptions, signal);
 
     return { enabled: !!id, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibrariesId>>,
@@ -362,7 +377,7 @@ export const getGetApiLibrariesIdQueryOptions = <
 export type GetApiLibrariesIdQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibrariesId>>
 >;
-export type GetApiLibrariesIdQueryError = AxiosError<
+export type GetApiLibrariesIdQueryError = ErrorType<
     | GetApiLibrariesId401
     | GetApiLibrariesId403
     | GetApiLibrariesId404
@@ -372,7 +387,7 @@ export type GetApiLibrariesIdQueryError = AxiosError<
 
 export function useGetApiLibrariesId<
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibrariesId401
         | GetApiLibrariesId403
         | GetApiLibrariesId404
@@ -382,7 +397,6 @@ export function useGetApiLibrariesId<
 >(
     id: string,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         > &
@@ -394,11 +408,12 @@ export function useGetApiLibrariesId<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibrariesId<
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibrariesId401
         | GetApiLibrariesId403
         | GetApiLibrariesId404
@@ -408,7 +423,6 @@ export function useGetApiLibrariesId<
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         > &
@@ -420,11 +434,12 @@ export function useGetApiLibrariesId<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibrariesId<
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibrariesId401
         | GetApiLibrariesId403
         | GetApiLibrariesId404
@@ -434,10 +449,10 @@ export function useGetApiLibrariesId<
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -446,7 +461,7 @@ export function useGetApiLibrariesId<
 
 export function useGetApiLibrariesId<
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibrariesId401
         | GetApiLibrariesId403
         | GetApiLibrariesId404
@@ -456,10 +471,10 @@ export function useGetApiLibrariesId<
 >(
     id: string,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiLibrariesIdQueryOptions(id, options);
@@ -477,14 +492,22 @@ export function useGetApiLibrariesId<
  */
 export const putApiLibrariesId = (
     id: string,
-    putApiLibrariesIdBody: PutApiLibrariesIdBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PutApiLibrariesId200>> => {
-    return axios.put(`/api/libraries/${id}`, putApiLibrariesIdBody, options);
+    putApiLibrariesIdBody: BodyType<PutApiLibrariesIdBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PutApiLibrariesId200>(
+        {
+            data: putApiLibrariesIdBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'PUT',
+            url: `/api/libraries/${id}`,
+        },
+        options,
+    );
 };
 
 export const getPutApiLibrariesIdMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PutApiLibrariesId400
         | PutApiLibrariesId401
         | PutApiLibrariesId403
@@ -494,28 +517,28 @@ export const getPutApiLibrariesIdMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiLibrariesId>>,
         TError,
-        { data: PutApiLibrariesIdBody; id: string },
+        { data: BodyType<PutApiLibrariesIdBody>; id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof putApiLibrariesId>>,
     TError,
-    { data: PutApiLibrariesIdBody; id: string },
+    { data: BodyType<PutApiLibrariesIdBody>; id: string },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof putApiLibrariesId>>,
-        { data: PutApiLibrariesIdBody; id: string }
+        { data: BodyType<PutApiLibrariesIdBody>; id: string }
     > = (props) => {
         const { id, data } = props ?? {};
 
-        return putApiLibrariesId(id, data, axiosOptions);
+        return putApiLibrariesId(id, data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -524,8 +547,8 @@ export const getPutApiLibrariesIdMutationOptions = <
 export type PutApiLibrariesIdMutationResult = NonNullable<
     Awaited<ReturnType<typeof putApiLibrariesId>>
 >;
-export type PutApiLibrariesIdMutationBody = PutApiLibrariesIdBody;
-export type PutApiLibrariesIdMutationError = AxiosError<
+export type PutApiLibrariesIdMutationBody = BodyType<PutApiLibrariesIdBody>;
+export type PutApiLibrariesIdMutationError = ErrorType<
     | PutApiLibrariesId400
     | PutApiLibrariesId401
     | PutApiLibrariesId403
@@ -538,7 +561,7 @@ export type PutApiLibrariesIdMutationError = AxiosError<
  * @summary Update library by id
  */
 export const usePutApiLibrariesId = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PutApiLibrariesId400
         | PutApiLibrariesId401
         | PutApiLibrariesId403
@@ -548,17 +571,17 @@ export const usePutApiLibrariesId = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiLibrariesId>>,
         TError,
-        { data: PutApiLibrariesIdBody; id: string },
+        { data: BodyType<PutApiLibrariesIdBody>; id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof putApiLibrariesId>>,
     TError,
-    { data: PutApiLibrariesIdBody; id: string },
+    { data: BodyType<PutApiLibrariesIdBody>; id: string },
     TContext
 > => {
     const mutationOptions = getPutApiLibrariesIdMutationOptions(options);
@@ -568,15 +591,15 @@ export const usePutApiLibrariesId = <
 /**
  * @summary Delete library by id
  */
-export const deleteApiLibrariesId = (
-    id: string,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<DeleteApiLibrariesId204>> => {
-    return axios.delete(`/api/libraries/${id}`, options);
+export const deleteApiLibrariesId = (id: string, options?: SecondParameter<typeof apiInstance>) => {
+    return apiInstance<DeleteApiLibrariesId204>(
+        { method: 'DELETE', url: `/api/libraries/${id}` },
+        options,
+    );
 };
 
 export const getDeleteApiLibrariesIdMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | DeleteApiLibrariesId401
         | DeleteApiLibrariesId403
         | DeleteApiLibrariesId404
@@ -585,20 +608,20 @@ export const getDeleteApiLibrariesIdMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiLibrariesId>>,
         TError,
         { id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiLibrariesId>>,
     TError,
     { id: string },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof deleteApiLibrariesId>>,
@@ -606,7 +629,7 @@ export const getDeleteApiLibrariesIdMutationOptions = <
     > = (props) => {
         const { id } = props ?? {};
 
-        return deleteApiLibrariesId(id, axiosOptions);
+        return deleteApiLibrariesId(id, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -616,7 +639,7 @@ export type DeleteApiLibrariesIdMutationResult = NonNullable<
     Awaited<ReturnType<typeof deleteApiLibrariesId>>
 >;
 
-export type DeleteApiLibrariesIdMutationError = AxiosError<
+export type DeleteApiLibrariesIdMutationError = ErrorType<
     | DeleteApiLibrariesId401
     | DeleteApiLibrariesId403
     | DeleteApiLibrariesId404
@@ -628,7 +651,7 @@ export type DeleteApiLibrariesIdMutationError = AxiosError<
  * @summary Delete library by id
  */
 export const useDeleteApiLibrariesId = <
-    TError = AxiosError<
+    TError = ErrorType<
         | DeleteApiLibrariesId401
         | DeleteApiLibrariesId403
         | DeleteApiLibrariesId404
@@ -637,13 +660,13 @@ export const useDeleteApiLibrariesId = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiLibrariesId>>,
         TError,
         { id: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof deleteApiLibrariesId>>,
     TError,

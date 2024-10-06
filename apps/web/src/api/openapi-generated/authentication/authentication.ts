@@ -10,8 +10,8 @@ import type {
     UseMutationOptions,
     UseMutationResult,
 } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { apiInstance } from '../../api-instance.ts';
+import type { BodyType, ErrorType } from '../../api-instance.ts';
 import type {
     PostAuthRegister204,
     PostAuthRegister500,
@@ -26,69 +26,79 @@ import type {
     PostAuthSignOutBody,
 } from '../audioling-openapi-client.schemas.ts';
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Sign in
  */
 export const postAuthSignIn = (
-    postAuthSignInBody: PostAuthSignInBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostAuthSignIn200>> => {
-    return axios.post(`/auth/sign-in`, postAuthSignInBody, options);
+    postAuthSignInBody: BodyType<PostAuthSignInBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostAuthSignIn200>(
+        {
+            data: postAuthSignInBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            url: `/auth/sign-in`,
+        },
+        options,
+    );
 };
 
 export const getPostAuthSignInMutationOptions = <
-    TError = AxiosError<PostAuthSignIn401 | PostAuthSignIn500>,
+    TError = ErrorType<PostAuthSignIn401 | PostAuthSignIn500>,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postAuthSignIn>>,
         TError,
-        { data: PostAuthSignInBody },
+        { data: BodyType<PostAuthSignInBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postAuthSignIn>>,
     TError,
-    { data: PostAuthSignInBody },
+    { data: BodyType<PostAuthSignInBody> },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postAuthSignIn>>,
-        { data: PostAuthSignInBody }
+        { data: BodyType<PostAuthSignInBody> }
     > = (props) => {
         const { data } = props ?? {};
 
-        return postAuthSignIn(data, axiosOptions);
+        return postAuthSignIn(data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
 };
 
 export type PostAuthSignInMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthSignIn>>>;
-export type PostAuthSignInMutationBody = PostAuthSignInBody;
-export type PostAuthSignInMutationError = AxiosError<PostAuthSignIn401 | PostAuthSignIn500>;
+export type PostAuthSignInMutationBody = BodyType<PostAuthSignInBody>;
+export type PostAuthSignInMutationError = ErrorType<PostAuthSignIn401 | PostAuthSignIn500>;
 
 /**
  * @summary Sign in
  */
 export const usePostAuthSignIn = <
-    TError = AxiosError<PostAuthSignIn401 | PostAuthSignIn500>,
+    TError = ErrorType<PostAuthSignIn401 | PostAuthSignIn500>,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postAuthSignIn>>,
         TError,
-        { data: PostAuthSignInBody },
+        { data: BodyType<PostAuthSignInBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postAuthSignIn>>,
     TError,
-    { data: PostAuthSignInBody },
+    { data: BodyType<PostAuthSignInBody> },
     TContext
 > => {
     const mutationOptions = getPostAuthSignInMutationOptions(options);
@@ -99,38 +109,46 @@ export const usePostAuthSignIn = <
  * @summary Sign out
  */
 export const postAuthSignOut = (
-    postAuthSignOutBody: PostAuthSignOutBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostAuthSignOut204>> => {
-    return axios.post(`/auth/sign-out`, postAuthSignOutBody, options);
+    postAuthSignOutBody: BodyType<PostAuthSignOutBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostAuthSignOut204>(
+        {
+            data: postAuthSignOutBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            url: `/auth/sign-out`,
+        },
+        options,
+    );
 };
 
 export const getPostAuthSignOutMutationOptions = <
-    TError = AxiosError<PostAuthSignOut401 | PostAuthSignOut500>,
+    TError = ErrorType<PostAuthSignOut401 | PostAuthSignOut500>,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postAuthSignOut>>,
         TError,
-        { data: PostAuthSignOutBody },
+        { data: BodyType<PostAuthSignOutBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postAuthSignOut>>,
     TError,
-    { data: PostAuthSignOutBody },
+    { data: BodyType<PostAuthSignOutBody> },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postAuthSignOut>>,
-        { data: PostAuthSignOutBody }
+        { data: BodyType<PostAuthSignOutBody> }
     > = (props) => {
         const { data } = props ?? {};
 
-        return postAuthSignOut(data, axiosOptions);
+        return postAuthSignOut(data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -139,27 +157,27 @@ export const getPostAuthSignOutMutationOptions = <
 export type PostAuthSignOutMutationResult = NonNullable<
     Awaited<ReturnType<typeof postAuthSignOut>>
 >;
-export type PostAuthSignOutMutationBody = PostAuthSignOutBody;
-export type PostAuthSignOutMutationError = AxiosError<PostAuthSignOut401 | PostAuthSignOut500>;
+export type PostAuthSignOutMutationBody = BodyType<PostAuthSignOutBody>;
+export type PostAuthSignOutMutationError = ErrorType<PostAuthSignOut401 | PostAuthSignOut500>;
 
 /**
  * @summary Sign out
  */
 export const usePostAuthSignOut = <
-    TError = AxiosError<PostAuthSignOut401 | PostAuthSignOut500>,
+    TError = ErrorType<PostAuthSignOut401 | PostAuthSignOut500>,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postAuthSignOut>>,
         TError,
-        { data: PostAuthSignOutBody },
+        { data: BodyType<PostAuthSignOutBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postAuthSignOut>>,
     TError,
-    { data: PostAuthSignOutBody },
+    { data: BodyType<PostAuthSignOutBody> },
     TContext
 > => {
     const mutationOptions = getPostAuthSignOutMutationOptions(options);
@@ -170,38 +188,46 @@ export const usePostAuthSignOut = <
  * @summary Register
  */
 export const postAuthRegister = (
-    postAuthRegisterBody: PostAuthRegisterBody,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostAuthRegister204>> => {
-    return axios.post(`/auth/register`, postAuthRegisterBody, options);
+    postAuthRegisterBody: BodyType<PostAuthRegisterBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostAuthRegister204>(
+        {
+            data: postAuthRegisterBody,
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            url: `/auth/register`,
+        },
+        options,
+    );
 };
 
 export const getPostAuthRegisterMutationOptions = <
-    TError = AxiosError<PostAuthRegister500>,
+    TError = ErrorType<PostAuthRegister500>,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postAuthRegister>>,
         TError,
-        { data: PostAuthRegisterBody },
+        { data: BodyType<PostAuthRegisterBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postAuthRegister>>,
     TError,
-    { data: PostAuthRegisterBody },
+    { data: BodyType<PostAuthRegisterBody> },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postAuthRegister>>,
-        { data: PostAuthRegisterBody }
+        { data: BodyType<PostAuthRegisterBody> }
     > = (props) => {
         const { data } = props ?? {};
 
-        return postAuthRegister(data, axiosOptions);
+        return postAuthRegister(data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -210,27 +236,27 @@ export const getPostAuthRegisterMutationOptions = <
 export type PostAuthRegisterMutationResult = NonNullable<
     Awaited<ReturnType<typeof postAuthRegister>>
 >;
-export type PostAuthRegisterMutationBody = PostAuthRegisterBody;
-export type PostAuthRegisterMutationError = AxiosError<PostAuthRegister500>;
+export type PostAuthRegisterMutationBody = BodyType<PostAuthRegisterBody>;
+export type PostAuthRegisterMutationError = ErrorType<PostAuthRegister500>;
 
 /**
  * @summary Register
  */
 export const usePostAuthRegister = <
-    TError = AxiosError<PostAuthRegister500>,
+    TError = ErrorType<PostAuthRegister500>,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postAuthRegister>>,
         TError,
-        { data: PostAuthRegisterBody },
+        { data: BodyType<PostAuthRegisterBody> },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postAuthRegister>>,
     TError,
-    { data: PostAuthRegisterBody },
+    { data: BodyType<PostAuthRegisterBody> },
     TContext
 > => {
     const mutationOptions = getPostAuthRegisterMutationOptions(options);

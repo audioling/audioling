@@ -9,8 +9,9 @@ foreach ($folder in $folders) {
 
         $content = Get-Content -Path $file.FullName
 
-        # Replace _schemas with _schemas/index.ts
+        # Fix ESM imports
         $content = $content -replace "../audioling-openapi-client.schemas", "../audioling-openapi-client.schemas.ts"
+        $content = $content -replace "../../api-instance", "../../api-instance.ts"
 
         $content | Set-Content -Path $file.FullName -Encoding utf8
         Write-Host "Linted $($file.FullName)"

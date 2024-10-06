@@ -14,8 +14,8 @@ import type {
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType } from '../../api-instance.ts';
 import type {
     GetApiLibraryIdGenres200,
     GetApiLibraryIdGenres401,
@@ -25,18 +25,21 @@ import type {
     GetApiLibraryIdGenresParams,
 } from '../audioling-openapi-client.schemas.ts';
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get all genres
  */
 export const getApiLibraryIdGenres = (
     libraryId: string,
     params: GetApiLibraryIdGenresParams,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiLibraryIdGenres200>> => {
-    return axios.get(`/api/${libraryId}/genres`, {
-        ...options,
-        params: { ...params, ...options?.params },
-    });
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdGenres200>(
+        { method: 'GET', params, signal, url: `/api/${libraryId}/genres` },
+        options,
+    );
 };
 
 export const getGetApiLibraryIdGenresQueryKey = (
@@ -48,7 +51,7 @@ export const getGetApiLibraryIdGenresQueryKey = (
 
 export const getGetApiLibraryIdGenresQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
         | GetApiLibraryIdGenres422
@@ -58,19 +61,19 @@ export const getGetApiLibraryIdGenresQueryOptions = <
     libraryId: string,
     params: GetApiLibraryIdGenresParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenres>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdGenresQueryKey(libraryId, params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdGenres>>> = ({
         signal,
-    }) => getApiLibraryIdGenres(libraryId, params, { signal, ...axiosOptions });
+    }) => getApiLibraryIdGenres(libraryId, params, requestOptions, signal);
 
     return { enabled: !!libraryId, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
@@ -82,7 +85,7 @@ export const getGetApiLibraryIdGenresQueryOptions = <
 export type GetApiLibraryIdGenresQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdGenres>>
 >;
-export type GetApiLibraryIdGenresQueryError = AxiosError<
+export type GetApiLibraryIdGenresQueryError = ErrorType<
     | GetApiLibraryIdGenres401
     | GetApiLibraryIdGenres403
     | GetApiLibraryIdGenres422
@@ -91,7 +94,7 @@ export type GetApiLibraryIdGenresQueryError = AxiosError<
 
 export function useGetApiLibraryIdGenres<
     TData = Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
         | GetApiLibraryIdGenres422
@@ -101,7 +104,6 @@ export function useGetApiLibraryIdGenres<
     libraryId: string,
     params: GetApiLibraryIdGenresParams,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenres>>, TError, TData>
         > &
@@ -113,11 +115,12 @@ export function useGetApiLibraryIdGenres<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdGenres<
     TData = Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
         | GetApiLibraryIdGenres422
@@ -127,7 +130,6 @@ export function useGetApiLibraryIdGenres<
     libraryId: string,
     params: GetApiLibraryIdGenresParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenres>>, TError, TData>
         > &
@@ -139,11 +141,12 @@ export function useGetApiLibraryIdGenres<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdGenres<
     TData = Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
         | GetApiLibraryIdGenres422
@@ -153,10 +156,10 @@ export function useGetApiLibraryIdGenres<
     libraryId: string,
     params: GetApiLibraryIdGenresParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenres>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -165,7 +168,7 @@ export function useGetApiLibraryIdGenres<
 
 export function useGetApiLibraryIdGenres<
     TData = Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
         | GetApiLibraryIdGenres422
@@ -175,10 +178,10 @@ export function useGetApiLibraryIdGenres<
     libraryId: string,
     params: GetApiLibraryIdGenresParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenres>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiLibraryIdGenresQueryOptions(libraryId, params, options);

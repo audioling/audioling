@@ -14,15 +14,17 @@ import type {
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType } from '../../api-instance.ts';
 import type { GetPing200 } from '../audioling-openapi-client.schemas.ts';
+
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * @summary Ping the server
  */
-export const getPing = (options?: AxiosRequestConfig): Promise<AxiosResponse<GetPing200>> => {
-    return axios.get(`/ping`, options);
+export const getPing = (options?: SecondParameter<typeof apiInstance>, signal?: AbortSignal) => {
+    return apiInstance<GetPing200>({ method: 'GET', signal, url: `/ping` }, options);
 };
 
 export const getGetPingQueryKey = () => {
@@ -31,17 +33,17 @@ export const getGetPingQueryKey = () => {
 
 export const getGetPingQueryOptions = <
     TData = Awaited<ReturnType<typeof getPing>>,
-    TError = AxiosError<unknown>,
+    TError = ErrorType<unknown>,
 >(options?: {
-    axios?: AxiosRequestConfig;
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
 }) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetPingQueryKey();
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
-        getPing({ signal, ...axiosOptions });
+        getPing(requestOptions, signal);
 
     return { queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getPing>>,
@@ -51,36 +53,36 @@ export const getGetPingQueryOptions = <
 };
 
 export type GetPingQueryResult = NonNullable<Awaited<ReturnType<typeof getPing>>>;
-export type GetPingQueryError = AxiosError<unknown>;
+export type GetPingQueryError = ErrorType<unknown>;
 
 export function useGetPing<
     TData = Awaited<ReturnType<typeof getPing>>,
-    TError = AxiosError<unknown>,
+    TError = ErrorType<unknown>,
 >(options: {
-    axios?: AxiosRequestConfig;
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>> &
         Pick<
             DefinedInitialDataOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>,
             'initialData'
         >;
+    request?: SecondParameter<typeof apiInstance>;
 }): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetPing<
     TData = Awaited<ReturnType<typeof getPing>>,
-    TError = AxiosError<unknown>,
+    TError = ErrorType<unknown>,
 >(options?: {
-    axios?: AxiosRequestConfig;
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>> &
         Pick<
             UndefinedInitialDataOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>,
             'initialData'
         >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetPing<
     TData = Awaited<ReturnType<typeof getPing>>,
-    TError = AxiosError<unknown>,
+    TError = ErrorType<unknown>,
 >(options?: {
-    axios?: AxiosRequestConfig;
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Ping the server
@@ -88,10 +90,10 @@ export function useGetPing<
 
 export function useGetPing<
     TData = Awaited<ReturnType<typeof getPing>>,
-    TError = AxiosError<unknown>,
+    TError = ErrorType<unknown>,
 >(options?: {
-    axios?: AxiosRequestConfig;
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetPingQueryOptions(options);
 

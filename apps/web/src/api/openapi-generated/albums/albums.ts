@@ -17,8 +17,8 @@ import type {
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType } from '../../api-instance.ts';
 import type {
     DeleteApiLibraryIdAlbumsIdFavorite204,
     DeleteApiLibraryIdAlbumsIdFavorite401,
@@ -45,18 +45,21 @@ import type {
     PostApiLibraryIdAlbumsIdFavorite500,
 } from '../audioling-openapi-client.schemas.ts';
 
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 /**
  * @summary Get all albums
  */
 export const getApiLibraryIdAlbums = (
     libraryId: string,
     params: GetApiLibraryIdAlbumsParams,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiLibraryIdAlbums200>> => {
-    return axios.get(`/api/${libraryId}/albums`, {
-        ...options,
-        params: { ...params, ...options?.params },
-    });
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdAlbums200>(
+        { method: 'GET', params, signal, url: `/api/${libraryId}/albums` },
+        options,
+    );
 };
 
 export const getGetApiLibraryIdAlbumsQueryKey = (
@@ -68,7 +71,7 @@ export const getGetApiLibraryIdAlbumsQueryKey = (
 
 export const getGetApiLibraryIdAlbumsQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
         | GetApiLibraryIdAlbums422
@@ -78,19 +81,19 @@ export const getGetApiLibraryIdAlbumsQueryOptions = <
     libraryId: string,
     params: GetApiLibraryIdAlbumsParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdAlbumsQueryKey(libraryId, params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>> = ({
         signal,
-    }) => getApiLibraryIdAlbums(libraryId, params, { signal, ...axiosOptions });
+    }) => getApiLibraryIdAlbums(libraryId, params, requestOptions, signal);
 
     return { enabled: !!libraryId, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
@@ -102,7 +105,7 @@ export const getGetApiLibraryIdAlbumsQueryOptions = <
 export type GetApiLibraryIdAlbumsQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdAlbums>>
 >;
-export type GetApiLibraryIdAlbumsQueryError = AxiosError<
+export type GetApiLibraryIdAlbumsQueryError = ErrorType<
     | GetApiLibraryIdAlbums401
     | GetApiLibraryIdAlbums403
     | GetApiLibraryIdAlbums422
@@ -111,7 +114,7 @@ export type GetApiLibraryIdAlbumsQueryError = AxiosError<
 
 export function useGetApiLibraryIdAlbums<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
         | GetApiLibraryIdAlbums422
@@ -121,7 +124,6 @@ export function useGetApiLibraryIdAlbums<
     libraryId: string,
     params: GetApiLibraryIdAlbumsParams,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>, TError, TData>
         > &
@@ -133,11 +135,12 @@ export function useGetApiLibraryIdAlbums<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbums<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
         | GetApiLibraryIdAlbums422
@@ -147,7 +150,6 @@ export function useGetApiLibraryIdAlbums<
     libraryId: string,
     params: GetApiLibraryIdAlbumsParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>, TError, TData>
         > &
@@ -159,11 +161,12 @@ export function useGetApiLibraryIdAlbums<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbums<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
         | GetApiLibraryIdAlbums422
@@ -173,10 +176,10 @@ export function useGetApiLibraryIdAlbums<
     libraryId: string,
     params: GetApiLibraryIdAlbumsParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -185,7 +188,7 @@ export function useGetApiLibraryIdAlbums<
 
 export function useGetApiLibraryIdAlbums<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
         | GetApiLibraryIdAlbums422
@@ -195,10 +198,10 @@ export function useGetApiLibraryIdAlbums<
     libraryId: string,
     params: GetApiLibraryIdAlbumsParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiLibraryIdAlbumsQueryOptions(libraryId, params, options);
@@ -217,12 +220,13 @@ export const getApiLibraryIdAlbumsId = (
     libraryId: string,
     id: string,
     params: GetApiLibraryIdAlbumsIdParams,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<GetApiLibraryIdAlbumsId200>> => {
-    return axios.get(`/api/${libraryId}/albums/${id}`, {
-        ...options,
-        params: { ...params, ...options?.params },
-    });
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdAlbumsId200>(
+        { method: 'GET', params, signal, url: `/api/${libraryId}/albums/${id}` },
+        options,
+    );
 };
 
 export const getGetApiLibraryIdAlbumsIdQueryKey = (
@@ -235,7 +239,7 @@ export const getGetApiLibraryIdAlbumsIdQueryKey = (
 
 export const getGetApiLibraryIdAlbumsIdQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
         | GetApiLibraryIdAlbumsId404
@@ -247,20 +251,20 @@ export const getGetApiLibraryIdAlbumsIdQueryOptions = <
     id: string,
     params: GetApiLibraryIdAlbumsIdParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
-    const { query: queryOptions, axios: axiosOptions } = options ?? {};
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey =
         queryOptions?.queryKey ?? getGetApiLibraryIdAlbumsIdQueryKey(libraryId, id, params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>> = ({
         signal,
-    }) => getApiLibraryIdAlbumsId(libraryId, id, params, { signal, ...axiosOptions });
+    }) => getApiLibraryIdAlbumsId(libraryId, id, params, requestOptions, signal);
 
     return { enabled: !!(libraryId && id), queryFn, queryKey, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
@@ -272,7 +276,7 @@ export const getGetApiLibraryIdAlbumsIdQueryOptions = <
 export type GetApiLibraryIdAlbumsIdQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>
 >;
-export type GetApiLibraryIdAlbumsIdQueryError = AxiosError<
+export type GetApiLibraryIdAlbumsIdQueryError = ErrorType<
     | GetApiLibraryIdAlbumsId401
     | GetApiLibraryIdAlbumsId403
     | GetApiLibraryIdAlbumsId404
@@ -282,7 +286,7 @@ export type GetApiLibraryIdAlbumsIdQueryError = AxiosError<
 
 export function useGetApiLibraryIdAlbumsId<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
         | GetApiLibraryIdAlbumsId404
@@ -294,7 +298,6 @@ export function useGetApiLibraryIdAlbumsId<
     id: string,
     params: GetApiLibraryIdAlbumsIdParams,
     options: {
-        axios?: AxiosRequestConfig;
         query: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>, TError, TData>
         > &
@@ -306,11 +309,12 @@ export function useGetApiLibraryIdAlbumsId<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbumsId<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
         | GetApiLibraryIdAlbumsId404
@@ -322,7 +326,6 @@ export function useGetApiLibraryIdAlbumsId<
     id: string,
     params: GetApiLibraryIdAlbumsIdParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>, TError, TData>
         > &
@@ -334,11 +337,12 @@ export function useGetApiLibraryIdAlbumsId<
                 >,
                 'initialData'
             >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbumsId<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
         | GetApiLibraryIdAlbumsId404
@@ -350,10 +354,10 @@ export function useGetApiLibraryIdAlbumsId<
     id: string,
     params: GetApiLibraryIdAlbumsIdParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
@@ -362,7 +366,7 @@ export function useGetApiLibraryIdAlbumsId<
 
 export function useGetApiLibraryIdAlbumsId<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
-    TError = AxiosError<
+    TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
         | GetApiLibraryIdAlbumsId404
@@ -374,10 +378,10 @@ export function useGetApiLibraryIdAlbumsId<
     id: string,
     params: GetApiLibraryIdAlbumsIdParams,
     options?: {
-        axios?: AxiosRequestConfig;
         query?: Partial<
             UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>, TError, TData>
         >;
+        request?: SecondParameter<typeof apiInstance>;
     },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiLibraryIdAlbumsIdQueryOptions(libraryId, id, params, options);
@@ -395,13 +399,16 @@ export function useGetApiLibraryIdAlbumsId<
 export const postApiLibraryIdAlbumsIdFavorite = (
     libraryId: string,
     id: string,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PostApiLibraryIdAlbumsIdFavorite204>> => {
-    return axios.post(`/api/${libraryId}/albums/${id}/favorite`, undefined, options);
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibraryIdAlbumsIdFavorite204>(
+        { method: 'POST', url: `/api/${libraryId}/albums/${id}/favorite` },
+        options,
+    );
 };
 
 export const getPostApiLibraryIdAlbumsIdFavoriteMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PostApiLibraryIdAlbumsIdFavorite401
         | PostApiLibraryIdAlbumsIdFavorite403
         | PostApiLibraryIdAlbumsIdFavorite404
@@ -409,20 +416,20 @@ export const getPostApiLibraryIdAlbumsIdFavoriteMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
         TError,
         { id: string; libraryId: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
     TError,
     { id: string; libraryId: string },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
@@ -430,7 +437,7 @@ export const getPostApiLibraryIdAlbumsIdFavoriteMutationOptions = <
     > = (props) => {
         const { libraryId, id } = props ?? {};
 
-        return postApiLibraryIdAlbumsIdFavorite(libraryId, id, axiosOptions);
+        return postApiLibraryIdAlbumsIdFavorite(libraryId, id, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -440,7 +447,7 @@ export type PostApiLibraryIdAlbumsIdFavoriteMutationResult = NonNullable<
     Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>
 >;
 
-export type PostApiLibraryIdAlbumsIdFavoriteMutationError = AxiosError<
+export type PostApiLibraryIdAlbumsIdFavoriteMutationError = ErrorType<
     | PostApiLibraryIdAlbumsIdFavorite401
     | PostApiLibraryIdAlbumsIdFavorite403
     | PostApiLibraryIdAlbumsIdFavorite404
@@ -451,7 +458,7 @@ export type PostApiLibraryIdAlbumsIdFavoriteMutationError = AxiosError<
  * @summary Add album favorite by id
  */
 export const usePostApiLibraryIdAlbumsIdFavorite = <
-    TError = AxiosError<
+    TError = ErrorType<
         | PostApiLibraryIdAlbumsIdFavorite401
         | PostApiLibraryIdAlbumsIdFavorite403
         | PostApiLibraryIdAlbumsIdFavorite404
@@ -459,13 +466,13 @@ export const usePostApiLibraryIdAlbumsIdFavorite = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
         TError,
         { id: string; libraryId: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
     TError,
@@ -482,13 +489,16 @@ export const usePostApiLibraryIdAlbumsIdFavorite = <
 export const deleteApiLibraryIdAlbumsIdFavorite = (
     libraryId: string,
     id: string,
-    options?: AxiosRequestConfig,
-): Promise<AxiosResponse<DeleteApiLibraryIdAlbumsIdFavorite204>> => {
-    return axios.delete(`/api/${libraryId}/albums/${id}/favorite`, options);
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<DeleteApiLibraryIdAlbumsIdFavorite204>(
+        { method: 'DELETE', url: `/api/${libraryId}/albums/${id}/favorite` },
+        options,
+    );
 };
 
 export const getDeleteApiLibraryIdAlbumsIdFavoriteMutationOptions = <
-    TError = AxiosError<
+    TError = ErrorType<
         | DeleteApiLibraryIdAlbumsIdFavorite401
         | DeleteApiLibraryIdAlbumsIdFavorite403
         | DeleteApiLibraryIdAlbumsIdFavorite404
@@ -496,20 +506,20 @@ export const getDeleteApiLibraryIdAlbumsIdFavoriteMutationOptions = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
         TError,
         { id: string; libraryId: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
     TError,
     { id: string; libraryId: string },
     TContext
 > => {
-    const { mutation: mutationOptions, axios: axiosOptions } = options ?? {};
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
@@ -517,7 +527,7 @@ export const getDeleteApiLibraryIdAlbumsIdFavoriteMutationOptions = <
     > = (props) => {
         const { libraryId, id } = props ?? {};
 
-        return deleteApiLibraryIdAlbumsIdFavorite(libraryId, id, axiosOptions);
+        return deleteApiLibraryIdAlbumsIdFavorite(libraryId, id, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions };
@@ -527,7 +537,7 @@ export type DeleteApiLibraryIdAlbumsIdFavoriteMutationResult = NonNullable<
     Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>
 >;
 
-export type DeleteApiLibraryIdAlbumsIdFavoriteMutationError = AxiosError<
+export type DeleteApiLibraryIdAlbumsIdFavoriteMutationError = ErrorType<
     | DeleteApiLibraryIdAlbumsIdFavorite401
     | DeleteApiLibraryIdAlbumsIdFavorite403
     | DeleteApiLibraryIdAlbumsIdFavorite404
@@ -538,7 +548,7 @@ export type DeleteApiLibraryIdAlbumsIdFavoriteMutationError = AxiosError<
  * @summary Remove album favorite by id
  */
 export const useDeleteApiLibraryIdAlbumsIdFavorite = <
-    TError = AxiosError<
+    TError = ErrorType<
         | DeleteApiLibraryIdAlbumsIdFavorite401
         | DeleteApiLibraryIdAlbumsIdFavorite403
         | DeleteApiLibraryIdAlbumsIdFavorite404
@@ -546,13 +556,13 @@ export const useDeleteApiLibraryIdAlbumsIdFavorite = <
     >,
     TContext = unknown,
 >(options?: {
-    axios?: AxiosRequestConfig;
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
         TError,
         { id: string; libraryId: string },
         TContext
     >;
+    request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
     TError,
