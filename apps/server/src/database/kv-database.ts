@@ -23,9 +23,7 @@ export function initKvDatabase(modules: DatabaseModules) {
 
     return {
         deleteById: (id: string): void => {
-            const kv = kvDb.get('kv');
-            delete kv[id];
-            kvDb.set('kv', kv);
+            kvDb.delete(`kv.${id}`);
         },
         deleteByIncludes: (str: string): void => {
             const kv = kvDb.get('kv');
@@ -42,30 +40,24 @@ export function initKvDatabase(modules: DatabaseModules) {
             return [null, kv];
         },
         findById: (id: string): DbResult<DbKv | undefined> => {
-            const kv = kvDb.get('kv');
-            const item = kv?.[id];
-            return [null, item];
+            const item = kvDb.get(`kv.${id}`) as unknown;
+            return [null, item as DbKv | undefined];
         },
         findByIdOrThrow: (id: string): DbResult<DbKv> => {
-            const kv = kvDb.get('kv');
-            const item = kv?.[id];
+            const item = kvDb.get(`kv.${id}`) as unknown;
 
             if (!item) {
                 return [{ message: 'Kv id not found' }, null];
             }
 
-            return [null, item];
+            return [null, item as DbKv];
         },
         insert: (key: DbKvInsert, value: string): DbResult<DbKv> => {
-            const kv = kvDb.get('kv');
-            kv[key] = value;
-            kvDb.set('kv', kv);
+            kvDb.set(`kv.${key}`, value as unknown as Record<string, string>);
             return initKvDatabase(modules).findByIdOrThrow(key);
         },
         updateById: (key: string, value: DbKvUpdate): DbResult<DbKv> => {
-            const kv = kvDb.get('kv');
-            kv[key] = value;
-            kvDb.set('kv', kv);
+            kvDb.set(`kv.${key}`, value as unknown as Record<string, string>);
             return [null, value];
         },
     };
