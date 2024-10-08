@@ -4,21 +4,19 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    DefinedInitialDataOptions,
-    DefinedUseQueryResult,
+    InfiniteData,
     MutationFunction,
     QueryFunction,
     QueryKey,
-    UndefinedInitialDataOptions,
     UseMutationOptions,
     UseMutationResult,
-    UseQueryOptions,
-    UseQueryResult,
+    UseSuspenseInfiniteQueryOptions,
+    UseSuspenseInfiniteQueryResult,
+    UseSuspenseQueryOptions,
+    UseSuspenseQueryResult,
 } from '@tanstack/react-query';
-import { apiInstance } from '../../api-instance.ts';
-import type { ErrorType } from '../../api-instance.ts';
 import type {
     DeleteApiLibraryIdAlbumArtistsIdFavorite204,
     DeleteApiLibraryIdAlbumArtistsIdFavorite401,
@@ -56,6 +54,8 @@ import type {
     PostApiLibraryIdAlbumArtistsIdFavorite404,
     PostApiLibraryIdAlbumArtistsIdFavorite500,
 } from '../audioling-openapi-client.schemas.ts';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -69,7 +69,7 @@ export const getApiLibraryIdAlbumArtists = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibraryIdAlbumArtists200>(
-        { method: 'GET', params, signal, url: `/api/${libraryId}/album-artists` },
+        { url: `/api/${libraryId}/album-artists`, method: 'GET', params, signal },
         options,
     );
 };
@@ -81,7 +81,7 @@ export const getGetApiLibraryIdAlbumArtistsQueryKey = (
     return [`/api/${libraryId}/album-artists`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetApiLibraryIdAlbumArtistsQueryOptions = <
+export const getGetApiLibraryIdAlbumArtistsSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtists401
@@ -94,7 +94,11 @@ export const getGetApiLibraryIdAlbumArtistsQueryOptions = <
     params: GetApiLibraryIdAlbumArtistsParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>, TError, TData>
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
@@ -108,24 +112,24 @@ export const getGetApiLibraryIdAlbumArtistsQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtists(libraryId, params, requestOptions, signal);
 
-    return { enabled: !!libraryId, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiLibraryIdAlbumArtistsQueryResult = NonNullable<
+export type GetApiLibraryIdAlbumArtistsSuspenseQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>
 >;
-export type GetApiLibraryIdAlbumArtistsQueryError = ErrorType<
+export type GetApiLibraryIdAlbumArtistsSuspenseQueryError = ErrorType<
     | GetApiLibraryIdAlbumArtists401
     | GetApiLibraryIdAlbumArtists403
     | GetApiLibraryIdAlbumArtists422
     | GetApiLibraryIdAlbumArtists500
 >;
 
-export function useGetApiLibraryIdAlbumArtists<
+export function useGetApiLibraryIdAlbumArtistsSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtists401
@@ -138,68 +142,64 @@ export function useGetApiLibraryIdAlbumArtists<
     params: GetApiLibraryIdAlbumArtistsParams,
     options: {
         query: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>, TError, TData>
-        > &
-            Pick<
-                DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtists<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtists401
-        | GetApiLibraryIdAlbumArtists403
-        | GetApiLibraryIdAlbumArtists422
-        | GetApiLibraryIdAlbumArtists500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdAlbumArtistsParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>, TError, TData>
-        > &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtists<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtists401
-        | GetApiLibraryIdAlbumArtists403
-        | GetApiLibraryIdAlbumArtists422
-        | GetApiLibraryIdAlbumArtists500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdAlbumArtistsParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>, TError, TData>
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get all album artists
  */
 
-export function useGetApiLibraryIdAlbumArtists<
+export function useGetApiLibraryIdAlbumArtistsSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtists401
@@ -212,14 +212,185 @@ export function useGetApiLibraryIdAlbumArtists<
     params: GetApiLibraryIdAlbumArtistsParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>, TError, TData>
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdAlbumArtistsQueryOptions(libraryId, params, options);
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsSuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibraryIdAlbumArtistsSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdAlbumArtistsQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>> = ({
+        signal,
+    }) => getApiLibraryIdAlbumArtists(libraryId, params, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        ...queryOptions,
+    } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdAlbumArtistsSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>
+>;
+export type GetApiLibraryIdAlbumArtistsSuspenseInfiniteQueryError = ErrorType<
+    | GetApiLibraryIdAlbumArtists401
+    | GetApiLibraryIdAlbumArtists403
+    | GetApiLibraryIdAlbumArtists422
+    | GetApiLibraryIdAlbumArtists500
+>;
+
+export function useGetApiLibraryIdAlbumArtistsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get all album artists
+ */
+
+export function useGetApiLibraryIdAlbumArtistsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtists401
+        | GetApiLibraryIdAlbumArtists403
+        | GetApiLibraryIdAlbumArtists422
+        | GetApiLibraryIdAlbumArtists500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdAlbumArtistsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsSuspenseInfiniteQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -236,7 +407,7 @@ export const getApiLibraryIdAlbumArtistsId = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibraryIdAlbumArtistsId200>(
-        { method: 'GET', signal, url: `/api/${libraryId}/album-artists/${id}` },
+        { url: `/api/${libraryId}/album-artists/${id}`, method: 'GET', signal },
         options,
     );
 };
@@ -245,7 +416,7 @@ export const getGetApiLibraryIdAlbumArtistsIdQueryKey = (libraryId: string, id: 
     return [`/api/${libraryId}/album-artists/${id}`] as const;
 };
 
-export const getGetApiLibraryIdAlbumArtistsIdQueryOptions = <
+export const getGetApiLibraryIdAlbumArtistsIdSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsId401
@@ -258,7 +429,7 @@ export const getGetApiLibraryIdAlbumArtistsIdQueryOptions = <
     id: string,
     options?: {
         query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
                 TError,
                 TData
@@ -276,24 +447,29 @@ export const getGetApiLibraryIdAlbumArtistsIdQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtistsId(libraryId, id, requestOptions, signal);
 
-    return { enabled: !!(libraryId && id), queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && id),
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiLibraryIdAlbumArtistsIdQueryResult = NonNullable<
+export type GetApiLibraryIdAlbumArtistsIdSuspenseQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>
 >;
-export type GetApiLibraryIdAlbumArtistsIdQueryError = ErrorType<
+export type GetApiLibraryIdAlbumArtistsIdSuspenseQueryError = ErrorType<
     | GetApiLibraryIdAlbumArtistsId401
     | GetApiLibraryIdAlbumArtistsId403
     | GetApiLibraryIdAlbumArtistsId404
     | GetApiLibraryIdAlbumArtistsId500
 >;
 
-export function useGetApiLibraryIdAlbumArtistsId<
+export function useGetApiLibraryIdAlbumArtistsIdSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsId401
@@ -306,67 +482,7 @@ export function useGetApiLibraryIdAlbumArtistsId<
     id: string,
     options: {
         query: Partial<
-            UseQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
-                TError,
-                TData
-            >
-        > &
-            Pick<
-                DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtistsId<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtistsId401
-        | GetApiLibraryIdAlbumArtistsId403
-        | GetApiLibraryIdAlbumArtistsId404
-        | GetApiLibraryIdAlbumArtistsId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
-                TError,
-                TData
-            >
-        > &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtistsId<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtistsId401
-        | GetApiLibraryIdAlbumArtistsId403
-        | GetApiLibraryIdAlbumArtistsId404
-        | GetApiLibraryIdAlbumArtistsId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
                 TError,
                 TData
@@ -374,12 +490,56 @@ export function useGetApiLibraryIdAlbumArtistsId<
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get album artist by id
  */
 
-export function useGetApiLibraryIdAlbumArtistsId<
+export function useGetApiLibraryIdAlbumArtistsIdSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsId401
@@ -392,7 +552,7 @@ export function useGetApiLibraryIdAlbumArtistsId<
     id: string,
     options?: {
         query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
                 TError,
                 TData
@@ -400,10 +560,177 @@ export function useGetApiLibraryIdAlbumArtistsId<
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdAlbumArtistsIdQueryOptions(libraryId, id, options);
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsIdSuspenseQueryOptions(
+        libraryId,
+        id,
+        options,
+    );
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibraryIdAlbumArtistsIdSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdAlbumArtistsIdQueryKey(libraryId, id);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>> = ({
+        signal,
+    }) => getApiLibraryIdAlbumArtistsId(libraryId, id, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && id),
+        ...queryOptions,
+    } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdAlbumArtistsIdSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>
+>;
+export type GetApiLibraryIdAlbumArtistsIdSuspenseInfiniteQueryError = ErrorType<
+    | GetApiLibraryIdAlbumArtistsId401
+    | GetApiLibraryIdAlbumArtistsId403
+    | GetApiLibraryIdAlbumArtistsId404
+    | GetApiLibraryIdAlbumArtistsId500
+>;
+
+export function useGetApiLibraryIdAlbumArtistsIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get album artist by id
+ */
+
+export function useGetApiLibraryIdAlbumArtistsIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsId401
+        | GetApiLibraryIdAlbumArtistsId403
+        | GetApiLibraryIdAlbumArtistsId404
+        | GetApiLibraryIdAlbumArtistsId500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsIdSuspenseInfiniteQueryOptions(
+        libraryId,
+        id,
+        options,
+    );
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -421,7 +748,7 @@ export const getApiLibraryIdAlbumArtistsIdAlbums = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibraryIdAlbumArtistsIdAlbums200>(
-        { method: 'GET', params, signal, url: `/api/${libraryId}/album-artists/${id}/albums` },
+        { url: `/api/${libraryId}/album-artists/${id}/albums`, method: 'GET', params, signal },
         options,
     );
 };
@@ -434,7 +761,7 @@ export const getGetApiLibraryIdAlbumArtistsIdAlbumsQueryKey = (
     return [`/api/${libraryId}/album-artists/${id}/albums`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetApiLibraryIdAlbumArtistsIdAlbumsQueryOptions = <
+export const getGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsIdAlbums401
@@ -449,7 +776,7 @@ export const getGetApiLibraryIdAlbumArtistsIdAlbumsQueryOptions = <
     params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
                 TError,
                 TData
@@ -469,17 +796,22 @@ export const getGetApiLibraryIdAlbumArtistsIdAlbumsQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdAlbumArtistsIdAlbums(libraryId, id, params, requestOptions, signal);
 
-    return { enabled: !!(libraryId && id), queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && id),
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiLibraryIdAlbumArtistsIdAlbumsQueryResult = NonNullable<
+export type GetApiLibraryIdAlbumArtistsIdAlbumsSuspenseQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>
 >;
-export type GetApiLibraryIdAlbumArtistsIdAlbumsQueryError = ErrorType<
+export type GetApiLibraryIdAlbumArtistsIdAlbumsSuspenseQueryError = ErrorType<
     | GetApiLibraryIdAlbumArtistsIdAlbums401
     | GetApiLibraryIdAlbumArtistsIdAlbums403
     | GetApiLibraryIdAlbumArtistsIdAlbums404
@@ -487,7 +819,7 @@ export type GetApiLibraryIdAlbumArtistsIdAlbumsQueryError = ErrorType<
     | GetApiLibraryIdAlbumArtistsIdAlbums500
 >;
 
-export function useGetApiLibraryIdAlbumArtistsIdAlbums<
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsIdAlbums401
@@ -502,71 +834,7 @@ export function useGetApiLibraryIdAlbumArtistsIdAlbums<
     params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
     options: {
         query: Partial<
-            UseQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
-                TError,
-                TData
-            >
-        > &
-            Pick<
-                DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtistsIdAlbums<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtistsIdAlbums401
-        | GetApiLibraryIdAlbumArtistsIdAlbums403
-        | GetApiLibraryIdAlbumArtistsIdAlbums404
-        | GetApiLibraryIdAlbumArtistsIdAlbums422
-        | GetApiLibraryIdAlbumArtistsIdAlbums500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
-                TError,
-                TData
-            >
-        > &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtistsIdAlbums<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtistsIdAlbums401
-        | GetApiLibraryIdAlbumArtistsIdAlbums403
-        | GetApiLibraryIdAlbumArtistsIdAlbums404
-        | GetApiLibraryIdAlbumArtistsIdAlbums422
-        | GetApiLibraryIdAlbumArtistsIdAlbums500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
                 TError,
                 TData
@@ -574,12 +842,60 @@ export function useGetApiLibraryIdAlbumArtistsIdAlbums<
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get album artist albums by id
  */
 
-export function useGetApiLibraryIdAlbumArtistsIdAlbums<
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsIdAlbums401
@@ -594,7 +910,7 @@ export function useGetApiLibraryIdAlbumArtistsIdAlbums<
     params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
                 TError,
                 TData
@@ -602,15 +918,192 @@ export function useGetApiLibraryIdAlbumArtistsIdAlbums<
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdAlbumArtistsIdAlbumsQueryOptions(
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseQueryOptions(
         libraryId,
         id,
         params,
         options,
     );
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ??
+        getGetApiLibraryIdAlbumArtistsIdAlbumsQueryKey(libraryId, id, params);
+
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>
+    > = ({ signal }) =>
+        getApiLibraryIdAlbumArtistsIdAlbums(libraryId, id, params, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && id),
+        ...queryOptions,
+    } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>
+>;
+export type GetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfiniteQueryError = ErrorType<
+    | GetApiLibraryIdAlbumArtistsIdAlbums401
+    | GetApiLibraryIdAlbumArtistsIdAlbums403
+    | GetApiLibraryIdAlbumArtistsIdAlbums404
+    | GetApiLibraryIdAlbumArtistsIdAlbums422
+    | GetApiLibraryIdAlbumArtistsIdAlbums500
+>;
+
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get album artist albums by id
+ */
+
+export function useGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdAlbums401
+        | GetApiLibraryIdAlbumArtistsIdAlbums403
+        | GetApiLibraryIdAlbumArtistsIdAlbums404
+        | GetApiLibraryIdAlbumArtistsIdAlbums422
+        | GetApiLibraryIdAlbumArtistsIdAlbums500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdAlbumsParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseInfiniteQueryOptions(
+        libraryId,
+        id,
+        params,
+        options,
+    );
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -628,7 +1121,7 @@ export const getApiLibraryIdAlbumArtistsIdTracks = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibraryIdAlbumArtistsIdTracks200>(
-        { method: 'GET', params, signal, url: `/api/${libraryId}/album-artists/${id}/tracks` },
+        { url: `/api/${libraryId}/album-artists/${id}/tracks`, method: 'GET', params, signal },
         options,
     );
 };
@@ -641,7 +1134,7 @@ export const getGetApiLibraryIdAlbumArtistsIdTracksQueryKey = (
     return [`/api/${libraryId}/album-artists/${id}/tracks`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetApiLibraryIdAlbumArtistsIdTracksQueryOptions = <
+export const getGetApiLibraryIdAlbumArtistsIdTracksSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsIdTracks401
@@ -656,7 +1149,7 @@ export const getGetApiLibraryIdAlbumArtistsIdTracksQueryOptions = <
     params: GetApiLibraryIdAlbumArtistsIdTracksParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
                 TError,
                 TData
@@ -676,17 +1169,22 @@ export const getGetApiLibraryIdAlbumArtistsIdTracksQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdAlbumArtistsIdTracks(libraryId, id, params, requestOptions, signal);
 
-    return { enabled: !!(libraryId && id), queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && id),
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiLibraryIdAlbumArtistsIdTracksQueryResult = NonNullable<
+export type GetApiLibraryIdAlbumArtistsIdTracksSuspenseQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>
 >;
-export type GetApiLibraryIdAlbumArtistsIdTracksQueryError = ErrorType<
+export type GetApiLibraryIdAlbumArtistsIdTracksSuspenseQueryError = ErrorType<
     | GetApiLibraryIdAlbumArtistsIdTracks401
     | GetApiLibraryIdAlbumArtistsIdTracks403
     | GetApiLibraryIdAlbumArtistsIdTracks404
@@ -694,7 +1192,7 @@ export type GetApiLibraryIdAlbumArtistsIdTracksQueryError = ErrorType<
     | GetApiLibraryIdAlbumArtistsIdTracks500
 >;
 
-export function useGetApiLibraryIdAlbumArtistsIdTracks<
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsIdTracks401
@@ -709,71 +1207,7 @@ export function useGetApiLibraryIdAlbumArtistsIdTracks<
     params: GetApiLibraryIdAlbumArtistsIdTracksParams,
     options: {
         query: Partial<
-            UseQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
-                TError,
-                TData
-            >
-        > &
-            Pick<
-                DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtistsIdTracks<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtistsIdTracks401
-        | GetApiLibraryIdAlbumArtistsIdTracks403
-        | GetApiLibraryIdAlbumArtistsIdTracks404
-        | GetApiLibraryIdAlbumArtistsIdTracks422
-        | GetApiLibraryIdAlbumArtistsIdTracks500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
-                TError,
-                TData
-            >
-        > &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdAlbumArtistsIdTracks<
-    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
-    TError = ErrorType<
-        | GetApiLibraryIdAlbumArtistsIdTracks401
-        | GetApiLibraryIdAlbumArtistsIdTracks403
-        | GetApiLibraryIdAlbumArtistsIdTracks404
-        | GetApiLibraryIdAlbumArtistsIdTracks422
-        | GetApiLibraryIdAlbumArtistsIdTracks500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
                 TError,
                 TData
@@ -781,12 +1215,60 @@ export function useGetApiLibraryIdAlbumArtistsIdTracks<
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get album artist tracks by id
  */
 
-export function useGetApiLibraryIdAlbumArtistsIdTracks<
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
     TError = ErrorType<
         | GetApiLibraryIdAlbumArtistsIdTracks401
@@ -801,7 +1283,7 @@ export function useGetApiLibraryIdAlbumArtistsIdTracks<
     params: GetApiLibraryIdAlbumArtistsIdTracksParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<
+            UseSuspenseQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
                 TError,
                 TData
@@ -809,15 +1291,192 @@ export function useGetApiLibraryIdAlbumArtistsIdTracks<
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdAlbumArtistsIdTracksQueryOptions(
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsIdTracksSuspenseQueryOptions(
         libraryId,
         id,
         params,
         options,
     );
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibraryIdAlbumArtistsIdTracksSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ??
+        getGetApiLibraryIdAlbumArtistsIdTracksQueryKey(libraryId, id, params);
+
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>
+    > = ({ signal }) =>
+        getApiLibraryIdAlbumArtistsIdTracks(libraryId, id, params, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && id),
+        ...queryOptions,
+    } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracksSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>
+>;
+export type GetApiLibraryIdAlbumArtistsIdTracksSuspenseInfiniteQueryError = ErrorType<
+    | GetApiLibraryIdAlbumArtistsIdTracks401
+    | GetApiLibraryIdAlbumArtistsIdTracks403
+    | GetApiLibraryIdAlbumArtistsIdTracks404
+    | GetApiLibraryIdAlbumArtistsIdTracks422
+    | GetApiLibraryIdAlbumArtistsIdTracks500
+>;
+
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get album artist tracks by id
+ */
+
+export function useGetApiLibraryIdAlbumArtistsIdTracksSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>>,
+    TError = ErrorType<
+        | GetApiLibraryIdAlbumArtistsIdTracks401
+        | GetApiLibraryIdAlbumArtistsIdTracks403
+        | GetApiLibraryIdAlbumArtistsIdTracks404
+        | GetApiLibraryIdAlbumArtistsIdTracks422
+        | GetApiLibraryIdAlbumArtistsIdTracks500
+    >,
+>(
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumArtistsIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdAlbumArtistsIdTracksSuspenseInfiniteQueryOptions(
+        libraryId,
+        id,
+        params,
+        options,
+    );
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -833,7 +1492,7 @@ export const postApiLibraryIdAlbumArtistsIdFavorite = (
     options?: SecondParameter<typeof apiInstance>,
 ) => {
     return apiInstance<PostApiLibraryIdAlbumArtistsIdFavorite204>(
-        { method: 'POST', url: `/api/${libraryId}/album-artists/${id}/favorite` },
+        { url: `/api/${libraryId}/album-artists/${id}/favorite`, method: 'POST' },
         options,
     );
 };
@@ -850,21 +1509,21 @@ export const getPostApiLibraryIdAlbumArtistsIdFavoriteMutationOptions = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiLibraryIdAlbumArtistsIdFavorite>>,
         TError,
-        { id: string; libraryId: string },
+        { libraryId: string; id: string },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof postApiLibraryIdAlbumArtistsIdFavorite>>,
     TError,
-    { id: string; libraryId: string },
+    { libraryId: string; id: string },
     TContext
 > => {
     const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof postApiLibraryIdAlbumArtistsIdFavorite>>,
-        { id: string; libraryId: string }
+        { libraryId: string; id: string }
     > = (props) => {
         const { libraryId, id } = props ?? {};
 
@@ -900,14 +1559,14 @@ export const usePostApiLibraryIdAlbumArtistsIdFavorite = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof postApiLibraryIdAlbumArtistsIdFavorite>>,
         TError,
-        { id: string; libraryId: string },
+        { libraryId: string; id: string },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof postApiLibraryIdAlbumArtistsIdFavorite>>,
     TError,
-    { id: string; libraryId: string },
+    { libraryId: string; id: string },
     TContext
 > => {
     const mutationOptions = getPostApiLibraryIdAlbumArtistsIdFavoriteMutationOptions(options);
@@ -923,7 +1582,7 @@ export const deleteApiLibraryIdAlbumArtistsIdFavorite = (
     options?: SecondParameter<typeof apiInstance>,
 ) => {
     return apiInstance<DeleteApiLibraryIdAlbumArtistsIdFavorite204>(
-        { method: 'DELETE', url: `/api/${libraryId}/album-artists/${id}/favorite` },
+        { url: `/api/${libraryId}/album-artists/${id}/favorite`, method: 'DELETE' },
         options,
     );
 };
@@ -940,21 +1599,21 @@ export const getDeleteApiLibraryIdAlbumArtistsIdFavoriteMutationOptions = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiLibraryIdAlbumArtistsIdFavorite>>,
         TError,
-        { id: string; libraryId: string },
+        { libraryId: string; id: string },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiLibraryIdAlbumArtistsIdFavorite>>,
     TError,
-    { id: string; libraryId: string },
+    { libraryId: string; id: string },
     TContext
 > => {
     const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof deleteApiLibraryIdAlbumArtistsIdFavorite>>,
-        { id: string; libraryId: string }
+        { libraryId: string; id: string }
     > = (props) => {
         const { libraryId, id } = props ?? {};
 
@@ -990,14 +1649,14 @@ export const useDeleteApiLibraryIdAlbumArtistsIdFavorite = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof deleteApiLibraryIdAlbumArtistsIdFavorite>>,
         TError,
-        { id: string; libraryId: string },
+        { libraryId: string; id: string },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof deleteApiLibraryIdAlbumArtistsIdFavorite>>,
     TError,
-    { id: string; libraryId: string },
+    { libraryId: string; id: string },
     TContext
 > => {
     const mutationOptions = getDeleteApiLibraryIdAlbumArtistsIdFavoriteMutationOptions(options);

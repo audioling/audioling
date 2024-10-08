@@ -4,19 +4,19 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    DefinedInitialDataOptions,
-    DefinedUseQueryResult,
+    InfiniteData,
     QueryFunction,
     QueryKey,
-    UndefinedInitialDataOptions,
-    UseQueryOptions,
-    UseQueryResult,
+    UseSuspenseInfiniteQueryOptions,
+    UseSuspenseInfiniteQueryResult,
+    UseSuspenseQueryOptions,
+    UseSuspenseQueryResult,
 } from '@tanstack/react-query';
+import type { GetPing200 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
 import type { ErrorType } from '../../api-instance.ts';
-import type { GetPing200 } from '../audioling-openapi-client.schemas.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -24,18 +24,18 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
  * @summary Ping the server
  */
 export const getPing = (options?: SecondParameter<typeof apiInstance>, signal?: AbortSignal) => {
-    return apiInstance<GetPing200>({ method: 'GET', signal, url: `/ping` }, options);
+    return apiInstance<GetPing200>({ url: `/ping`, method: 'GET', signal }, options);
 };
 
 export const getGetPingQueryKey = () => {
     return [`/ping`] as const;
 };
 
-export const getGetPingQueryOptions = <
+export const getGetPingSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getPing>>,
     TError = ErrorType<unknown>,
 >(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
     request?: SecondParameter<typeof apiInstance>;
 }) => {
     const { query: queryOptions, request: requestOptions } = options ?? {};
@@ -45,59 +45,131 @@ export const getGetPingQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
         getPing(requestOptions, signal);
 
-    return { queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getPing>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetPingQueryResult = NonNullable<Awaited<ReturnType<typeof getPing>>>;
-export type GetPingQueryError = ErrorType<unknown>;
+export type GetPingSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getPing>>>;
+export type GetPingSuspenseQueryError = ErrorType<unknown>;
 
-export function useGetPing<
+export function useGetPingSuspense<
     TData = Awaited<ReturnType<typeof getPing>>,
     TError = ErrorType<unknown>,
 >(options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>> &
-        Pick<
-            DefinedInitialDataOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>,
-            'initialData'
-        >;
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
     request?: SecondParameter<typeof apiInstance>;
-}): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetPing<
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPingSuspense<
     TData = Awaited<ReturnType<typeof getPing>>,
     TError = ErrorType<unknown>,
 >(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>> &
-        Pick<
-            UndefinedInitialDataOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>,
-            'initialData'
-        >;
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
     request?: SecondParameter<typeof apiInstance>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetPing<
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPingSuspense<
     TData = Awaited<ReturnType<typeof getPing>>,
     TError = ErrorType<unknown>,
 >(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
     request?: SecondParameter<typeof apiInstance>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Ping the server
  */
 
-export function useGetPing<
+export function useGetPingSuspense<
     TData = Awaited<ReturnType<typeof getPing>>,
     TError = ErrorType<unknown>,
 >(options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>>;
     request?: SecondParameter<typeof apiInstance>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetPingQueryOptions(options);
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetPingSuspenseQueryOptions(options);
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetPingSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
+    TError = ErrorType<unknown>,
+>(options?: {
+    query?: Partial<
+        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetPingQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
+        getPing(requestOptions, signal);
+
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getPing>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetPingSuspenseInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getPing>>>;
+export type GetPingSuspenseInfiniteQueryError = ErrorType<unknown>;
+
+export function useGetPingSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
+    TError = ErrorType<unknown>,
+>(options: {
+    query: Partial<
+        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPingSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
+    TError = ErrorType<unknown>,
+>(options?: {
+    query?: Partial<
+        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetPingSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
+    TError = ErrorType<unknown>,
+>(options?: {
+    query?: Partial<
+        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Ping the server
+ */
+
+export function useGetPingSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
+    TError = ErrorType<unknown>,
+>(options?: {
+    query?: Partial<
+        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetPingSuspenseInfiniteQueryOptions(options);
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 

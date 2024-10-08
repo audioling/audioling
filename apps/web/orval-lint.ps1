@@ -17,6 +17,3 @@ foreach ($folder in $folders) {
         Write-Host "Linted $($file.FullName)"
     }
 }
-
-# Run eslint
-eslint ./src/api/openapi-generated --fix

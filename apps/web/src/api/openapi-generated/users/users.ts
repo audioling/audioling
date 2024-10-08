@@ -4,21 +4,19 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    DefinedInitialDataOptions,
-    DefinedUseQueryResult,
+    InfiniteData,
     MutationFunction,
     QueryFunction,
     QueryKey,
-    UndefinedInitialDataOptions,
     UseMutationOptions,
     UseMutationResult,
-    UseQueryOptions,
-    UseQueryResult,
+    UseSuspenseInfiniteQueryOptions,
+    UseSuspenseInfiniteQueryResult,
+    UseSuspenseQueryOptions,
+    UseSuspenseQueryResult,
 } from '@tanstack/react-query';
-import { apiInstance } from '../../api-instance.ts';
-import type { BodyType, ErrorType } from '../../api-instance.ts';
 import type {
     DeleteApiUsersId204,
     DeleteApiUsersId401,
@@ -53,6 +51,8 @@ import type {
     PutApiUsersId500,
     PutApiUsersIdBody,
 } from '../audioling-openapi-client.schemas.ts';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType, BodyType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -65,7 +65,7 @@ export const getApiUsers = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiUsers200>(
-        { method: 'GET', params, signal, url: `/api/users` },
+        { url: `/api/users`, method: 'GET', params, signal },
         options,
     );
 };
@@ -74,13 +74,15 @@ export const getGetApiUsersQueryKey = (params: GetApiUsersParams) => {
     return [`/api/users`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetApiUsersQueryOptions = <
+export const getGetApiUsersSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiUsers>>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
@@ -91,73 +93,172 @@ export const getGetApiUsersQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
         getApiUsers(params, requestOptions, signal);
 
-    return { queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiUsers>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsers>>>;
-export type GetApiUsersQueryError = ErrorType<
+export type GetApiUsersSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsers>>>;
+export type GetApiUsersSuspenseQueryError = ErrorType<
     GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500
 >;
 
-export function useGetApiUsers<
+export function useGetApiUsersSuspense<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options: {
-        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> &
-            Pick<
-                DefinedInitialDataOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>,
-                'initialData'
-            >;
+        query: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiUsers<
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersSuspense<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> &
-            Pick<
-                UndefinedInitialDataOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>,
-                'initialData'
-            >;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiUsers<
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersSuspense<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get all users
  */
 
-export function useGetApiUsers<
+export function useGetApiUsersSuspense<
     TData = Awaited<ReturnType<typeof getApiUsers>>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiUsersQueryOptions(params, options);
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiUsersSuspenseQueryOptions(params, options);
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiUsersSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+>(
+    params: GetApiUsersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetApiUsersQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
+        getApiUsers(params, requestOptions, signal);
+
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiUsers>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiUsersSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiUsers>>
+>;
+export type GetApiUsersSuspenseInfiniteQueryError = ErrorType<
+    GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500
+>;
+
+export function useGetApiUsersSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+>(
+    params: GetApiUsersParams,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+>(
+    params: GetApiUsersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+>(
+    params: GetApiUsersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get all users
+ */
+
+export function useGetApiUsersSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
+>(
+    params: GetApiUsersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiUsersSuspenseInfiniteQueryOptions(params, options);
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -173,10 +274,10 @@ export const postApiUsers = (
 ) => {
     return apiInstance<PostApiUsers201>(
         {
-            data: postApiUsersBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
             url: `/api/users`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiUsersBody,
         },
         options,
     );
@@ -271,7 +372,7 @@ export const getApiUsersId = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiUsersId200>(
-        { method: 'GET', signal, url: `/api/users/${id}` },
+        { url: `/api/users/${id}`, method: 'GET', signal },
         options,
     );
 };
@@ -280,13 +381,15 @@ export const getGetApiUsersIdQueryKey = (id: string) => {
     return [`/api/users/${id}`] as const;
 };
 
-export const getGetApiUsersIdQueryOptions = <
+export const getGetApiUsersIdSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
     TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ) => {
@@ -297,77 +400,194 @@ export const getGetApiUsersIdQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersId>>> = ({ signal }) =>
         getApiUsersId(id, requestOptions, signal);
 
-    return { enabled: !!id, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiUsersId>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiUsersIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsersId>>>;
-export type GetApiUsersIdQueryError = ErrorType<
+export type GetApiUsersIdSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiUsersId>>
+>;
+export type GetApiUsersIdSuspenseQueryError = ErrorType<
     GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500
 >;
 
-export function useGetApiUsersId<
+export function useGetApiUsersIdSuspense<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
     TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options: {
-        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>> &
-            Pick<
-                DefinedInitialDataOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>,
-                'initialData'
-            >;
+        query: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiUsersId<
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersIdSuspense<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
     TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>> &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiUsersId>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiUsersId<
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersIdSuspense<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
     TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get user by id
  */
 
-export function useGetApiUsersId<
+export function useGetApiUsersIdSuspense<
     TData = Awaited<ReturnType<typeof getApiUsersId>>,
     TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
 >(
     id: string,
     options?: {
-        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>
+        >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiUsersIdQueryOptions(id, options);
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiUsersIdSuspenseQueryOptions(id, options);
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiUsersIdSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsersId>>>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsersId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetApiUsersIdQueryKey(id);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersId>>> = ({ signal }) =>
+        getApiUsersId(id, requestOptions, signal);
+
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiUsersId>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiUsersIdSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiUsersId>>
+>;
+export type GetApiUsersIdSuspenseInfiniteQueryError = ErrorType<
+    GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500
+>;
+
+export function useGetApiUsersIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsersId>>>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+>(
+    id: string,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsersId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsersId>>>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsersId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiUsersIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsersId>>>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsersId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get user by id
+ */
+
+export function useGetApiUsersIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsersId>>>,
+    TError = ErrorType<GetApiUsersId401 | GetApiUsersId403 | GetApiUsersId404 | GetApiUsersId500>,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsersId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiUsersIdSuspenseInfiniteQueryOptions(id, options);
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -378,7 +598,7 @@ export function useGetApiUsersId<
  * @summary Delete user by id
  */
 export const deleteApiUsersId = (id: string, options?: SecondParameter<typeof apiInstance>) => {
-    return apiInstance<DeleteApiUsersId204>({ method: 'DELETE', url: `/api/users/${id}` }, options);
+    return apiInstance<DeleteApiUsersId204>({ url: `/api/users/${id}`, method: 'DELETE' }, options);
 };
 
 export const getDeleteApiUsersIdMutationOptions = <
@@ -458,10 +678,10 @@ export const putApiUsersId = (
 ) => {
     return apiInstance<PutApiUsersId200>(
         {
-            data: putApiUsersIdBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'PUT',
             url: `/api/users/${id}`,
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            data: putApiUsersIdBody,
         },
         options,
     );
@@ -481,21 +701,21 @@ export const getPutApiUsersIdMutationOptions = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiUsersId>>,
         TError,
-        { data: BodyType<PutApiUsersIdBody>; id: string },
+        { id: string; data: BodyType<PutApiUsersIdBody> },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof putApiUsersId>>,
     TError,
-    { data: BodyType<PutApiUsersIdBody>; id: string },
+    { id: string; data: BodyType<PutApiUsersIdBody> },
     TContext
 > => {
     const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof putApiUsersId>>,
-        { data: BodyType<PutApiUsersIdBody>; id: string }
+        { id: string; data: BodyType<PutApiUsersIdBody> }
     > = (props) => {
         const { id, data } = props ?? {};
 
@@ -533,14 +753,14 @@ export const usePutApiUsersId = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiUsersId>>,
         TError,
-        { data: BodyType<PutApiUsersIdBody>; id: string },
+        { id: string; data: BodyType<PutApiUsersIdBody> },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof putApiUsersId>>,
     TError,
-    { data: BodyType<PutApiUsersIdBody>; id: string },
+    { id: string; data: BodyType<PutApiUsersIdBody> },
     TContext
 > => {
     const mutationOptions = getPutApiUsersIdMutationOptions(options);

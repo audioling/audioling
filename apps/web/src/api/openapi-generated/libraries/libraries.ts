@@ -4,21 +4,19 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    DefinedInitialDataOptions,
-    DefinedUseQueryResult,
+    InfiniteData,
     MutationFunction,
     QueryFunction,
     QueryKey,
-    UndefinedInitialDataOptions,
     UseMutationOptions,
     UseMutationResult,
-    UseQueryOptions,
-    UseQueryResult,
+    UseSuspenseInfiniteQueryOptions,
+    UseSuspenseInfiniteQueryResult,
+    UseSuspenseQueryOptions,
+    UseSuspenseQueryResult,
 } from '@tanstack/react-query';
-import { apiInstance } from '../../api-instance.ts';
-import type { BodyType, ErrorType } from '../../api-instance.ts';
 import type {
     DeleteApiLibrariesId204,
     DeleteApiLibrariesId401,
@@ -57,6 +55,8 @@ import type {
     PutApiLibrariesId500,
     PutApiLibrariesIdBody,
 } from '../audioling-openapi-client.schemas.ts';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType, BodyType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -69,7 +69,7 @@ export const getApiLibraries = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibraries200>(
-        { method: 'GET', params, signal, url: `/api/libraries` },
+        { url: `/api/libraries`, method: 'GET', params, signal },
         options,
     );
 };
@@ -78,7 +78,7 @@ export const getGetApiLibrariesQueryKey = (params: GetApiLibrariesParams) => {
     return [`/api/libraries`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetApiLibrariesQueryOptions = <
+export const getGetApiLibrariesSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
     TError = ErrorType<
         | GetApiLibraries401
@@ -91,7 +91,7 @@ export const getGetApiLibrariesQueryOptions = <
     params: GetApiLibrariesParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
@@ -103,15 +103,17 @@ export const getGetApiLibrariesQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraries>>> = ({ signal }) =>
         getApiLibraries(params, requestOptions, signal);
 
-    return { queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraries>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiLibrariesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiLibraries>>>;
-export type GetApiLibrariesQueryError = ErrorType<
+export type GetApiLibrariesSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraries>>
+>;
+export type GetApiLibrariesSuspenseQueryError = ErrorType<
     | GetApiLibraries401
     | GetApiLibraries403
     | GetApiLibraries404
@@ -119,7 +121,7 @@ export type GetApiLibrariesQueryError = ErrorType<
     | GetApiLibraries500
 >;
 
-export function useGetApiLibraries<
+export function useGetApiLibrariesSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
     TError = ErrorType<
         | GetApiLibraries401
@@ -132,68 +134,52 @@ export function useGetApiLibraries<
     params: GetApiLibrariesParams,
     options: {
         query: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
-        > &
-            Pick<
-                DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraries>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraries<
-    TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = ErrorType<
-        | GetApiLibraries401
-        | GetApiLibraries403
-        | GetApiLibraries404
-        | GetApiLibraries422
-        | GetApiLibraries500
-    >,
->(
-    params: GetApiLibrariesParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
-        > &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibraries>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraries<
-    TData = Awaited<ReturnType<typeof getApiLibraries>>,
-    TError = ErrorType<
-        | GetApiLibraries401
-        | GetApiLibraries403
-        | GetApiLibraries404
-        | GetApiLibraries422
-        | GetApiLibraries500
-    >,
->(
-    params: GetApiLibrariesParams,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraries>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraries>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get all libraries
  */
 
-export function useGetApiLibraries<
+export function useGetApiLibrariesSuspense<
     TData = Awaited<ReturnType<typeof getApiLibraries>>,
     TError = ErrorType<
         | GetApiLibraries401
@@ -206,14 +192,167 @@ export function useGetApiLibraries<
     params: GetApiLibrariesParams,
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibraries>>, TError, TData>
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibrariesQueryOptions(params, options);
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibrariesSuspenseQueryOptions(params, options);
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibrariesSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetApiLibrariesQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraries>>> = ({ signal }) =>
+        getApiLibraries(params, requestOptions, signal);
+
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibrariesSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraries>>
+>;
+export type GetApiLibrariesSuspenseInfiniteQueryError = ErrorType<
+    | GetApiLibraries401
+    | GetApiLibraries403
+    | GetApiLibraries404
+    | GetApiLibraries422
+    | GetApiLibraries500
+>;
+
+export function useGetApiLibrariesSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get all libraries
+ */
+
+export function useGetApiLibrariesSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TError = ErrorType<
+        | GetApiLibraries401
+        | GetApiLibraries403
+        | GetApiLibraries404
+        | GetApiLibraries422
+        | GetApiLibraries500
+    >,
+>(
+    params: GetApiLibrariesParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibrariesSuspenseInfiniteQueryOptions(params, options);
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -230,10 +369,10 @@ export const postApiLibraries = (
 ) => {
     return apiInstance<PostApiLibraries201>(
         {
-            data: postApiLibrariesBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
             url: `/api/libraries`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibrariesBody,
         },
         options,
     );
@@ -333,7 +472,7 @@ export const getApiLibrariesId = (
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibrariesId200>(
-        { method: 'GET', signal, url: `/api/libraries/${id}` },
+        { url: `/api/libraries/${id}`, method: 'GET', signal },
         options,
     );
 };
@@ -342,7 +481,7 @@ export const getGetApiLibrariesIdQueryKey = (id: string) => {
     return [`/api/libraries/${id}`] as const;
 };
 
-export const getGetApiLibrariesIdQueryOptions = <
+export const getGetApiLibrariesIdSuspenseQueryOptions = <
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
     TError = ErrorType<
         | GetApiLibrariesId401
@@ -355,7 +494,7 @@ export const getGetApiLibrariesIdQueryOptions = <
     id: string,
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
@@ -367,17 +506,17 @@ export const getGetApiLibrariesIdQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibrariesId>>> = ({ signal }) =>
         getApiLibrariesId(id, requestOptions, signal);
 
-    return { enabled: !!id, queryFn, queryKey, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibrariesId>>,
         TError,
         TData
     > & { queryKey: QueryKey };
 };
 
-export type GetApiLibrariesIdQueryResult = NonNullable<
+export type GetApiLibrariesIdSuspenseQueryResult = NonNullable<
     Awaited<ReturnType<typeof getApiLibrariesId>>
 >;
-export type GetApiLibrariesIdQueryError = ErrorType<
+export type GetApiLibrariesIdSuspenseQueryError = ErrorType<
     | GetApiLibrariesId401
     | GetApiLibrariesId403
     | GetApiLibrariesId404
@@ -385,7 +524,7 @@ export type GetApiLibrariesIdQueryError = ErrorType<
     | GetApiLibrariesId500
 >;
 
-export function useGetApiLibrariesId<
+export function useGetApiLibrariesIdSuspense<
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
     TError = ErrorType<
         | GetApiLibrariesId401
@@ -398,68 +537,52 @@ export function useGetApiLibrariesId<
     id: string,
     options: {
         query: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
-        > &
-            Pick<
-                DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibrariesId>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): DefinedUseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibrariesId<
-    TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = ErrorType<
-        | GetApiLibrariesId401
-        | GetApiLibrariesId403
-        | GetApiLibrariesId404
-        | GetApiLibrariesId422
-        | GetApiLibrariesId500
-    >,
->(
-    id: string,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
-        > &
-            Pick<
-                UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getApiLibrariesId>>,
-                    TError,
-                    TData
-                >,
-                'initialData'
-            >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibrariesId<
-    TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
-    TError = ErrorType<
-        | GetApiLibrariesId401
-        | GetApiLibrariesId403
-        | GetApiLibrariesId404
-        | GetApiLibrariesId422
-        | GetApiLibrariesId500
-    >,
->(
-    id: string,
-    options?: {
-        query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey };
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
 /**
  * @summary Get library by id
  */
 
-export function useGetApiLibrariesId<
+export function useGetApiLibrariesIdSuspense<
     TData = Awaited<ReturnType<typeof getApiLibrariesId>>,
     TError = ErrorType<
         | GetApiLibrariesId401
@@ -472,14 +595,167 @@ export function useGetApiLibrariesId<
     id: string,
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
+            UseSuspenseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData>
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibrariesIdQueryOptions(id, options);
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibrariesIdSuspenseQueryOptions(id, options);
 
-    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibrariesIdSuspenseInfiniteQueryOptions = <
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibrariesId>>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibrariesId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetApiLibrariesIdQueryKey(id);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibrariesId>>> = ({ signal }) =>
+        getApiLibrariesId(id, requestOptions, signal);
+
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getApiLibrariesId>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibrariesIdSuspenseInfiniteQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibrariesId>>
+>;
+export type GetApiLibrariesIdSuspenseInfiniteQueryError = ErrorType<
+    | GetApiLibrariesId401
+    | GetApiLibrariesId403
+    | GetApiLibrariesId404
+    | GetApiLibrariesId422
+    | GetApiLibrariesId500
+>;
+
+export function useGetApiLibrariesIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibrariesId>>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options: {
+        query: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibrariesId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibrariesId>>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibrariesId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibrariesIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibrariesId>>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibrariesId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get library by id
+ */
+
+export function useGetApiLibrariesIdSuspenseInfinite<
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibrariesId>>>,
+    TError = ErrorType<
+        | GetApiLibrariesId401
+        | GetApiLibrariesId403
+        | GetApiLibrariesId404
+        | GetApiLibrariesId422
+        | GetApiLibrariesId500
+    >,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiLibrariesId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibrariesIdSuspenseInfiniteQueryOptions(id, options);
+
+    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
+        TData,
+        TError
+    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
@@ -497,10 +773,10 @@ export const putApiLibrariesId = (
 ) => {
     return apiInstance<PutApiLibrariesId200>(
         {
-            data: putApiLibrariesIdBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'PUT',
             url: `/api/libraries/${id}`,
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            data: putApiLibrariesIdBody,
         },
         options,
     );
@@ -520,21 +796,21 @@ export const getPutApiLibrariesIdMutationOptions = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiLibrariesId>>,
         TError,
-        { data: BodyType<PutApiLibrariesIdBody>; id: string },
+        { id: string; data: BodyType<PutApiLibrariesIdBody> },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
     Awaited<ReturnType<typeof putApiLibrariesId>>,
     TError,
-    { data: BodyType<PutApiLibrariesIdBody>; id: string },
+    { id: string; data: BodyType<PutApiLibrariesIdBody> },
     TContext
 > => {
     const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
     const mutationFn: MutationFunction<
         Awaited<ReturnType<typeof putApiLibrariesId>>,
-        { data: BodyType<PutApiLibrariesIdBody>; id: string }
+        { id: string; data: BodyType<PutApiLibrariesIdBody> }
     > = (props) => {
         const { id, data } = props ?? {};
 
@@ -574,14 +850,14 @@ export const usePutApiLibrariesId = <
     mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof putApiLibrariesId>>,
         TError,
-        { data: BodyType<PutApiLibrariesIdBody>; id: string },
+        { id: string; data: BodyType<PutApiLibrariesIdBody> },
         TContext
     >;
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<
     Awaited<ReturnType<typeof putApiLibrariesId>>,
     TError,
-    { data: BodyType<PutApiLibrariesIdBody>; id: string },
+    { id: string; data: BodyType<PutApiLibrariesIdBody> },
     TContext
 > => {
     const mutationOptions = getPutApiLibrariesIdMutationOptions(options);
@@ -593,7 +869,7 @@ export const usePutApiLibrariesId = <
  */
 export const deleteApiLibrariesId = (id: string, options?: SecondParameter<typeof apiInstance>) => {
     return apiInstance<DeleteApiLibrariesId204>(
-        { method: 'DELETE', url: `/api/libraries/${id}` },
+        { url: `/api/libraries/${id}`, method: 'DELETE' },
         options,
     );
 };

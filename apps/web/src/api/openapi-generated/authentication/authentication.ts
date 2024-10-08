@@ -10,8 +10,6 @@ import type {
     UseMutationOptions,
     UseMutationResult,
 } from '@tanstack/react-query';
-import { apiInstance } from '../../api-instance.ts';
-import type { BodyType, ErrorType } from '../../api-instance.ts';
 import type {
     PostAuthRegister204,
     PostAuthRegister500,
@@ -25,6 +23,8 @@ import type {
     PostAuthSignOut500,
     PostAuthSignOutBody,
 } from '../audioling-openapi-client.schemas.ts';
+import { apiInstance } from '../../api-instance.ts';
+import type { ErrorType, BodyType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -37,10 +37,10 @@ export const postAuthSignIn = (
 ) => {
     return apiInstance<PostAuthSignIn200>(
         {
-            data: postAuthSignInBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
             url: `/auth/sign-in`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postAuthSignInBody,
         },
         options,
     );
@@ -114,10 +114,10 @@ export const postAuthSignOut = (
 ) => {
     return apiInstance<PostAuthSignOut204>(
         {
-            data: postAuthSignOutBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
             url: `/auth/sign-out`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postAuthSignOutBody,
         },
         options,
     );
@@ -193,10 +193,10 @@ export const postAuthRegister = (
 ) => {
     return apiInstance<PostAuthRegister204>(
         {
-            data: postAuthRegisterBody,
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
             url: `/auth/register`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postAuthRegisterBody,
         },
         options,
     );

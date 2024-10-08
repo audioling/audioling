@@ -149,9 +149,9 @@ export const GetApiLibraryIdGenresSortBy = {
 } as const;
 
 export type GetApiLibraryIdGenresParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdGenresSortBy;
     sortOrder: GetApiLibraryIdGenresSortOrder;
@@ -421,9 +421,9 @@ export const GetApiLibraryIdAlbumArtistsIdTracksSortBy = {
 } as const;
 
 export type GetApiLibraryIdAlbumArtistsIdTracksParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdAlbumArtistsIdTracksSortBy;
     sortOrder: GetApiLibraryIdAlbumArtistsIdTracksSortOrder;
@@ -608,9 +608,9 @@ export const GetApiLibraryIdAlbumArtistsIdAlbumsSortBy = {
 } as const;
 
 export type GetApiLibraryIdAlbumArtistsIdAlbumsParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdAlbumArtistsIdAlbumsSortBy;
     sortOrder: GetApiLibraryIdAlbumArtistsIdAlbumsSortOrder;
@@ -830,9 +830,9 @@ export const GetApiLibraryIdAlbumArtistsSortBy = {
 } as const;
 
 export type GetApiLibraryIdAlbumArtistsParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdAlbumArtistsSortBy;
     sortOrder: GetApiLibraryIdAlbumArtistsSortOrder;
@@ -1228,9 +1228,9 @@ export const GetApiLibraryIdTracksSortBy = {
 } as const;
 
 export type GetApiLibraryIdTracksParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdTracksSortBy;
     sortOrder: GetApiLibraryIdTracksSortOrder;
@@ -1498,9 +1498,9 @@ export const GetApiLibraryIdAlbumsIdSortBy = {
 } as const;
 
 export type GetApiLibraryIdAlbumsIdParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdAlbumsIdSortBy;
     sortOrder: GetApiLibraryIdAlbumsIdSortOrder;
@@ -1677,9 +1677,9 @@ export const GetApiLibraryIdAlbumsSortBy = {
 } as const;
 
 export type GetApiLibraryIdAlbumsParams = {
-    folderId?: string[];
     limit?: string;
     offset?: string;
+    folderId?: string[];
     searchTerm?: string;
     sortBy: GetApiLibraryIdAlbumsSortBy;
     sortOrder: GetApiLibraryIdAlbumsSortOrder;
