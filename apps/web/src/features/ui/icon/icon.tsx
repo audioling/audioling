@@ -1,12 +1,32 @@
 import clsx from 'clsx';
 import { MdArrowBack, MdArrowForward, MdCheck, MdClose } from 'react-icons/md';
-import { RiLoader3Line } from 'react-icons/ri';
+import {
+    RiAddLine,
+    RiBook2Line,
+    RiDeleteBinLine,
+    RiHome3Line,
+    RiLoader3Line,
+    RiLock2Line,
+    RiMusic2Line,
+    RiPlayList2Line,
+    RiSearchLine,
+    RiSubtractLine,
+} from 'react-icons/ri';
 import styles from './icon.module.scss';
 
 export const AppIcon = {
+    add: RiAddLine,
     arrowLeft: MdArrowBack,
     arrowRight: MdArrowForward,
     check: MdCheck,
+    delete: RiDeleteBinLine,
+    home: RiHome3Line,
+    library: RiBook2Line,
+    lock: RiLock2Line,
+    playlists: RiPlayList2Line,
+    queue: RiMusic2Line,
+    remove: RiSubtractLine,
+    search: RiSearchLine,
     spinner: RiLoader3Line,
     x: MdClose,
 } as const;

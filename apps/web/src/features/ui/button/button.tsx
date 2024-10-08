@@ -2,33 +2,60 @@ import type { Ref } from 'react';
 import { forwardRef } from 'react';
 import { Button as MantineButton } from '@mantine/core';
 import { clsx } from 'clsx';
+import { motion } from 'framer-motion';
+import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
 import styles from './button.module.scss';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    align?: 'start' | 'center' | 'end' | 'between';
     children?: React.ReactNode;
     isDisabled?: boolean;
     isLoading?: boolean;
+    leftIcon?: keyof typeof AppIcon;
+    leftIconProps?: Partial<React.ComponentProps<typeof Icon>>;
     radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    rightIcon?: keyof typeof AppIcon;
+    rightIconProps?: Partial<React.ComponentProps<typeof Icon>>;
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     uppercase?: boolean;
-    variant?: 'filled' | 'default' | 'danger';
+    variant?: 'filled' | 'default' | 'danger' | 'primary';
 }
 
 export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement>) => {
-    const { children, isLoading, isDisabled, size, uppercase, variant, ...htmlProps } = props;
+    const {
+        align,
+        children,
+        isLoading,
+        isDisabled,
+        leftIcon,
+        leftIconProps,
+        rightIcon,
+        rightIconProps,
+        size,
+        uppercase,
+        variant,
+        ...htmlProps
+    } = props;
 
     const rootClassNames = clsx({
         [styles.root]: true,
         [styles.filledVariant]: variant === 'filled',
         [styles.defaultVariant]: variant === undefined || variant === 'default',
         [styles.dangerVariant]: variant === 'danger',
+        [styles.primaryVariant]: variant === 'primary',
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${size || 'md'}`]]: true,
         [styles.uppercase]: uppercase,
     });
 
+    const innerClassNames = clsx({
+        [styles.inner]: true,
+        [styles[`align-${align || 'center'}`]]: true,
+        [styles.alignBetweenIcons]: align === 'between' && leftIcon && rightIcon,
+    });
+
     const buttonClassNames = {
-        inner: styles.inner,
+        inner: innerClassNames,
         label: styles.label,
         loader: styles.loader,
         root: rootClassNames,
@@ -41,7 +68,23 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
             unstyled
             classNames={buttonClassNames}
             disabled={isDisabled}
+            leftSection={
+                leftIcon && (
+                    <Icon
+                        icon={leftIcon}
+                        {...leftIconProps}
+                    />
+                )
+            }
             loading={isLoading}
+            rightSection={
+                rightIcon && (
+                    <Icon
+                        icon={rightIcon}
+                        {...rightIconProps}
+                    />
+                )
+            }
             {...htmlProps}
         >
             {children}
@@ -50,3 +93,5 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
 });
 
 Button.displayName = 'Button';
+
+export const MotionButton = motion.create(Button);

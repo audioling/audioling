@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
 import { Group as MantineGroup } from '@mantine/core';
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
+import styles from './group.module.scss';
 
 interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
     align?: 'start' | 'center' | 'end' | 'between';
@@ -19,12 +21,20 @@ interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, ref) => {
     const { align, as, children, gap, grow, justify, preventOverflow, ...htmlProps } = props;
 
+    const rootClassNames = clsx({
+        [styles.gapXs]: gap === 'xs',
+        [styles.gapSm]: gap === 'sm',
+        [styles.gapMd]: gap === 'md',
+        [styles.gapLg]: gap === 'lg',
+        [styles.gapXl]: gap === 'xl',
+    });
+
     return (
         <MantineGroup
             ref={ref}
             align={getAlign(align)}
+            classNames={{ root: rootClassNames }}
             component={as}
-            gap={gap}
             grow={grow}
             justify={getJustify(justify)}
             preventGrowOverflow={preventOverflow}
@@ -35,7 +45,7 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
     );
 });
 
-export const MotionGroup = motion(Group);
+export const MotionGroup = motion.create(Group);
 
 Group.displayName = 'Group';
 

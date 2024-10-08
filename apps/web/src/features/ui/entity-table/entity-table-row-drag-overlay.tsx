@@ -1,8 +1,6 @@
 import { DragOverlay } from '@dnd-kit/core';
 import { restrictToWindowEdges, snapCenterToCursor } from '@dnd-kit/modifiers';
-import { Box } from '@/features/ui/box/box';
-
-interface EntityTableRowDragOverlayProps {}
+import { Box } from '@/features/ui/box/box.tsx';
 
 export const EntityTableRowDragOverlay = () => {
     return (

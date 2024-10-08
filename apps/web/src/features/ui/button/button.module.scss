@@ -1,11 +1,10 @@
 @use '@/styles/base';
 
 .root {
-    font-weight: base.$font-weight-lg;
     transition: all 0.15s ease-in-out;
 
     &:active {
-        transform: scale(0.98);
+        transform: scale(0.95);
     }
 
     &:focus,
@@ -80,6 +79,37 @@
     @include base.button-danger-variant;
 }
 
+.primary-variant {
+    @include base.button-primary-variant;
+}
+
 .label {
-    font-weight: base.$font-weight-lg;
+    font-weight: base.$font-weight-md;
+}
+
+.inner {
+    display: flex;
+    gap: base.$gap-sm;
+}
+
+.align-start {
+    justify-content: flex-start;
+}
+
+.align-center {
+    justify-content: center;
+}
+
+.align-end {
+    justify-content: flex-end;
+}
+
+.align-between {
+    justify-content: space-between;
+}
+
+.align-between-icons {
+    & > :nth-child(2) {
+        margin-right: auto;
+    }
 }

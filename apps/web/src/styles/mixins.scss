@@ -54,3 +54,28 @@
         border: var(--button-danger-hover-border);
     }
 }
+
+@mixin button-primary-variant() {
+    color: var(--button-primary-font-color);
+    background-color: var(--button-primary-background-color);
+    border: var(--button-primary-border);
+
+    svg {
+        color: var(--button-primary-font-color);
+        fill: var(--button-primary-font-color);
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-visible {
+        color: var(--button-primary-hover-font-color);
+        background-color: var(--button-primary-hover-background-color);
+        border: var(--button-primary-hover-border);
+    }
+}
+
+@mixin text-ellipsis() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -1,39 +1,49 @@
 @use '@/styles/base';
 
 .icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    svg {
+        color: inherit;
+        fill: inherit;
+    }
 }
 
 .color-default {
-  svg {
-    color: base.$font-color;
-  }
+    svg {
+        color: base.$font-color;
+        fill: base.$font-color;
+    }
 }
 
 .color-success {
-  svg {
-    color: base.$success-color;
-  }
+    svg {
+        color: base.$success-color !important;
+        fill: base.$success-color !important;
+    }
 }
 
 .color-error {
-  svg {
-    color: base.$danger-color;
-  }
+    svg {
+        color: base.$danger-color !important;
+        fill: base.$danger-color !important;
+    }
 }
 
 .color-info {
-  svg {
-    color: base.$info-color;
-  }
+    svg {
+        color: base.$info-color !important;
+        fill: base.$info-color !important;
+    }
 }
 
 .color-warn {
-  svg {
-    color: base.$warning-color;
-  }
+    svg {
+        color: base.$warning-color !important;
+        fill: base.$warning-color !important;
+    }
 }

@@ -37,7 +37,7 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, 
 
 Stack.displayName = 'Stack';
 
-export const MotionStack = motion(Stack);
+export const MotionStack = motion.create(Stack);
 
 function getJustify(justify: StackProps['justify']) {
     switch (justify) {

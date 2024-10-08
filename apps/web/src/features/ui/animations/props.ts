@@ -180,7 +180,7 @@ const rotateScale: AnimationProps = {
     transition: { duration: 0.7 },
 };
 
-export const animate = {
+export const animationProps = {
     bounce,
     fadeIn,
     fadeInDown,
