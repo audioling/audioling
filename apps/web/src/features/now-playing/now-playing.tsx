@@ -4,7 +4,7 @@ import { EntityTableVirtual } from '@/features/ui/entity-table/entity-table-virt
 import { useEntityTable } from '@/features/ui/entity-table/hooks/use-entity.table.ts';
 import type { Person } from '@/features/ui/entity-table/make-data.ts';
 import { makeData } from '@/features/ui/entity-table/make-data.ts';
-import { Group } from '@/features/ui/group/group';
+import { Group } from '@/features/ui/group/group.tsx';
 
 export function ListExample() {
     const [rows, setRows] = useState(makeData(100));

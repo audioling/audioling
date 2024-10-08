@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { authRoutes } from '@/routes/auth-routes.tsx';
-import { dashboardRoutes } from '@/routes/dashboard-routes.tsx';
+import { dashboardRoutes } from '@/routes/dashboard/dashboard-routes.tsx';
 import { baseMantineTheme, themes } from '@/themes/index.ts';
 
 export const appRouter = createBrowserRouter([

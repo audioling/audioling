@@ -1,8 +1,8 @@
 import type { DragControls } from 'framer-motion';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
-import { mutative } from 'zustand-mutative';
 
 type State = {
     activeElementIds: string[];
@@ -22,7 +22,7 @@ export type DndSlice = State & Actions;
 
 export const useDndStore = create<State & Actions>()(
     devtools(
-        mutative((set) => ({
+        immer((set) => ({
             activeElementIds: [],
             dragControls: null,
             dragNodeRef: null,

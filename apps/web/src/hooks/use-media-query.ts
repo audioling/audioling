@@ -57,3 +57,36 @@ export function useMediaQuery(
 
     return matches;
 }
+
+export function useIsLargerThanSm() {
+    const matches = useMediaQuery('(min-width: 36rem)');
+    return matches;
+}
+
+export function useIsLargerThanMd() {
+    const matches = useMediaQuery('(min-width: 48rem)');
+    return matches;
+}
+
+export function useIsLargerThanLg() {
+    const matches = useMediaQuery('(min-width: 62rem)');
+    return matches;
+}
+
+export function useIsLargerThanXl() {
+    const matches = useMediaQuery('(min-width: 75rem)');
+    return matches;
+}
+
+export function useBreakpoints() {
+    const isLargerThanSm = useIsLargerThanSm();
+    const isLargerThanMd = useIsLargerThanMd();
+    const isLargerThanLg = useIsLargerThanLg();
+    const isLargerThanXl = useIsLargerThanXl();
+    return {
+        isLargerThanLg,
+        isLargerThanMd,
+        isLargerThanSm,
+        isLargerThanXl,
+    };
+}
