@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { axiosInstance } from '@/api/api-instance.ts';
 import type { Ping } from '@/api/api-types.ts';
-import { animate } from '@/features/ui/animate/animate.ts';
+import { animationProps } from '@/features/ui/animations/props.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Grid } from '@/features/ui/grid/grid.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
@@ -78,7 +78,7 @@ export const ValidateServer = (props: ValidateServerProps) => {
     };
 
     return (
-        <motion.div {...animate.fadeIn}>
+        <motion.div {...animationProps.fadeIn}>
             <Stack
                 ref={ref}
                 as="form"
@@ -90,7 +90,7 @@ export const ValidateServer = (props: ValidateServerProps) => {
                     size="md"
                     weight="lg"
                 >
-                    Connect to server
+                    Connect
                 </Title>
                 <Grid>
                     <Grid.Col span={10}>

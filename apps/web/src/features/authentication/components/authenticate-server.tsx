@@ -7,6 +7,7 @@ import type { AuthenticationFormValues } from '@/features/authentication/compone
 import { useAuthSignIn } from '@/features/authentication/stores/auth-store.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { ButtonLink } from '@/features/ui/button-link.tsx/button-link.tsx';
+import { Center } from '@/features/ui/center/center.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -44,7 +45,8 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                     onSuccess: (response) => {
                         const { data } = response;
                         Cookies.set('token', data.token.token);
-                        signInToStore(data);
+                        const cleanUrl = props.serverUrl.replace(/\/$/, '');
+                        signInToStore(data, cleanUrl);
                         navigate({ pathname: '/dashboard' }, { replace: true });
                     },
                 },
@@ -78,7 +80,7 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                     />
                     <Title
                         order={1}
-                        size="md"
+                        size="lg"
                     >
                         Sign In
                     </Title>
@@ -123,7 +125,9 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                     Sign In
                 </Button>
                 <Divider label="Or" />
-                <ButtonLink to="/register">Create a new account</ButtonLink>
+                <Center>
+                    <ButtonLink to="/register">Create a new account</ButtonLink>
+                </Center>
             </Stack>
         </motion.div>
     );

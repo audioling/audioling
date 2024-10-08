@@ -8,18 +8,18 @@ import type {
     PostAuthSignIn200Data,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 
-export type Ping = GetPing200;
+export interface Ping extends GetPing200 {}
 
-export type Library = GetApiLibraries200DataItem;
+export interface Library extends GetApiLibraries200DataItem {}
 
-export type AuthUser = PostAuthSignIn200Data;
+export interface AuthUser extends PostAuthSignIn200Data {}
 
-export type User = GetApiUsers200DataItem;
+export interface User extends GetApiUsers200DataItem {}
 
-export type Album = GetApiLibraryIdAlbums200DataItem;
+export interface Album extends GetApiLibraryIdAlbums200DataItem {}
 
-export type AlbumArtist = GetApiLibraryIdAlbumArtists200DataItem;
+export interface AlbumArtist extends GetApiLibraryIdAlbumArtists200DataItem {}
 
-export type Artist = GetApiLibraryIdAlbumArtists200DataItem;
+export interface Artist extends GetApiLibraryIdAlbumArtists200DataItem {}
 
-export type Genre = GetApiLibraryIdGenres200DataItem;
+export interface Genre extends GetApiLibraryIdGenres200DataItem {}
