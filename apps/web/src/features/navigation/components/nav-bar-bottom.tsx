@@ -70,7 +70,7 @@ export const NavBarBottom = () => {
                         to={
                             libraryId
                                 ? generatePath(`/dashboard/:libraryId/${tab.href}`, { libraryId })
-                                : APP_ROUTE.DASHBOARD_LIBRARY_SELECTOR
+                                : APP_ROUTE.DASHBOARD_LIBRARY_SELECT
                         }
                     >
                         <span>{tab.icon}</span>

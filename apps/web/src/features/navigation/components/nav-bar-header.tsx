@@ -9,6 +9,7 @@ export const NavBarHeader = () => {
     return (
         <Group
             className={styles.navBarHeader}
+            gap="xs"
             id="nav-bar-header"
         >
             <IconButton

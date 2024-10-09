@@ -1,0 +1,11 @@
+@use '@/styles/base';
+
+.library-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: base.$gap-sm;
+}
+
+.can-edit {
+    grid-template-columns: auto 3rem;
+}

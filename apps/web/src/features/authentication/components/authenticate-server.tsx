@@ -1,3 +1,4 @@
+import type { FormEvent } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
@@ -5,12 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { usePostAuthSignIn } from '@/api/openapi-generated/authentication/authentication.ts';
 import type { AuthenticationFormValues } from '@/features/authentication/components/authentication-form.tsx';
 import { useAuthSignIn } from '@/features/authentication/stores/auth-store.ts';
+import { animationProps } from '@/features/ui/animations/props.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { ButtonLink } from '@/features/ui/button-link.tsx/button-link.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
+import { PasswordInput } from '@/features/ui/password-input/password-input.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
@@ -54,7 +57,7 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
         },
     });
 
-    const handleFormSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = (e: FormEvent) => {
         e.preventDefault();
         handleSubmit();
     };
@@ -62,18 +65,15 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
     return (
         <motion.div
             ref={ref}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            {...animationProps.fadeIn}
         >
             <Stack
                 as="form"
                 justify="center"
-                w="350px"
+                w="320px"
                 onSubmit={handleFormSubmit}
             >
-                <Group>
+                <Group gap="xs">
                     <IconButton
                         icon="arrowLeft"
                         onClick={props.onBack}
@@ -106,10 +106,9 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                 />
                 <Field
                     children={(field) => (
-                        <TextInput
+                        <PasswordInput
                             autoComplete="current-password"
                             label="Password"
-                            type="password"
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.currentTarget.value)}

@@ -4,10 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import type { AuthUser } from '@/api/api-types.ts';
 
 export type AuthLibrary = {
-    baseUrl: string | null;
     credential: string | null;
-    displayName: string;
-    id: string;
     overrideBaseUrl: string | null;
     username: string | null;
 };
@@ -15,12 +12,14 @@ export type AuthLibrary = {
 type State = {
     baseUrl: string | null;
     libraries: Record<string, AuthLibrary>;
+    selectedLibraryId: string | null;
     user: AuthUser | null;
 };
 
 type Actions = {
     removeLibrary: (id: string) => void;
-    setLibrary: (library: AuthLibrary) => void;
+    setLibrary: (id: string, values: Partial<AuthLibrary>) => void;
+    setSelectedLibrary: (id: string | null) => void;
     signIn: (user: AuthUser, baseUrl: string) => void;
     signOut: () => void;
 };
@@ -39,9 +38,20 @@ export const useAuthStore = create<State & Actions>()(
                             delete state.libraries[id];
                         });
                     },
-                    setLibrary: (library) => {
+                    selectedLibraryId: null,
+                    setLibrary: (id, values) => {
                         set((state) => {
-                            state.libraries[library.id] = library;
+                            state.libraries[id] = {
+                                ...state.libraries[id],
+                                credential: values.credential || null,
+                                overrideBaseUrl: values.overrideBaseUrl || null,
+                                username: values.username || null,
+                            };
+                        });
+                    },
+                    setSelectedLibrary: (id) => {
+                        set((state) => {
+                            state.selectedLibraryId = id;
                         });
                     },
                     signIn: (user, baseUrl) => {
@@ -64,6 +74,10 @@ export const useAuthStore = create<State & Actions>()(
         { name: 'auth-store' },
     ),
 );
+
+export const useIsAdmin = () => {
+    return useAuthStore((state) => Boolean(state.user?.isAdmin));
+};
 
 export const useAuthSignIn = () => {
     return useAuthStore((state) => state.signIn);
@@ -89,6 +103,24 @@ export const useSetAuthLibrary = () => {
     return useAuthStore((state) => state.setLibrary);
 };
 
+export const useAuthLibrary = (id: string): AuthLibrary | null => {
+    return useAuthStore((state) => state.libraries[id]);
+};
+
 export const useRemoveAuthLibrary = () => {
     return useAuthStore((state) => state.removeLibrary);
+};
+
+export const useSelectedLibraryId = () => {
+    return useAuthStore((state) => state.selectedLibraryId);
+};
+
+export const useSelectedLibrary = () => {
+    return useAuthStore((state) =>
+        state.selectedLibraryId ? state.libraries[state.selectedLibraryId] : null,
+    );
+};
+
+export const useSetSelectedLibrary = () => {
+    return useAuthStore((state) => state.setSelectedLibrary);
 };

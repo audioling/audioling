@@ -12,7 +12,7 @@ export const LibrarySelectionRoute = () => {
     return (
         <Center>
             <Stack>
-                <Suspense fallback={<Center>Loading...</Center>}>
+                <Suspense fallback={<></>}>
                     <LibrarySelectionForm />
                 </Suspense>
                 <Divider label="Or" />
