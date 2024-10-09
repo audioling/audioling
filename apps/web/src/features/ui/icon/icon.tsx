@@ -1,5 +1,12 @@
 import clsx from 'clsx';
-import { MdArrowBack, MdArrowForward, MdCheck, MdClose } from 'react-icons/md';
+import {
+    MdArrowBack,
+    MdArrowForward,
+    MdCheck,
+    MdClose,
+    MdOutlineVisibility,
+    MdOutlineVisibilityOff,
+} from 'react-icons/md';
 import {
     RiAddLine,
     RiBook2Line,
@@ -28,6 +35,8 @@ export const AppIcon = {
     remove: RiSubtractLine,
     search: RiSearchLine,
     spinner: RiLoader3Line,
+    visibility: MdOutlineVisibility,
+    visibilityOff: MdOutlineVisibilityOff,
     x: MdClose,
 } as const;
 
