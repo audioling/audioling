@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
 import { Stack as MantineStack } from '@mantine/core';
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
+import styles from './stack.module.scss';
 
 interface StackProps extends React.ComponentPropsWithoutRef<'div'> {
     align?: 'start' | 'center' | 'end' | 'between' | 'stretch';
@@ -19,12 +21,20 @@ interface StackProps extends React.ComponentPropsWithoutRef<'div'> {
 export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, ref) => {
     const { align, as, children, gap, justify, w, maw, h, mah, mih, miw, ...htmlProps } = props;
 
+    const rootClassNames = clsx({
+        [styles.gapXs]: gap === 'xs',
+        [styles.gapSm]: gap === 'sm',
+        [styles.gapMd]: gap === 'md',
+        [styles.gapLg]: gap === 'lg',
+        [styles.gapXl]: gap === 'xl',
+    });
+
     return (
         <MantineStack
             ref={ref}
             align={getAlign(align)}
+            classNames={{ root: rootClassNames }}
             component={as}
-            gap={gap}
             h={h}
             justify={getJustify(justify)}
             mah={mah}

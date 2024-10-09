@@ -6,19 +6,39 @@ interface GridProps extends React.ComponentPropsWithoutRef<'div'> {
     align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch';
     children: React.ReactNode;
     columns?: number;
-    gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     grow?: boolean;
+    gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     justify?: 'start' | 'end' | 'center' | 'between' | 'around';
 }
 
 export const Grid = (props: GridProps) => {
-    const { align, children, columns, gap, grow, justify, ...htmlProps } = props;
+    const { align, children, columns, gutter, grow, justify, ...htmlProps } = props;
+
+    const innerClassNames = clsx({
+        [styles.innerXs]: gutter === 'xs',
+        [styles.innerSm]: gutter === 'sm',
+        [styles.innerMd]: gutter === 'md',
+        [styles.innerLg]: gutter === 'lg',
+        [styles.innerXl]: gutter === 'xl',
+    });
+
+    const colClassNames = clsx({
+        [styles.colXs]: gutter === 'xs',
+        [styles.colSm]: gutter === 'sm',
+        [styles.colMd]: gutter === 'md',
+        [styles.colLg]: gutter === 'lg',
+        [styles.colXl]: gutter === 'xl',
+    });
+
     return (
         <MantineGrid
             align={getAlign(align)}
+            classNames={{
+                col: colClassNames,
+                inner: innerClassNames,
+            }}
             columns={columns}
             grow={grow}
-            gutter={gap}
             justify={getJustify(justify)}
             {...htmlProps}
         >

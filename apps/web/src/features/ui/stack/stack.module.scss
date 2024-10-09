@@ -1,0 +1,21 @@
+@use '@/styles/base';
+
+.gap-xs {
+    gap: base.$gap-xs !important;
+}
+
+.gap-sm {
+    gap: base.$gap-sm !important;
+}
+
+.gap-md {
+    gap: base.$gap-md !important;
+}
+
+.gap-lg {
+    gap: base.$gap-lg !important;
+}
+
+.gap-xl {
+    gap: base.$gap-xl !important;
+}

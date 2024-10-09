@@ -1,3 +1,5 @@
+@use '@/styles/base';
+
 .grow {
     display: flex;
     flex-grow: 1;
@@ -5,4 +7,49 @@
 
 .grow > * {
     width: 100%;
+}
+
+.inner-xs {
+    width: calc(100% + base.$gap-xs) !important;
+    margin-left: calc(base.$gap-xs / -2);
+}
+
+.inner-sm {
+    width: calc(100% + base.$gap-sm) !important;
+    margin-left: calc(base.$gap-sm / -2);
+}
+
+.inner-md {
+    width: calc(100% + base.$gap-md) !important;
+    margin-left: calc(base.$gap-md / -2);
+}
+
+.inner-lg {
+    width: calc(100% + base.$gap-lg) !important;
+    margin-left: calc(base.$gap-lg / -2);
+}
+
+.inner-xl {
+    width: calc(100% + base.$gap-xl) !important;
+    margin-left: calc(base.$gap-xl / -2);
+}
+
+.col-xs {
+    padding: calc(base.$gap-xs / 2) !important;
+}
+
+.col-sm {
+    padding: calc(base.$gap-sm / 2) !important;
+}
+
+.col-md {
+    padding: calc(base.$gap-md / 2) !important;
+}
+
+.col-lg {
+    padding: calc(base.$gap-lg / 2) !important;
+}
+
+.col-xl {
+    padding: calc(base.$gap-xl / 2) !important;
 }
