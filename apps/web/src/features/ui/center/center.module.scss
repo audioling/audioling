@@ -1,4 +1,106 @@
+@use '@/styles/base';
+
 .center {
     width: 100%;
     height: 100%;
+}
+
+.margin-x-xs {
+    margin-right: base.$gap-xs;
+    margin-left: base.$gap-xs;
+}
+
+.margin-x-sm {
+    margin-right: base.$gap-sm;
+    margin-left: base.$gap-sm;
+}
+
+.margin-x-md {
+    margin-right: base.$gap-md;
+    margin-left: base.$gap-md;
+}
+
+.margin-x-lg {
+    margin-right: base.$gap-lg;
+    margin-left: base.$gap-lg;
+}
+
+.margin-x-xl {
+    margin-right: base.$gap-xl;
+    margin-left: base.$gap-xl;
+}
+
+.margin-y-xs {
+    margin-top: base.$gap-xs;
+    margin-bottom: base.$gap-xs;
+}
+
+.margin-y-sm {
+    margin-top: base.$gap-sm;
+    margin-bottom: base.$gap-sm;
+}
+
+.margin-y-md {
+    margin-top: base.$gap-md;
+    margin-bottom: base.$gap-md;
+}
+
+.margin-y-lg {
+    margin-top: base.$gap-lg;
+    margin-bottom: base.$gap-lg;
+}
+
+.margin-y-xl {
+    margin-top: base.$gap-xl;
+    margin-bottom: base.$gap-xl;
+}
+
+.padding-x-xs {
+    padding-right: base.$gap-xs;
+    padding-left: base.$gap-xs;
+}
+
+.padding-x-sm {
+    padding-right: base.$gap-sm;
+    padding-left: base.$gap-sm;
+}
+
+.padding-x-md {
+    padding-right: base.$gap-md;
+    padding-left: base.$gap-md;
+}
+
+.padding-x-lg {
+    padding-right: base.$gap-lg;
+    padding-left: base.$gap-lg;
+}
+
+.padding-x-xl {
+    padding-right: base.$gap-xl;
+    padding-left: base.$gap-xl;
+}
+
+.padding-y-xs {
+    padding-top: base.$gap-xs;
+    padding-bottom: base.$gap-xs;
+}
+
+.padding-y-sm {
+    padding-top: base.$gap-sm;
+    padding-bottom: base.$gap-sm;
+}
+
+.padding-y-md {
+    padding-top: base.$gap-md;
+    padding-bottom: base.$gap-md;
+}
+
+.padding-y-lg {
+    padding-top: base.$gap-lg;
+    padding-bottom: base.$gap-lg;
+}
+
+.padding-y-xl {
+    padding-top: base.$gap-xl;
+    padding-bottom: base.$gap-xl;
 }
