@@ -1,0 +1,8 @@
+.grow {
+    display: flex;
+    flex-grow: 1;
+}
+
+.grow > * {
+    width: 100%;
+}
