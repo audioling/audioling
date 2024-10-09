@@ -120,6 +120,15 @@ export type LibraryFeatures = {
     };
 };
 
+export type AuthUserPermissions = {
+    'library:add': boolean;
+    'library:edit': boolean;
+    'library:remove': boolean;
+    'user:add': boolean;
+    'user:edit': boolean;
+    'user:remove': boolean;
+};
+
 // Sync with LibraryFeatures[album][list][filter]
 export enum AlbumListSortOptions {
     ALBUM_ARTIST = 'albumArtist',
