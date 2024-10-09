@@ -21,6 +21,9 @@ export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProp
     return (
         <MantineCenter
             ref={ref}
+            classNames={{
+                root: styles.center,
+            }}
             component={as}
             h={h}
             inline={inline}
@@ -30,7 +33,6 @@ export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProp
             miw={miw}
             w={w}
             {...htmlProps}
-            className={styles.center}
         >
             {children}
         </MantineCenter>
