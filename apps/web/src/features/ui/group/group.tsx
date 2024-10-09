@@ -14,12 +14,28 @@ interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
     justify?: 'start' | 'center' | 'end' | 'between';
     mah?: string;
     maw?: string;
+    mih?: string;
+    miw?: string;
     preventOverflow?: boolean;
     w?: string;
 }
 
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, ref) => {
-    const { align, as, children, gap, grow, justify, preventOverflow, ...htmlProps } = props;
+    const {
+        align,
+        as,
+        children,
+        gap,
+        grow,
+        justify,
+        preventOverflow,
+        mah,
+        maw,
+        mih,
+        miw,
+        w,
+        ...htmlProps
+    } = props;
 
     const rootClassNames = clsx({
         [styles.gapXs]: gap === 'xs',
@@ -37,7 +53,12 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
             component={as}
             grow={grow}
             justify={getJustify(justify)}
+            mah={mah}
+            maw={maw}
+            mih={mih}
+            miw={miw}
             preventGrowOverflow={preventOverflow}
+            w={w}
             {...htmlProps}
         >
             {children}

@@ -10,11 +10,13 @@ interface CenterProps extends React.ComponentPropsWithoutRef<'div'> {
     inline?: boolean;
     mah?: string;
     maw?: string;
+    mih?: string;
+    miw?: string;
     w?: string;
 }
 
 export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProps, ref) => {
-    const { as, children, inline, h, mah, maw, w, ...htmlProps } = props;
+    const { as, children, inline, h, mah, maw, mih, miw, w, ...htmlProps } = props;
 
     return (
         <MantineCenter
@@ -24,6 +26,8 @@ export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProp
             inline={inline}
             mah={mah}
             maw={maw}
+            mih={mih}
+            miw={miw}
             w={w}
             {...htmlProps}
             className={styles.center}

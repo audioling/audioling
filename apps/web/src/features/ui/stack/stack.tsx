@@ -11,11 +11,13 @@ interface StackProps extends React.ComponentPropsWithoutRef<'div'> {
     justify?: 'start' | 'center' | 'end' | 'between';
     mah?: string;
     maw?: string;
+    mih?: string;
+    miw?: string;
     w?: string;
 }
 
 export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, ref) => {
-    const { align, as, children, gap, justify, w, maw, h, mah, ...htmlProps } = props;
+    const { align, as, children, gap, justify, w, maw, h, mah, mih, miw, ...htmlProps } = props;
 
     return (
         <MantineStack
@@ -27,6 +29,8 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, 
             justify={getJustify(justify)}
             mah={mah}
             maw={maw}
+            mih={mih}
+            miw={miw}
             w={w}
             {...htmlProps}
         >
