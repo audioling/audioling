@@ -1,5 +1,7 @@
 import { z } from '@hono/zod-openapi';
 import {
+    LibraryAuthRequestSchema,
+    LibraryAuthResponseSchema,
     LibraryDetailResponseSchema,
     LibraryInsertSchema,
     LibraryListRequestSchema,
@@ -66,6 +68,25 @@ export const libraryApiSchema = {
                 {
                     description: 'Update a library',
                     schema: LibraryDetailResponseSchema,
+                    status: 200,
+                },
+                [400, 401, 403, 404, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/{id}/auth': {
+        post: {
+            request: {
+                body: {
+                    content: { 'application/json': { schema: LibraryAuthRequestSchema } },
+                },
+                params: z.object({ id: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Authenticate a library',
+                    schema: LibraryAuthResponseSchema,
                     status: 200,
                 },
                 [400, 401, 403, 404, 422, 500],

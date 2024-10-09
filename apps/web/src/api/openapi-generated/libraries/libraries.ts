@@ -46,6 +46,14 @@ import type {
     PostApiLibraries422,
     PostApiLibraries500,
     PostApiLibrariesBody,
+    PostApiLibrariesIdAuth200,
+    PostApiLibrariesIdAuth400,
+    PostApiLibrariesIdAuth401,
+    PostApiLibrariesIdAuth403,
+    PostApiLibrariesIdAuth404,
+    PostApiLibrariesIdAuth422,
+    PostApiLibrariesIdAuth500,
+    PostApiLibrariesIdAuthBody,
     PutApiLibrariesId200,
     PutApiLibrariesId400,
     PutApiLibrariesId401,
@@ -950,6 +958,107 @@ export const useDeleteApiLibrariesId = <
     TContext
 > => {
     const mutationOptions = getDeleteApiLibrariesIdMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Authenticate library by id
+ */
+export const postApiLibrariesIdAuth = (
+    id: string,
+    postApiLibrariesIdAuthBody: BodyType<PostApiLibrariesIdAuthBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibrariesIdAuth200>(
+        {
+            url: `/api/libraries/${id}/auth`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibrariesIdAuthBody,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibrariesIdAuthMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibrariesIdAuth400
+        | PostApiLibrariesIdAuth401
+        | PostApiLibrariesIdAuth403
+        | PostApiLibrariesIdAuth404
+        | PostApiLibrariesIdAuth422
+        | PostApiLibrariesIdAuth500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibrariesIdAuth>>,
+        TError,
+        { id: string; data: BodyType<PostApiLibrariesIdAuthBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibrariesIdAuth>>,
+    TError,
+    { id: string; data: BodyType<PostApiLibrariesIdAuthBody> },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibrariesIdAuth>>,
+        { id: string; data: BodyType<PostApiLibrariesIdAuthBody> }
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return postApiLibrariesIdAuth(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibrariesIdAuthMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibrariesIdAuth>>
+>;
+export type PostApiLibrariesIdAuthMutationBody = BodyType<PostApiLibrariesIdAuthBody>;
+export type PostApiLibrariesIdAuthMutationError = ErrorType<
+    | PostApiLibrariesIdAuth400
+    | PostApiLibrariesIdAuth401
+    | PostApiLibrariesIdAuth403
+    | PostApiLibrariesIdAuth404
+    | PostApiLibrariesIdAuth422
+    | PostApiLibrariesIdAuth500
+>;
+
+/**
+ * @summary Authenticate library by id
+ */
+export const usePostApiLibrariesIdAuth = <
+    TError = ErrorType<
+        | PostApiLibrariesIdAuth400
+        | PostApiLibrariesIdAuth401
+        | PostApiLibrariesIdAuth403
+        | PostApiLibrariesIdAuth404
+        | PostApiLibrariesIdAuth422
+        | PostApiLibrariesIdAuth500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibrariesIdAuth>>,
+        TError,
+        { id: string; data: BodyType<PostApiLibrariesIdAuthBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibrariesIdAuth>>,
+    TError,
+    { id: string; data: BodyType<PostApiLibrariesIdAuthBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibrariesIdAuthMutationOptions(options);
 
     return useMutation(mutationOptions);
 };

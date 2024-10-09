@@ -53,3 +53,20 @@ export const LibraryFullScanSchema = z.object({
 });
 
 export const LibraryRefreshRequestSchema = z.object({});
+
+export const LibraryAuthRequestSchema = z.object({
+    baseUrl: z.string().optional(),
+    password: z.string(),
+    username: z.string(),
+});
+
+export type LibraryAuthRequest = z.infer<typeof LibraryAuthRequestSchema>;
+
+export const LibraryAuthResponseSchema = createIndividualResponseSchema({
+    attributes: z.object({
+        credential: z.string(),
+        username: z.string(),
+    }),
+});
+
+export type LibraryAuthResponse = z.infer<typeof LibraryAuthResponseSchema>;

@@ -91,6 +91,35 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
 
             return result;
         },
+        // ANCHOR - Authenticate
+        authenticate: async (
+            args: FindByIdServiceArgs & { body: { password: string; username: string } },
+        ) => {
+            const library = await initLibraryService(modules).detail({ id: args.id });
+
+            if (!library) {
+                throw new apiError.notFound({ message: 'Library not found' });
+            }
+
+            const authResult = await authenticationAdapter(library.type).authenticate(
+                library.baseUrl,
+                {
+                    password: args.body.password,
+                    username: args.body.username,
+                },
+            );
+
+            if (authResult === null) {
+                throw new apiError.badRequest({
+                    message: `Failed to authenticate to ${library.baseUrl}`,
+                });
+            }
+
+            return {
+                credential: authResult.auth.credential,
+                username: authResult.auth.username,
+            };
+        },
         // ANCHOR - Detail
         detail: async (args: FindByIdServiceArgs) => {
             const [err, result] = db.library.findById(args.id);

@@ -3,6 +3,7 @@ import type { LibraryType } from '@repo/shared-types';
 import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import { apiSchema } from '@/controllers/index.js';
 import type {
+    LibraryAuthResponse,
     LibraryDetailResponse,
     LibraryListResponse,
 } from '@/controllers/library/library-api-types.js';
@@ -189,6 +190,38 @@ export const initLibraryController = (modules: { service: AppService }) => {
         async (c) => {
             await service.library.remove({ id: c.req.param('id') });
             return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - POST /{id}/auth
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/{id}/auth',
+            summary: 'Authenticate library by id',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.library['/{id}/auth'].post,
+        }),
+        async (c) => {
+            const body = c.req.valid('json');
+
+            const authResult = await service.library.authenticate({
+                body: {
+                    password: body.password,
+                    username: body.username,
+                },
+                id: c.req.param('id'),
+            });
+
+            const response: LibraryAuthResponse = {
+                data: {
+                    credential: authResult.credential,
+                    username: authResult.username,
+                },
+                meta: {},
+            };
+
+            return c.json(response, 200);
         },
     );
 

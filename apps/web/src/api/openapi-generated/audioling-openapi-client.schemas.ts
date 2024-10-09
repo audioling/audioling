@@ -102,6 +102,11 @@ export type GetApiLibraryIdGenres200Meta = {
     totalRecordCount: number;
 };
 
+export type GetApiLibraryIdGenres200 = {
+    data: GetApiLibraryIdGenres200DataItem[];
+    meta: GetApiLibraryIdGenres200Meta;
+};
+
 export type GetApiLibraryIdGenres200DataItemItemType =
     (typeof GetApiLibraryIdGenres200DataItemItemType)[keyof typeof GetApiLibraryIdGenres200DataItemItemType];
 
@@ -122,11 +127,6 @@ export type GetApiLibraryIdGenres200DataItem = {
     thumbHash: string | null;
     /** @nullable */
     trackCount: number | null;
-};
-
-export type GetApiLibraryIdGenres200 = {
-    data: GetApiLibraryIdGenres200DataItem[];
-    meta: GetApiLibraryIdGenres200Meta;
 };
 
 export type GetApiLibraryIdGenresSortOrder =
@@ -745,11 +745,6 @@ export type GetApiLibraryIdAlbumArtists200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraryIdAlbumArtists200 = {
-    data: GetApiLibraryIdAlbumArtists200DataItem[];
-    meta: GetApiLibraryIdAlbumArtists200Meta;
-};
-
 export type GetApiLibraryIdAlbumArtists200DataItemItemType =
     (typeof GetApiLibraryIdAlbumArtists200DataItemItemType)[keyof typeof GetApiLibraryIdAlbumArtists200DataItemItemType];
 
@@ -800,6 +795,11 @@ export type GetApiLibraryIdAlbumArtists200DataItem = {
     userRating: number | null;
     /** @nullable */
     userRatingDate: string | null;
+};
+
+export type GetApiLibraryIdAlbumArtists200 = {
+    data: GetApiLibraryIdAlbumArtists200DataItem[];
+    meta: GetApiLibraryIdAlbumArtists200Meta;
 };
 
 export type GetApiLibraryIdAlbumArtistsSortOrder =
@@ -1685,6 +1685,68 @@ export type GetApiLibraryIdAlbumsParams = {
     sortOrder: GetApiLibraryIdAlbumsSortOrder;
 };
 
+export type PostApiLibrariesIdAuth500 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibrariesIdAuth422 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibrariesIdAuth404 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibrariesIdAuth403 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibrariesIdAuth401 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibrariesIdAuth400 = {
+    message: string;
+};
+
+export type PostApiLibrariesIdAuth200Meta = { [key: string]: unknown };
+
+export type PostApiLibrariesIdAuth200Data = {
+    credential: string;
+    username: string;
+};
+
+export type PostApiLibrariesIdAuth200 = {
+    data: PostApiLibrariesIdAuth200Data;
+    meta: PostApiLibrariesIdAuth200Meta;
+};
+
+export type PostApiLibrariesIdAuthBody = {
+    baseUrl?: string;
+    password: string;
+    username: string;
+};
+
 export type DeleteApiLibrariesId500 = {
     cause?: string;
     message: string;
@@ -1867,6 +1929,11 @@ export type GetApiLibrariesId401 = {
 
 export type GetApiLibrariesId200Meta = { [key: string]: unknown };
 
+export type GetApiLibrariesId200 = {
+    data: GetApiLibrariesId200Data;
+    meta: GetApiLibrariesId200Meta;
+};
+
 export type GetApiLibrariesId200DataType =
     (typeof GetApiLibrariesId200DataType)[keyof typeof GetApiLibrariesId200DataType];
 
@@ -1890,11 +1957,6 @@ export type GetApiLibrariesId200Data = {
     id: string;
     type: GetApiLibrariesId200DataType;
     updatedAt: string;
-};
-
-export type GetApiLibrariesId200 = {
-    data: GetApiLibrariesId200Data;
-    meta: GetApiLibrariesId200Meta;
 };
 
 export type PostApiLibraries500 = {
@@ -1951,6 +2013,11 @@ export type PostApiLibraries400 = {
 
 export type PostApiLibraries201Meta = { [key: string]: unknown };
 
+export type PostApiLibraries201 = {
+    data: PostApiLibraries201Data;
+    meta: PostApiLibraries201Meta;
+};
+
 export type PostApiLibraries201DataType =
     (typeof PostApiLibraries201DataType)[keyof typeof PostApiLibraries201DataType];
 
@@ -1974,11 +2041,6 @@ export type PostApiLibraries201Data = {
     id: string;
     type: PostApiLibraries201DataType;
     updatedAt: string;
-};
-
-export type PostApiLibraries201 = {
-    data: PostApiLibraries201Data;
-    meta: PostApiLibraries201Meta;
 };
 
 export type PostApiLibrariesBodyType =
@@ -2248,11 +2310,6 @@ export type GetApiUsersId401 = {
 
 export type GetApiUsersId200Meta = { [key: string]: unknown };
 
-export type GetApiUsersId200 = {
-    data: GetApiUsersId200Data;
-    meta: GetApiUsersId200Meta;
-};
-
 export type GetApiUsersId200DataUpdatedAt = string | string;
 
 export type GetApiUsersId200DataCreatedAt = string | string;
@@ -2266,6 +2323,11 @@ export type GetApiUsersId200Data = {
     isEnabled: boolean;
     updatedAt: GetApiUsersId200DataUpdatedAt;
     username: string;
+};
+
+export type GetApiUsersId200 = {
+    data: GetApiUsersId200Data;
+    meta: GetApiUsersId200Meta;
 };
 
 export type PostApiUsers500 = {
