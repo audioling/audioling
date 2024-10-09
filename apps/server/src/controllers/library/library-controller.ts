@@ -63,7 +63,7 @@ export const initLibraryController = (modules: { service: AppService }) => {
                 },
             };
 
-            return c.json(response, 201);
+            return c.json(response, 200);
         },
     );
 
