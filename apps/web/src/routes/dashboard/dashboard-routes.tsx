@@ -1,8 +1,8 @@
 import { type RouteObject } from 'react-router-dom';
-import { AuthLibraryEditRoute } from '@/features/library/routes/auth-library-edit-route.tsx';
-import { LibraryAddRoute } from '@/features/library/routes/library-add-route.tsx';
-import { LibraryEditRoute } from '@/features/library/routes/library-edit-route.tsx';
-import { LibrarySelectionRoute } from '@/features/library/routes/library-selection-route.tsx';
+import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-library-edit-route.tsx';
+import { LibraryAddRoute } from '@/features/library/library-add/library-add-route.tsx';
+import { LibraryEditRoute } from '@/features/library/library-edit/library-edit-route.tsx';
+import { LibrarySelectionRoute } from '@/features/library/library-selection/library-selection-route.tsx';
 import { AuthProtectedLayout } from '@/layouts/auth-protected-layout.tsx';
 import { DashboardLayout } from '@/layouts/dashboard-layout.tsx';
 import { LibraryIdSelectedLayout } from '@/layouts/library-id-selected-layout.tsx';

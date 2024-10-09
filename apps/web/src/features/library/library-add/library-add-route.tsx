@@ -1,16 +1,12 @@
 import { Suspense } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useGetApiLibrariesIdSuspense } from '@/api/openapi-generated/libraries/libraries.ts';
-import { AuthLibraryEditForm } from '@/features/library/components/auth-library-edit-form.tsx';
+import { useNavigate } from 'react-router-dom';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 
-export const AuthLibraryEditRoute = () => {
-    const { libraryId } = useParams<{ libraryId: string }>() as { libraryId: string };
-    const { data } = useGetApiLibrariesIdSuspense(libraryId);
+export const LibraryAddRoute = () => {
     const navigate = useNavigate();
 
     return (
@@ -23,14 +19,12 @@ export const AuthLibraryEditRoute = () => {
                     />
                     <Title
                         order={1}
-                        size="md"
+                        size="lg"
                     >
-                        Connect to {data.data.displayName}
+                        Add a new library
                     </Title>
                 </Group>
-                <Suspense fallback={<></>}>
-                    <AuthLibraryEditForm library={data.data} />
-                </Suspense>
+                <Suspense fallback={<></>}></Suspense>
             </Stack>
         </Center>
     );

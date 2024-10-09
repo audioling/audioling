@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SidebarPlaylistItem } from '@/features/navigation/components/side-bar-playlist-item.tsx';
+import { SidebarPlaylistItem } from '@/features/navigation/nav-bar-side/side-bar-playlist-item.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 
 export const SideBar = () => {

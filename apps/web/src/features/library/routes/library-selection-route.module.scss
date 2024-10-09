@@ -1,9 +1,0 @@
-@use '@/styles/base';
-
-.library-selection {
-    padding: 0 base.$gap-sm;
-
-    @include base.larger-than-sm {
-        padding: 0 base.$gap-lg;
-    }
-}
