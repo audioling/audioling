@@ -14,7 +14,7 @@ import { Title } from '@/features/ui/title/title.tsx';
 import { useAuthPermissions } from '@/permissions.ts';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 
-export const LibrarySelectionForm = () => {
+export const LibrarySelection = () => {
     const navigate = useNavigate();
     const permissions = useAuthPermissions();
 
@@ -62,7 +62,7 @@ export const LibrarySelectionForm = () => {
     return (
         <Stack
             align="center"
-            maw="300px"
+            maw="400px"
             miw="250px"
             w="100%"
         >

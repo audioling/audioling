@@ -125,7 +125,12 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                 </Button>
                 <Divider label="Or" />
                 <Center>
-                    <ButtonLink to="/register">Create a new account</ButtonLink>
+                    <ButtonLink
+                        to="/register"
+                        variant="subtle"
+                    >
+                        Create a new account
+                    </ButtonLink>
                 </Center>
             </Stack>
         </motion.div>

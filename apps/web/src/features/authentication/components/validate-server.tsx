@@ -96,7 +96,7 @@ export const ValidateServer = (props: ValidateServerProps) => {
                     <Grid.Col span={10}>
                         <TextInput
                             data-autofocus
-                            placeholder="http://localhost:5174"
+                            placeholder="http://localhost:4544"
                             size="md"
                             value={props.value}
                             onChange={(e) => props.onChange(e.currentTarget.value)}

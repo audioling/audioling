@@ -6,6 +6,7 @@ import { usePostApiLibrariesIdAuth } from '@/api/openapi-generated/libraries/lib
 import {
     useAuthLibrary,
     useAuthStore,
+    useInvalidateAuthLibrary,
     useSetAuthLibrary,
 } from '@/features/authentication/stores/auth-store.ts';
 import { Button } from '@/features/ui/button/button.tsx';
@@ -29,13 +30,13 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
     const submitFlag = useRef(SUBMIT_FLAG.SAVE_AND_CONNECT);
 
     const library = useAuthLibrary(libraryId);
+    const isConnected = Boolean(library?.username && library?.credential);
     const setAuthLibrary = useSetAuthLibrary();
+    const invalidateAuthLibrary = useInvalidateAuthLibrary();
 
     const { mutate: auth } = usePostApiLibrariesIdAuth();
 
-    const isAlreadyConnected = Boolean(library?.username && library?.credential);
-
-    const { Field, handleSubmit } = useForm<{
+    const { Field, handleSubmit, Subscribe } = useForm<{
         overrideBaseUrl: string;
         password: string;
         username: string;
@@ -48,12 +49,11 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
         onSubmit: async (e) => {
             const onComplete = () => {
                 const library = useAuthStore.getState().libraries[libraryId];
-                const isConnected = Boolean(library.username && library.credential);
-                console.log('library', library, isConnected, submitFlag.current);
+                const isConnected = Boolean(library?.username && library?.credential);
 
                 if (isConnected && submitFlag.current === SUBMIT_FLAG.SAVE_AND_CONNECT) {
                     navigate(generatePath(APP_ROUTE.DASHBOARD_HOME, { libraryId }));
-                } else {
+                } else if (submitFlag.current === SUBMIT_FLAG.SAVE) {
                     navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
                 }
             };
@@ -78,6 +78,8 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                                 overrideBaseUrl: e.value.overrideBaseUrl || null,
                                 username: response.data.username,
                             });
+
+                            return onComplete();
                         },
                     },
                 );
@@ -85,9 +87,23 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                 setAuthLibrary(libraryId, {
                     overrideBaseUrl: e.value.overrideBaseUrl,
                 });
-            }
 
-            onComplete();
+                return onComplete();
+            } else {
+                return onComplete();
+            }
+        },
+        validators: {
+            onChange: ({ value }) => {
+                return {
+                    fields: {
+                        password:
+                            isConnected || value.password ? undefined : 'Password is required',
+                        username:
+                            isConnected || value.username ? undefined : 'Username is required',
+                    },
+                };
+            },
         },
     });
 
@@ -95,6 +111,11 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
         e.preventDefault();
         submitFlag.current = flag;
         handleSubmit();
+    };
+
+    const handleInvalidateCredentials = () => {
+        invalidateAuthLibrary(libraryId);
+        navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
     };
 
     const ref = useFocusTrap(true);
@@ -109,6 +130,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                 children={(field) => (
                     <TextInput
                         data-autofocus
+                        autoComplete="username"
                         label="Username"
                         value={field.state.value}
                         onBlur={field.handleBlur}
@@ -120,6 +142,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
             <Field
                 children={(field) => (
                     <PasswordInput
+                        autoComplete="current-password"
                         label="Password"
                         value={field.state.value}
                         onBlur={field.handleBlur}
@@ -128,7 +151,6 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                 )}
                 name="password"
             />
-            <Divider />
             <Field
                 children={(field) => (
                     <TextInput
@@ -143,7 +165,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
             />
             <Grid
                 grow
-                gap="xs"
+                gutter="xs"
             >
                 <Grid.Col
                     grow
@@ -160,15 +182,29 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                     grow
                     span={8}
                 >
-                    <Button
-                        disabled={!isAlreadyConnected}
-                        type="submit"
-                        variant="filled"
-                    >
-                        Save and connect
-                    </Button>
+                    <Subscribe
+                        children={(props) => {
+                            return (
+                                <Button
+                                    disabled={!props.canSubmit || props.isSubmitting}
+                                    type="submit"
+                                    variant="filled"
+                                >
+                                    Save and connect
+                                </Button>
+                            );
+                        }}
+                    />
                 </Grid.Col>
             </Grid>
+            <Divider />
+            <Button
+                disabled={!isConnected}
+                variant="subtle"
+                onClick={handleInvalidateCredentials}
+            >
+                Invalidate credentials
+            </Button>
         </Stack>
     );
 };

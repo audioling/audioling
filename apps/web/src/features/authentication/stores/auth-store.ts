@@ -17,6 +17,7 @@ type State = {
 };
 
 type Actions = {
+    invalidateLibrary: (id: string) => void;
     removeLibrary: (id: string) => void;
     setLibrary: (id: string, values: Partial<AuthLibrary>) => void;
     setSelectedLibrary: (id: string | null) => void;
@@ -32,6 +33,12 @@ export const useAuthStore = create<State & Actions>()(
             subscribeWithSelector(
                 immer((set) => ({
                     baseUrl: null,
+                    invalidateLibrary: (id) => {
+                        set((state) => {
+                            state.libraries[id].credential = null;
+                            state.libraries[id].username = null;
+                        });
+                    },
                     libraries: {},
                     removeLibrary: (id) => {
                         set((state) => {
@@ -41,12 +48,14 @@ export const useAuthStore = create<State & Actions>()(
                     selectedLibraryId: null,
                     setLibrary: (id, values) => {
                         set((state) => {
-                            state.libraries[id] = {
-                                ...state.libraries[id],
-                                credential: values.credential || null,
-                                overrideBaseUrl: values.overrideBaseUrl || null,
-                                username: values.username || null,
-                            };
+                            state.libraries[id].credential =
+                                values.credential || state.libraries[id].credential || null;
+                            state.libraries[id].overrideBaseUrl =
+                                values.overrideBaseUrl ||
+                                state.libraries[id].overrideBaseUrl ||
+                                null;
+                            state.libraries[id].username =
+                                values.username || state.libraries[id].username || null;
                         });
                     },
                     setSelectedLibrary: (id) => {
@@ -101,6 +110,10 @@ export const useAuthLibraries = () => {
 
 export const useSetAuthLibrary = () => {
     return useAuthStore((state) => state.setLibrary);
+};
+
+export const useInvalidateAuthLibrary = () => {
+    return useAuthStore((state) => state.invalidateLibrary);
 };
 
 export const useAuthLibrary = (id: string): AuthLibrary | null => {

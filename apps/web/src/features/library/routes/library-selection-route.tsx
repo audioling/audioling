@@ -1,19 +1,20 @@
 import { Suspense } from 'react';
 import { useAuthSignOut } from '@/features/authentication/stores/auth-store.ts';
-import { LibrarySelectionForm } from '@/features/library/components/library-selection-form.tsx';
+import { LibrarySelection } from '@/features/library/components/library-selection.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
+import styles from './library-selection-route.module.scss';
 
 export const LibrarySelectionRoute = () => {
     const signOut = useAuthSignOut();
 
     return (
-        <Center>
+        <Center className={styles.librarySelection}>
             <Stack>
                 <Suspense fallback={<></>}>
-                    <LibrarySelectionForm />
+                    <LibrarySelection />
                 </Suspense>
                 <Divider label="Or" />
                 <Button
