@@ -6,7 +6,7 @@ import { clsx } from 'clsx';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './text-input.module.scss';
 
-interface TextInputProps extends Omit<React.ComponentPropsWithoutRef<'input'>, 'size'> {
+export interface TextInputProps extends Omit<React.ComponentPropsWithoutRef<'input'>, 'size'> {
     children?: React.ReactNode;
     description?: string;
     label?: string;
