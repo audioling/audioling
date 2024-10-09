@@ -92,23 +92,23 @@
     gap: base.$gap-sm;
 }
 
-.align-start {
+.justify-start {
     justify-content: flex-start;
 }
 
-.align-center {
+.justify-center {
     justify-content: center;
 }
 
-.align-end {
+.justify-end {
     justify-content: flex-end;
 }
 
-.align-between {
+.justify-between {
     justify-content: space-between;
 }
 
-.align-between-icons {
+.justify-between-icons {
     & > :nth-child(2) {
         margin-right: auto;
     }

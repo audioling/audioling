@@ -7,10 +7,10 @@ import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
 import styles from './button.module.scss';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    align?: 'start' | 'center' | 'end' | 'between';
     children?: React.ReactNode;
     isDisabled?: boolean;
     isLoading?: boolean;
+    justify?: 'start' | 'center' | 'end' | 'between';
     leftIcon?: keyof typeof AppIcon;
     leftIconProps?: Partial<React.ComponentProps<typeof Icon>>;
     radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -23,7 +23,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement>) => {
     const {
-        align,
+        justify,
         children,
         isLoading,
         isDisabled,
@@ -50,8 +50,8 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
 
     const innerClassNames = clsx({
         [styles.inner]: true,
-        [styles[`align-${align || 'center'}`]]: true,
-        [styles.alignBetweenIcons]: align === 'between' && leftIcon && rightIcon,
+        [styles[`justify-${justify || 'center'}`]]: true,
+        [styles.justifyBetweenIcons]: justify === 'between' && leftIcon && rightIcon,
     });
 
     const buttonClassNames = {
