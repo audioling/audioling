@@ -16,108 +16,57 @@ export enum LibraryItemType {
 }
 
 export type LibraryFeatures = {
-    album: {
-        detail: {
-            enabled: boolean;
-        };
-        list: {
-            enabled: boolean;
-            filter: {
-                albumArtist: boolean;
-                artist: boolean;
-                communityRating: boolean;
-                criticRating: boolean;
-                dateAdded: boolean;
-                datePlayed: boolean;
-                duration: boolean;
-                isFavorite: boolean;
-                name: boolean;
-                playCount: boolean;
-                random: boolean;
-                releaseDate: boolean;
-                trackCount: boolean;
-                year: boolean;
-            };
-        };
-    };
-    albumArtist: {
-        detail: {
-            enabled: boolean;
-        };
-        list: {
-            enabled: boolean;
-            filter: {
-                album: boolean;
-                albumCount: boolean;
-                dateAdded: boolean;
-                duration: boolean;
-                favorited: boolean;
-                name: boolean;
-                playCount: boolean;
-                random: boolean;
-                rating: boolean;
-                releaseDate: boolean;
-                trackCount: boolean;
-            };
-        };
-    };
-    genre: {
-        detail: {
-            enabled: boolean;
-        };
-        list: {
-            enabled: boolean;
-            filter: {
-                albumCount: boolean;
-                name: boolean;
-                trackCount: boolean;
-            };
-        };
-    };
-    playlist: {
-        create: boolean;
-        delete: boolean;
-        detail: {
-            enabled: boolean;
-            update: boolean;
-        };
-        list: {
-            enabled: boolean;
-            filter: {
-                duration: boolean;
-                name: boolean;
-                owner: boolean;
-                public: boolean;
-                trackCount: boolean;
-                updatedAt: boolean;
-            };
-        };
-    };
-    track: {
-        detail: {
-            enabled: boolean;
-            topSongList: boolean;
-        };
-        list: {
-            enabled: boolean;
-            filter: {
-                album: boolean;
-                albumArtist: boolean;
-                artist: boolean;
-                bpm: boolean;
-                channels: boolean;
-                comment: boolean;
-                duration: boolean;
-                genre: boolean;
-                id: boolean;
-                name: boolean;
-                playCount: boolean;
-                rating: boolean;
-                releaseDate: boolean;
-                year: boolean;
-            };
-        };
-    };
+    'album-artist:detail': boolean;
+    'album-artist:list': boolean;
+    'album:detail': boolean;
+    'album:list': boolean;
+    'album:list:filter:album-artist': boolean;
+    'album:list:filter:artist': boolean;
+    'album:list:filter:community-rating': boolean;
+    'album:list:filter:critic-rating': boolean;
+    'album:list:filter:date-added': boolean;
+    'album:list:filter:date-played': boolean;
+    'album:list:filter:duration': boolean;
+    'album:list:filter:is-favorite': boolean;
+    'album:list:filter:name': boolean;
+    'album:list:filter:play-count': boolean;
+    'album:list:filter:random': boolean;
+    'album:list:filter:release-date': boolean;
+    'album:list:filter:track-count': boolean;
+    'album:list:filter:year': boolean;
+    'genre:detail': boolean;
+    'genre:list': boolean;
+    'genre:list:filter:album-count': boolean;
+    'genre:list:filter:name': boolean;
+    'genre:list:filter:track-count': boolean;
+    'playlist:create': boolean;
+    'playlist:delete': boolean;
+    'playlist:detail': boolean;
+    'playlist:list': boolean;
+    'playlist:list:filter:duration': boolean;
+    'playlist:list:filter:name': boolean;
+    'playlist:list:filter:owner': boolean;
+    'playlist:list:filter:public': boolean;
+    'playlist:list:filter:track-count': boolean;
+    'playlist:list:filter:updated-at': boolean;
+    'track:detail': boolean;
+    'track:list': boolean;
+    'track:list:filter:album': boolean;
+    'track:list:filter:album-artist': boolean;
+    'track:list:filter:artist': boolean;
+    'track:list:filter:bpm': boolean;
+    'track:list:filter:channels': boolean;
+    'track:list:filter:comment': boolean;
+    'track:list:filter:duration': boolean;
+    'track:list:filter:genre': boolean;
+    'track:list:filter:id': boolean;
+    'track:list:filter:name': boolean;
+    'track:list:filter:play-count': boolean;
+    'track:list:filter:rating': boolean;
+    'track:list:filter:recently-added': boolean;
+    'track:list:filter:recently-played': boolean;
+    'track:list:filter:release-date': boolean;
+    'track:list:filter:year': boolean;
 };
 
 export type AuthUserPermissions = {
