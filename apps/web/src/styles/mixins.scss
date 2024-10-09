@@ -74,6 +74,30 @@
     }
 }
 
+@mixin button-subtle-variant() {
+    color: var(--button-subtle-font-color);
+    background-color: var(--button-subtle-background-color);
+    border: var(--button-subtle-border);
+
+    svg {
+        color: var(--button-subtle-font-color);
+        fill: var(--button-subtle-font-color);
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-visible {
+        color: var(--button-subtle-hover-font-color);
+        background-color: var(--button-subtle-hover-background-color);
+        border: var(--button-subtle-hover-border);
+
+        svg {
+            color: var(--button-subtle-hover-font-color);
+            fill: var(--button-subtle-hover-font-color);
+        }
+    }
+}
+
 @mixin text-ellipsis() {
     overflow: hidden;
     text-overflow: ellipsis;
