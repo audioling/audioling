@@ -83,6 +83,7 @@ export type AppThemeConfiguration = {
         'input-hover-background-color': CSSProperties['backgroundColor'];
         'input-hover-font-color': CSSProperties['color'];
         'input-hover-placeholder-color': CSSProperties['color'];
+        'input-indicator-background-color': CSSProperties['backgroundColor'];
         'input-placeholder-color': CSSProperties['color'];
         'layout-header-height': CSSProperties['height'];
         'layout-nav-bar-bottom-background-color': CSSProperties['backgroundColor'];

@@ -120,6 +120,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'input-hover-background-color': 'rgb(34, 34, 37)',
     'input-hover-font-color': 'rgb(230, 230, 230)',
     'input-hover-placeholder-color': 'rgb(230, 230, 230)',
+    'input-indicator-background-color': 'rgb(59, 59, 59)',
     'input-placeholder-color': 'rgb(77, 77, 77)',
     'layout-header-height': '60px',
     'layout-nav-bar-bottom-background-color': 'rgb(29, 29, 29)',

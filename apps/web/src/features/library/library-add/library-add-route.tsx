@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LibraryAddForm } from '@/features/library/library-add/library-add-form.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -21,10 +21,10 @@ export const LibraryAddRoute = () => {
                         order={1}
                         size="lg"
                     >
-                        Add a new library
+                        Add a library
                     </Title>
                 </Group>
-                <Suspense fallback={<></>}></Suspense>
+                <LibraryAddForm />
             </Stack>
         </Center>
     );
