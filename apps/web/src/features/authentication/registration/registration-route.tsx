@@ -7,7 +7,7 @@ export const RegistrationRoute = () => {
     const location = useLocation();
 
     const pingResponse = (location.state as { pingResponse: Ping | null })?.pingResponse;
-    const isSetup = !pingResponse?.isSetupComplete;
+    const isSetup = Boolean(pingResponse && !pingResponse.isSetupComplete);
 
     return (
         <Center>
