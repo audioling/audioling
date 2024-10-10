@@ -1,5 +1,6 @@
 import { Navigate, Outlet, type RouteObject } from 'react-router-dom';
-import { AuthenticationRoute } from '@/features/authentication/routes/authentication-route.tsx';
+import { RegistrationRoute } from '@/features/authentication/registration/registration-route.tsx';
+import { SignInRoute } from '@/features/authentication/sign-in/sign-in-route.tsx';
 import { useAuthUser } from '@/features/authentication/stores/auth-store.ts';
 
 const IsNotProtectedRoute = () => {
@@ -11,8 +12,12 @@ export const authRoutes: RouteObject[] = [
     {
         children: [
             {
-                element: <AuthenticationRoute />,
+                element: <SignInRoute />,
                 path: '/',
+            },
+            {
+                element: <RegistrationRoute />,
+                path: '/sign-up',
             },
         ],
         element: <IsNotProtectedRoute />,

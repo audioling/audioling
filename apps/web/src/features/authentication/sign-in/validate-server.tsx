@@ -20,7 +20,7 @@ enum ValidationState {
 }
 interface ValidateServerProps {
     onChange: (value: string) => void;
-    onSubmit: () => void;
+    onSubmit: (response: Ping | null) => void;
     value: string;
 }
 
@@ -30,6 +30,8 @@ export const ValidateServer = (props: ValidateServerProps) => {
     const [validationState, setValidationState] = useState<ValidationState>(
         ValidationState.INVALID,
     );
+
+    const [pingResponse, setPingResponse] = useState<Ping | null>(null);
 
     const handleNext = () => {
         axiosInstance.defaults.baseURL = serverUrl;
@@ -49,6 +51,8 @@ export const ValidateServer = (props: ValidateServerProps) => {
                 const response = await axios.get<Ping>(`${cleanURL}/ping`, {
                     method: 'GET',
                 });
+
+                setPingResponse(response.data);
 
                 // Check for a valid response from the server
                 if (response.status !== 200) {
@@ -74,7 +78,7 @@ export const ValidateServer = (props: ValidateServerProps) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        props.onSubmit();
+        props.onSubmit(pingResponse);
     };
 
     return (

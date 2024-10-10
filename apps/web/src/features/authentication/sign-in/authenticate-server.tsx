@@ -3,8 +3,9 @@ import { useForm } from '@tanstack/react-form';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import type { Ping } from '@/api/api-types.ts';
 import { usePostAuthSignIn } from '@/api/openapi-generated/authentication/authentication.ts';
-import type { AuthenticationFormValues } from '@/features/authentication/components/authentication-form.tsx';
+import type { AuthenticationFormValues } from '@/features/authentication/sign-in/authentication-form.tsx';
 import { useAuthSignIn } from '@/features/authentication/stores/auth-store.ts';
 import { animationProps } from '@/features/ui/animations/props.ts';
 import { Button } from '@/features/ui/button/button.tsx';
@@ -19,9 +20,11 @@ import { Text } from '@/features/ui/text/text.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
+import { APP_ROUTE } from '@/routes/app-routes.ts';
 
 interface AuthenticateServerProps {
     onBack: () => void;
+    pingResponse: Ping | null;
     serverUrl: string;
 }
 
@@ -50,7 +53,7 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                         Cookies.set('token', data.token.token);
                         const cleanUrl = props.serverUrl.replace(/\/$/, '');
                         signInToStore(data, cleanUrl);
-                        navigate({ pathname: '/dashboard' }, { replace: true });
+                        navigate({ pathname: APP_ROUTE.DASHBOARD }, { replace: true });
                     },
                 },
             );
