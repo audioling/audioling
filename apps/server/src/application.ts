@@ -66,7 +66,7 @@ export const initApplication = async (options: ApplicationOptions) => {
 
     const service = initServices({ config, db, idFactory, imageModule });
 
-    const rootController = initRootController();
+    const rootController = initRootController({ service });
     const authController = initAuthController({ service });
     const userController = initUserController({ service });
     const libraryController = initLibraryController({ service });

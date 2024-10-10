@@ -2580,6 +2580,7 @@ export type PostAuthSignInBody = {
 };
 
 export type GetPing200 = {
+    isSetupComplete: boolean;
     name: string;
     status: string;
     version: string;

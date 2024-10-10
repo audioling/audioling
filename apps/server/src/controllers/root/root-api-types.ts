@@ -1,6 +1,7 @@
 import { z } from '@hono/zod-openapi';
 
 export const PingResponseSchema = z.object({
+    isSetupComplete: z.boolean().openapi({ example: false }),
     name: z.string().openapi({ example: 'audioling' }),
     status: z.string().openapi({ example: 'OK' }),
     version: z.string().openapi({ example: '1.0.0' }),

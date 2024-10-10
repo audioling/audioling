@@ -1,12 +1,16 @@
 import { createRoute } from '@hono/zod-openapi';
+import { ListSortOrder, UserListSortOptions } from '@repo/shared-types';
 import packageJson from '@/../package.json';
 import { CONSTANTS } from '@/constants.js';
 import { apiSchema } from '@/controllers/index.js';
 import type { PingResponse } from '@/controllers/root/root-api-types.js';
 import { newHono } from '@/modules/hono/index.js';
+import type { AppService } from '@/services/index.js';
 
 // SECTION - Root Controller
-export const initRootController = () => {
+export const initRootController = (modules: { service: AppService }) => {
+    const { service } = modules;
+
     const controller = newHono();
     const defaultOpenapiTags = ['Root'];
 
@@ -19,9 +23,17 @@ export const initRootController = () => {
             tags: [...defaultOpenapiTags],
             ...apiSchema.root['/ping'].get,
         }),
-        (c) => {
+        async (c) => {
+            const users = await service.user.list({
+                sortBy: UserListSortOptions.NAME,
+                sortOrder: ListSortOrder.ASC,
+            });
+
+            const isSetupComplete = users.totalRecordCount > 0;
+
             const response: PingResponse = {
-                name: CONSTANTS.BRAND_NAME,
+                isSetupComplete,
+                name: CONSTANTS.APP_NAME,
                 status: 'OK',
                 version: packageJson.version,
             };
