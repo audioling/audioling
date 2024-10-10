@@ -129,7 +129,7 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                 <Divider label="Or" />
                 <Center>
                     <ButtonLink
-                        to="/register"
+                        to={APP_ROUTE.SIGN_UP}
                         variant="subtle"
                     >
                         Create a new account
