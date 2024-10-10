@@ -107,6 +107,7 @@ export const LibraryAddForm = () => {
             <Field
                 children={(field) => (
                     <TextInput
+                        autoComplete="username"
                         label="Username"
                         value={field.state.value}
                         onBlur={field.handleBlur}
@@ -118,6 +119,7 @@ export const LibraryAddForm = () => {
             <Field
                 children={(field) => (
                     <PasswordInput
+                        autoComplete="current-password"
                         label="Password"
                         value={field.state.value}
                         onBlur={field.handleBlur}

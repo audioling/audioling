@@ -78,6 +78,7 @@ export const RegistrationForm = (props: { isSetup?: boolean }) => {
                 children={(field) => (
                     <TextInput
                         data-autofocus
+                        autoComplete="username"
                         label="Username"
                         value={field.state.value}
                         onBlur={field.handleBlur}
@@ -89,6 +90,7 @@ export const RegistrationForm = (props: { isSetup?: boolean }) => {
             <Field
                 children={(field) => (
                     <PasswordInput
+                        autoComplete="new-password"
                         label="Password"
                         value={field.state.value}
                         onBlur={field.handleBlur}
