@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { Group as MantineGroup } from '@mantine/core';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import type { GapSize } from '@/features/ui/shared/types.ts';
+import type { Sizes } from '@/themes/index.ts';
 import styles from './group.module.scss';
 
 interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
@@ -13,17 +13,17 @@ interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
     grow?: boolean;
     h?: string;
     justify?: 'start' | 'center' | 'end' | 'between';
-    m?: GapSize;
+    m?: Sizes;
     mah?: string;
     maw?: string;
     mih?: string;
     miw?: string;
-    mx?: GapSize;
-    my?: GapSize;
-    p?: GapSize;
+    mx?: Sizes;
+    my?: Sizes;
+    p?: Sizes;
     preventOverflow?: boolean;
-    px?: GapSize;
-    py?: GapSize;
+    px?: Sizes;
+    py?: Sizes;
     w?: string;
 }
 

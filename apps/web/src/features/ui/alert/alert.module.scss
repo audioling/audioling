@@ -1,0 +1,40 @@
+@use '@/styles/base';
+
+.alert {
+    position: relative;
+    padding: base.$gap-md;
+    overflow: hidden;
+    color: #fff;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+    background-color: transparent;
+    border-radius: base.$border-radius-md;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        content: '';
+        opacity: 0.15;
+    }
+}
+
+.success::before {
+    background-color: base.$success-color;
+}
+
+.error::before {
+    background-color: base.$danger-color;
+}
+
+.info::before {
+    background-color: base.$info-color;
+}
+
+.warn::before {
+    background-color: base.$warning-color;
+}

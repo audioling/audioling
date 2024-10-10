@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Center as MantineCenter } from '@mantine/core';
 import clsx from 'clsx';
-import type { GapSize } from '@/features/ui/shared/types.ts';
+import type { Sizes } from '@/themes/index.ts';
 import styles from './center.module.scss';
 
 interface CenterProps extends React.ComponentPropsWithoutRef<'div'> {
@@ -10,16 +10,16 @@ interface CenterProps extends React.ComponentPropsWithoutRef<'div'> {
     children: React.ReactNode;
     h?: string;
     inline?: boolean;
-    m?: GapSize;
+    m?: Sizes;
     mah?: string;
     maw?: string;
     mih?: string;
     miw?: string;
-    mx?: GapSize;
-    my?: GapSize;
-    p?: GapSize;
-    px?: GapSize;
-    py?: GapSize;
+    mx?: Sizes;
+    my?: Sizes;
+    p?: Sizes;
+    px?: Sizes;
+    py?: Sizes;
     w?: string;
 }
 

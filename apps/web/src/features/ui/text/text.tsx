@@ -15,8 +15,8 @@ export const Text = (props: TextProps) => {
     const { as, children, isSecondary, size, weight, ...htmlProps } = props;
 
     const classNames = clsx({
-        [styles[`size-${size}`]]: true,
-        [styles[`weight-${weight}`]]: true,
+        [styles[`size-${size || 'md'}`]]: true,
+        [styles[`weight-${weight || 'md'}`]]: true,
         [styles.secondary]: isSecondary,
     });
 

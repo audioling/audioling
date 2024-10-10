@@ -9,10 +9,14 @@ import {
 } from 'react-icons/md';
 import {
     RiAddLine,
+    RiAlertLine,
     RiBook2Line,
+    RiCheckboxCircleLine,
     RiDeleteBinLine,
     RiEditLine,
+    RiErrorWarningLine,
     RiHome3Line,
+    RiInformationLine,
     RiLoader3Line,
     RiLock2Line,
     RiMusic2Line,
@@ -29,7 +33,9 @@ export const AppIcon = {
     check: MdCheck,
     delete: RiDeleteBinLine,
     edit: RiEditLine,
+    error: RiErrorWarningLine,
     home: RiHome3Line,
+    info: RiInformationLine,
     library: RiBook2Line,
     lock: RiLock2Line,
     playlists: RiPlayList2Line,
@@ -37,8 +43,10 @@ export const AppIcon = {
     remove: RiSubtractLine,
     search: RiSearchLine,
     spinner: RiLoader3Line,
+    sucess: RiCheckboxCircleLine,
     visibility: MdOutlineVisibility,
     visibilityOff: MdOutlineVisibilityOff,
+    warn: RiAlertLine,
     x: MdClose,
 } as const;
 

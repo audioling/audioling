@@ -15,8 +15,8 @@ export const Title = (props: TitleProps) => {
     const HeaderComponent = getHeaderComponent(order);
 
     const classNames = clsx({
-        [styles[`size-${size}`]]: true,
-        [styles[`weight-${weight}`]]: true,
+        [styles[`size-${size || 'md'}`]]: true,
+        [styles[`weight-${weight || 'lg'}`]]: true,
         [styles.secondary]: isSecondary,
     });
 
