@@ -277,44 +277,6 @@ export type GetApiLibraryIdAlbumArtistsIdTracks200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraryIdAlbumArtistsIdTracks200 = {
-    data: GetApiLibraryIdAlbumArtistsIdTracks200DataItem[];
-    meta: GetApiLibraryIdAlbumArtistsIdTracks200Meta;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType =
-    (typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType)[keyof typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType = {
-    track: 'track',
-} as const;
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemGenresItem = {
-    id: string;
-    /** @nullable */
-    imageUrl: string | null;
-    name: string;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemExternal = {
-    [key: string]: unknown | null;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemArtistsItem = {
-    id: string;
-    /** @nullable */
-    imageUrl: string | null;
-    name: string;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemAlbumArtistsItem = {
-    id: string;
-    /** @nullable */
-    imageUrl: string | null;
-    name: string;
-};
-
 export type GetApiLibraryIdAlbumArtistsIdTracks200DataItem = {
     /** @nullable */
     album: string | null;
@@ -384,6 +346,44 @@ export type GetApiLibraryIdAlbumArtistsIdTracks200DataItem = {
     userPlayCount: number;
     /** @nullable */
     userRating: number | null;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200 = {
+    data: GetApiLibraryIdAlbumArtistsIdTracks200DataItem[];
+    meta: GetApiLibraryIdAlbumArtistsIdTracks200Meta;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType =
+    (typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType)[keyof typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType = {
+    track: 'track',
+} as const;
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemGenresItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemExternal = {
+    [key: string]: unknown | null;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemArtistsItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemAlbumArtistsItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
 };
 
 export type GetApiLibraryIdAlbumArtistsIdTracksSortOrder =
@@ -1868,22 +1868,11 @@ export type PutApiLibrariesId200Data = {
     updatedAt: string;
 };
 
-export type PutApiLibrariesIdBodyType =
-    (typeof PutApiLibrariesIdBodyType)[keyof typeof PutApiLibrariesIdBodyType];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PutApiLibrariesIdBodyType = {
-    JELLYFIN: 'JELLYFIN',
-    NAVIDROME: 'NAVIDROME',
-    SUBSONIC: 'SUBSONIC',
-} as const;
-
 export type PutApiLibrariesIdBody = {
     baseUrl: string;
     displayName: string;
     isPublic?: boolean;
     password: string;
-    type: PutApiLibrariesIdBodyType;
     username: string;
 };
 

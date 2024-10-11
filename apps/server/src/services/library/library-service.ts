@@ -3,7 +3,7 @@ import { LibraryListSortOptions } from '@repo/shared-types';
 import { authenticationAdapter, initRemoteAdapter } from '@/adapters/index.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
-import type { DbLibrary, DbLibraryInsert, DbLibraryUpdate } from '@/database/library-database.js';
+import type { DbLibrary, DbLibraryInsert } from '@/database/library-database.js';
 import { writeLog } from '@/middlewares/logger-middleware.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { IdFactoryModule } from '@/modules/id/index.js';
@@ -228,17 +228,36 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
             writeLog.info(`Library ${args.id} - ${result.baseUrl} was removed`);
         },
         // ANCHOR - Update
-        update: async (args: UpdateByIdServiceArgs<DbLibraryUpdate>) => {
-            await initLibraryService(modules).detail({ id: args.id });
+        update: async (
+            args: UpdateByIdServiceArgs<{
+                baseUrl: string;
+                displayName: string;
+                password: string;
+                username: string;
+            }>,
+        ) => {
+            const library = await initLibraryService(modules).detail({ id: args.id });
+
+            const cleanBaseUrl = args.values.baseUrl.replace(/\/$/, '');
+
+            const authResult = await authenticationAdapter(library.type)?.authenticate(
+                cleanBaseUrl,
+                {
+                    password: args.values.password,
+                    username: args.values.username,
+                },
+            );
+
+            if (authResult === null) {
+                throw new apiError.badRequest({
+                    message: `Failed to authenticate to ${cleanBaseUrl}`,
+                });
+            }
 
             const [err, result] = db.library.updateById(args.id, args.values);
 
             if (err) {
                 throw new apiError.internalServer({ message: 'Failed to update library' });
-            }
-
-            if (!result) {
-                throw new apiError.notFound({ message: 'Library not found' });
             }
 
             writeLog.info(`Library ${args.id} - ${result.baseUrl} was updated`);

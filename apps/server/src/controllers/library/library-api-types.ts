@@ -70,3 +70,7 @@ export const LibraryAuthResponseSchema = createIndividualResponseSchema({
 });
 
 export type LibraryAuthResponse = z.infer<typeof LibraryAuthResponseSchema>;
+
+export const libraryUpdateSchema = LibraryInsertSchema.omit({ type: true });
+
+export type LibraryUpdateRequest = z.infer<typeof libraryUpdateSchema>;

@@ -156,7 +156,8 @@ export const initLibraryController = (modules: { service: AppService }) => {
                 values: {
                     baseUrl: body.baseUrl,
                     displayName: body.displayName,
-                    type: body.type as LibraryType,
+                    password: body.password,
+                    username: body.username,
                 },
             });
 

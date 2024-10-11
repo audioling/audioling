@@ -132,7 +132,13 @@ export function initLibraryDatabase(modules: DatabaseModules) {
                 return [{ message: error.toString() }, null];
             }
 
-            libraryDb.set(`libraries.${id}`, newValue);
+            const libraries = libraryDb.get('libraries');
+
+            const newLibraries = libraries.map((library) =>
+                library.id === id ? newValue : library,
+            );
+
+            libraryDb.set('libraries', newLibraries);
             return [null, newValue];
         },
     };

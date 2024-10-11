@@ -6,6 +6,7 @@ import {
     LibraryInsertSchema,
     LibraryListRequestSchema,
     LibraryListResponseSchema,
+    libraryUpdateSchema,
 } from '@/controllers/library/library-api-types.js';
 import { EmptyResponseSchema, schemaResponse } from '@/controllers/shared-api-types.js';
 
@@ -60,7 +61,7 @@ export const libraryApiSchema = {
         put: {
             request: {
                 body: {
-                    content: { 'application/json': { schema: LibraryInsertSchema } },
+                    content: { 'application/json': { schema: libraryUpdateSchema } },
                 },
                 params: z.object({ id: z.string() }),
             },
