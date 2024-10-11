@@ -38,15 +38,17 @@ const LIBRARY_SELECTIONS = [
 ];
 
 interface LibraryTypeSelectorProps {
+    disabled?: boolean;
     onChange: (value: LibraryType) => void;
     value: LibraryType;
 }
 
-export const LibraryTypeSelector = ({ onChange, value }: LibraryTypeSelectorProps) => {
+export const LibraryTypeSelector = ({ disabled, onChange, value }: LibraryTypeSelectorProps) => {
     return (
         <SegmentedControl
             classNames={{ indicator: styles.indicator, root: styles.root }}
             data={LIBRARY_SELECTIONS}
+            disabled={disabled}
             value={value}
             onChange={(value) => onChange(value as LibraryType)}
         />
