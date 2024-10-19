@@ -79,6 +79,10 @@
     @include base.button-primary-variant;
 }
 
+.subtle-variant {
+    @include base.button-subtle-variant;
+}
+
 .label {
     font-weight: base.$font-weight-md;
 }

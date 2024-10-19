@@ -20,7 +20,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
-    const { isLoading, isDisabled, size, variant, iconProps, ...htmlProps } = props;
+    const { isLoading, isDisabled, size, variant, iconProps, radius, ...htmlProps } = props;
 
     const rootClassNames = clsx({
         [styles.root]: true,
@@ -30,7 +30,7 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
         [styles.primaryVariant]: variant === 'primary',
         [styles.subtleVariant]: variant === 'subtle',
         [styles[`size-${size || 'md'}`]]: true,
-        [styles[`radius-${size || 'md'}`]]: true,
+        [styles[`radius-${radius || 'md'}`]]: true,
     });
 
     const buttonClassNames: MantineActionIconProps['classNames'] = {

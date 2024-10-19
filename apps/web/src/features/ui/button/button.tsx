@@ -34,6 +34,7 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
         size,
         uppercase,
         variant,
+        radius,
         ...htmlProps
     } = props;
 
@@ -45,7 +46,7 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
         [styles.primaryVariant]: variant === 'primary',
         [styles.subtleVariant]: variant === 'subtle',
         [styles[`size-${size || 'md'}`]]: true,
-        [styles[`radius-${size || 'md'}`]]: true,
+        [styles[`radius-${radius || 'md'}`]]: true,
         [styles.uppercase]: uppercase,
     });
 
