@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { DndContext } from '@dnd-kit/core';
+import { Allotment } from 'allotment';
 import { AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { Outlet } from 'react-router-dom';
-import { Bottom, Fill, LeftResizable, RightResizable, ViewPort } from 'react-spaces';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
-import { NavBarHeader } from '@/features/navigation/nav-bar-header/nav-bar-header.tsx';
+import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
+import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { useDnd } from '@/features/ui/dnd/hooks/use-dnd.tsx';
 import { EntityTableRowDragOverlay } from '@/features/ui/entity-table/entity-table-row-drag-overlay.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
+import styles from './dashboard-layout.module.scss';
+import 'allotment/dist/style.css';
 
 export const DashboardLayout = () => {
     const { dndContextProps } = useDnd({});
@@ -52,57 +55,73 @@ export const DashboardLayout = () => {
 
 function DesktopLayout(props: { playerBarHeight: string }) {
     const { playerBarHeight } = props;
-    const showRightPanel = false;
+
+    const playerBarHeightNumber = Number(playerBarHeight.replace('px', ''));
 
     return (
-        <ViewPort>
-            <Fill>
-                <LeftResizable
-                    id="left-nav-bar-container"
-                    size="20%"
+        <Allotment vertical>
+            <Allotment>
+                <Allotment.Pane
+                    className={styles.navBarContainer}
+                    maxSize={350}
+                    minSize={250}
+                    preferredSize={300}
+                    snap={true}
                 >
-                    Left
-                </LeftResizable>
-                <Fill id="main-content-container">
-                    <NavBarHeader />
-                    <Outlet />
-                </Fill>
-                {showRightPanel && (
-                    <RightResizable
-                        id="right-side-bar-container"
-                        size="80%"
+                    <div
+                        className={styles.navBarSide}
+                        id="nav-bar-side-container"
                     >
-                        Right
-                    </RightResizable>
-                )}
-            </Fill>
-            <Bottom
-                id="player-bar-container"
-                size={playerBarHeight}
+                        <NavBarSide />
+                    </div>
+                </Allotment.Pane>
+                <Allotment.Pane className={styles.contentContainer}>
+                    <div
+                        className={styles.content}
+                        id="content-container"
+                    >
+                        <Outlet />
+                    </div>
+                </Allotment.Pane>
+            </Allotment>
+            <Allotment.Pane
+                className={styles.playerBarContainer}
+                maxSize={playerBarHeightNumber}
+                minSize={playerBarHeightNumber}
+                preferredSize={playerBarHeightNumber}
             >
-                Player Bar
-            </Bottom>
-        </ViewPort>
+                <div
+                    className={styles.playerBar}
+                    id="player-bar-container"
+                >
+                    <PlayerBar />
+                </div>
+            </Allotment.Pane>
+        </Allotment>
     );
 }
 
 function MobileLayout(props: { navBarBottomHeight: string }) {
     const { navBarBottomHeight } = props;
+    const navBarBottomHeightNumber = Number(navBarBottomHeight.replace('px', ''));
 
     return (
-        <ViewPort>
-            <Fill>
-                <Fill id="main-content-container">
-                    <NavBarHeader />
-                    <Outlet />
-                </Fill>
-                <Bottom
-                    id="nav-bar-bottom-container"
-                    size={navBarBottomHeight}
+        <Allotment vertical>
+            <Allotment.Pane>
+                <div
+                    className={styles.content}
+                    id="content-container"
                 >
-                    <NavBarBottom />
-                </Bottom>
-            </Fill>
-        </ViewPort>
+                    <Outlet />
+                </div>
+            </Allotment.Pane>
+            <Allotment.Pane
+                maxSize={navBarBottomHeightNumber}
+                minSize={navBarBottomHeightNumber}
+                preferredSize={navBarBottomHeightNumber}
+            >
+                <NavBarBottom />
+            </Allotment.Pane>
+        </Allotment>
     );
 }
