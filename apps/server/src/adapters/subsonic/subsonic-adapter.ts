@@ -13,6 +13,7 @@ import type { AdapterGenre } from '@/adapters/types/adapter-genre-types.js';
 import type {
     AdapterPlaylist,
     AdapterPlaylistListQuery,
+    AdapterPlaylistTrack,
     AdapterPlaylistTrackListQuery,
 } from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterAuthenticationResponse } from '@/adapters/types/adapter-server-types.js';
@@ -779,6 +780,23 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 },
             ];
         },
+        getPlaylistDetail: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getPlaylist.os['1'].get({
+                fetchOptions,
+                query,
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getPlaylistDetail'));
+                return [{ code: result.status, message: result.body as string }, null];
+            }
+
+            const item = subsonicHelpers.converter.playlistToAdapter(result.body.playlist);
+
+            return [null, item];
+        },
         getPlaylistList: async (request, fetchOptions) => {
             const { query } = request;
 
@@ -866,8 +884,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            let tracks: AdapterTrack[] = (result.body.playlist.entry || []).map(
-                subsonicHelpers.converter.trackToAdapter,
+            let tracks: AdapterPlaylistTrack[] = (result.body.playlist.entry || []).map(
+                subsonicHelpers.converter.playlistTrackToAdapter,
             );
 
             if (query.searchTerm) {
@@ -880,7 +898,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 tracks,
                 query.sortBy,
                 query.sortOrder || 'asc',
-            );
+            ) as AdapterPlaylistTrack[];
 
             const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
 

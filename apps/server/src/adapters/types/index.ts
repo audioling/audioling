@@ -39,6 +39,8 @@ import type {
     AdapterAddToPlaylistResponse,
     AdapterClearPlaylistRequest,
     AdapterClearPlaylistResponse,
+    AdapterPlaylistDetailRequest,
+    AdapterPlaylistDetailResponse,
     AdapterPlaylistListCountRequest,
     AdapterPlaylistListCountResponse,
     AdapterPlaylistListRequest,
@@ -125,6 +127,7 @@ export type AdapterApi = {
     getFavoriteTrackList: AdapterFn<AdapterTrackListRequest, AdapterTrackListResponse>;
     getGenreList: AdapterFn<AdapterGenreListRequest, AdapterGenreListResponse>;
     getMusicFolderList: AdapterFn<AdapterMusicFolderListRequest, AdapterMusicFolderListResponse>;
+    getPlaylistDetail: AdapterFn<AdapterPlaylistDetailRequest, AdapterPlaylistDetailResponse>;
     getPlaylistList: AdapterFn<AdapterPlaylistListRequest, AdapterPlaylistListResponse>;
     getPlaylistListCount: AdapterFn<
         AdapterPlaylistListCountRequest,

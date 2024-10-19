@@ -10,6 +10,7 @@ import md5 from 'md5';
 import stringify from 'safe-stable-stringify';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterGenre } from '@/adapters/types/adapter-genre-types.js';
+import type { AdapterPlaylistTrack } from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
@@ -228,7 +229,11 @@ const sortBy = {
 
         return value;
     },
-    track: (array: AdapterTrack[], key: TrackListSortOptions, order: 'asc' | 'desc') => {
+    track: (
+        array: AdapterTrack[] | AdapterPlaylistTrack[],
+        key: TrackListSortOptions,
+        order: 'asc' | 'desc',
+    ) => {
         let value = array;
 
         switch (key) {

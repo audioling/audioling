@@ -1,4 +1,8 @@
-import type { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type {
+    ListSortOrder,
+    PlaylistListSortOptions,
+    TrackListSortOptions,
+} from '@repo/shared-types';
 import type { AdapterRelatedGenre } from '@/adapters/types/adapter-genre-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type {
@@ -19,7 +23,7 @@ export interface AdapterPlaylist {
     owner: string | null;
     ownerId: string | null;
     size: number | null;
-    songCount: number | null;
+    trackCount: number | null;
     updatedDate: string;
     // rules?: Record<string, string | boolean> | null;
     // sync?: boolean | null;
@@ -112,20 +116,11 @@ export type AdapterDeletePlaylistRequest = QueryMutation<AdapterDeletePlaylistQu
 
 export type AdapterPlaylistListResponse = PaginatedResponse<AdapterPlaylist>;
 
-export enum AdapterPlaylistListSort {
-    DURATION = 'duration',
-    NAME = 'name',
-    OWNER = 'owner',
-    PUBLIC = 'public',
-    SONG_COUNT = 'songCount',
-    UPDATED_AT = 'updatedAt',
-}
-
 export type AdapterPlaylistListQuery = {
     limit: number;
     offset: number;
     searchTerm?: string;
-    sortBy: AdapterPlaylistListSort;
+    sortBy: PlaylistListSortOptions;
     sortOrder: ListSortOrder;
     userId?: string;
 };
@@ -149,7 +144,11 @@ export type AdapterPlaylistDetailQuery = {
 
 export type AdapterPlaylistDetailRequest = QueryRequest<AdapterPlaylistDetailQuery>;
 
-export type AdapterPlaylistTrackListResponse = PaginatedResponse<AdapterTrack>;
+export type AdapterPlaylistTrack = AdapterTrack & {
+    playlistTrackId: string;
+};
+
+export type AdapterPlaylistTrackListResponse = PaginatedResponse<AdapterPlaylistTrack>;
 
 export type AdapterPlaylistTrackListQuery = {
     id: string;

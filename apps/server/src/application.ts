@@ -9,6 +9,7 @@ import { initAuthController } from '@/controllers/auth/auth-controller.js';
 import { initGenreController } from '@/controllers/genre/genre-controller.js';
 import { initImageController } from '@/controllers/image/image-controller.js';
 import { initLibraryController } from '@/controllers/library/library-controller.js';
+import { initPlaylistController } from '@/controllers/playlist/playlist-controller.js';
 import { initRootController } from '@/controllers/root/root-controller';
 import { initTrackController } from '@/controllers/track/track-controller.js';
 import { initUserController } from '@/controllers/user/user-controller.js';
@@ -75,6 +76,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     const albumArtistController = initAlbumArtistController({ service });
     const genreController = initGenreController({ service });
     const imageController = initImageController({ service });
+    const playlistController = initPlaylistController({ service });
 
     app.route('/', rootController);
     app.route('/auth', authController);
@@ -86,6 +88,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     app.route('/api/:libraryId/album-artists', albumArtistController);
     app.route('/api/:libraryId/genres', genreController);
     app.route('/api/:libraryId/images', imageController);
+    app.route('/api/:libraryId/playlists', playlistController);
 
     app.onError((err, c) => {
         writeLog.error(err.message, {

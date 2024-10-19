@@ -8,6 +8,7 @@ import { initAuthService } from '@/services/auth/auth-service';
 import { initGenreService } from '@/services/genre/genre-service.js';
 import { initImageService } from '@/services/image/image-service.js';
 import { initLibraryService } from '@/services/library/library-service.js';
+import { initPlaylistService } from '@/services/playlist/playlist-service.js';
 import { initTrackService } from '@/services/track/track-service.js';
 import { initUserService } from '@/services/user/user-service';
 
@@ -27,6 +28,7 @@ export const initServices = (modules: {
     const albumArtistService = initAlbumArtistService({ db });
     const genreService = initGenreService({ db });
     const imageService = initImageService({ db, imageModule });
+    const playlistService = initPlaylistService({ db });
 
     const service = {
         album: albumService,
@@ -35,6 +37,7 @@ export const initServices = (modules: {
         genre: genreService,
         image: imageService,
         library: libraryService,
+        playlist: playlistService,
         track: trackService,
         user: userService,
     };

@@ -2,7 +2,10 @@ import type { OpenSubsonicApiClient } from '@audioling/open-subsonic-api-client'
 import dayjs from 'dayjs';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
-import type { AdapterPlaylist } from '@/adapters/types/adapter-playlist-types.js';
+import type {
+    AdapterPlaylist,
+    AdapterPlaylistTrack,
+} from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 
 export type SubsonicTrack = NonNullable<
@@ -183,8 +186,14 @@ const converter = {
             owner: playlist.owner || null,
             ownerId: playlist.owner || null,
             size: null,
-            songCount: playlist.songCount,
+            trackCount: playlist.songCount,
             updatedDate: dayjs(playlist.created).toISOString(),
+        };
+    },
+    playlistTrackToAdapter: (track: SubsonicTrack): AdapterPlaylistTrack => {
+        return {
+            ...converter.trackToAdapter(track),
+            playlistTrackId: track.id,
         };
     },
     trackToAdapter: (track: SubsonicTrack): AdapterTrack => {
