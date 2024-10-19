@@ -2,6 +2,7 @@
     width: 100%;
     height: 100%;
     padding: var(--layout-base-padding);
+    padding-top: calc(var(--layout-base-padding) / 2);
     padding-right: calc(var(--layout-base-padding) / 2);
 }
 
@@ -16,6 +17,7 @@
     width: 100%;
     height: 100%;
     padding: var(--layout-base-padding);
+    padding-top: calc(var(--layout-base-padding) / 2);
     padding-left: calc(var(--layout-base-padding) / 2);
 }
 
@@ -25,6 +27,18 @@
     padding: var(--layout-content-padding);
     background-color: var(--layout-content-background-color);
     border-radius: var(--layout-base-border-radius);
+}
+
+.header-bar-container {
+    width: 100%;
+    height: 100%;
+    padding: var(--layout-base-padding);
+    padding-bottom: calc(var(--layout-base-padding) / 2);
+}
+
+.header-bar {
+    width: 100%;
+    height: 100%;
 }
 
 .player-bar-container {

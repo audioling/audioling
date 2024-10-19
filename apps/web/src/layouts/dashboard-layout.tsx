@@ -4,6 +4,7 @@ import { Allotment } from 'allotment';
 import { AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { Outlet } from 'react-router-dom';
+import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
@@ -60,6 +61,16 @@ function DesktopLayout(props: { playerBarHeight: string }) {
 
     return (
         <Allotment vertical>
+            <Allotment.Pane
+                className={styles.headerBarContainer}
+                maxSize={40}
+                minSize={40}
+                preferredSize={40}
+            >
+                <div className={styles.headerBar} id="header-bar-container">
+                    <HeaderBar />
+                </div>
+            </Allotment.Pane>
             <Allotment>
                 <Allotment.Pane
                     className={styles.navBarContainer}
