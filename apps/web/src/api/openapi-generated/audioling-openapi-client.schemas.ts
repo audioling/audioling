@@ -4,6 +4,390 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
+export type GetApiLibraryIdPlaylistsIdTracks500 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks404 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks403 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks401 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks200Meta = {
+    next: boolean;
+    prev: boolean;
+    totalRecordCount: number;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks200 = {
+    data: GetApiLibraryIdPlaylistsIdTracks200DataItem[];
+    meta: GetApiLibraryIdPlaylistsIdTracks200Meta;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks200DataItemItemType =
+    (typeof GetApiLibraryIdPlaylistsIdTracks200DataItemItemType)[keyof typeof GetApiLibraryIdPlaylistsIdTracks200DataItemItemType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylistsIdTracks200DataItemItemType = {
+    track: 'track',
+} as const;
+
+export type GetApiLibraryIdPlaylistsIdTracks200DataItemGenresItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks200DataItemExternal = { [key: string]: unknown | null };
+
+export type GetApiLibraryIdPlaylistsIdTracks200DataItemArtistsItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks200DataItemAlbumArtistsItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracks200DataItem = {
+    /** @nullable */
+    album: string | null;
+    albumArtists: GetApiLibraryIdPlaylistsIdTracks200DataItemAlbumArtistsItem[];
+    /** @nullable */
+    albumId: string | null;
+    /** @nullable */
+    artistId: string | null;
+    /** @nullable */
+    artistName: string | null;
+    artists: GetApiLibraryIdPlaylistsIdTracks200DataItemArtistsItem[];
+    /** @nullable */
+    bitDepth: number | null;
+    /** @nullable */
+    bitRate: number | null;
+    /** @nullable */
+    bpm: number | null;
+    /** @nullable */
+    channelCount: number | null;
+    /** @nullable */
+    comment: string | null;
+    /** @nullable */
+    createdDate: string | null;
+    /** @nullable */
+    discNumber: string | null;
+    /** @nullable */
+    discSubtitle: string | null;
+    duration: number;
+    external: GetApiLibraryIdPlaylistsIdTracks200DataItemExternal;
+    /** @nullable */
+    fileContainer: string | null;
+    /** @nullable */
+    fileName: string | null;
+    /** @nullable */
+    filePath: string | null;
+    /** @nullable */
+    fileSize: number | null;
+    genres: GetApiLibraryIdPlaylistsIdTracks200DataItemGenresItem[];
+    id: string;
+    imageUrl: string;
+    isCompilation: boolean;
+    itemType: GetApiLibraryIdPlaylistsIdTracks200DataItemItemType;
+    libraryId: string;
+    name: string;
+    playlistTrackId: string;
+    /** @nullable */
+    releaseYear: number | null;
+    /** @nullable */
+    rgAlbumGain: number | null;
+    /** @nullable */
+    rgAlbumPeak: number | null;
+    /** @nullable */
+    rgTrackGain: number | null;
+    /** @nullable */
+    rgTrackPeak: number | null;
+    sortName: string;
+    /** @nullable */
+    thumbHash: string | null;
+    /** @nullable */
+    trackNumber: number | null;
+    /** @nullable */
+    updatedDate: string | null;
+    userFavorite: boolean;
+    /** @nullable */
+    userFavoriteDate: string | null;
+    /** @nullable */
+    userLastPlayedDate: string | null;
+    userPlayCount: number;
+    /** @nullable */
+    userRating: number | null;
+};
+
+export type GetApiLibraryIdPlaylistsIdTracksSortOrder =
+    (typeof GetApiLibraryIdPlaylistsIdTracksSortOrder)[keyof typeof GetApiLibraryIdPlaylistsIdTracksSortOrder];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylistsIdTracksSortOrder = {
+    asc: 'asc',
+    desc: 'desc',
+} as const;
+
+export type GetApiLibraryIdPlaylistsIdTracksSortBy =
+    (typeof GetApiLibraryIdPlaylistsIdTracksSortBy)[keyof typeof GetApiLibraryIdPlaylistsIdTracksSortBy];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylistsIdTracksSortBy = {
+    album: 'album',
+    albumArtist: 'albumArtist',
+    artist: 'artist',
+    bpm: 'bpm',
+    channels: 'channels',
+    comment: 'comment',
+    duration: 'duration',
+    genre: 'genre',
+    id: 'id',
+    isFavorite: 'isFavorite',
+    name: 'name',
+    playCount: 'playCount',
+    random: 'random',
+    rating: 'rating',
+    recentlyAdded: 'recentlyAdded',
+    recentlyPlayed: 'recentlyPlayed',
+    releaseDate: 'releaseDate',
+    year: 'year',
+} as const;
+
+export type GetApiLibraryIdPlaylistsIdTracksParams = {
+    limit?: string;
+    offset?: string;
+    sortBy: GetApiLibraryIdPlaylistsIdTracksSortBy;
+    sortOrder: GetApiLibraryIdPlaylistsIdTracksSortOrder;
+};
+
+export type GetApiLibraryIdPlaylistsId500 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsId404 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsId403 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsId401 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylistsId200Meta = { [key: string]: unknown };
+
+export type GetApiLibraryIdPlaylistsId200 = {
+    data: GetApiLibraryIdPlaylistsId200Data;
+    meta: GetApiLibraryIdPlaylistsId200Meta;
+};
+
+export type GetApiLibraryIdPlaylistsId200DataItemType =
+    (typeof GetApiLibraryIdPlaylistsId200DataItemType)[keyof typeof GetApiLibraryIdPlaylistsId200DataItemType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylistsId200DataItemType = {
+    playlist: 'playlist',
+} as const;
+
+export type GetApiLibraryIdPlaylistsId200DataGenresItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdPlaylistsId200Data = {
+    createdDate: string;
+    /** @nullable */
+    description: string | null;
+    /** @nullable */
+    duration: number | null;
+    genres: GetApiLibraryIdPlaylistsId200DataGenresItem[];
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    isPublic: boolean;
+    itemType: GetApiLibraryIdPlaylistsId200DataItemType;
+    libraryId: string;
+    name: string;
+    /** @nullable */
+    owner: string | null;
+    /** @nullable */
+    ownerId: string | null;
+    /** @nullable */
+    size: number | null;
+    /** @nullable */
+    thumbHash: string | null;
+    /** @nullable */
+    trackCount: number | null;
+    updatedDate: string;
+};
+
+export type GetApiLibraryIdPlaylists500 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylists422 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylists403 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylists401 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type GetApiLibraryIdPlaylists200Meta = {
+    next: boolean;
+    prev: boolean;
+    totalRecordCount: number;
+};
+
+export type GetApiLibraryIdPlaylists200 = {
+    data: GetApiLibraryIdPlaylists200DataItem[];
+    meta: GetApiLibraryIdPlaylists200Meta;
+};
+
+export type GetApiLibraryIdPlaylists200DataItemItemType =
+    (typeof GetApiLibraryIdPlaylists200DataItemItemType)[keyof typeof GetApiLibraryIdPlaylists200DataItemItemType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylists200DataItemItemType = {
+    playlist: 'playlist',
+} as const;
+
+export type GetApiLibraryIdPlaylists200DataItemGenresItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdPlaylists200DataItem = {
+    createdDate: string;
+    /** @nullable */
+    description: string | null;
+    /** @nullable */
+    duration: number | null;
+    genres: GetApiLibraryIdPlaylists200DataItemGenresItem[];
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    isPublic: boolean;
+    itemType: GetApiLibraryIdPlaylists200DataItemItemType;
+    libraryId: string;
+    name: string;
+    /** @nullable */
+    owner: string | null;
+    /** @nullable */
+    ownerId: string | null;
+    /** @nullable */
+    size: number | null;
+    /** @nullable */
+    thumbHash: string | null;
+    /** @nullable */
+    trackCount: number | null;
+    updatedDate: string;
+};
+
+export type GetApiLibraryIdPlaylistsSortOrder =
+    (typeof GetApiLibraryIdPlaylistsSortOrder)[keyof typeof GetApiLibraryIdPlaylistsSortOrder];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylistsSortOrder = {
+    asc: 'asc',
+    desc: 'desc',
+} as const;
+
+export type GetApiLibraryIdPlaylistsSortBy =
+    (typeof GetApiLibraryIdPlaylistsSortBy)[keyof typeof GetApiLibraryIdPlaylistsSortBy];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdPlaylistsSortBy = {
+    duration: 'duration',
+    name: 'name',
+    owner: 'owner',
+    public: 'public',
+    trackCount: 'trackCount',
+    updatedAt: 'updatedAt',
+} as const;
+
+export type GetApiLibraryIdPlaylistsParams = {
+    limit?: string;
+    offset?: string;
+    folderId?: string[];
+    searchTerm?: string;
+    sortBy: GetApiLibraryIdPlaylistsSortBy;
+    sortOrder: GetApiLibraryIdPlaylistsSortOrder;
+};
+
 export type GetApiLibraryIdImagesId500 = {
     cause?: string;
     message: string;
@@ -102,11 +486,6 @@ export type GetApiLibraryIdGenres200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraryIdGenres200 = {
-    data: GetApiLibraryIdGenres200DataItem[];
-    meta: GetApiLibraryIdGenres200Meta;
-};
-
 export type GetApiLibraryIdGenres200DataItemItemType =
     (typeof GetApiLibraryIdGenres200DataItemItemType)[keyof typeof GetApiLibraryIdGenres200DataItemItemType];
 
@@ -119,14 +498,16 @@ export type GetApiLibraryIdGenres200DataItem = {
     /** @nullable */
     albumCount: number | null;
     id: string;
-    imageUrl: string;
     itemType: GetApiLibraryIdGenres200DataItemItemType;
     libraryId: string;
     name: string;
     /** @nullable */
-    thumbHash: string | null;
-    /** @nullable */
     trackCount: number | null;
+};
+
+export type GetApiLibraryIdGenres200 = {
+    data: GetApiLibraryIdGenres200DataItem[];
+    meta: GetApiLibraryIdGenres200Meta;
 };
 
 export type GetApiLibraryIdGenresSortOrder =
@@ -277,6 +658,44 @@ export type GetApiLibraryIdAlbumArtistsIdTracks200Meta = {
     totalRecordCount: number;
 };
 
+export type GetApiLibraryIdAlbumArtistsIdTracks200 = {
+    data: GetApiLibraryIdAlbumArtistsIdTracks200DataItem[];
+    meta: GetApiLibraryIdAlbumArtistsIdTracks200Meta;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType =
+    (typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType)[keyof typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType = {
+    track: 'track',
+} as const;
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemGenresItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemExternal = {
+    [key: string]: unknown | null;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemArtistsItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemAlbumArtistsItem = {
+    id: string;
+    /** @nullable */
+    imageUrl: string | null;
+    name: string;
+};
+
 export type GetApiLibraryIdAlbumArtistsIdTracks200DataItem = {
     /** @nullable */
     album: string | null;
@@ -346,44 +765,6 @@ export type GetApiLibraryIdAlbumArtistsIdTracks200DataItem = {
     userPlayCount: number;
     /** @nullable */
     userRating: number | null;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200 = {
-    data: GetApiLibraryIdAlbumArtistsIdTracks200DataItem[];
-    meta: GetApiLibraryIdAlbumArtistsIdTracks200Meta;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType =
-    (typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType)[keyof typeof GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType = {
-    track: 'track',
-} as const;
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemGenresItem = {
-    id: string;
-    /** @nullable */
-    imageUrl: string | null;
-    name: string;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemExternal = {
-    [key: string]: unknown | null;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemArtistsItem = {
-    id: string;
-    /** @nullable */
-    imageUrl: string | null;
-    name: string;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdTracks200DataItemAlbumArtistsItem = {
-    id: string;
-    /** @nullable */
-    imageUrl: string | null;
-    name: string;
 };
 
 export type GetApiLibraryIdAlbumArtistsIdTracksSortOrder =
@@ -473,11 +854,6 @@ export type GetApiLibraryIdAlbumArtistsIdAlbums200Meta = {
     next: boolean;
     prev: boolean;
     totalRecordCount: number;
-};
-
-export type GetApiLibraryIdAlbumArtistsIdAlbums200 = {
-    data: GetApiLibraryIdAlbumArtistsIdAlbums200DataItem[];
-    meta: GetApiLibraryIdAlbumArtistsIdAlbums200Meta;
 };
 
 export type GetApiLibraryIdAlbumArtistsIdAlbums200DataItemReleaseTypesItem = {
@@ -577,6 +953,11 @@ export type GetApiLibraryIdAlbumArtistsIdAlbums200DataItem = {
     userRatingDate: string | null;
 };
 
+export type GetApiLibraryIdAlbumArtistsIdAlbums200 = {
+    data: GetApiLibraryIdAlbumArtistsIdAlbums200DataItem[];
+    meta: GetApiLibraryIdAlbumArtistsIdAlbums200Meta;
+};
+
 export type GetApiLibraryIdAlbumArtistsIdAlbumsSortOrder =
     (typeof GetApiLibraryIdAlbumArtistsIdAlbumsSortOrder)[keyof typeof GetApiLibraryIdAlbumArtistsIdAlbumsSortOrder];
 
@@ -650,11 +1031,6 @@ export type GetApiLibraryIdAlbumArtistsId401 = {
 
 export type GetApiLibraryIdAlbumArtistsId200Meta = { [key: string]: unknown };
 
-export type GetApiLibraryIdAlbumArtistsId200 = {
-    data: GetApiLibraryIdAlbumArtistsId200Data;
-    meta: GetApiLibraryIdAlbumArtistsId200Meta;
-};
-
 export type GetApiLibraryIdAlbumArtistsId200DataItemType =
     (typeof GetApiLibraryIdAlbumArtistsId200DataItemType)[keyof typeof GetApiLibraryIdAlbumArtistsId200DataItemType];
 
@@ -705,6 +1081,11 @@ export type GetApiLibraryIdAlbumArtistsId200Data = {
     userRating: number | null;
     /** @nullable */
     userRatingDate: string | null;
+};
+
+export type GetApiLibraryIdAlbumArtistsId200 = {
+    data: GetApiLibraryIdAlbumArtistsId200Data;
+    meta: GetApiLibraryIdAlbumArtistsId200Meta;
 };
 
 export type GetApiLibraryIdAlbumArtists500 = {
@@ -1918,11 +2299,6 @@ export type GetApiLibrariesId401 = {
 
 export type GetApiLibrariesId200Meta = { [key: string]: unknown };
 
-export type GetApiLibrariesId200 = {
-    data: GetApiLibrariesId200Data;
-    meta: GetApiLibrariesId200Meta;
-};
-
 export type GetApiLibrariesId200DataType =
     (typeof GetApiLibrariesId200DataType)[keyof typeof GetApiLibrariesId200DataType];
 
@@ -1946,6 +2322,11 @@ export type GetApiLibrariesId200Data = {
     id: string;
     type: GetApiLibrariesId200DataType;
     updatedAt: string;
+};
+
+export type GetApiLibrariesId200 = {
+    data: GetApiLibrariesId200Data;
+    meta: GetApiLibrariesId200Meta;
 };
 
 export type PostApiLibraries500 = {
@@ -2097,11 +2478,6 @@ export type GetApiLibraries200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraries200 = {
-    data: GetApiLibraries200DataItem[];
-    meta: GetApiLibraries200Meta;
-};
-
 export type GetApiLibraries200DataItemType =
     (typeof GetApiLibraries200DataItemType)[keyof typeof GetApiLibraries200DataItemType];
 
@@ -2125,6 +2501,11 @@ export type GetApiLibraries200DataItem = {
     id: string;
     type: GetApiLibraries200DataItemType;
     updatedAt: string;
+};
+
+export type GetApiLibraries200 = {
+    data: GetApiLibraries200DataItem[];
+    meta: GetApiLibraries200Meta;
 };
 
 export type GetApiLibrariesSortOrder =
@@ -2299,10 +2680,6 @@ export type GetApiUsersId401 = {
 
 export type GetApiUsersId200Meta = { [key: string]: unknown };
 
-export type GetApiUsersId200DataUpdatedAt = string | string;
-
-export type GetApiUsersId200DataCreatedAt = string | string;
-
 export type GetApiUsersId200Data = {
     createdAt: GetApiUsersId200DataCreatedAt;
     /** @nullable */
@@ -2318,6 +2695,10 @@ export type GetApiUsersId200 = {
     data: GetApiUsersId200Data;
     meta: GetApiUsersId200Meta;
 };
+
+export type GetApiUsersId200DataUpdatedAt = string | string;
+
+export type GetApiUsersId200DataCreatedAt = string | string;
 
 export type PostApiUsers500 = {
     cause?: string;
