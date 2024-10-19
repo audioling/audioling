@@ -16,16 +16,16 @@
     },
     "dependencies": {
         "@audioling/open-subsonic-api-client": "^3.0.3",
-        "@hono/zod-openapi": "^0.16.2",
+        "@hono/zod-openapi": "^0.16.4",
         "@paralleldrive/cuid2": "^2.2.2",
         "@repo/logger": "workspace:*",
         "@repo/shared-types": "workspace:*",
-        "@scalar/hono-api-reference": "^0.5.150",
+        "@scalar/hono-api-reference": "^0.5.155",
         "axios": "^1.7.7",
         "bcryptjs": "^2.4.3",
         "configstore": "^7.0.0",
         "dayjs": "^1.11.13",
-        "hono": "^4.6.3",
+        "hono": "^4.6.5",
         "lodash": "^4.17.21",
         "md5": "^2.3.0",
         "normalize-text": "^2.5.0",
@@ -40,11 +40,11 @@
         "@types/bcryptjs": "^2.4.6",
         "@types/better-queue": "^3.8.6",
         "@types/configstore": "^6.0.2",
-        "@types/lodash": "^4.17.10",
+        "@types/lodash": "^4.17.12",
         "@types/md5": "^2.3.5",
-        "@types/node": "^22.7.4",
+        "@types/node": "^22.7.7",
         "cross-env": "^7.0.3",
         "tsc-alias": "^1.8.10",
-        "typescript": "^5.6.2"
+        "typescript": "^5.6.3"
     }
 }
