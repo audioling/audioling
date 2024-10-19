@@ -73,9 +73,9 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         createRoute({
             method: 'get',
             path: '/{id}',
-            summary: 'Get track by id',
+            summary: 'Get playlist by id',
             tags: [...defaultOpenapiTags],
-            ...apiSchema.album['/{id}'].get,
+            ...apiSchema.playlist['/{id}'].get,
         }),
         async (c) => {
             const params = c.req.param();
