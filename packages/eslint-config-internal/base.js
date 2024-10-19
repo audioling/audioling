@@ -19,6 +19,7 @@ module.exports = {
             'error',
             {
                 tabWidth: 4,
+                singleAttributePerLine: false,
             },
         ],
         '@typescript-eslint/consistent-type-imports': 'error',

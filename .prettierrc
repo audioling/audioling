@@ -18,6 +18,5 @@
     "arrowParens": "always",
     "proseWrap": "never",
     "htmlWhitespaceSensitivity": "strict",
-    "endOfLine": "lf",
-    "singleAttributePerLine": true
+    "endOfLine": "lf"
 }
