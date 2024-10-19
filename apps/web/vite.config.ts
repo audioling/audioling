@@ -21,7 +21,7 @@ export default defineConfig(async () => ({
     clearScreen: false,
     css: {
         modules: {
-            generateScopedName: '[name]_[local]_[hash:base64:5]',
+            generateScopedName: 'al_[name]_[local]',
             localsConvention: 'camelCase' as const,
         },
     },
