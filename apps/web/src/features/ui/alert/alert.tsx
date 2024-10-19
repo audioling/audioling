@@ -22,15 +22,9 @@ export const Alert = (props: AlertProps) => {
     });
 
     return (
-        <Stack
-            className={classNames}
-            gap="xs"
-        >
+        <Stack className={classNames} gap="xs">
             <Group gap="xs">
-                <Title
-                    order={1}
-                    size="sm"
-                >
+                <Title order={1} size="sm">
                     {title}
                 </Title>
             </Group>

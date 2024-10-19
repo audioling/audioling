@@ -8,42 +8,22 @@ import styles from './nav-bar-bottom.module.scss';
 const tabs = [
     {
         href: 'home',
-        icon: (
-            <Icon
-                icon="home"
-                size={20}
-            />
-        ),
+        icon: <Icon icon="home" size={20} />,
         label: 'Home',
     },
     {
         href: 'library',
-        icon: (
-            <Icon
-                icon="library"
-                size={20}
-            />
-        ),
+        icon: <Icon icon="library" size={20} />,
         label: 'Library',
     },
     {
         href: 'search',
-        icon: (
-            <Icon
-                icon="search"
-                size={20}
-            />
-        ),
+        icon: <Icon icon="search" size={20} />,
         label: 'Search',
     },
     {
         href: 'now-playing',
-        icon: (
-            <Icon
-                icon="queue"
-                size={20}
-            />
-        ),
+        icon: <Icon icon="queue" size={20} />,
         label: 'Playing',
     },
 ];
@@ -59,10 +39,7 @@ export const NavBarBottom = () => {
     return (
         <nav className={styles.navBarBottom}>
             {tabs.map((tab) => (
-                <div
-                    key={`bottom-nav-${tab.href}`}
-                    className={styles.navBarItemContainer}
-                >
+                <div key={`bottom-nav-${tab.href}`} className={styles.navBarItemContainer}>
                     <NavLink
                         className={clsx(styles.navBarItem, {
                             [styles.active]: location.pathname.includes(tab.href),
@@ -84,10 +61,5 @@ export const NavBarBottom = () => {
 };
 
 function ActiveTabHighlight() {
-    return (
-        <motion.div
-            className={styles.highlight}
-            layoutId="active-tab"
-        />
-    );
+    return <motion.div className={styles.highlight} layoutId="active-tab" />;
 }

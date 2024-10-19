@@ -37,12 +37,5 @@ export const ThumbhashImage = ({ hash, height, punch, width, ...rest }: Props) =
         }
     }, [hash, height, punch, width, canvasRef]);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            height={height}
-            width={width}
-            {...rest}
-        />
-    );
+    return <canvas ref={canvasRef} height={height} width={width} {...rest} />;
 };

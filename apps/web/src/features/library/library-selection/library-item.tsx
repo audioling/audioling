@@ -45,12 +45,7 @@ export const LibraryItem = forwardRef(
                 >
                     {library.displayName}
                 </MotionButton>
-                {canEdit && (
-                    <IconButton
-                        icon="edit"
-                        onClick={() => onEdit(library)}
-                    />
-                )}
+                {canEdit && <IconButton icon="edit" onClick={() => onEdit(library)} />}
             </div>
         );
     },

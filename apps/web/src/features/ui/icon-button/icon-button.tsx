@@ -47,10 +47,7 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
             loading={isLoading}
             {...htmlProps}
         >
-            <Icon
-                icon={props.icon}
-                {...iconProps}
-            />
+            <Icon icon={props.icon} {...iconProps} />
         </MantineActionIcon>
     );
 });

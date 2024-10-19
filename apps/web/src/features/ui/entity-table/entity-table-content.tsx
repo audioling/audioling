@@ -59,10 +59,7 @@ export const EntityTableContent = <T extends { id: string }>(props: EntityTableC
     }, [initialize]);
 
     return (
-        <div
-            ref={rootRef}
-            data-overlayscrollbars-initialize=""
-        >
+        <div ref={rootRef} data-overlayscrollbars-initialize="">
             <div ref={viewportRef}>
                 {rows.map((virtualRow) => {
                     const row = rows[virtualRow.index];
@@ -174,10 +171,7 @@ export const VirtualDraggableEntityTableContent = <T extends { id: string }>(
     });
 
     return (
-        <div
-            ref={rootRef}
-            data-overlayscrollbars-initialize=""
-        >
+        <div ref={rootRef} data-overlayscrollbars-initialize="">
             <div
                 ref={viewportRef}
                 style={{
@@ -192,10 +186,7 @@ export const VirtualDraggableEntityTableContent = <T extends { id: string }>(
                         position: 'relative',
                     }}
                 >
-                    <SortableContext
-                        items={data.rows}
-                        strategy={verticalListSortingStrategy}
-                    >
+                    <SortableContext items={data.rows} strategy={verticalListSortingStrategy}>
                         {virtualizer.getVirtualItems().map((virtualRow) => {
                             const row = rows[virtualRow.index];
                             return (

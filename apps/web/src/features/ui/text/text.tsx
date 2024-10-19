@@ -21,11 +21,7 @@ export const Text = (props: TextProps) => {
     });
 
     return (
-        <MantineBox
-            className={classNames}
-            component={as}
-            {...htmlProps}
-        >
+        <MantineBox className={classNames} component={as} {...htmlProps}>
             {children}
         </MantineBox>
     );

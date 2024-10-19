@@ -19,11 +19,7 @@ export const Droppable = (props: DroppableProps) => {
     };
 
     return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            {...htmlProps}
-        >
+        <div ref={setNodeRef} style={style} {...htmlProps}>
             {children}
         </div>
     );

@@ -11,11 +11,7 @@ export const _Box = forwardRef<HTMLDivElement, BoxProps>((props: BoxProps, ref) 
     const { as, children, ...htmlProps } = props;
 
     return (
-        <MantineBox
-            ref={ref}
-            component={as}
-            {...htmlProps}
-        >
+        <MantineBox ref={ref} component={as} {...htmlProps}>
             {children}
         </MantineBox>
     );

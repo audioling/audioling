@@ -40,11 +40,7 @@ function InnerApp() {
     }, [theme]);
 
     return (
-        <MantineProvider
-            classNamesPrefix="al"
-            defaultColorScheme="dark"
-            theme={baseMantineTheme}
-        >
+        <MantineProvider classNamesPrefix="al" defaultColorScheme="dark" theme={baseMantineTheme}>
             <RouterProvider router={appRouter} />
         </MantineProvider>
     );

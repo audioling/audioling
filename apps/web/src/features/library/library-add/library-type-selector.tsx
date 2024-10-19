@@ -9,12 +9,7 @@ import styles from './library-type-selector.module.scss';
 
 const LIBRARY_SELECTIONS = [
     {
-        label: (
-            <LibraryTypeSelectorItem
-                icon={SubsonicIcon}
-                label="Subsonic"
-            />
-        ),
+        label: <LibraryTypeSelectorItem icon={SubsonicIcon} label="Subsonic" />,
         value: LibraryType.SUBSONIC,
     },
     // {
@@ -59,17 +54,9 @@ function LibraryTypeSelectorItem(props: { icon: string; label: string }) {
     const { icon, label } = props;
 
     return (
-        <Stack
-            align="center"
-            gap="xs"
-        >
+        <Stack align="center" gap="xs">
             <Text>{label}</Text>
-            <img
-                alt={`${label} icon`}
-                height={32}
-                src={icon}
-                width={32}
-            />
+            <img alt={`${label} icon`} height={32} src={icon} width={32} />
         </Stack>
     );
 }

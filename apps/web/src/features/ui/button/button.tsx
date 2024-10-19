@@ -69,23 +69,9 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
             unstyled
             classNames={buttonClassNames}
             disabled={isDisabled}
-            leftSection={
-                leftIcon && (
-                    <Icon
-                        icon={leftIcon}
-                        {...leftIconProps}
-                    />
-                )
-            }
+            leftSection={leftIcon && <Icon icon={leftIcon} {...leftIconProps} />}
             loading={isLoading}
-            rightSection={
-                rightIcon && (
-                    <Icon
-                        icon={rightIcon}
-                        {...rightIconProps}
-                    />
-                )
-            }
+            rightSection={rightIcon && <Icon icon={rightIcon} {...rightIconProps} />}
             {...htmlProps}
         >
             {children}

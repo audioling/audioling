@@ -66,32 +66,15 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
     };
 
     return (
-        <motion.div
-            ref={ref}
-            {...animationProps.fadeIn}
-        >
-            <Stack
-                as="form"
-                justify="center"
-                w="320px"
-                onSubmit={handleFormSubmit}
-            >
+        <motion.div ref={ref} {...animationProps.fadeIn}>
+            <Stack as="form" justify="center" w="320px" onSubmit={handleFormSubmit}>
                 <Group gap="xs">
-                    <IconButton
-                        icon="arrowLeft"
-                        onClick={props.onBack}
-                    />
-                    <Title
-                        order={1}
-                        size="lg"
-                    >
+                    <IconButton icon="arrowLeft" onClick={props.onBack} />
+                    <Title order={1} size="lg">
                         Sign In
                     </Title>
                 </Group>
-                <Text
-                    isSecondary
-                    size="xs"
-                >
+                <Text isSecondary size="xs">
                     {props.serverUrl}
                 </Text>
                 <Field
@@ -119,19 +102,12 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                     )}
                     name="password"
                 />
-                <Button
-                    uppercase
-                    type="submit"
-                    variant="filled"
-                >
+                <Button uppercase type="submit" variant="filled">
                     Sign In
                 </Button>
                 <Divider label="Or" />
                 <Center>
-                    <ButtonLink
-                        to={APP_ROUTE.SIGN_UP}
-                        variant="subtle"
-                    >
+                    <ButtonLink to={APP_ROUTE.SIGN_UP} variant="subtle">
                         Create a new account
                     </ButtonLink>
                 </Center>

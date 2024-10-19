@@ -44,12 +44,7 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
     const mergedRef = useMergedRef(ref, containerRef);
 
     return (
-        <Box
-            ref={mergedRef}
-            as={as}
-            className={styles.scrollArea}
-            {...htmlProps}
-        >
+        <Box ref={mergedRef} as={as} className={styles.scrollArea} {...htmlProps}>
             {children}
         </Box>
     );

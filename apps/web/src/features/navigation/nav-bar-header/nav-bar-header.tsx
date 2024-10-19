@@ -7,19 +7,9 @@ export const NavBarHeader = () => {
     const navigate = useNavigate();
 
     return (
-        <Group
-            className={styles.navBarHeader}
-            gap="xs"
-            id="nav-bar-header"
-        >
-            <IconButton
-                icon="arrowLeft"
-                onClick={() => navigate(-1)}
-            />
-            <IconButton
-                icon="arrowRight"
-                onClick={() => navigate(1)}
-            />
+        <Group className={styles.navBarHeader} gap="xs" id="nav-bar-header">
+            <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
+            <IconButton icon="arrowRight" onClick={() => navigate(1)} />
         </Group>
     );
 };

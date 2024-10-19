@@ -163,14 +163,8 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                 )}
                 name="overrideBaseUrl"
             />
-            <Grid
-                grow
-                gutter="xs"
-            >
-                <Grid.Col
-                    grow
-                    span={4}
-                >
+            <Grid grow gutter="xs">
+                <Grid.Col grow span={4}>
                     <Button
                         variant="default"
                         onClick={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE)}
@@ -178,10 +172,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                         Save
                     </Button>
                 </Grid.Col>
-                <Grid.Col
-                    grow
-                    span={8}
-                >
+                <Grid.Col grow span={8}>
                     <Subscribe
                         children={(props) => {
                             return (
@@ -198,11 +189,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                 </Grid.Col>
             </Grid>
             <Divider />
-            <Button
-                disabled={!isConnected}
-                variant="subtle"
-                onClick={handleInvalidateCredentials}
-            >
+            <Button disabled={!isConnected} variant="subtle" onClick={handleInvalidateCredentials}>
                 Invalidate credentials
             </Button>
         </Stack>

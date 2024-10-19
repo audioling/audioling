@@ -42,11 +42,7 @@ export const AuthenticationForm = () => {
     return (
         <AnimatePresence mode="sync">
             {step === steps[0] && (
-                <ValidateServer
-                    value={serverUrl}
-                    onChange={setServerUrl}
-                    onSubmit={goToNextStep}
-                />
+                <ValidateServer value={serverUrl} onChange={setServerUrl} onSubmit={goToNextStep} />
             )}
             {step === steps[1] && (
                 <AuthenticateServer

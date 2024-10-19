@@ -54,22 +54,10 @@ export const RegistrationForm = (props: { isSetup?: boolean }) => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack
-            ref={ref}
-            as="form"
-            justify="center"
-            w="320px"
-            onSubmit={handleFormSubmit}
-        >
+        <Stack ref={ref} as="form" justify="center" w="320px" onSubmit={handleFormSubmit}>
             <Group>
-                <IconButton
-                    icon="arrowLeft"
-                    onClick={() => navigate(-1)}
-                />
-                <Title
-                    order={1}
-                    size="lg"
-                >
+                <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
+                <Title order={1} size="lg">
                     Sign Up
                 </Title>
             </Group>
@@ -101,11 +89,7 @@ export const RegistrationForm = (props: { isSetup?: boolean }) => {
             />
             <Subscribe
                 children={(state) => (
-                    <Button
-                        disabled={state.isSubmitting}
-                        type="submit"
-                        variant="filled"
-                    >
+                    <Button disabled={state.isSubmitting} type="submit" variant="filled">
                         Submit
                     </Button>
                 )}

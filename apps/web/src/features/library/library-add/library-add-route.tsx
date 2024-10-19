@@ -13,14 +13,8 @@ export const LibraryAddRoute = () => {
         <Center>
             <Stack w="320px">
                 <Group gap="xs">
-                    <IconButton
-                        icon="arrowLeft"
-                        onClick={() => navigate(-1)}
-                    />
-                    <Title
-                        order={1}
-                        size="lg"
-                    >
+                    <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
+                    <Title order={1} size="lg">
                         Add a library
                     </Title>
                 </Group>

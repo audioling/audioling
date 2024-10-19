@@ -21,10 +21,7 @@ export const Title = (props: TitleProps) => {
     });
 
     return (
-        <HeaderComponent
-            className={classNames}
-            {...htmlProps}
-        >
+        <HeaderComponent className={classNames} {...htmlProps}>
             {children}
         </HeaderComponent>
     );

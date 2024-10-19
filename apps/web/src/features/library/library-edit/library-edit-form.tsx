@@ -94,11 +94,7 @@ export const LibraryEditForm = () => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack
-            ref={ref}
-            as="form"
-            onSubmit={handleFormSubmit}
-        >
+        <Stack ref={ref} as="form" onSubmit={handleFormSubmit}>
             <Field
                 children={(field) => (
                     <TextInput
@@ -173,11 +169,7 @@ export const LibraryEditForm = () => {
                 )}
             />
             <Divider />
-            <Button
-                disabled={isRemovingLibrary}
-                variant="danger"
-                onClick={handleRemoveLibrary}
-            >
+            <Button disabled={isRemovingLibrary} variant="danger" onClick={handleRemoveLibrary}>
                 Remove library
             </Button>
         </Stack>

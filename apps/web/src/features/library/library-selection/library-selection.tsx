@@ -60,24 +60,10 @@ export const LibrarySelection = () => {
     };
 
     return (
-        <Stack
-            align="center"
-            maw="400px"
-            miw="250px"
-            w="100%"
-        >
-            <Group
-                justify="start"
-                w="100%"
-            >
-                <IconButton
-                    icon="arrowLeft"
-                    onClick={() => navigate(-1)}
-                />
-                <Title
-                    order={1}
-                    size="lg"
-                >
+        <Stack align="center" maw="400px" miw="250px" w="100%">
+            <Group justify="start" w="100%">
+                <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
+                <Title order={1} size="lg">
                     Libraries
                 </Title>
             </Group>

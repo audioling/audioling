@@ -10,10 +10,7 @@ export const ResizablePanel = (props: ResizablePanelProps) => {
     const { children, ...restProps } = props;
 
     return (
-        <Allotment
-            className={styles.panel}
-            {...restProps}
-        >
+        <Allotment className={styles.panel} {...restProps}>
             {children}
         </Allotment>
     );
@@ -23,10 +20,7 @@ export const Pane = (props: AllotmentProps) => {
     const { children, ...restProps } = props;
 
     return (
-        <Allotment.Pane
-            className={styles.panel}
-            {...restProps}
-        >
+        <Allotment.Pane className={styles.panel} {...restProps}>
             {children}
         </Allotment.Pane>
     );

@@ -42,10 +42,7 @@ export const EntityTableRow = <T extends { id: string }>(props: EntityTableRowPr
             onClick={handleClick}
         >
             {row.getVisibleCells().map((cell) => (
-                <div
-                    key={cell.id}
-                    style={{ width: cell.column.getSize() }}
-                >
+                <div key={cell.id} style={{ width: cell.column.getSize() }}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </div>
             ))}
@@ -85,11 +82,7 @@ export const DraggableEntityTableRow = <T extends { id: string }>(
     };
 
     return (
-        <div
-            className={classNames}
-            style={style}
-            onClick={handleClick}
-        >
+        <div className={classNames} style={style} onClick={handleClick}>
             <div
                 ref={setNodeRef}
                 style={{ ...rowStyle, ...dndStyle, height: '100%' }}

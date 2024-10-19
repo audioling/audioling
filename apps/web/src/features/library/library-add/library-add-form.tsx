@@ -74,11 +74,7 @@ export const LibraryAddForm = () => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack
-            ref={ref}
-            as="form"
-            onSubmit={handleFormSubmit}
-        >
+        <Stack ref={ref} as="form" onSubmit={handleFormSubmit}>
             <Field
                 children={(field) => (
                     <TextInput

@@ -16,10 +16,7 @@ export const LibrarySelectionRoute = () => {
                     <LibrarySelection />
                 </Suspense>
                 <Divider label="Or" />
-                <Button
-                    variant="danger"
-                    onClick={signOut}
-                >
+                <Button variant="danger" onClick={signOut}>
                     Sign out
                 </Button>
             </Stack>

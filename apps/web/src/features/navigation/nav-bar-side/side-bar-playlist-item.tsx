@@ -24,10 +24,7 @@ export const SidebarPlaylistItem = (props: SidebarPlaylistItemProps) => {
     };
 
     return (
-        <div
-            ref={setNodeRef}
-            style={style}
-        >
+        <div ref={setNodeRef} style={style}>
             {name}
         </div>
     );

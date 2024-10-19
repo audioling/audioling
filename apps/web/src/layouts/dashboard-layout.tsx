@@ -68,18 +68,12 @@ function DesktopLayout(props: { playerBarHeight: string }) {
                     preferredSize={300}
                     snap={true}
                 >
-                    <div
-                        className={styles.navBarSide}
-                        id="nav-bar-side-container"
-                    >
+                    <div className={styles.navBarSide} id="nav-bar-side-container">
                         <NavBarSide />
                     </div>
                 </Allotment.Pane>
                 <Allotment.Pane className={styles.contentContainer}>
-                    <div
-                        className={styles.content}
-                        id="content-container"
-                    >
+                    <div className={styles.content} id="content-container">
                         <Outlet />
                     </div>
                 </Allotment.Pane>
@@ -90,10 +84,7 @@ function DesktopLayout(props: { playerBarHeight: string }) {
                 minSize={playerBarHeightNumber}
                 preferredSize={playerBarHeightNumber}
             >
-                <div
-                    className={styles.playerBar}
-                    id="player-bar-container"
-                >
+                <div className={styles.playerBar} id="player-bar-container">
                     <PlayerBar />
                 </div>
             </Allotment.Pane>
@@ -108,10 +99,7 @@ function MobileLayout(props: { navBarBottomHeight: string }) {
     return (
         <Allotment vertical>
             <Allotment.Pane>
-                <div
-                    className={styles.content}
-                    id="content-container"
-                >
+                <div className={styles.content} id="content-container">
                     <Outlet />
                 </div>
             </Allotment.Pane>

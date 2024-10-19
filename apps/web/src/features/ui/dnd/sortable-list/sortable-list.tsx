@@ -54,10 +54,7 @@ export function SortableList<T extends BaseItem>({ items, onChange, renderItem }
                 setActive(active);
             }}
         >
-            <SortableContext
-                items={items}
-                strategy={verticalListSortingStrategy}
-            >
+            <SortableContext items={items} strategy={verticalListSortingStrategy}>
                 {items.map((item) => (
                     <React.Fragment key={item.id}>{renderItem(item, activeIndex)}</React.Fragment>
                 ))}

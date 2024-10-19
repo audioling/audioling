@@ -83,17 +83,8 @@ export const ValidateServer = (props: ValidateServerProps) => {
 
     return (
         <motion.div {...animationProps.fadeIn}>
-            <Stack
-                ref={ref}
-                as="form"
-                w="350px"
-                onSubmit={handleSubmit}
-            >
-                <Title
-                    order={1}
-                    size="md"
-                    weight="lg"
-                >
+            <Stack ref={ref} as="form" w="350px" onSubmit={handleSubmit}>
+                <Title order={1} size="md" weight="lg">
                     Connect
                 </Title>
                 <Grid>

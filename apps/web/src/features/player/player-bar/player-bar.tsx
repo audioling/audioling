@@ -5,10 +5,7 @@ import styles from './player-bar.module.scss';
 
 export const PlayerBar = () => {
     return (
-        <div
-            className={styles.playerBar}
-            id="player-bar"
-        >
+        <div className={styles.playerBar} id="player-bar">
             <PlayerBarLeft></PlayerBarLeft>
             <PlayerBarCenter></PlayerBarCenter>
             <PlayerBarRight></PlayerBarRight>

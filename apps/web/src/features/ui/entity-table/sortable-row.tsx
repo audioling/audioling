@@ -16,13 +16,7 @@ export const SortableRow = (props: SortableRowProps) => {
     };
 
     return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            {...attributes}
-            {...listeners}
-            {...htmlProps}
-        >
+        <div ref={setNodeRef} style={style} {...attributes} {...listeners} {...htmlProps}>
             {children}
         </div>
     );

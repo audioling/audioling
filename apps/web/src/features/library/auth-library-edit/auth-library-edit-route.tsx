@@ -17,14 +17,8 @@ export const AuthLibraryEditRoute = () => {
         <Center>
             <Stack w="320px">
                 <Group gap="xs">
-                    <IconButton
-                        icon="arrowLeft"
-                        onClick={() => navigate(-1)}
-                    />
-                    <Title
-                        order={1}
-                        size="md"
-                    >
+                    <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
+                    <Title order={1} size="md">
                         Connect to {data.data.displayName}
                     </Title>
                 </Group>

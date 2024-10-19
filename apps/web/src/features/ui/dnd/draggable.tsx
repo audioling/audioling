@@ -17,13 +17,7 @@ export const Draggable = (props: DraggableProps) => {
         : undefined;
 
     return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            {...listeners}
-            {...attributes}
-            {...htmlProps}
-        >
+        <div ref={setNodeRef} style={style} {...listeners} {...attributes} {...htmlProps}>
             {children}
         </div>
     );
