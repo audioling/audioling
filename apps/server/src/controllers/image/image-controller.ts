@@ -37,7 +37,7 @@ export const initImageController = (modules: { service: AppService }) => {
             const imageBuffer = await service.image.getCoverArtBuffer(adapter, {
                 id,
                 libraryId,
-                size,
+                size: size ? Number(size) : undefined,
                 type,
             });
 

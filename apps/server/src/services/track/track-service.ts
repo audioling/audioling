@@ -22,7 +22,7 @@ export const initTrackService = (modules: { db: AppDatabase }) => {
 
             return {
                 ...result,
-                thumbHash: db.thumbhash.findById(libraryId, result.id) || null,
+                thumbHash: db.thumbhash.findById(libraryId, result.id)?.[1] || null,
             };
         },
         // ANCHOR - Favorite by id
@@ -63,7 +63,7 @@ export const initTrackService = (modules: { db: AppDatabase }) => {
                 ...result,
                 items: result.items.map((item) => ({
                     ...item,
-                    thumbHash: db.thumbhash.findById(libraryId, item.id) || null,
+                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
                 })),
             };
         },

@@ -15,7 +15,7 @@ type TrackRouterContext = {
     Variables: AuthVariables & AdapterVariables;
 };
 
-// SECTION - MediaFile Controller
+// SECTION - Track Controller
 export const initTrackController = (modules: { service: AppService }) => {
     const { service } = modules;
 
@@ -45,7 +45,7 @@ export const initTrackController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id),
+                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, item.thumbHash),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -80,7 +80,11 @@ export const initTrackController = (modules: { service: AppService }) => {
             });
 
             const response: TrackDetailResponse = {
-                data: trackHelpers.adapterToResponse(track, adapter._getLibrary().id),
+                data: trackHelpers.adapterToResponse(
+                    track,
+                    adapter._getLibrary().id,
+                    track.thumbHash,
+                ),
                 meta: {},
             };
 

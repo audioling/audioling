@@ -32,7 +32,7 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
             return {
                 ...result,
                 imageUrl: serviceHelpers.getImageUrl(result.id, libraryId, LibraryItemType.ALBUM),
-                thumbHash: db.thumbhash.findById(libraryId, result.id) || null,
+                thumbHash: db.thumbhash.findById(libraryId, result.id)?.[1] || null,
             };
         },
         // ANCHOR - Detail track list
@@ -64,7 +64,7 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                 items: result.items.map((item) => ({
                     ...item,
                     imageUrl: serviceHelpers.getImageUrl(item.id, libraryId, LibraryItemType.TRACK),
-                    thumbHash: db.thumbhash.findById(libraryId, item.id) || null,
+                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
                 })),
             };
         },
@@ -107,7 +107,7 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                 items: result.items.map((item) => ({
                     ...item,
                     imageUrl: serviceHelpers.getImageUrl(item.id, libraryId, LibraryItemType.ALBUM),
-                    thumbHash: db.thumbhash.findById(libraryId, item.id) || null,
+                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
                 })),
             };
         },

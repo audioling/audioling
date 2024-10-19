@@ -9,11 +9,9 @@ import {
 export const genreAttributes = z.object({
     albumCount: z.number().nullable(),
     id: z.string(),
-    imageUrl: z.string(),
     itemType: z.literal(LibraryItemType.GENRE),
     libraryId: z.string(),
     name: z.string(),
-    thumbHash: z.string().nullable(),
     trackCount: z.number().nullable(),
 });
 

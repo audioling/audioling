@@ -7,7 +7,7 @@ export const genreHelpers = {
         return {
             ...genre,
             itemType: LibraryItemType.GENRE,
-            libraryId: libraryId,
+            libraryId,
         };
     },
 };
