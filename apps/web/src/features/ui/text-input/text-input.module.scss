@@ -24,7 +24,6 @@
 .input {
     width: 100%;
     padding: 0.5rem;
-    font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.25rem;
     color: var(--input-font-color);
@@ -59,27 +58,43 @@
 }
 
 .size-xs {
-    font-size: 0.75rem;
+    font-size: base.$font-size-sm;
 
     &::placeholder {
-        font-size: 0.75rem;
+        font-size: base.$font-size-sm;
     }
 }
 
 .size-sm {
-    font-size: 0.75rem;
+    font-size: base.$font-size-sm;
+
+    &::placeholder {
+        font-size: base.$font-size-sm;
+    }
 }
 
 .size-md {
-    font-size: 0.875rem;
+    font-size: base.$font-size-md;
+
+    &::placeholder {
+        font-size: base.$font-size-md;
+    }
 }
 
 .size-lg {
-    font-size: 1rem;
+    font-size: base.$font-size-lg;
+
+    &::placeholder {
+        font-size: base.$font-size-lg;
+    }
 }
 
 .size-xl {
-    font-size: 1.125rem;
+    font-size: base.$font-size-xl;
+
+    &::placeholder {
+        font-size: base.$font-size-xl;
+    }
 }
 
 .radius-xs {

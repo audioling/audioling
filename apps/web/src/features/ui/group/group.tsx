@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Group as MantineGroup } from '@mantine/core';
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { motion, wrap } from 'framer-motion';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './group.module.scss';
 
@@ -25,6 +25,7 @@ interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
     px?: Sizes;
     py?: Sizes;
     w?: string;
+    wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
 }
 
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, ref) => {
@@ -36,6 +37,7 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
         grow,
         justify,
         preventOverflow,
+        wrap,
         mah,
         maw,
         mih,
@@ -88,6 +90,7 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
             miw={miw}
             preventGrowOverflow={preventOverflow}
             w={w}
+            wrap={wrap}
             {...htmlProps}
         >
             {children}

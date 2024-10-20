@@ -91,6 +91,7 @@ export type AppThemeConfiguration = {
         'layout-border-focus-color': CSSProperties['borderColor'];
         'layout-content-background-color': CSSProperties['backgroundColor'];
         'layout-content-padding': CSSProperties['padding'];
+        'layout-divider-color': CSSProperties['borderColor'];
         'layout-header-height': CSSProperties['height'];
         'layout-nav-bar-bottom-background-color': CSSProperties['backgroundColor'];
         'layout-nav-bar-bottom-border-bottom': CSSProperties['border'];
@@ -110,6 +111,7 @@ export type AppThemeConfiguration = {
         'layout-nav-bar-side-height': CSSProperties['height'];
         'layout-nav-bar-side-item-hover-background-color': CSSProperties['backgroundColor'];
         'layout-nav-bar-side-item-hover-font-color': CSSProperties['color'];
+        'layout-nav-bar-side-padding': CSSProperties['padding'];
         'layout-player-bar-background-color': CSSProperties['backgroundColor'];
         'layout-player-bar-border-bottom': CSSProperties['border'];
         'layout-player-bar-border-left': CSSProperties['border'];

@@ -1,66 +1,70 @@
 @use '@/styles/base';
 
+.root {
+    border-color: var(--layout-divider-color) !important;
+}
+
 .top-xs {
-  margin-top: base.$gap-xs;
+    margin-top: base.$gap-xs;
 }
 
 .top-sm {
-  margin-top: base.$gap-sm;
+    margin-top: base.$gap-sm;
 }
 
 .top-md {
-  margin-top: base.$gap-md;
+    margin-top: base.$gap-md;
 }
 
 .top-lg {
-  margin-top: base.$gap-lg;
+    margin-top: base.$gap-lg;
 }
 
 .top-xl {
-  margin-top: base.$gap-xl;
+    margin-top: base.$gap-xl;
 }
 
 .bottom-xs {
-  margin-bottom: base.$gap-xs;
+    margin-bottom: base.$gap-xs;
 }
 
 .bottom-sm {
-  margin-bottom: base.$gap-sm;
+    margin-bottom: base.$gap-sm;
 }
 
 .bottom-md {
-  margin-bottom: base.$gap-md;
+    margin-bottom: base.$gap-md;
 }
 
 .bottom-lg {
-  margin-bottom: base.$gap-lg;
+    margin-bottom: base.$gap-lg;
 }
 
 .bottom-xl {
-  margin-bottom: base.$gap-xl;
+    margin-bottom: base.$gap-xl;
 }
 
 .x-xs {
-  margin-right: base.$gap-xs;
-  margin-left: base.$gap-xs;
+    margin-right: base.$gap-xs;
+    margin-left: base.$gap-xs;
 }
 
 .x-sm {
-  margin-right: base.$gap-sm;
-  margin-left: base.$gap-sm;
+    margin-right: base.$gap-sm;
+    margin-left: base.$gap-sm;
 }
 
 .x-md {
-  margin-right: base.$gap-md;
-  margin-left: base.$gap-md;
+    margin-right: base.$gap-md;
+    margin-left: base.$gap-md;
 }
 
 .x-lg {
-  margin-right: base.$gap-lg;
-  margin-left: base.$gap-lg;
+    margin-right: base.$gap-lg;
+    margin-left: base.$gap-lg;
 }
 
 .x-xl {
-  margin-right: base.$gap-xl;
-  margin-left: base.$gap-xl;
+    margin-right: base.$gap-xl;
+    margin-left: base.$gap-xl;
 }
