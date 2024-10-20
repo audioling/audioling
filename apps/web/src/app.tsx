@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { queryClient } from '@/lib/react-query.ts';
 import { appRouter } from '@/routes/app-router.tsx';
+import 'overlayscrollbars/overlayscrollbars.css';
 import '@mantine/core/styles.css';
 import '@/styles/global.scss';
 import { baseMantineTheme, themes } from '@/themes/index.ts';

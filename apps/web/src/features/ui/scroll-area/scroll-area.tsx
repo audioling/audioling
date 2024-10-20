@@ -22,14 +22,14 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
 
     const [initialize] = useOverlayScrollbars({
         defer: false,
-
         options: {
             overflow: { x: 'hidden', y: 'scroll' },
+            paddingAbsolute: true,
             scrollbars: {
                 autoHide: 'leave',
                 autoHideDelay: scrollHideDelay || 500,
                 pointers: ['mouse', 'pen', 'touch'],
-                theme: 'app',
+                theme: 'al-os-scrollbar',
                 visibility: 'visible',
             },
         },
