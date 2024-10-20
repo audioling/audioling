@@ -11,6 +11,41 @@
     }
 }
 
+.size-xs {
+    svg {
+        width: base.$font-size-xs;
+        height: base.$font-size-xs;
+    }
+}
+
+.size-sm {
+    svg {
+        width: base.$font-size-sm;
+        height: base.$font-size-sm;
+    }
+}
+
+.size-md {
+    svg {
+        width: base.$font-size-md;
+        height: base.$font-size-md;
+    }
+}
+
+.size-lg {
+    svg {
+        width: base.$font-size-lg;
+        height: base.$font-size-lg;
+    }
+}
+
+.size-xl {
+    svg {
+        width: base.$font-size-xl;
+        height: base.$font-size-xl;
+    }
+}
+
 .color-default {
     svg {
         color: base.$font-color;

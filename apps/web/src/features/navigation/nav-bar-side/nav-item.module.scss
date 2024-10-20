@@ -1,0 +1,18 @@
+@use '@/styles/base';
+
+.container {
+    @include base.text-ellipsis;
+
+    padding: var(--nav-item-padding);
+    color: var(--nav-item-font-color);
+    background-color: var(--nav-item-background-color);
+    transition:
+        background-color 0.1s ease-in-out,
+        transform 0.1s ease-in-out;
+
+    &:hover {
+        color: var(--nav-item-font-hover-color);
+        background-color: var(--nav-item-background-hover-color);
+        transform: scale(1.05);
+    }
+}

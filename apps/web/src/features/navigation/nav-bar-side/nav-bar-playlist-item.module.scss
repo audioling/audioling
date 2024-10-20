@@ -1,0 +1,5 @@
+@use '@/styles/base';
+
+.container {
+    @include base.text-ellipsis;
+}

@@ -149,7 +149,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'layout-nav-bar-side-item-hover-background-color': '',
     'layout-nav-bar-side-item-hover-font-color': '',
     'layout-nav-bar-side-padding': gap.md,
-    'layout-player-bar-background-color': 'rgb(8, 8, 8)',
+    'layout-player-bar-background-color': 'rgb(2, 2, 2)',
     'layout-player-bar-border-bottom': '1px solid rgb(0, 0, 0)',
     'layout-player-bar-border-left': '1px solid rgb(0, 0, 0)',
     'layout-player-bar-border-radius': '0',
@@ -160,6 +160,9 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'layout-side-nav-bar-background-color': 'rgb(29, 29, 29)',
     'layout-side-nav-bar-font-color': 'rgb(255, 255, 255)',
     'layout-side-nav-bar-font-hover-color': 'rgb(255, 255, 255)',
+    'paper-background-color': 'rgb(50, 50, 50)',
+    'paper-border-radius': radius.md,
+    'paper-padding': gap.sm,
     'scroll-bar-size': '10px',
     'scroll-bar-thumb-active-background-color': 'rgba(160, 160, 160, 0.6)',
     'scroll-bar-thumb-background-color': 'rgba(160, 160, 160, 0.2)',
@@ -182,4 +185,14 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'table-row-selected-background-color': 'rgba(60, 60, 60, 0.3)',
     'table-row-selected-border-color': primaryColor,
     'table-row-selected-font-color': 'rgb(255, 255, 255)',
+};
+
+export const baseThemeComponents: AppThemeConfiguration['components'] = {
+    'nav-item': {
+        'background-color': 'transparent',
+        'background-hover-color': 'rgba(128, 128, 128, 0.1)',
+        'font-color': 'var(--global-font-color)',
+        'font-hover-color': 'var(--global-font-color)',
+        padding: `${gap.sm} ${gap.xs}`,
+    },
 };

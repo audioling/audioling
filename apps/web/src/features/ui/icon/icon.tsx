@@ -9,6 +9,7 @@ import {
 } from 'react-icons/md';
 import {
     RiAddLine,
+    RiAlbumLine,
     RiAlertLine,
     RiArrowLeftSLine,
     RiArrowRightSLine,
@@ -17,12 +18,14 @@ import {
     RiDeleteBinLine,
     RiEditLine,
     RiErrorWarningLine,
+    RiFlag2Line,
     RiHome3Line,
     RiInformationLine,
     RiLoader3Line,
     RiLock2Line,
     RiMenuLine,
     RiMusic2Line,
+    RiMusicLine,
     RiPlayList2Line,
     RiSearchLine,
     RiSubtractLine,
@@ -31,6 +34,7 @@ import styles from './icon.module.scss';
 
 export const AppIcon = {
     add: RiAddLine,
+    album: RiAlbumLine,
     arrowLeft: MdArrowBack,
     arrowLeftS: RiArrowLeftSLine,
     arrowRight: MdArrowForward,
@@ -39,17 +43,19 @@ export const AppIcon = {
     delete: RiDeleteBinLine,
     edit: RiEditLine,
     error: RiErrorWarningLine,
+    genre: RiFlag2Line,
     home: RiHome3Line,
     info: RiInformationLine,
     library: RiBook2Line,
     lock: RiLock2Line,
     menu: RiMenuLine,
-    playlists: RiPlayList2Line,
+    playlist: RiPlayList2Line,
     queue: RiMusic2Line,
     remove: RiSubtractLine,
     search: RiSearchLine,
     spinner: RiLoader3Line,
     sucess: RiCheckboxCircleLine,
+    track: RiMusicLine,
     visibility: MdOutlineVisibility,
     visibilityOff: MdOutlineVisibilityOff,
     warn: RiAlertLine,
@@ -58,7 +64,7 @@ export const AppIcon = {
 
 interface IconProps {
     icon: keyof typeof AppIcon;
-    size?: number;
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
     state?: 'success' | 'error' | 'info' | 'warn';
 }
 
@@ -69,6 +75,7 @@ export const Icon = (props: IconProps) => {
         [styles.icon]: true,
         [styles.colorDefault]: !props.state,
         [styles[`color-${props.state}`]]: props.state,
+        [styles[`size-${size}`]]: typeof size === 'string',
     });
 
     const IconComponent = AppIcon[icon];

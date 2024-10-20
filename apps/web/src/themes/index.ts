@@ -5,6 +5,15 @@ import { defaultDarkTheme } from '@/themes/default-dark.ts';
 export type Sizes = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type AppThemeConfiguration = {
+    components: {
+        'nav-item': {
+            'background-color': CSSProperties['backgroundColor'];
+            'background-hover-color': CSSProperties['backgroundColor'];
+            'font-color': CSSProperties['color'];
+            'font-hover-color': CSSProperties['color'];
+            padding: CSSProperties['padding'];
+        };
+    };
     name: string;
     theme: {
         'base-border-radius-lg': CSSProperties['borderRadius'];
@@ -123,6 +132,9 @@ export type AppThemeConfiguration = {
         'layout-side-nav-bar-background-color': CSSProperties['backgroundColor'];
         'layout-side-nav-bar-font-color': CSSProperties['color'];
         'layout-side-nav-bar-font-hover-color': CSSProperties['color'];
+        'paper-background-color': CSSProperties['backgroundColor'];
+        'paper-border-radius': CSSProperties['borderRadius'];
+        'paper-padding': CSSProperties['padding'];
         'scroll-bar-size': CSSProperties['width'];
         'scroll-bar-thumb-active-background-color': CSSProperties['backgroundColor'];
         'scroll-bar-thumb-background-color': CSSProperties['backgroundColor'];

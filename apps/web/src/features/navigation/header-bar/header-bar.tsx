@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FileMenu } from '@/features/navigation/header-bar/file-menu.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import styles from './header-bar.module.scss';
 
 export function HeaderBar() {
-    const location = useLocation();
     const navigate = useNavigate();
-
-    const [canGoForward, setCanGoForward] = useState(false);
-    const canGoBack = location.key !== 'default';
-
-    useEffect(() => {
-        setCanGoForward(false);
-    }, [location]);
 
     const handleGoBack = () => {
         navigate(-1);
@@ -22,7 +13,6 @@ export function HeaderBar() {
 
     const handleGoForward = () => {
         navigate(1);
-        setCanGoForward(false);
     };
 
     return (
@@ -31,15 +21,13 @@ export function HeaderBar() {
                 <Group gap="xs">
                     <FileMenu />
                     <IconButton
-                        icon="arrowLeftS"
-                        isDisabled={!canGoBack}
+                        icon="arrowLeft"
                         size="lg"
                         variant="default"
                         onClick={handleGoBack}
                     />
                     <IconButton
-                        icon="arrowRightS"
-                        isDisabled={!canGoForward}
+                        icon="arrowRight"
                         size="lg"
                         variant="default"
                         onClick={handleGoForward}

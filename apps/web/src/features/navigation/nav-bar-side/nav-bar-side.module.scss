@@ -1,6 +1,24 @@
-.nav-bar {
+@use '@/styles/base';
+
+.container {
+    display: grid;
+    grid-template:
+        'search-bar' auto
+        '.' auto
+        'nav' auto
+        '.' auto
+        'playlist-list' minmax(0, 1fr);
+    gap: base.$gap-md;
     width: 100%;
     height: 100%;
     background-color: var(--layout-nav-bar-side-background-color);
     border-radius: var(--layout-base-border-radius);
+}
+
+.search-bar {
+    grid-area: search-bar;
+}
+
+.playlist-list {
+    grid-area: playlist-list;
 }
