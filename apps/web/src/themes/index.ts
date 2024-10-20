@@ -124,9 +124,11 @@ export type AppThemeConfiguration = {
         'scroll-bar-size': CSSProperties['width'];
         'scroll-bar-thumb-active-background-color': CSSProperties['backgroundColor'];
         'scroll-bar-thumb-background-color': CSSProperties['backgroundColor'];
+        'scroll-bar-thumb-border-radius': CSSProperties['borderRadius'];
         'scroll-bar-thumb-hover-background-color': CSSProperties['backgroundColor'];
         'scroll-bar-track-active-background-color': CSSProperties['backgroundColor'];
         'scroll-bar-track-background-color': CSSProperties['backgroundColor'];
+        'scroll-bar-track-border-radius': CSSProperties['borderRadius'];
         'scroll-bar-track-hover-background-color': CSSProperties['backgroundColor'];
         'table-border-color': CSSProperties['borderColor'];
         'table-cell-border-color': CSSProperties['borderColor'];

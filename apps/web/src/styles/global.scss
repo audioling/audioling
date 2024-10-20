@@ -38,26 +38,41 @@ body {
     outline: none;
 }
 
-// ::-webkit-scrollbar {
-//   width: 12px;
-//   height: 12px;
-// }
+::-webkit-scrollbar {
+    width: var(--scroll-bar-size);
+    height: var(--scroll-bar-size);
+}
 
-// ::-webkit-scrollbar-corner {
-//   background: var(--scrollbar-track-bg);
-// }
+::-webkit-scrollbar-corner {
+    background: var(--scroll-bar-track-background-color);
+}
 
-// ::-webkit-scrollbar-track {
-//   background: var(--scrollbar-track-bg);
-// }
+::-webkit-scrollbar-track {
+    background: var(--scroll-bar-track-background-color);
+}
 
-// ::-webkit-scrollbar-thumb {
-//   background: var(--scrollbar-thumb-bg);
-// }
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-bar-thumb-background-color);
+}
 
-// ::-webkit-scrollbar-thumb:hover {
-//   background: var(--scrollbar-thumb-bg-hover);
-// }
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-bar-thumb-hover-background-color);
+}
+
+.al-os-scrollbar {
+    --os-size: var(--scroll-bar-size);
+    --os-track-bg: var(--scroll-bar-track-background-color);
+    --os-track-bg-hover: var(--scroll-bar-track-hover-background-color);
+    --os-handle-bg: var(--scroll-bar-thumb-background-color);
+    --os-handle-bg-hover: var(--scroll-bar-thumb-hover-background-color);
+    --os-handle-bg-active: var(--scroll-bar-thumb-active-background-color);
+    --os-handle-border-radius: var(--scroll-bar-border-radius);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
 @font-face {
     font-family: Archivo;
