@@ -1,0 +1,25 @@
+@use '@/styles/base';
+
+.left {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: base.$gap-sm;
+}
+
+.left-column {
+    border: 1px solid rgb(255 255 255 / 50%);
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid rgb(255 255 255 / 50%);
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

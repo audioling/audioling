@@ -1,0 +1,49 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: 8px;
+}
+
+.progress-bar {
+    position: absolute;
+    top: 4px;
+    width: 100%;
+    height: 100%;
+    background-color: #d1d5db;
+    border-radius: 9999px;
+}
+
+// .progress-fill {
+//     height: 100%;
+//     background-color: #3b82f6;
+//     border-radius: 9999px;
+//     transform-origin: left;
+// }
+
+.slider {
+    position: absolute;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    background-color: #3b82f6;
+    border-radius: 50%;
+}
+
+.root {
+    &:hover {
+        /* stylelint-disable-next-line selector-class-pattern */
+        :global(.al-Slider-thumb) {
+            opacity: 1 !important;
+        }
+    }
+}
+
+.bar {
+    // opacity: 0;
+}
+
+.thumb {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
