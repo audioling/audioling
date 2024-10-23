@@ -13,6 +13,7 @@ module.exports = {
                     useInfinite: false,
                     useSuspenseQuery: true,
                     useSuspenseInfiniteQuery: true,
+                    useInfiniteQueryParam: 'offset',
                 },
                 mutator: {
                     path: './src/api/api-instance.ts',

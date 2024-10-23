@@ -218,7 +218,10 @@ export function useGetApiLibraryIdTracksSuspense<
 }
 
 export const getGetApiLibraryIdTracksSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        GetApiLibraryIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdTracks401
         | GetApiLibraryIdTracks403
@@ -233,7 +236,10 @@ export const getGetApiLibraryIdTracksSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -243,9 +249,17 @@ export const getGetApiLibraryIdTracksSuspenseInfiniteQueryOptions = <
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdTracksQueryKey(libraryId, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdTracks>>> = ({
-        signal,
-    }) => getApiLibraryIdTracks(libraryId, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        QueryKey,
+        GetApiLibraryIdTracksParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdTracks(
+            libraryId,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -255,7 +269,10 @@ export const getGetApiLibraryIdTracksSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        QueryKey,
+        GetApiLibraryIdTracksParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -270,7 +287,10 @@ export type GetApiLibraryIdTracksSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        GetApiLibraryIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdTracks401
         | GetApiLibraryIdTracks403
@@ -285,14 +305,20 @@ export function useGetApiLibraryIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        GetApiLibraryIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdTracks401
         | GetApiLibraryIdTracks403
@@ -307,14 +333,20 @@ export function useGetApiLibraryIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        GetApiLibraryIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdTracks401
         | GetApiLibraryIdTracks403
@@ -329,7 +361,10 @@ export function useGetApiLibraryIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -340,7 +375,10 @@ export function useGetApiLibraryIdTracksSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        GetApiLibraryIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdTracks401
         | GetApiLibraryIdTracks403
@@ -355,7 +393,10 @@ export function useGetApiLibraryIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;

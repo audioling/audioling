@@ -200,7 +200,10 @@ export function useGetApiLibraryIdGenresSuspense<
 }
 
 export const getGetApiLibraryIdGenresSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdGenres>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        GetApiLibraryIdGenresParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
@@ -215,7 +218,10 @@ export const getGetApiLibraryIdGenresSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+                QueryKey,
+                GetApiLibraryIdGenresParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -225,9 +231,17 @@ export const getGetApiLibraryIdGenresSuspenseInfiniteQueryOptions = <
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdGenresQueryKey(libraryId, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdGenres>>> = ({
-        signal,
-    }) => getApiLibraryIdGenres(libraryId, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        QueryKey,
+        GetApiLibraryIdGenresParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdGenres(
+            libraryId,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -237,7 +251,10 @@ export const getGetApiLibraryIdGenresSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        QueryKey,
+        GetApiLibraryIdGenresParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -252,7 +269,10 @@ export type GetApiLibraryIdGenresSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdGenres>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        GetApiLibraryIdGenresParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
@@ -267,14 +287,20 @@ export function useGetApiLibraryIdGenresSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+                QueryKey,
+                GetApiLibraryIdGenresParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdGenres>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        GetApiLibraryIdGenresParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
@@ -289,14 +315,20 @@ export function useGetApiLibraryIdGenresSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+                QueryKey,
+                GetApiLibraryIdGenresParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdGenres>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        GetApiLibraryIdGenresParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
@@ -311,7 +343,10 @@ export function useGetApiLibraryIdGenresSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+                QueryKey,
+                GetApiLibraryIdGenresParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -322,7 +357,10 @@ export function useGetApiLibraryIdGenresSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdGenres>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        GetApiLibraryIdGenresParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdGenres401
         | GetApiLibraryIdGenres403
@@ -337,7 +375,10 @@ export function useGetApiLibraryIdGenresSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+                QueryKey,
+                GetApiLibraryIdGenresParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;

@@ -169,13 +169,20 @@ export function useGetApiUsersSuspense<
 }
 
 export const getGetApiUsersSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>, GetApiUsersParams['offset']>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
         query?: Partial<
-            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsers>>,
+                TError,
+                TData,
+                Awaited<ReturnType<typeof getApiUsers>>,
+                QueryKey,
+                GetApiUsersParams['offset']
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
@@ -184,13 +191,20 @@ export const getGetApiUsersSuspenseInfiniteQueryOptions = <
 
     const queryKey = queryOptions?.queryKey ?? getGetApiUsersQueryKey(params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
-        getApiUsers(params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiUsers>>,
+        QueryKey,
+        GetApiUsersParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiUsers({ ...params, offset: pageParam || params?.['offset'] }, requestOptions, signal);
 
     return { queryKey, queryFn, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiUsers>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiUsers>>,
+        QueryKey,
+        GetApiUsersParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -202,37 +216,58 @@ export type GetApiUsersSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiUsersSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>, GetApiUsersParams['offset']>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options: {
         query: Partial<
-            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsers>>,
+                TError,
+                TData,
+                Awaited<ReturnType<typeof getApiUsers>>,
+                QueryKey,
+                GetApiUsersParams['offset']
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiUsersSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>, GetApiUsersParams['offset']>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
         query?: Partial<
-            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsers>>,
+                TError,
+                TData,
+                Awaited<ReturnType<typeof getApiUsers>>,
+                QueryKey,
+                GetApiUsersParams['offset']
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiUsersSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>, GetApiUsersParams['offset']>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
         query?: Partial<
-            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsers>>,
+                TError,
+                TData,
+                Awaited<ReturnType<typeof getApiUsers>>,
+                QueryKey,
+                GetApiUsersParams['offset']
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
@@ -242,13 +277,20 @@ export function useGetApiUsersSuspenseInfinite<
  */
 
 export function useGetApiUsersSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>>,
+    TData = InfiniteData<Awaited<ReturnType<typeof getApiUsers>>, GetApiUsersParams['offset']>,
     TError = ErrorType<GetApiUsers401 | GetApiUsers403 | GetApiUsers422 | GetApiUsers500>,
 >(
     params: GetApiUsersParams,
     options?: {
         query?: Partial<
-            UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>
+            UseSuspenseInfiniteQueryOptions<
+                Awaited<ReturnType<typeof getApiUsers>>,
+                TError,
+                TData,
+                Awaited<ReturnType<typeof getApiUsers>>,
+                QueryKey,
+                GetApiUsersParams['offset']
+            >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },

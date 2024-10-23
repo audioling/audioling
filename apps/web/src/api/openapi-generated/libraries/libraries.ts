@@ -217,7 +217,10 @@ export function useGetApiLibrariesSuspense<
 }
 
 export const getGetApiLibrariesSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        GetApiLibrariesParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
@@ -232,7 +235,10 @@ export const getGetApiLibrariesSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraries>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                QueryKey,
+                GetApiLibrariesParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -242,13 +248,24 @@ export const getGetApiLibrariesSuspenseInfiniteQueryOptions = <
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibrariesQueryKey(params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraries>>> = ({ signal }) =>
-        getApiLibraries(params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        QueryKey,
+        GetApiLibrariesParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraries(
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return { queryKey, queryFn, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraries>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        QueryKey,
+        GetApiLibrariesParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -264,7 +281,10 @@ export type GetApiLibrariesSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibrariesSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        GetApiLibrariesParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
@@ -279,14 +299,20 @@ export function useGetApiLibrariesSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraries>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                QueryKey,
+                GetApiLibrariesParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibrariesSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        GetApiLibrariesParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
@@ -301,14 +327,20 @@ export function useGetApiLibrariesSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraries>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                QueryKey,
+                GetApiLibrariesParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibrariesSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        GetApiLibrariesParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
@@ -323,7 +355,10 @@ export function useGetApiLibrariesSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraries>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                QueryKey,
+                GetApiLibrariesParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -334,7 +369,10 @@ export function useGetApiLibrariesSuspenseInfinite<
  */
 
 export function useGetApiLibrariesSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraries>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraries>>,
+        GetApiLibrariesParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraries401
         | GetApiLibraries403
@@ -349,7 +387,10 @@ export function useGetApiLibrariesSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraries>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraries>>,
+                QueryKey,
+                GetApiLibrariesParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;

@@ -224,7 +224,10 @@ export function useGetApiLibraryIdImagesIdSuspense<
 }
 
 export const getGetApiLibraryIdImagesIdSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        GetApiLibraryIdImagesIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdImagesId401
         | GetApiLibraryIdImagesId403
@@ -241,7 +244,10 @@ export const getGetApiLibraryIdImagesIdSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+                QueryKey,
+                GetApiLibraryIdImagesIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -252,9 +258,18 @@ export const getGetApiLibraryIdImagesIdSuspenseInfiniteQueryOptions = <
     const queryKey =
         queryOptions?.queryKey ?? getGetApiLibraryIdImagesIdQueryKey(libraryId, id, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>> = ({
-        signal,
-    }) => getApiLibraryIdImagesId(libraryId, id, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        QueryKey,
+        GetApiLibraryIdImagesIdParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdImagesId(
+            libraryId,
+            id,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -264,7 +279,10 @@ export const getGetApiLibraryIdImagesIdSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        QueryKey,
+        GetApiLibraryIdImagesIdParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -280,7 +298,10 @@ export type GetApiLibraryIdImagesIdSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        GetApiLibraryIdImagesIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdImagesId401
         | GetApiLibraryIdImagesId403
@@ -297,14 +318,20 @@ export function useGetApiLibraryIdImagesIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+                QueryKey,
+                GetApiLibraryIdImagesIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        GetApiLibraryIdImagesIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdImagesId401
         | GetApiLibraryIdImagesId403
@@ -321,14 +348,20 @@ export function useGetApiLibraryIdImagesIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+                QueryKey,
+                GetApiLibraryIdImagesIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        GetApiLibraryIdImagesIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdImagesId401
         | GetApiLibraryIdImagesId403
@@ -345,7 +378,10 @@ export function useGetApiLibraryIdImagesIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+                QueryKey,
+                GetApiLibraryIdImagesIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -356,7 +392,10 @@ export function useGetApiLibraryIdImagesIdSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        GetApiLibraryIdImagesIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdImagesId401
         | GetApiLibraryIdImagesId403
@@ -373,7 +412,10 @@ export function useGetApiLibraryIdImagesIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+                QueryKey,
+                GetApiLibraryIdImagesIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;

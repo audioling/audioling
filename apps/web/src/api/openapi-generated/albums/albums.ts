@@ -220,7 +220,10 @@ export function useGetApiLibraryIdAlbumsSuspense<
 }
 
 export const getGetApiLibraryIdAlbumsSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        GetApiLibraryIdAlbumsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
@@ -235,7 +238,10 @@ export const getGetApiLibraryIdAlbumsSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -245,9 +251,17 @@ export const getGetApiLibraryIdAlbumsSuspenseInfiniteQueryOptions = <
 
     const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdAlbumsQueryKey(libraryId, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>> = ({
-        signal,
-    }) => getApiLibraryIdAlbums(libraryId, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        QueryKey,
+        GetApiLibraryIdAlbumsParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdAlbums(
+            libraryId,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -257,7 +271,10 @@ export const getGetApiLibraryIdAlbumsSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        QueryKey,
+        GetApiLibraryIdAlbumsParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -272,7 +289,10 @@ export type GetApiLibraryIdAlbumsSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibraryIdAlbumsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        GetApiLibraryIdAlbumsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
@@ -287,14 +307,20 @@ export function useGetApiLibraryIdAlbumsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbumsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        GetApiLibraryIdAlbumsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
@@ -309,14 +335,20 @@ export function useGetApiLibraryIdAlbumsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbumsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        GetApiLibraryIdAlbumsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
@@ -331,7 +363,10 @@ export function useGetApiLibraryIdAlbumsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -342,7 +377,10 @@ export function useGetApiLibraryIdAlbumsSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdAlbumsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbums>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+        GetApiLibraryIdAlbumsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbums401
         | GetApiLibraryIdAlbums403
@@ -357,7 +395,10 @@ export function useGetApiLibraryIdAlbumsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbums>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -576,7 +617,10 @@ export function useGetApiLibraryIdAlbumsIdSuspense<
 }
 
 export const getGetApiLibraryIdAlbumsIdSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        GetApiLibraryIdAlbumsIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
@@ -593,7 +637,10 @@ export const getGetApiLibraryIdAlbumsIdSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -604,9 +651,18 @@ export const getGetApiLibraryIdAlbumsIdSuspenseInfiniteQueryOptions = <
     const queryKey =
         queryOptions?.queryKey ?? getGetApiLibraryIdAlbumsIdQueryKey(libraryId, id, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>> = ({
-        signal,
-    }) => getApiLibraryIdAlbumsId(libraryId, id, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        QueryKey,
+        GetApiLibraryIdAlbumsIdParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdAlbumsId(
+            libraryId,
+            id,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -616,7 +672,10 @@ export const getGetApiLibraryIdAlbumsIdSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        QueryKey,
+        GetApiLibraryIdAlbumsIdParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -632,7 +691,10 @@ export type GetApiLibraryIdAlbumsIdSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        GetApiLibraryIdAlbumsIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
@@ -649,14 +711,20 @@ export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        GetApiLibraryIdAlbumsIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
@@ -673,14 +741,20 @@ export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        GetApiLibraryIdAlbumsIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
@@ -697,7 +771,10 @@ export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -708,7 +785,10 @@ export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+        GetApiLibraryIdAlbumsIdParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdAlbumsId401
         | GetApiLibraryIdAlbumsId403
@@ -725,7 +805,10 @@ export function useGetApiLibraryIdAlbumsIdSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdAlbumsId>>,
+                QueryKey,
+                GetApiLibraryIdAlbumsIdParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;

@@ -216,7 +216,10 @@ export function useGetApiLibraryIdPlaylistsSuspense<
 }
 
 export const getGetApiLibraryIdPlaylistsSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        GetApiLibraryIdPlaylistsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylists401
         | GetApiLibraryIdPlaylists403
@@ -231,7 +234,10 @@ export const getGetApiLibraryIdPlaylistsSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -242,9 +248,17 @@ export const getGetApiLibraryIdPlaylistsSuspenseInfiniteQueryOptions = <
     const queryKey =
         queryOptions?.queryKey ?? getGetApiLibraryIdPlaylistsQueryKey(libraryId, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>> = ({
-        signal,
-    }) => getApiLibraryIdPlaylists(libraryId, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        QueryKey,
+        GetApiLibraryIdPlaylistsParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdPlaylists(
+            libraryId,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -254,7 +268,10 @@ export const getGetApiLibraryIdPlaylistsSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        QueryKey,
+        GetApiLibraryIdPlaylistsParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -269,7 +286,10 @@ export type GetApiLibraryIdPlaylistsSuspenseInfiniteQueryError = ErrorType<
 >;
 
 export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        GetApiLibraryIdPlaylistsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylists401
         | GetApiLibraryIdPlaylists403
@@ -284,14 +304,20 @@ export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        GetApiLibraryIdPlaylistsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylists401
         | GetApiLibraryIdPlaylists403
@@ -306,14 +332,20 @@ export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        GetApiLibraryIdPlaylistsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylists401
         | GetApiLibraryIdPlaylists403
@@ -328,7 +360,10 @@ export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -339,7 +374,10 @@ export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+        GetApiLibraryIdPlaylistsParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylists401
         | GetApiLibraryIdPlaylists403
@@ -354,7 +392,10 @@ export function useGetApiLibraryIdPlaylistsSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylists>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -902,7 +943,10 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspense<
 }
 
 export const getGetApiLibraryIdPlaylistsIdTracksSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylistsIdTracks401
         | GetApiLibraryIdPlaylistsIdTracks403
@@ -918,7 +962,10 @@ export const getGetApiLibraryIdPlaylistsIdTracksSuspenseInfiniteQueryOptions = <
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -930,9 +977,18 @@ export const getGetApiLibraryIdPlaylistsIdTracksSuspenseInfiniteQueryOptions = <
         queryOptions?.queryKey ??
         getGetApiLibraryIdPlaylistsIdTracksQueryKey(libraryId, id, params);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>> = ({
-        signal,
-    }) => getApiLibraryIdPlaylistsIdTracks(libraryId, id, params, requestOptions, signal);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        QueryKey,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
+    > = ({ signal, pageParam }) =>
+        getApiLibraryIdPlaylistsIdTracks(
+            libraryId,
+            id,
+            { ...params, offset: pageParam || params?.['offset'] },
+            requestOptions,
+            signal,
+        );
 
     return {
         queryKey,
@@ -942,7 +998,10 @@ export const getGetApiLibraryIdPlaylistsIdTracksSuspenseInfiniteQueryOptions = <
     } as UseSuspenseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        QueryKey,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
     > & { queryKey: QueryKey };
 };
 
@@ -957,7 +1016,10 @@ export type GetApiLibraryIdPlaylistsIdTracksSuspenseInfiniteQueryError = ErrorTy
 >;
 
 export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylistsIdTracks401
         | GetApiLibraryIdPlaylistsIdTracks403
@@ -973,14 +1035,20 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylistsIdTracks401
         | GetApiLibraryIdPlaylistsIdTracks403
@@ -996,14 +1064,20 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
     },
 ): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
 export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylistsIdTracks401
         | GetApiLibraryIdPlaylistsIdTracks403
@@ -1019,7 +1093,10 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
@@ -1030,7 +1107,10 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
  */
 
 export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>>,
+    TData = InfiniteData<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+        GetApiLibraryIdPlaylistsIdTracksParams['offset']
+    >,
     TError = ErrorType<
         | GetApiLibraryIdPlaylistsIdTracks401
         | GetApiLibraryIdPlaylistsIdTracks403
@@ -1046,7 +1126,10 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspenseInfinite<
             UseSuspenseInfiniteQueryOptions<
                 Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
                 TError,
-                TData
+                TData,
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsIdTracks>>,
+                QueryKey,
+                GetApiLibraryIdPlaylistsIdTracksParams['offset']
             >
         >;
         request?: SecondParameter<typeof apiInstance>;
