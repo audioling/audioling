@@ -4,13 +4,10 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    InfiniteData,
     QueryFunction,
     QueryKey,
-    UseSuspenseInfiniteQueryOptions,
-    UseSuspenseInfiniteQueryResult,
     UseSuspenseQueryOptions,
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
@@ -45,7 +42,7 @@ export const getGetPingSuspenseQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
         getPing(requestOptions, signal);
 
-    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getPing>>,
         TError,
         TData
@@ -92,84 +89,6 @@ export function useGetPingSuspense<
     const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
         queryKey: QueryKey;
     };
-
-    query.queryKey = queryOptions.queryKey;
-
-    return query;
-}
-
-export const getGetPingSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
-    TError = ErrorType<unknown>,
->(options?: {
-    query?: Partial<
-        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiInstance>;
-}) => {
-    const { query: queryOptions, request: requestOptions } = options ?? {};
-
-    const queryKey = queryOptions?.queryKey ?? getGetPingQueryKey();
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
-        getPing(requestOptions, signal);
-
-    return { queryKey, queryFn, ...queryOptions } as UseSuspenseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getPing>>,
-        TError,
-        TData
-    > & { queryKey: QueryKey };
-};
-
-export type GetPingSuspenseInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getPing>>>;
-export type GetPingSuspenseInfiniteQueryError = ErrorType<unknown>;
-
-export function useGetPingSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
-    TError = ErrorType<unknown>,
->(options: {
-    query: Partial<
-        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiInstance>;
-}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetPingSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
-    TError = ErrorType<unknown>,
->(options?: {
-    query?: Partial<
-        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiInstance>;
-}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetPingSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
-    TError = ErrorType<unknown>,
->(options?: {
-    query?: Partial<
-        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiInstance>;
-}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Ping the server
- */
-
-export function useGetPingSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getPing>>>,
-    TError = ErrorType<unknown>,
->(options?: {
-    query?: Partial<
-        UseSuspenseInfiniteQueryOptions<Awaited<ReturnType<typeof getPing>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof apiInstance>;
-}): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetPingSuspenseInfiniteQueryOptions(options);
-
-    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
-        TData,
-        TError
-    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 

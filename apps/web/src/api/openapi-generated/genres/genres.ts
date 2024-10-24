@@ -4,13 +4,10 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    InfiniteData,
     QueryFunction,
     QueryKey,
-    UseSuspenseInfiniteQueryOptions,
-    UseSuspenseInfiniteQueryResult,
     UseSuspenseQueryOptions,
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
@@ -79,7 +76,13 @@ export const getGetApiLibraryIdGenresSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdGenres(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseSuspenseQueryOptions<
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
         TError,
         TData
@@ -193,207 +196,6 @@ export function useGetApiLibraryIdGenresSuspense<
     const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
         queryKey: QueryKey;
     };
-
-    query.queryKey = queryOptions.queryKey;
-
-    return query;
-}
-
-export const getGetApiLibraryIdGenresSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        GetApiLibraryIdGenresParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdGenres401
-        | GetApiLibraryIdGenres403
-        | GetApiLibraryIdGenres422
-        | GetApiLibraryIdGenres500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdGenresParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                QueryKey,
-                GetApiLibraryIdGenresParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-) => {
-    const { query: queryOptions, request: requestOptions } = options ?? {};
-
-    const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdGenresQueryKey(libraryId, params);
-
-    const queryFn: QueryFunction<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        QueryKey,
-        GetApiLibraryIdGenresParams['offset']
-    > = ({ signal, pageParam }) =>
-        getApiLibraryIdGenres(
-            libraryId,
-            { ...params, offset: pageParam || params?.['offset'] },
-            requestOptions,
-            signal,
-        );
-
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        ...queryOptions,
-    } as UseSuspenseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        TError,
-        TData,
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        QueryKey,
-        GetApiLibraryIdGenresParams['offset']
-    > & { queryKey: QueryKey };
-};
-
-export type GetApiLibraryIdGenresSuspenseInfiniteQueryResult = NonNullable<
-    Awaited<ReturnType<typeof getApiLibraryIdGenres>>
->;
-export type GetApiLibraryIdGenresSuspenseInfiniteQueryError = ErrorType<
-    | GetApiLibraryIdGenres401
-    | GetApiLibraryIdGenres403
-    | GetApiLibraryIdGenres422
-    | GetApiLibraryIdGenres500
->;
-
-export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        GetApiLibraryIdGenresParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdGenres401
-        | GetApiLibraryIdGenres403
-        | GetApiLibraryIdGenres422
-        | GetApiLibraryIdGenres500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdGenresParams,
-    options: {
-        query: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                QueryKey,
-                GetApiLibraryIdGenresParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        GetApiLibraryIdGenresParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdGenres401
-        | GetApiLibraryIdGenres403
-        | GetApiLibraryIdGenres422
-        | GetApiLibraryIdGenres500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdGenresParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                QueryKey,
-                GetApiLibraryIdGenresParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        GetApiLibraryIdGenresParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdGenres401
-        | GetApiLibraryIdGenres403
-        | GetApiLibraryIdGenres422
-        | GetApiLibraryIdGenres500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdGenresParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                QueryKey,
-                GetApiLibraryIdGenresParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Get all genres
- */
-
-export function useGetApiLibraryIdGenresSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-        GetApiLibraryIdGenresParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdGenres401
-        | GetApiLibraryIdGenres403
-        | GetApiLibraryIdGenres422
-        | GetApiLibraryIdGenres500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdGenresParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
-                QueryKey,
-                GetApiLibraryIdGenresParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdGenresSuspenseInfiniteQueryOptions(
-        libraryId,
-        params,
-        options,
-    );
-
-    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
-        TData,
-        TError
-    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 

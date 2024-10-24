@@ -4,16 +4,13 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    InfiniteData,
     MutationFunction,
     QueryFunction,
     QueryKey,
     UseMutationOptions,
     UseMutationResult,
-    UseSuspenseInfiniteQueryOptions,
-    UseSuspenseInfiniteQueryResult,
     UseSuspenseQueryOptions,
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
@@ -97,7 +94,13 @@ export const getGetApiLibraryIdTracksSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracks(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseSuspenseQueryOptions<
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
         TError,
         TData
@@ -217,207 +220,6 @@ export function useGetApiLibraryIdTracksSuspense<
     return query;
 }
 
-export const getGetApiLibraryIdTracksSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        GetApiLibraryIdTracksParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdTracks401
-        | GetApiLibraryIdTracks403
-        | GetApiLibraryIdTracks422
-        | GetApiLibraryIdTracks500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdTracksParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                QueryKey,
-                GetApiLibraryIdTracksParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-) => {
-    const { query: queryOptions, request: requestOptions } = options ?? {};
-
-    const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdTracksQueryKey(libraryId, params);
-
-    const queryFn: QueryFunction<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        QueryKey,
-        GetApiLibraryIdTracksParams['offset']
-    > = ({ signal, pageParam }) =>
-        getApiLibraryIdTracks(
-            libraryId,
-            { ...params, offset: pageParam || params?.['offset'] },
-            requestOptions,
-            signal,
-        );
-
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        ...queryOptions,
-    } as UseSuspenseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        TError,
-        TData,
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        QueryKey,
-        GetApiLibraryIdTracksParams['offset']
-    > & { queryKey: QueryKey };
-};
-
-export type GetApiLibraryIdTracksSuspenseInfiniteQueryResult = NonNullable<
-    Awaited<ReturnType<typeof getApiLibraryIdTracks>>
->;
-export type GetApiLibraryIdTracksSuspenseInfiniteQueryError = ErrorType<
-    | GetApiLibraryIdTracks401
-    | GetApiLibraryIdTracks403
-    | GetApiLibraryIdTracks422
-    | GetApiLibraryIdTracks500
->;
-
-export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        GetApiLibraryIdTracksParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdTracks401
-        | GetApiLibraryIdTracks403
-        | GetApiLibraryIdTracks422
-        | GetApiLibraryIdTracks500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdTracksParams,
-    options: {
-        query: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                QueryKey,
-                GetApiLibraryIdTracksParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        GetApiLibraryIdTracksParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdTracks401
-        | GetApiLibraryIdTracks403
-        | GetApiLibraryIdTracks422
-        | GetApiLibraryIdTracks500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdTracksParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                QueryKey,
-                GetApiLibraryIdTracksParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        GetApiLibraryIdTracksParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdTracks401
-        | GetApiLibraryIdTracks403
-        | GetApiLibraryIdTracks422
-        | GetApiLibraryIdTracks500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdTracksParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                QueryKey,
-                GetApiLibraryIdTracksParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Get all tracks
- */
-
-export function useGetApiLibraryIdTracksSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-        GetApiLibraryIdTracksParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdTracks401
-        | GetApiLibraryIdTracks403
-        | GetApiLibraryIdTracks422
-        | GetApiLibraryIdTracks500
-    >,
->(
-    libraryId: string,
-    params: GetApiLibraryIdTracksParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
-                QueryKey,
-                GetApiLibraryIdTracksParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdTracksSuspenseInfiniteQueryOptions(
-        libraryId,
-        params,
-        options,
-    );
-
-    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
-        TData,
-        TError
-    > & { queryKey: QueryKey };
-
-    query.queryKey = queryOptions.queryKey;
-
-    return query;
-}
-
 /**
  * @summary Get track by id
  */
@@ -471,6 +273,7 @@ export const getGetApiLibraryIdTracksIdSuspenseQueryOptions = <
         queryKey,
         queryFn,
         enabled: !!(libraryId && id),
+        staleTime: 10000,
         ...queryOptions,
     } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
@@ -586,166 +389,6 @@ export function useGetApiLibraryIdTracksIdSuspense<
     const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
         queryKey: QueryKey;
     };
-
-    query.queryKey = queryOptions.queryKey;
-
-    return query;
-}
-
-export const getGetApiLibraryIdTracksIdSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>>,
-    TError = ErrorType<
-        | GetApiLibraryIdTracksId401
-        | GetApiLibraryIdTracksId403
-        | GetApiLibraryIdTracksId404
-        | GetApiLibraryIdTracksId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
-                TError,
-                TData
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-) => {
-    const { query: queryOptions, request: requestOptions } = options ?? {};
-
-    const queryKey = queryOptions?.queryKey ?? getGetApiLibraryIdTracksIdQueryKey(libraryId, id);
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>> = ({
-        signal,
-    }) => getApiLibraryIdTracksId(libraryId, id, requestOptions, signal);
-
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        ...queryOptions,
-    } as UseSuspenseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
-        TError,
-        TData
-    > & { queryKey: QueryKey };
-};
-
-export type GetApiLibraryIdTracksIdSuspenseInfiniteQueryResult = NonNullable<
-    Awaited<ReturnType<typeof getApiLibraryIdTracksId>>
->;
-export type GetApiLibraryIdTracksIdSuspenseInfiniteQueryError = ErrorType<
-    | GetApiLibraryIdTracksId401
-    | GetApiLibraryIdTracksId403
-    | GetApiLibraryIdTracksId404
-    | GetApiLibraryIdTracksId500
->;
-
-export function useGetApiLibraryIdTracksIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>>,
-    TError = ErrorType<
-        | GetApiLibraryIdTracksId401
-        | GetApiLibraryIdTracksId403
-        | GetApiLibraryIdTracksId404
-        | GetApiLibraryIdTracksId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options: {
-        query: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
-                TError,
-                TData
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdTracksIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>>,
-    TError = ErrorType<
-        | GetApiLibraryIdTracksId401
-        | GetApiLibraryIdTracksId403
-        | GetApiLibraryIdTracksId404
-        | GetApiLibraryIdTracksId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
-                TError,
-                TData
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdTracksIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>>,
-    TError = ErrorType<
-        | GetApiLibraryIdTracksId401
-        | GetApiLibraryIdTracksId403
-        | GetApiLibraryIdTracksId404
-        | GetApiLibraryIdTracksId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
-                TError,
-                TData
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Get track by id
- */
-
-export function useGetApiLibraryIdTracksIdSuspenseInfinite<
-    TData = InfiniteData<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>>,
-    TError = ErrorType<
-        | GetApiLibraryIdTracksId401
-        | GetApiLibraryIdTracksId403
-        | GetApiLibraryIdTracksId404
-        | GetApiLibraryIdTracksId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
-                TError,
-                TData
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdTracksIdSuspenseInfiniteQueryOptions(
-        libraryId,
-        id,
-        options,
-    );
-
-    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
-        TData,
-        TError
-    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 

@@ -12,8 +12,12 @@ module.exports = {
                     useQuery: false,
                     useInfinite: false,
                     useSuspenseQuery: true,
-                    useSuspenseInfiniteQuery: true,
-                    useInfiniteQueryParam: 'offset',
+                    useSuspenseInfiniteQuery: false,
+                    useMutation: true,
+                    signal: true,
+                    options: {
+                        staleTime: 1000 * 10,
+                    },
                 },
                 mutator: {
                     path: './src/api/api-instance.ts',

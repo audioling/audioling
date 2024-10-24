@@ -4,13 +4,10 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import type {
-    InfiniteData,
     QueryFunction,
     QueryKey,
-    UseSuspenseInfiniteQueryOptions,
-    UseSuspenseInfiniteQueryResult,
     UseSuspenseQueryOptions,
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
@@ -88,6 +85,7 @@ export const getGetApiLibraryIdImagesIdSuspenseQueryOptions = <
         queryKey,
         queryFn,
         enabled: !!(libraryId && id),
+        staleTime: 10000,
         ...queryOptions,
     } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
@@ -217,221 +215,6 @@ export function useGetApiLibraryIdImagesIdSuspense<
     const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
         queryKey: QueryKey;
     };
-
-    query.queryKey = queryOptions.queryKey;
-
-    return query;
-}
-
-export const getGetApiLibraryIdImagesIdSuspenseInfiniteQueryOptions = <
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        GetApiLibraryIdImagesIdParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdImagesId401
-        | GetApiLibraryIdImagesId403
-        | GetApiLibraryIdImagesId404
-        | GetApiLibraryIdImagesId422
-        | GetApiLibraryIdImagesId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdImagesIdParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                QueryKey,
-                GetApiLibraryIdImagesIdParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-) => {
-    const { query: queryOptions, request: requestOptions } = options ?? {};
-
-    const queryKey =
-        queryOptions?.queryKey ?? getGetApiLibraryIdImagesIdQueryKey(libraryId, id, params);
-
-    const queryFn: QueryFunction<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        QueryKey,
-        GetApiLibraryIdImagesIdParams['offset']
-    > = ({ signal, pageParam }) =>
-        getApiLibraryIdImagesId(
-            libraryId,
-            id,
-            { ...params, offset: pageParam || params?.['offset'] },
-            requestOptions,
-            signal,
-        );
-
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        ...queryOptions,
-    } as UseSuspenseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        TError,
-        TData,
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        QueryKey,
-        GetApiLibraryIdImagesIdParams['offset']
-    > & { queryKey: QueryKey };
-};
-
-export type GetApiLibraryIdImagesIdSuspenseInfiniteQueryResult = NonNullable<
-    Awaited<ReturnType<typeof getApiLibraryIdImagesId>>
->;
-export type GetApiLibraryIdImagesIdSuspenseInfiniteQueryError = ErrorType<
-    | GetApiLibraryIdImagesId401
-    | GetApiLibraryIdImagesId403
-    | GetApiLibraryIdImagesId404
-    | GetApiLibraryIdImagesId422
-    | GetApiLibraryIdImagesId500
->;
-
-export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        GetApiLibraryIdImagesIdParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdImagesId401
-        | GetApiLibraryIdImagesId403
-        | GetApiLibraryIdImagesId404
-        | GetApiLibraryIdImagesId422
-        | GetApiLibraryIdImagesId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdImagesIdParams,
-    options: {
-        query: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                QueryKey,
-                GetApiLibraryIdImagesIdParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        GetApiLibraryIdImagesIdParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdImagesId401
-        | GetApiLibraryIdImagesId403
-        | GetApiLibraryIdImagesId404
-        | GetApiLibraryIdImagesId422
-        | GetApiLibraryIdImagesId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdImagesIdParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                QueryKey,
-                GetApiLibraryIdImagesIdParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        GetApiLibraryIdImagesIdParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdImagesId401
-        | GetApiLibraryIdImagesId403
-        | GetApiLibraryIdImagesId404
-        | GetApiLibraryIdImagesId422
-        | GetApiLibraryIdImagesId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdImagesIdParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                QueryKey,
-                GetApiLibraryIdImagesIdParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey };
-/**
- * @summary Get image by id
- */
-
-export function useGetApiLibraryIdImagesIdSuspenseInfinite<
-    TData = InfiniteData<
-        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-        GetApiLibraryIdImagesIdParams['offset']
-    >,
-    TError = ErrorType<
-        | GetApiLibraryIdImagesId401
-        | GetApiLibraryIdImagesId403
-        | GetApiLibraryIdImagesId404
-        | GetApiLibraryIdImagesId422
-        | GetApiLibraryIdImagesId500
-    >,
->(
-    libraryId: string,
-    id: string,
-    params: GetApiLibraryIdImagesIdParams,
-    options?: {
-        query?: Partial<
-            UseSuspenseInfiniteQueryOptions<
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                TError,
-                TData,
-                Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
-                QueryKey,
-                GetApiLibraryIdImagesIdParams['offset']
-            >
-        >;
-        request?: SecondParameter<typeof apiInstance>;
-    },
-): UseSuspenseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } {
-    const queryOptions = getGetApiLibraryIdImagesIdSuspenseInfiniteQueryOptions(
-        libraryId,
-        id,
-        params,
-        options,
-    );
-
-    const query = useSuspenseInfiniteQuery(queryOptions) as UseSuspenseInfiniteQueryResult<
-        TData,
-        TError
-    > & { queryKey: QueryKey };
 
     query.queryKey = queryOptions.queryKey;
 
