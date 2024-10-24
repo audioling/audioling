@@ -48,6 +48,14 @@ export const useAuthStore = create<State & Actions>()(
                     selectedLibraryId: null,
                     setLibrary: (id, values) => {
                         set((state) => {
+                            if (!state.libraries[id]) {
+                                state.libraries[id] = {
+                                    credential: null,
+                                    overrideBaseUrl: null,
+                                    username: null,
+                                };
+                            }
+
                             state.libraries[id].credential =
                                 values.credential || state.libraries[id].credential || null;
                             state.libraries[id].overrideBaseUrl =

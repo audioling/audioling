@@ -69,8 +69,8 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                         id: libraryId,
                     },
                     {
-                        onError: () => {
-                            // TODO: Handle error
+                        onError: (error) => {
+                            console.error(error);
                         },
                         onSuccess: (response) => {
                             setAuthLibrary(libraryId, {
