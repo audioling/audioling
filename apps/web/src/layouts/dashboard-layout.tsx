@@ -8,9 +8,8 @@ import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx'
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
-import 'allotment/dist/style.css';
-
 import styles from './dashboard-layout.module.scss';
+import 'allotment/dist/style.css';
 
 export function DashboardLayout() {
     const isLargerThanSm = useIsLargerThanSm();
