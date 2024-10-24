@@ -19,6 +19,7 @@ import {
     RiEditLine,
     RiErrorWarningLine,
     RiFlag2Line,
+    RiHeartFill,
     RiHome3Line,
     RiInformationLine,
     RiLoader3Line,
@@ -28,7 +29,11 @@ import {
     RiMusicLine,
     RiPlayList2Line,
     RiSearchLine,
+    RiSidebarFoldFill,
     RiSubtractLine,
+    RiVolumeDownFill,
+    RiVolumeMuteFill,
+    RiVolumeUpFill,
 } from 'react-icons/ri';
 import styles from './icon.module.scss';
 
@@ -43,6 +48,7 @@ export const AppIcon = {
     delete: RiDeleteBinLine,
     edit: RiEditLine,
     error: RiErrorWarningLine,
+    favorite: RiHeartFill,
     genre: RiFlag2Line,
     home: RiHome3Line,
     info: RiInformationLine,
@@ -51,6 +57,7 @@ export const AppIcon = {
     menu: RiMenuLine,
     playlist: RiPlayList2Line,
     queue: RiMusic2Line,
+    queueSide: RiSidebarFoldFill,
     remove: RiSubtractLine,
     search: RiSearchLine,
     spinner: RiLoader3Line,
@@ -58,6 +65,9 @@ export const AppIcon = {
     track: RiMusicLine,
     visibility: MdOutlineVisibility,
     visibilityOff: MdOutlineVisibilityOff,
+    volumeMax: RiVolumeUpFill,
+    volumeMute: RiVolumeMuteFill,
+    volumeNormal: RiVolumeDownFill,
     warn: RiAlertLine,
     x: MdClose,
 } as const;
@@ -82,7 +92,7 @@ export const Icon = (props: IconProps) => {
 
     return (
         <span className={classNames}>
-            <IconComponent size={size} />
+            <IconComponent />
         </span>
     );
 };
