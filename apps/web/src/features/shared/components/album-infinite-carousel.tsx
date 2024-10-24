@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { generatePath, useParams } from 'react-router-dom';
 import { apiInstance } from '@/api/api-instance.ts';
 import type {
     GetApiLibraryIdAlbums200,
@@ -10,6 +10,7 @@ import type {
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { GridCarousel } from '@/features/ui/grid-carousel/grid-carousel.tsx';
+import { APP_ROUTE } from '@/routes/app-routes.ts';
 
 interface AlbumCarouselProps {
     rowCount?: number;
@@ -17,6 +18,8 @@ interface AlbumCarouselProps {
     sortOrder: ListSortOrder;
     title: string;
 }
+
+const MemoizedAlbumCard = memo(AlbumCard);
 
 export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
     const { rowCount = 1, sortBy, sortOrder, title } = props;
@@ -29,17 +32,35 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
             albums.pages.flatMap((page) =>
                 page.data.map((album) => ({
                     content: (
-                        <AlbumCard
-                            alt={album.name}
-                            descriptions={[album.name, album.artists[0]?.name]}
-                            image={`${baseUrl}${album.imageUrl}&size=200`}
+                        <MemoizedAlbumCard
+                            image={`${baseUrl}${album.imageUrl}&size=300`}
+                            metadata={[
+                                {
+                                    path: generatePath(APP_ROUTE.DASHBOARD_ARTISTS_DETAIL, {
+                                        artistId: album.artists[0]?.id,
+                                        libraryId,
+                                    }),
+                                    text: album.artists[0]?.name,
+                                },
+                            ]}
+                            title={{
+                                path: generatePath(APP_ROUTE.DASHBOARD_ALBUMS_DETAIL, {
+                                    albumId: album.id,
+                                    libraryId,
+                                }),
+                                text: album.name,
+                            }}
                         />
                     ),
                     id: album.id,
                 })),
             ),
-        [albums.pages, baseUrl],
+        [albums.pages, baseUrl, libraryId],
     );
+
+    const handleNextPage = useCallback(() => {}, []);
+
+    const handlePrevPage = useCallback(() => {}, []);
 
     return (
         <GridCarousel
@@ -47,8 +68,8 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
             loadNextPage={fetchNextPage}
             rowCount={rowCount}
             title={title}
-            onNextPage={() => {}}
-            onPrevPage={() => {}}
+            onNextPage={handleNextPage}
+            onPrevPage={handlePrevPage}
         />
     );
 }

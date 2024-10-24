@@ -58,7 +58,17 @@
 }
 
 .description {
+    display: block;
+    font-size: base.$font-size-md;
+    transition: all 0.3s ease-in-out;
+
     @include base.text-ellipsis;
 
-    font-size: base.$font-size-md;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.secondary {
+    color: base.$font-secondary-color;
 }

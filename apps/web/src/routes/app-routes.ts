@@ -1,6 +1,7 @@
 export const APP_ROUTE = {
     DASHBOARD: '/dashboard',
     DASHBOARD_ALBUMS: '/dashboard/:libraryId/albums',
+    DASHBOARD_ALBUMS_DETAIL: '/dashboard/:libraryId/albums/:albumId',
     DASHBOARD_ALBUM_ARTISTS: '/dashboard/:libraryId/album-artists',
     DASHBOARD_ALBUM_ARTISTS_DETAIL: '/dashboard/:libraryId/album-artists/:albumArtistId',
     DASHBOARD_ALBUM_DETAIL: '/dashboard/:libraryId/albums/:albumId',

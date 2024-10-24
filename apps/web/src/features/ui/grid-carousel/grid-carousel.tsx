@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -21,6 +21,12 @@ interface GridCarouselProps {
     title?: string;
 }
 
+const MemoizedCard = memo(({ content }: { content: ReactNode }) => (
+    <div className={styles.card}>{content}</div>
+));
+
+MemoizedCard.displayName = 'MemoizedCard';
+
 export function GridCarousel(props: GridCarouselProps) {
     const { cards, title, rowCount = 1, onNextPage, onPrevPage, loadNextPage } = props;
 
@@ -28,15 +34,15 @@ export function GridCarousel(props: GridCarouselProps) {
     const { ref: containerRef, breakpoints } = useContainerBreakpoints();
     const cardsToShow = useRef(2);
 
-    const handlePrevPage = () => {
+    const handlePrevPage = useCallback(() => {
         setCurrentPage((prev) => (prev > 0 ? prev - 1 : 0));
         onPrevPage(currentPage);
-    };
+    }, [currentPage, onPrevPage]);
 
-    const handleNextPage = () => {
+    const handleNextPage = useCallback(() => {
         setCurrentPage((prev) => prev + 1);
         onNextPage(currentPage);
-    };
+    }, [currentPage, onNextPage]);
 
     const visibleCards = useMemo(() => {
         if (breakpoints.isLargerThanSm) {
@@ -126,9 +132,7 @@ export function GridCarousel(props: GridCarouselProps) {
                     style={{ '--row-count': rowCount } as React.CSSProperties}
                 >
                     {visibleCards.map((card) => (
-                        <div key={card.id} className={styles.card}>
-                            {card.content}
-                        </div>
+                        <MemoizedCard key={card.id} content={card.content} />
                     ))}
                 </motion.div>
             </AnimatePresence>

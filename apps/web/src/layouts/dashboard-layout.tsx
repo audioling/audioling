@@ -6,6 +6,7 @@ import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
+import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
 import styles from './dashboard-layout.module.scss';
@@ -43,12 +44,13 @@ export function DashboardLayout() {
     return (
         <AnimatePresence mode="sync">
             <motion.div
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                animate="show"
+                exit="hidden"
                 id="dashboard-layout"
-                initial={{ opacity: 0 }}
+                initial="hidden"
                 style={{ height: '100%', width: '100%' }}
                 transition={{ duration: 1 }}
+                variants={animationVariants.fadeIn}
             >
                 {isLargerThanSm ? (
                     <DesktopLayout playerBarHeight={cssVariables.playerBarHeight} />

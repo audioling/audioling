@@ -1,5 +1,6 @@
 import { Box as MantineBox } from '@mantine/core';
 import { clsx } from 'clsx';
+import type { NavLinkProps } from 'react-router-dom';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './text.module.scss';
 
@@ -8,6 +9,7 @@ interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
     as?: React.ElementType | any;
     isSecondary?: boolean;
     size?: Sizes;
+    to?: NavLinkProps['to'];
     weight?: Sizes;
 }
 

@@ -1,22 +1,37 @@
+import clsx from 'clsx';
+import { NavLink } from 'react-router-dom';
 import styles from './album-card.module.scss';
 
 interface AlbumCardProps {
-    alt: string;
-    descriptions: string[];
     image: string;
+    metadata: {
+        path: string;
+        text: string;
+    }[];
+    title: {
+        path: string;
+        text: string;
+    };
 }
 
-export function AlbumCard({ image, alt, descriptions }: AlbumCardProps) {
+export function AlbumCard({ image, metadata, title }: AlbumCardProps) {
     return (
         <div className={styles.card}>
             <div className={styles.imageContainer}>
-                <img alt={alt} className={styles.image} src={image} />
+                <img className={styles.image} src={image} />
             </div>
             <div className={styles.descriptionContainer}>
-                {descriptions.map((description, index) => (
-                    <p key={index} className={styles.description}>
-                        {description}
-                    </p>
+                <NavLink className={styles.description} to={title.path}>
+                    {title.text}
+                </NavLink>
+                {metadata.map(({ path, text }, index) => (
+                    <NavLink
+                        key={index}
+                        className={clsx(styles.description, styles.secondary)}
+                        to={path}
+                    >
+                        {text}
+                    </NavLink>
                 ))}
             </div>
         </div>
