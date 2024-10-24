@@ -32,7 +32,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                         <AlbumCard
                             alt={album.name}
                             descriptions={[album.name, album.artists[0]?.name]}
-                            image={`${baseUrl}${album.imageUrl}`}
+                            image={`${baseUrl}${album.imageUrl}&size=200`}
                         />
                     ),
                     id: album.id,
