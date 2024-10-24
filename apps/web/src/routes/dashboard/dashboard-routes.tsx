@@ -1,4 +1,6 @@
+import { Suspense } from 'react';
 import { type RouteObject } from 'react-router-dom';
+import { HomeRoute } from '@/features/dashboard/home/home-route.tsx';
 import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-library-edit-route.tsx';
 import { LibraryAddRoute } from '@/features/library/library-add/library-add-route.tsx';
 import { LibraryEditRoute } from '@/features/library/library-edit/library-edit-route.tsx';
@@ -17,7 +19,7 @@ export const dashboardRoutes: RouteObject[] = [
                             {
                                 children: [
                                     {
-                                        element: <div>Hello, from home</div>,
+                                        element: <HomeRoute />,
                                         index: true,
                                         path: 'home',
                                     },

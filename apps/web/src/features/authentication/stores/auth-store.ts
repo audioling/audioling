@@ -137,3 +137,7 @@ export const useSelectedLibrary = () => {
 export const useSetSelectedLibrary = () => {
     return useAuthStore((state) => state.setSelectedLibrary);
 };
+
+export const useAuthBaseUrl = () => {
+    return useAuthStore((state) => state.baseUrl);
+};
