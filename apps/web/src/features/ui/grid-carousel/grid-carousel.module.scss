@@ -1,0 +1,51 @@
+@use '@/styles/base';
+
+.grid-carousel {
+    container-type: inline-size;
+    container-name: grid-carousel;
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-md;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(20%, 1fr));
+    gap: 1rem;
+    height: calc(var(--row-count) * (100cqw / 3 + 3rem));
+    margin-bottom: 1rem;
+    overflow: hidden;
+
+    @include base.container-larger-than-sm {
+        grid-template-columns: repeat(4, minmax(20%, 1fr));
+        height: calc(var(--row-count) * (100cqw / 4 + 3rem));
+    }
+
+    @include base.container-larger-than-md {
+        grid-template-columns: repeat(5, minmax(15%, 1fr));
+        height: calc(var(--row-count) * (100cqw / 5 + 3rem));
+    }
+
+    @include base.container-larger-than-lg {
+        grid-template-columns: repeat(6, minmax(15%, 1fr));
+        height: calc(var(--row-count) * (100cqw / 6 + 3rem));
+    }
+
+    @include base.container-larger-than-xl {
+        grid-template-columns: repeat(8, minmax(10%, 1fr));
+        height: calc(var(--row-count) * (100cqw / 8 + 3rem));
+    }
+
+    @include base.container-larger-than-xxl {
+        grid-template-columns: repeat(10, minmax(5%, 1fr));
+        height: calc(var(--row-count) * (100cqw / 10 + 3rem));
+    }
+}
