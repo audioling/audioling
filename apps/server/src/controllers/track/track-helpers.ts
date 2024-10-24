@@ -11,7 +11,7 @@ export const trackHelpers = {
     ): TrackEntry => {
         return {
             ...track,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, track.id),
+            imageUrl: controllerHelpers.getImageUrl(libraryId, track.id, LibraryItemType.TRACK),
             itemType: LibraryItemType.TRACK,
             libraryId,
             thumbHash,

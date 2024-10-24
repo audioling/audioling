@@ -17,7 +17,11 @@ export const playlistHelpers = {
     ): PlaylistEntry => {
         return {
             ...playlist,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, playlist.id),
+            imageUrl: controllerHelpers.getImageUrl(
+                libraryId,
+                playlist.id,
+                LibraryItemType.PLAYLIST,
+            ),
             itemType: LibraryItemType.PLAYLIST,
             libraryId,
             thumbHash,
@@ -30,7 +34,7 @@ export const playlistHelpers = {
     ): PlaylistTrackEntry => {
         return {
             ...track,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, track.id),
+            imageUrl: controllerHelpers.getImageUrl(libraryId, track.id, LibraryItemType.TRACK),
             itemType: LibraryItemType.TRACK,
             libraryId,
             thumbHash,

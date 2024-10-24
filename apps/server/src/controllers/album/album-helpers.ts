@@ -11,7 +11,7 @@ export const albumHelpers = {
     ): AlbumEntry => {
         return {
             ...album,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, album.id),
+            imageUrl: controllerHelpers.getImageUrl(libraryId, album.id, LibraryItemType.ALBUM),
             itemType: LibraryItemType.ALBUM,
             libraryId,
             thumbHash,
