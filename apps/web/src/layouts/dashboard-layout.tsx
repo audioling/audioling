@@ -48,7 +48,7 @@ export function DashboardLayout() {
                 id="dashboard-layout"
                 initial={{ opacity: 0 }}
                 style={{ height: '100%', width: '100%' }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 1 }}
             >
                 {isLargerThanSm ? (
                     <DesktopLayout playerBarHeight={cssVariables.playerBarHeight} />
@@ -116,9 +116,9 @@ function MobileLayout(props: { navBarBottomHeight: string }) {
     return (
         <Allotment vertical>
             <Allotment.Pane>
-                <div className={styles.content} id="content-container">
+                <ScrollArea className={styles.content} id="content-container">
                     <Outlet />
-                </div>
+                </ScrollArea>
             </Allotment.Pane>
             <Allotment.Pane
                 maxSize={navBarBottomHeightNumber}
