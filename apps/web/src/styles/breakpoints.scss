@@ -2,6 +2,7 @@ $screen-sm-min: 36rem; // 576px
 $screen-md-min: 48rem; // 768px
 $screen-lg-min: 62rem; // 992px
 $screen-xl-min: 75rem; // 1200px
+$screen-xxl-min: 90rem; // 1440px
 
 @mixin larger-than-sm {
     @media (min-width: #{$screen-sm-min}) {
@@ -27,6 +28,12 @@ $screen-xl-min: 75rem; // 1200px
     }
 }
 
+@mixin larger-than-xxl {
+    @media (min-width: #{$screen-xxl-min}) {
+        @content;
+    }
+}
+
 @mixin smaller-than($breakpoint) {
     @media (max-width: $breakpoint) {
         @content;
@@ -35,6 +42,36 @@ $screen-xl-min: 75rem; // 1200px
 
 @mixin larger-than($breakpoint) {
     @media (min-width: $breakpoint) {
+        @content;
+    }
+}
+
+@mixin container-larger-than-sm {
+    @container (min-width: #{$screen-sm-min}) {
+        @content;
+    }
+}
+
+@mixin container-larger-than-md {
+    @container (min-width: #{$screen-md-min}) {
+        @content;
+    }
+}
+
+@mixin container-larger-than-lg {
+    @container (min-width: #{$screen-lg-min}) {
+        @content;
+    }
+}
+
+@mixin container-larger-than-xl {
+    @container (min-width: #{$screen-xl-min}) {
+        @content;
+    }
+}
+
+@mixin container-larger-than-xxl {
+    @container (min-width: #{$screen-xxl-min}) {
         @content;
     }
 }

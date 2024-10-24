@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react';
-import { DndContext } from '@dnd-kit/core';
 import { Allotment } from 'allotment';
-import { AnimatePresence } from 'framer-motion';
-import { createPortal } from 'react-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
-import { useDnd } from '@/features/ui/dnd/hooks/use-dnd.tsx';
-import { EntityTableRowDragOverlay } from '@/features/ui/entity-table/entity-table-row-drag-overlay.tsx';
+import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
-import styles from './dashboard-layout.module.scss';
 import 'allotment/dist/style.css';
 
-export const DashboardLayout = () => {
-    const { dndContextProps } = useDnd({});
+import styles from './dashboard-layout.module.scss';
+
+export function DashboardLayout() {
     const isLargerThanSm = useIsLargerThanSm();
 
     const [cssVariables, setCssVariables] = useState<Record<string, string>>({
@@ -40,19 +37,29 @@ export const DashboardLayout = () => {
         });
     }, []);
 
+    if (isLargerThanSm === undefined) {
+        return null;
+    }
+
     return (
-        <AnimatePresence>
-            <DndContext {...dndContextProps}>
+        <AnimatePresence mode="sync">
+            <motion.div
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                id="dashboard-layout"
+                initial={{ opacity: 0 }}
+                style={{ height: '100%', width: '100%' }}
+                transition={{ duration: 0.5 }}
+            >
                 {isLargerThanSm ? (
                     <DesktopLayout playerBarHeight={cssVariables.playerBarHeight} />
                 ) : (
                     <MobileLayout navBarBottomHeight={cssVariables.navBarBottomHeight} />
                 )}
-                {createPortal(<EntityTableRowDragOverlay />, document.body)}
-            </DndContext>
+            </motion.div>
         </AnimatePresence>
     );
-};
+}
 
 function DesktopLayout(props: { playerBarHeight: string }) {
     const { playerBarHeight } = props;
@@ -76,7 +83,7 @@ function DesktopLayout(props: { playerBarHeight: string }) {
                     className={styles.navBarContainer}
                     maxSize={350}
                     minSize={250}
-                    preferredSize={300}
+                    preferredSize={200}
                     snap={true}
                 >
                     <div className={styles.navBarSide} id="nav-bar-side-container">
@@ -84,9 +91,9 @@ function DesktopLayout(props: { playerBarHeight: string }) {
                     </div>
                 </Allotment.Pane>
                 <Allotment.Pane className={styles.contentContainer}>
-                    <div className={styles.content} id="content-container">
+                    <ScrollArea className={styles.content} id="content-container">
                         <Outlet />
-                    </div>
+                    </ScrollArea>
                 </Allotment.Pane>
             </Allotment>
             <Allotment.Pane

@@ -46,6 +46,11 @@ export type AppThemeConfiguration = {
         'base-title-font-weight-sm': CSSProperties['fontWeight'];
         'base-title-font-weight-xl': CSSProperties['fontWeight'];
         'base-title-font-weight-xs': CSSProperties['fontWeight'];
+        'breakpoint-lg': CSSProperties['width'];
+        'breakpoint-md': CSSProperties['width'];
+        'breakpoint-sm': CSSProperties['width'];
+        'breakpoint-xl': CSSProperties['width'];
+        'breakpoint-xxl': CSSProperties['width'];
         'button-danger-background-color': CSSProperties['backgroundColor'];
         'button-danger-border': CSSProperties['border'];
         'button-danger-font-color': CSSProperties['color'];
