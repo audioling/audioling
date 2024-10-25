@@ -2,4 +2,15 @@
 
 .container {
     @include base.text-ellipsis;
+
+    color: var(--nav-item-font-color);
+    background-color: var(--nav-item-background-color);
+
+    &:hover {
+        background-color: var(--nav-item-background-hover-color);
+    }
+}
+
+.dragged-over {
+    background: base.$primary-color;
 }

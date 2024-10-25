@@ -6,7 +6,10 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    pointer-events: auto;
+
+    &.dragging {
+        filter: opacity(0.5) blur(2px);
+    }
 }
 
 .image-container {
@@ -26,9 +29,10 @@
         height: 100%;
         content: '';
         user-select: none;
-        background: linear-gradient(0deg, rgb(0 0 0 / 90%) 100%, rgb(0 0 0 / 0%) 100%);
         opacity: 0;
         transition: all 0.2s ease-in-out;
+
+        // background: linear-gradient(0deg, rgb(0 0 0 / 90%) 100%, rgb(0 0 0 / 0%) 100%);
     }
 
     &:hover {
