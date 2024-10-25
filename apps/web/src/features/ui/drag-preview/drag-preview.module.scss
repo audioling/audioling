@@ -1,0 +1,12 @@
+@use '@/styles/base';
+
+.preview {
+    width: 12rem;
+    height: 2rem;
+    padding: base.$gap-sm;
+    font-size: base.$font-size-md;
+    background: rgb(50 50 50);
+    border-radius: base.$border-radius-md;
+
+    @include base.text-ellipsis;
+}
