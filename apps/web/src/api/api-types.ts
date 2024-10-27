@@ -3,6 +3,7 @@ import type {
     GetApiLibraryIdAlbumArtists200DataItem,
     GetApiLibraryIdAlbums200DataItem,
     GetApiLibraryIdGenres200DataItem,
+    GetApiLibraryIdTracks200DataItem,
     GetApiUsers200DataItem,
     GetPing200,
     PostAuthSignIn200Data,
@@ -23,3 +24,5 @@ export interface AlbumArtist extends GetApiLibraryIdAlbumArtists200DataItem {}
 export interface Artist extends GetApiLibraryIdAlbumArtists200DataItem {}
 
 export interface Genre extends GetApiLibraryIdGenres200DataItem {}
+
+export interface Track extends GetApiLibraryIdTracks200DataItem {}
