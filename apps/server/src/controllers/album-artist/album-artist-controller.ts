@@ -8,6 +8,7 @@ import type {
 import { albumArtistHelpers } from '@/controllers/album-artist/album-artist-helpers.js';
 import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import { apiSchema } from '@/controllers/index.js';
+import type { CountResponse } from '@/controllers/shared-api-types.js';
 import type { TrackListResponse } from '@/controllers/track/track-api-types.js';
 import { trackHelpers } from '@/controllers/track/track-helpers.js';
 import type { AdapterVariables } from '@/middlewares/adapter-middleware.js';
@@ -66,6 +67,33 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
         },
     );
 
+    // ANCHOR - GET /count
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/count',
+            summary: 'Get all album artists count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.albumArtist['/count'].get,
+        }),
+        async (c) => {
+            const query = c.req.valid('query');
+            const { adapter } = c.var;
+
+            const artists = await service.albumArtist.list(adapter, {
+                folderId: query.folderId,
+                limit: 1,
+                offset: 0,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+            });
+
+            const response: CountResponse = artists.totalRecordCount || 0;
+
+            return c.json(response, 200);
+        },
+    );
+
     // ANCHOR - GET /{id}
     controller.openapi(
         createRoute({
@@ -114,7 +142,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
 
             const response: AlbumListResponse = {
                 data: albums.items.map((item) =>
-                    albumHelpers.adapterToResponse(item, adapter._getLibrary().id),
+                    albumHelpers.adapterToResponse(item, adapter._getLibrary().id, null),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -155,7 +183,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id),
+                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, null),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(

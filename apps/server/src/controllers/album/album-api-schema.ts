@@ -4,7 +4,11 @@ import {
     albumListRequestSchema,
     albumListResponseSchema,
 } from '@/controllers/album/album-api-types.js';
-import { EmptyResponseSchema, schemaResponse } from '@/controllers/shared-api-types.js';
+import {
+    CountResponseSchema,
+    EmptyResponseSchema,
+    schemaResponse,
+} from '@/controllers/shared-api-types.js';
 import {
     trackListRequestSchema,
     trackListResponseSchema,
@@ -22,6 +26,18 @@ export const albumApiSchema = {
                 [401, 403, 422, 500],
             ),
             security: [{ Bearer: [] }],
+        },
+    },
+    '/count': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: albumListRequestSchema.omit({ limit: true, offset: true }),
+            },
+            responses: schemaResponse(
+                { description: 'Get albums count', schema: CountResponseSchema, status: 200 },
+                [401, 403, 422, 500],
+            ),
         },
     },
     '/{id}': {

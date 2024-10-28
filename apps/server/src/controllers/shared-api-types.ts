@@ -26,6 +26,10 @@ export const EmptyResponseSchema = z.null();
 
 export const EmptyBodySchema = z.object({});
 
+export const CountResponseSchema = z.number();
+
+export type CountResponse = z.infer<typeof CountResponseSchema>;
+
 export const createErrorResponseSchema = (opts: { name: string; status: number }) => {
     return z
         .object({

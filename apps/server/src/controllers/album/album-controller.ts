@@ -5,6 +5,7 @@ import type {
 } from '@/controllers/album/album-api-types.js';
 import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import { apiSchema } from '@/controllers/index.js';
+import type { CountResponse } from '@/controllers/shared-api-types.js';
 import type { TrackListResponse } from '@/controllers/track/track-api-types.js';
 import { trackHelpers } from '@/controllers/track/track-helpers.js';
 import type { AdapterVariables } from '@/middlewares/adapter-middleware.js';
@@ -59,6 +60,33 @@ export const initAlbumController = (modules: { service: AppService }) => {
                     totalRecordCount: albums.totalRecordCount || 0,
                 },
             };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /count
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/count',
+            summary: 'Get all albums count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.album['/count'].get,
+        }),
+        async (c) => {
+            const query = c.req.valid('query');
+            const { adapter } = c.var;
+
+            const albums = await service.album.list(adapter, {
+                folderId: query.folderId,
+                limit: 1,
+                offset: 0,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+            });
+
+            const response: CountResponse = albums.totalRecordCount || 0;
 
             return c.json(response, 200);
         },

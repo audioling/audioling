@@ -1,6 +1,7 @@
 import { createRoute } from '@hono/zod-openapi';
 import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import { apiSchema } from '@/controllers/index.js';
+import type { CountResponse } from '@/controllers/shared-api-types.js';
 import type {
     TrackDetailResponse,
     TrackListResponse,
@@ -57,6 +58,33 @@ export const initTrackController = (modules: { service: AppService }) => {
                     totalRecordCount: tracks.totalRecordCount,
                 },
             };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /count
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/count',
+            summary: 'Get all tracks count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/count'].get,
+        }),
+        async (c) => {
+            const query = c.req.valid('query');
+            const { adapter } = c.var;
+
+            const tracks = await service.track.list(adapter, {
+                folderId: query.folderId,
+                limit: 1,
+                offset: 0,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+            });
+
+            const response: CountResponse = tracks.totalRecordCount || 0;
 
             return c.json(response, 200);
         },

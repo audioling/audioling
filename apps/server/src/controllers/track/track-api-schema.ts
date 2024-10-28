@@ -1,5 +1,9 @@
 import { z } from '@hono/zod-openapi';
-import { EmptyResponseSchema, schemaResponse } from '@/controllers/shared-api-types.js';
+import {
+    CountResponseSchema,
+    EmptyResponseSchema,
+    schemaResponse,
+} from '@/controllers/shared-api-types.js';
 import {
     trackDetailResponseSchema,
     trackListRequestSchema,
@@ -22,6 +26,18 @@ export const trackApiSchema = {
                 [401, 403, 422, 500],
             ),
             security: [{ Bearer: [] }],
+        },
+    },
+    '/count': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: trackListRequestSchema.omit({ limit: true, offset: true }),
+            },
+            responses: schemaResponse(
+                { description: 'Get tracks count', schema: CountResponseSchema, status: 200 },
+                [401, 403, 422, 500],
+            ),
         },
     },
     '/{id}': {

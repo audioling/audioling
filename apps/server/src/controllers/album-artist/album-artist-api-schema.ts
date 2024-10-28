@@ -8,7 +8,11 @@ import {
     albumArtistListRequestSchema,
     albumArtistListResponseSchema,
 } from '@/controllers/album-artist/album-artist-api-types.js';
-import { EmptyResponseSchema, schemaResponse } from '@/controllers/shared-api-types.js';
+import {
+    CountResponseSchema,
+    EmptyResponseSchema,
+    schemaResponse,
+} from '@/controllers/shared-api-types.js';
 import {
     trackListRequestSchema,
     trackListResponseSchema,
@@ -30,6 +34,22 @@ export const albumArtistApiSchema = {
                 [401, 403, 422, 500],
             ),
             security: [{ Bearer: [] }],
+        },
+    },
+    '/count': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: albumArtistListRequestSchema.omit({ limit: true, offset: true }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Get album artists count',
+                    schema: CountResponseSchema,
+                    status: 200,
+                },
+                [401, 403, 422, 500],
+            ),
         },
     },
     '/{id}': {
