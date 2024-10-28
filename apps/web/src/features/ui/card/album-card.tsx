@@ -1,3 +1,4 @@
+import type { HTMLAttributes } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
@@ -10,19 +11,20 @@ import { NavLink } from 'react-router-dom';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import styles from './album-card.module.scss';
 
-interface AlbumCardProps {
+interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
     image: string;
     metadata: {
         path: string;
         text: string;
     }[];
-    title: {
+    titledata: {
         path: string;
         text: string;
     };
 }
 
-export function AlbumCard({ image, metadata, title }: AlbumCardProps) {
+export function AlbumCard(props: AlbumCardProps) {
+    const { image, metadata, titledata, className, ...htmlProps } = props;
     const ref = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -35,7 +37,7 @@ export function AlbumCard({ image, metadata, title }: AlbumCardProps) {
                 element: ref.current,
                 getInitialData: () => ({
                     image,
-                    title: title.text,
+                    title: titledata.text,
                     type: 'album',
                 }),
                 onDragStart: () => setIsDragging(true),
@@ -52,16 +54,22 @@ export function AlbumCard({ image, metadata, title }: AlbumCardProps) {
                 },
             }),
         );
-    }, [title.text, image]);
+    }, [image, titledata.text]);
 
     return (
-        <div ref={ref} className={clsx(styles.card, { [styles.dragging]: isDragging })}>
+        <div
+            ref={ref}
+            className={clsx(styles.card, className, {
+                [styles.dragging]: isDragging,
+            })}
+            {...htmlProps}
+        >
             <div className={styles.imageContainer}>
                 <img className={styles.image} src={image} />
             </div>
             <div className={styles.descriptionContainer}>
-                <NavLink className={styles.description} to={title.path}>
-                    {title.text}
+                <NavLink className={styles.description} to={titledata.path}>
+                    {titledata.text}
                 </NavLink>
                 {metadata.map(({ path, text }, index) => (
                     <NavLink

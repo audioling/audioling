@@ -43,7 +43,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                                     text: album.artists[0]?.name,
                                 },
                             ]}
-                            title={{
+                            titledata={{
                                 path: generatePath(APP_ROUTE.DASHBOARD_ALBUMS_DETAIL, {
                                     albumId: album.id,
                                     libraryId,
