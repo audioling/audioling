@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Allotment } from 'allotment';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Outlet } from 'react-router-dom';
@@ -92,8 +92,12 @@ function DesktopLayout(props: { playerBarHeight: string }) {
                     </div>
                 </Allotment.Pane>
                 <Allotment.Pane className={styles.contentContainer}>
-                    <ScrollArea className={styles.content} id="content-container">
-                        <Outlet />
+                    <ScrollArea>
+                        <div className={styles.content} id="content-container">
+                            <Suspense fallback={<></>}>
+                                <Outlet />
+                            </Suspense>
+                        </div>
                     </ScrollArea>
                 </Allotment.Pane>
             </Allotment>
