@@ -17,12 +17,12 @@ export interface AuthUser extends PostAuthSignIn200Data {}
 
 export interface User extends GetApiUsers200DataItem {}
 
-export interface Album extends GetApiLibraryIdAlbums200DataItem {}
+export interface AlbumItem extends GetApiLibraryIdAlbums200DataItem {}
 
-export interface AlbumArtist extends GetApiLibraryIdAlbumArtists200DataItem {}
+export interface AlbumArtistItem extends GetApiLibraryIdAlbumArtists200DataItem {}
 
-export interface Artist extends GetApiLibraryIdAlbumArtists200DataItem {}
+export interface ArtistItem extends GetApiLibraryIdAlbumArtists200DataItem {}
 
-export interface Genre extends GetApiLibraryIdGenres200DataItem {}
+export interface GenreItem extends GetApiLibraryIdGenres200DataItem {}
 
-export interface Track extends GetApiLibraryIdTracks200DataItem {}
+export interface TrackItem extends GetApiLibraryIdTracks200DataItem {}
