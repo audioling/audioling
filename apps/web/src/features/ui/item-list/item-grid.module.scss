@@ -1,0 +1,43 @@
+@use '@/styles/base';
+
+.item-grid-container {
+    container-type: inline-size;
+    container-name: grid-list;
+    width: 100%;
+    height: 100%;
+}
+
+.grid-list-component {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid-item-component {
+    display: flex;
+    width: calc(100% / 2);
+    padding: base.$gap-sm;
+
+    @include base.container-larger-than-sm {
+        width: calc(100% / 3);
+    }
+
+    @include base.container-larger-than-md {
+        width: calc(100% / 4);
+    }
+
+    @include base.container-larger-than-lg {
+        width: calc(100% / 5);
+    }
+
+    @include base.container-larger-than-xl {
+        width: calc(100% / 6);
+    }
+
+    @include base.container-larger-than-xxl {
+        width: calc(100% / 7);
+    }
+
+    @include base.container-larger-than-xxxl {
+        width: calc(100% / 9);
+    }
+}
