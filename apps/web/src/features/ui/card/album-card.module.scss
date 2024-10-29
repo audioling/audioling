@@ -29,14 +29,13 @@
         height: 100%;
         content: '';
         user-select: none;
+        background: linear-gradient(0deg, rgb(0 0 0 / 90%) 100%, rgb(0 0 0 / 0%) 100%);
         opacity: 0;
         transition: all 0.2s ease-in-out;
-
-        // background: linear-gradient(0deg, rgb(0 0 0 / 90%) 100%, rgb(0 0 0 / 0%) 100%);
     }
 
     &:hover {
-        filter: blur(2px);
+        // filter: blur(2px);
 
         &::before {
             opacity: 0.5;

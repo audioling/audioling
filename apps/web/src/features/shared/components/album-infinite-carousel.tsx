@@ -33,6 +33,8 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                 page.data.map((album) => ({
                     content: (
                         <MemoizedAlbumCard
+                            componentState="loaded"
+                            id={album.id}
                             image={`${baseUrl}${album.imageUrl}&size=300`}
                             metadata={[
                                 {
@@ -43,6 +45,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                                     text: album.artists[0]?.name,
                                 },
                             ]}
+                            metadataLines={1}
                             titledata={{
                                 path: generatePath(APP_ROUTE.DASHBOARD_ALBUMS_DETAIL, {
                                     albumId: album.id,

@@ -4,19 +4,24 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
+import { Skeleton } from '@mantine/core';
 import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router-dom';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
 import styles from './album-card.module.scss';
 
 interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
+    componentState: 'loading' | 'loaded' | 'scrolling';
+    id: string;
     image: string;
     metadata: {
         path: string;
         text: string;
     }[];
+    metadataLines: number;
     titledata: {
         path: string;
         text: string;
@@ -24,7 +29,17 @@ interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function AlbumCard(props: AlbumCardProps) {
-    const { image, metadata, titledata, className, ...htmlProps } = props;
+    const {
+        id,
+        image,
+        componentState,
+        metadata,
+        metadataLines = 1,
+        titledata,
+        className,
+        ...htmlProps
+    } = props;
+
     const ref = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -56,31 +71,57 @@ export function AlbumCard(props: AlbumCardProps) {
         );
     }, [image, titledata.text]);
 
-    return (
-        <div
-            ref={ref}
-            className={clsx(styles.card, className, {
-                [styles.dragging]: isDragging,
-            })}
-            {...htmlProps}
-        >
-            <div className={styles.imageContainer}>
-                <img className={styles.image} src={image} />
-            </div>
-            <div className={styles.descriptionContainer}>
-                <NavLink className={styles.description} to={titledata.path}>
-                    {titledata.text}
-                </NavLink>
-                {metadata.map(({ path, text }, index) => (
-                    <NavLink
-                        key={index}
-                        className={clsx(styles.description, styles.secondary)}
-                        to={path}
-                    >
-                        {text}
-                    </NavLink>
-                ))}
-            </div>
-        </div>
-    );
+    switch (componentState) {
+        default: {
+            return (
+                <div
+                    ref={ref}
+                    className={clsx(styles.card, className, {
+                        [styles.dragging]: isDragging,
+                    })}
+                    {...htmlProps}
+                >
+                    <div className={styles.imageContainer}>
+                        <Skeleton className={styles.image} />
+                    </div>
+                    <div className={styles.descriptionContainer}>
+                        <Text>&nbsp;</Text>
+                        {Array.from({ length: metadataLines }).map((_, metadataIndex) => (
+                            <Text key={`${id}-metadata-${metadataIndex}`}>&nbsp;</Text>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        case 'loaded': {
+            return (
+                <div
+                    ref={ref}
+                    className={clsx(styles.card, className, {
+                        [styles.dragging]: isDragging,
+                    })}
+                    {...htmlProps}
+                >
+                    <div className={styles.imageContainer}>
+                        <Skeleton className={styles.image} />
+                        <img className={styles.image} src={image} />
+                    </div>
+                    <div className={styles.descriptionContainer}>
+                        <NavLink className={styles.description} to={titledata.path}>
+                            {titledata.text}
+                        </NavLink>
+                        {metadata.map(({ path, text }, index) => (
+                            <NavLink
+                                key={index}
+                                className={clsx(styles.description, styles.secondary)}
+                                to={path}
+                            >
+                                {text}
+                            </NavLink>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+    }
 }
