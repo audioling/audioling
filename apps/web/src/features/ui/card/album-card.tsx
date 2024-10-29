@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router-dom';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
+import { Image } from '@/features/ui/image/image.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './album-card.module.scss';
 
@@ -103,8 +104,7 @@ export function AlbumCard(props: AlbumCardProps) {
                     {...htmlProps}
                 >
                     <div className={styles.imageContainer}>
-                        <Skeleton className={styles.image} />
-                        <img className={styles.image} src={image} />
+                        <Image className={styles.image} src={image} />
                     </div>
                     <div className={styles.descriptionContainer}>
                         <NavLink className={styles.description} to={titledata.path}>
