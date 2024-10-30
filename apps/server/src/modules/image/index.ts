@@ -8,19 +8,13 @@ import { CONSTANTS } from '@/constants.js';
 export const initImageModule = () => {
     return {
         generateThumbHash: async (imageBuffer: ArrayBuffer) => {
-            const image = sharp(imageBuffer);
-            const resizedBlurImage = image.resize(100, 100, { fit: 'inside' });
-            const resizedBlurImageBuffer = await resizedBlurImage
+            const image = sharp(imageBuffer).resize(100, 100, { fit: 'inside' });
+            const { data, info } = await image
                 .ensureAlpha()
                 .raw()
                 .toBuffer({ resolveWithObject: true });
 
-            const binaryThumbHash = rgbaToThumbHash(
-                resizedBlurImageBuffer.info.width,
-                resizedBlurImageBuffer.info.height,
-                resizedBlurImageBuffer.data,
-            );
-
+            const binaryThumbHash = rgbaToThumbHash(info.width, info.height, data);
             const base64ThumbHash = Buffer.from(binaryThumbHash).toString('base64');
 
             return base64ThumbHash;

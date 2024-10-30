@@ -57,12 +57,9 @@
     border: 0;
 }
 
-.description-container {
-    padding-top: base.$gap-sm;
-}
-
 .description {
     display: block;
+    padding-top: base.$gap-xs;
     font-size: base.$font-size-md;
     transition: all 0.3s ease-in-out;
 

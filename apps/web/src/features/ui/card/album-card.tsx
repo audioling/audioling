@@ -23,6 +23,7 @@ interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
         text: string;
     }[];
     metadataLines: number;
+    thumbHash?: string;
     titledata: {
         path: string;
         text: string;
@@ -33,6 +34,7 @@ export function AlbumCard(props: AlbumCardProps) {
     const {
         id,
         image,
+        thumbHash,
         componentState,
         metadata,
         metadataLines = 1,
@@ -104,7 +106,7 @@ export function AlbumCard(props: AlbumCardProps) {
                     {...htmlProps}
                 >
                     <div className={styles.imageContainer}>
-                        <Image className={styles.image} src={image} />
+                        <Image className={styles.image} src={image} thumbHash={thumbHash} />
                     </div>
                     <div className={styles.descriptionContainer}>
                         <NavLink className={styles.description} to={titledata.path}>

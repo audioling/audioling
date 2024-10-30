@@ -29,6 +29,7 @@ function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridItemCont
                 image={`${context?.baseUrl}${data.imageUrl}&size=300`}
                 metadata={[{ path: '/', text: data.artists[0]?.name }]}
                 metadataLines={1}
+                thumbHash={data.thumbHash ?? undefined}
                 titledata={{ path: '/', text: data.name }}
             />
         );
