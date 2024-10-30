@@ -86,10 +86,16 @@ export function InfiniteAlbumGrid({
             if (pagesToLoad.length > 0) {
                 for (const page of pagesToLoad) {
                     loadedPages.current[page] = true;
-                    const { data } = await getApiLibraryIdAlbums(libraryId, {
-                        ...params,
-                        limit: PAGE_SIZE.toString(),
-                        offset: (page * PAGE_SIZE).toString(),
+
+                    const { data } = await queryClient.fetchQuery({
+                        queryFn: () =>
+                            getApiLibraryIdAlbums(libraryId, {
+                                ...params,
+                                limit: PAGE_SIZE.toString(),
+                                offset: (page * PAGE_SIZE).toString(),
+                            }),
+                        queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, params),
+                        staleTime: 60 * 1000,
                     });
 
                     setData((prevData) => {
@@ -99,11 +105,6 @@ export function InfiniteAlbumGrid({
                         });
                         return newData;
                     });
-
-                    queryClient.setQueryData(
-                        getGetApiLibraryIdAlbumsQueryKey(libraryId, params),
-                        data,
-                    );
                 }
             }
         },
