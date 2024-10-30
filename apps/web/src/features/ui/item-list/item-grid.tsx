@@ -55,13 +55,13 @@ interface InfiniteItemGridProps<T, C extends Record<string, unknown>> {
     GridComponent: React.ComponentType<InfiniteGridItemProps<T, C>>;
     context?: C;
     data: (T | undefined)[];
+    initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
     onEndReached?: (index: number) => void;
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
-    overscan?: number;
 }
 
 export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
@@ -72,11 +72,11 @@ export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
         data,
         GridComponent,
         itemCount = 0,
+        initialScrollIndex,
         isScrolling,
         onEndReached,
         onRangeChanged,
         onScroll,
-        overscan = 10,
         onStartReached,
     } = props;
     const rootRef = useRef(null);
@@ -102,9 +102,7 @@ export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
 
         if (scroller && root) {
             initialize({
-                elements: {
-                    viewport: scroller,
-                },
+                elements: { viewport: scroller },
                 target: root,
             });
         }
@@ -126,11 +124,11 @@ export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
                 data={data}
                 endReached={onEndReached}
                 increaseViewportBy={300}
+                initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={(index, data) => (
                     <GridComponent context={context} data={data} index={index} />
                 )}
-                overscan={overscan}
                 rangeChanged={onRangeChanged}
                 scrollerRef={setScroller}
                 startReached={onStartReached}
