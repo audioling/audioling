@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import { generatePath, NavLink } from 'react-router-dom';
 import { Text } from '@/features/ui/text/text.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
+import type { DragData } from '@/utils/drag-drop.ts';
+import { dndUtils, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './nav-bar-playlist-item.module.scss';
 
 interface NavBarPlaylistItemProps {
@@ -21,8 +23,14 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
         if (!ref.current) return;
 
         return dropTargetForElements({
-            canDrop: () => {
-                return true;
+            canDrop: (args) => {
+                const data = args.source.data as DragData;
+                return dndUtils.isDropTarget(data.type, [
+                    DragTarget.ALBUM,
+                    DragTarget.ALBUM_ARTIST,
+                    DragTarget.ARTIST,
+                    DragTarget.PLAYLIST,
+                ]);
             },
             element: ref.current,
             onDragEnter: () => setIsDraggedOver(true),

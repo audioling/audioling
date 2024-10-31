@@ -12,6 +12,7 @@ import { NavLink } from 'react-router-dom';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { Image } from '@/features/ui/image/image.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
+import { dndUtils, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './album-card.module.scss';
 
 interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -23,7 +24,6 @@ interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
         text: string;
     }[];
     metadataLines: number;
-    thumbHash?: string;
     titledata: {
         path: string;
         text: string;
@@ -34,7 +34,6 @@ export function AlbumCard(props: AlbumCardProps) {
     const {
         id,
         image,
-        thumbHash,
         componentState,
         metadata,
         metadataLines = 1,
@@ -53,11 +52,12 @@ export function AlbumCard(props: AlbumCardProps) {
         return combine(
             draggable({
                 element: ref.current,
-                getInitialData: () => ({
-                    image,
-                    title: titledata.text,
-                    type: 'album',
-                }),
+                getInitialData: () => {
+                    return dndUtils.generateDragData(id, DragTarget.ALBUM, {
+                        image,
+                        title: titledata.text,
+                    });
+                },
                 onDragStart: () => setIsDragging(true),
                 onDrop: () => setIsDragging(false),
                 onGenerateDragPreview: (data) => {
@@ -72,7 +72,7 @@ export function AlbumCard(props: AlbumCardProps) {
                 },
             }),
         );
-    }, [image, titledata.text]);
+    }, [id, image, titledata.text]);
 
     switch (componentState) {
         default: {
@@ -106,7 +106,7 @@ export function AlbumCard(props: AlbumCardProps) {
                     {...htmlProps}
                 >
                     <div className={styles.imageContainer}>
-                        <Image className={styles.image} src={image} thumbHash={thumbHash} />
+                        <Image className={styles.image} src={image} />
                     </div>
                     <div className={styles.descriptionContainer}>
                         <NavLink className={styles.description} to={titledata.path}>
