@@ -5,11 +5,12 @@ import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-
 import { LibraryAddRoute } from '@/features/library/library-add/library-add-route.tsx';
 import { LibraryEditRoute } from '@/features/library/library-edit/library-edit-route.tsx';
 import { LibrarySelectionRoute } from '@/features/library/library-selection/library-selection-route.tsx';
+import { TrackListRoute } from '@/features/tracks/list/track-list-route.tsx';
 import { AuthProtectedLayout } from '@/layouts/auth-protected-layout.tsx';
 import { DashboardLayout } from '@/layouts/dashboard-layout.tsx';
 import { LibraryIdSelectedLayout } from '@/layouts/library-id-selected-layout.tsx';
 
-const albumRoutes = [
+const albumRoutes: RouteObject[] = [
     {
         element: <AlbumListRoute />,
         path: 'albums',
@@ -17,6 +18,13 @@ const albumRoutes = [
     {
         element: <></>,
         path: 'albums/:albumId',
+    },
+];
+
+const trackRoutes: RouteObject[] = [
+    {
+        element: <TrackListRoute />,
+        path: 'tracks',
     },
 ];
 
@@ -28,6 +36,7 @@ export const dashboardRoutes: RouteObject[] = [
                     {
                         children: [
                             ...albumRoutes,
+                            ...trackRoutes,
                             {
                                 element: <HomeRoute />,
                                 index: true,

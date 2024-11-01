@@ -1,6 +1,9 @@
 export const itemListHelpers = {
     getInitialData(itemCount: number) {
-        const items = Array(itemCount).fill(undefined);
+        const items = new Array(itemCount);
+        for (let i = 0; i < itemCount; i++) {
+            items[i] = undefined;
+        }
         return items;
     },
     getPageMap(itemCount: number, pageSize: number) {
@@ -35,5 +38,15 @@ export const itemListHelpers = {
         }
 
         return pagesToLoad;
+    },
+    table: {
+        columnSizeToStyle(columnSize: number) {
+            if (columnSize > 100000) return `${columnSize - 100000}fr`;
+            return `${columnSize}px`;
+        },
+        numberToColumnSize(size: number, unit: 'px' | 'fr') {
+            if (unit === 'px') return size;
+            return size + 100000;
+        },
     },
 };
