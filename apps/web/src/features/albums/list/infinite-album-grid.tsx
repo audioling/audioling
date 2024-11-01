@@ -8,8 +8,8 @@ import {
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid.tsx';
-import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid.tsx';
+import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
+import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 
 const PAGE_SIZE = 500;
 
@@ -29,7 +29,6 @@ function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridItemCont
                 image={`${context?.baseUrl}${data.imageUrl}&size=300`}
                 metadata={[{ path: '/', text: data.artists[0]?.name }]}
                 metadataLines={1}
-                thumbHash={data.thumbHash ?? undefined}
                 titledata={{ path: '/', text: data.name }}
             />
         );
@@ -87,12 +86,14 @@ export function InfiniteAlbumGrid({
                 for (const page of pagesToLoad) {
                     loadedPages.current[page] = true;
 
+                    const currentOffset = page * PAGE_SIZE;
+
                     const { data } = await queryClient.fetchQuery({
                         queryFn: () =>
                             getApiLibraryIdAlbums(libraryId, {
                                 ...params,
                                 limit: PAGE_SIZE.toString(),
-                                offset: (page * PAGE_SIZE).toString(),
+                                offset: currentOffset.toString(),
                             }),
                         queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, params),
                         staleTime: 60 * 1000,
@@ -100,8 +101,9 @@ export function InfiniteAlbumGrid({
 
                     setData((prevData) => {
                         const newData = [...prevData];
+                        const startIndex = currentOffset;
                         data.forEach((item, index) => {
-                            newData[page * PAGE_SIZE + index] = item;
+                            newData[startIndex + index] = item;
                         });
                         return newData;
                     });
