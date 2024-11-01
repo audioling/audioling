@@ -1,5 +1,6 @@
 import type { ImgHTMLAttributes } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import styles from './image.module.scss';
 import 'react-lazy-load-image-component/src/effects/opacity.css';
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -9,7 +10,7 @@ interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
 export function Image(props: ImageProps) {
     const { ...imgProps } = props;
 
-    return <LazyLoadImage {...imgProps} effect="opacity" />;
+    return <LazyLoadImage {...imgProps} effect="opacity" wrapperClassName={styles.wrapper} />;
 
     // const placeholderSrc = thumbHash ? imageUtils.thumbHashToDataURL(thumbHash) : undefined;
 
