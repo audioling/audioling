@@ -1,3 +1,4 @@
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { LibraryItemType } from '@repo/shared-types';
 
 export enum DragTarget {
@@ -35,5 +36,27 @@ export const dndUtils = {
     },
     isDropTarget: (target: DragTarget, types: DragTarget[]) => {
         return types.includes(target);
+    },
+    reorderById: (args: { edge: Edge | null; idFrom: string; idTo: string; list: string[] }) => {
+        const { edge, idFrom, idTo, list } = args;
+        const indexFrom = list.indexOf(idFrom);
+        const indexTo = list.indexOf(idTo);
+
+        // If dragging to the same position, do nothing
+        if (indexFrom === indexTo) return list;
+
+        // If dragging to the right, but is left edge, do nothing
+        if (edge === 'left' && indexTo > indexFrom) return list;
+
+        // If dragging to the left, but is right edge, do nothing
+        if (edge === 'right' && indexTo < indexFrom) return list;
+
+        return dndUtils.reorderByIndex({ index: indexFrom, list, newIndex: indexTo });
+    },
+    reorderByIndex: (args: { index: number; list: string[]; newIndex: number }) => {
+        const { list, index, newIndex } = args;
+        const newList = [...list];
+        newList.splice(newIndex, 0, newList.splice(index, 1)[0]);
+        return newList;
     },
 };
