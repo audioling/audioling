@@ -59,15 +59,16 @@ export function InfiniteTrackTable({
 
                     const currentOffset = page * PAGE_SIZE;
 
+                    const paramsWithPagination = {
+                        ...params,
+                        limit: PAGE_SIZE.toString(),
+                        offset: currentOffset.toString(),
+                    };
+
                     const { data } = await queryClient.fetchQuery({
-                        queryFn: () =>
-                            getApiLibraryIdTracks(libraryId, {
-                                ...params,
-                                limit: PAGE_SIZE.toString(),
-                                offset: currentOffset.toString(),
-                            }),
-                        queryKey: getGetApiLibraryIdTracksQueryKey(libraryId, params),
-                        staleTime: 60 * 1000,
+                        queryFn: () => getApiLibraryIdTracks(libraryId, paramsWithPagination),
+                        queryKey: getGetApiLibraryIdTracksQueryKey(libraryId, paramsWithPagination),
+                        staleTime: 30 * 1000,
                     });
 
                     setData((prevData) => {

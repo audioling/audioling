@@ -88,15 +88,16 @@ export function InfiniteAlbumGrid({
 
                     const currentOffset = page * PAGE_SIZE;
 
+                    const paramsWithPagination = {
+                        ...params,
+                        limit: PAGE_SIZE.toString(),
+                        offset: currentOffset.toString(),
+                    };
+
                     const { data } = await queryClient.fetchQuery({
-                        queryFn: () =>
-                            getApiLibraryIdAlbums(libraryId, {
-                                ...params,
-                                limit: PAGE_SIZE.toString(),
-                                offset: currentOffset.toString(),
-                            }),
-                        queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, params),
-                        staleTime: 60 * 1000,
+                        queryFn: () => getApiLibraryIdAlbums(libraryId, paramsWithPagination),
+                        queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, paramsWithPagination),
+                        staleTime: 30 * 1000,
                     });
 
                     setData((prevData) => {
