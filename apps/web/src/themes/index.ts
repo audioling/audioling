@@ -137,6 +137,17 @@ export type AppThemeConfiguration = {
         'layout-side-nav-bar-background-color': CSSProperties['backgroundColor'];
         'layout-side-nav-bar-font-color': CSSProperties['color'];
         'layout-side-nav-bar-font-hover-color': CSSProperties['color'];
+        'menu-background-color': CSSProperties['backgroundColor'];
+        'menu-border-radius': CSSProperties['borderRadius'];
+        'menu-box-shadow': CSSProperties['boxShadow'];
+        'menu-item-background-color': CSSProperties['backgroundColor'];
+        'menu-item-font-color': CSSProperties['color'];
+        'menu-item-font-size': CSSProperties['fontSize'];
+        'menu-item-font-weight': CSSProperties['fontWeight'];
+        'menu-item-hover-background-color': CSSProperties['backgroundColor'];
+        'menu-item-hover-font-color': CSSProperties['color'];
+        'menu-item-padding': CSSProperties['padding'];
+        'menu-padding': CSSProperties['padding'];
         'paper-background-color': CSSProperties['backgroundColor'];
         'paper-border-radius': CSSProperties['borderRadius'];
         'paper-padding': CSSProperties['padding'];

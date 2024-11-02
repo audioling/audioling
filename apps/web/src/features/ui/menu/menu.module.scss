@@ -1,0 +1,19 @@
+.dropdown {
+    padding: var(--menu-padding) !important;
+    background-color: var(--menu-background-color) !important;
+    border-radius: var(--menu-border-radius) !important;
+    box-shadow: var(--menu-box-shadow) !important;
+}
+
+.item {
+    padding: var(--menu-item-padding) !important;
+    font-size: var(--menu-item-font-size) !important;
+    font-weight: var(--menu-item-font-weight) !important;
+    color: var(--menu-item-font-color) !important;
+    background-color: var(--menu-item-background-color) !important;
+
+    &:hover {
+        color: var(--menu-item-hover-font-color) !important;
+        background-color: var(--menu-item-hover-background-color) !important;
+    }
+}
