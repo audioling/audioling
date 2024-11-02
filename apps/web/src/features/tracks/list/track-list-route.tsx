@@ -4,6 +4,7 @@ import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/t
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { AnimatedPage } from '@/features/shared/components/animated-page.tsx';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
+import { TrackListHeader } from '@/features/tracks/list/track-list-header.tsx';
 
 export function TrackListRoute() {
     const { libraryId } = useParams() as { libraryId: string };
@@ -16,6 +17,7 @@ export function TrackListRoute() {
 
     return (
         <AnimatedPage>
+            <TrackListHeader />
             <InfiniteTrackTable
                 baseUrl={baseUrl || ''}
                 itemCount={itemCount}

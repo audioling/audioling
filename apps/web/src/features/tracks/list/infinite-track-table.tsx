@@ -10,6 +10,7 @@ import {
 } from '@/api/openapi-generated/tracks/tracks.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
+import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { throttle } from '@/utils/throttle.ts';
 
 const PAGE_SIZE = 500;
@@ -93,6 +94,10 @@ export function InfiniteTrackTable({
         () => [
             columnHelper.display({
                 cell: ({ row }) => {
+                    if (!row.original) {
+                        return <Skeleton width={30} />;
+                    }
+
                     return <div>{row.index + 1}</div>;
                 },
                 enableResizing: true,
@@ -102,6 +107,10 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
+                    if (!row.original) {
+                        return <Skeleton width={100} />;
+                    }
+
                     return <div>{row.original?.name}</div>;
                 },
                 enableResizing: true,
@@ -111,6 +120,10 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
+                    if (!row.original) {
+                        return <Skeleton width={100} />;
+                    }
+
                     return <div>{row.original?.album}</div>;
                 },
                 enableResizing: true,
@@ -120,6 +133,10 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
+                    if (!row.original) {
+                        return <Skeleton height={20} width={100} />;
+                    }
+
                     return (
                         <div>{row.original?.artists.map((artist) => artist.name).join(', ')}</div>
                     );
