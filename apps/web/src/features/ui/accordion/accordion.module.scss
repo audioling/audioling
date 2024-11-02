@@ -1,0 +1,40 @@
+@use '@/styles/base';
+
+.accordion {
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion.open {
+    gap: base.$gap-xs;
+}
+
+.title {
+    all: unset;
+    padding: base.$gap-xs base.$gap-sm;
+    font-weight: base.$font-weight-lg;
+    color: base.$font-secondary-color;
+    pointer-events: painted;
+    border-radius: base.$border-radius-md;
+
+    &:hover {
+        background-color: rgb(255 255 255 / 10%);
+    }
+}
+
+.title-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.label {
+    font-size: base.$font-size-md;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-xs;
+}
