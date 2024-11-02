@@ -67,6 +67,7 @@
 
 .description {
     display: inline-block;
+    max-width: 100%;
     font-size: base.$font-size-md;
     color: base.$font-color;
     transition: all 0.3s ease-in-out;
