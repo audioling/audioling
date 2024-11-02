@@ -5,6 +5,8 @@ import { ActionIcon as MantineActionIcon } from '@mantine/core';
 import { clsx } from 'clsx';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
+import type { TooltipProps } from '@/features/ui/tooltip/tooltip.tsx';
+import { Tooltip } from '@/features/ui/tooltip/tooltip.tsx';
 import styles from './icon-button.module.scss';
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -53,3 +55,17 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
 });
 
 IconButton.displayName = 'IconButton';
+
+export function IconButtonWithTooltip(
+    props: IconButtonProps & { tooltipProps: Omit<TooltipProps, 'children'> },
+) {
+    const { tooltipProps, ...iconButtonProps } = props;
+
+    return (
+        <Tooltip {...tooltipProps}>
+            <IconButton {...iconButtonProps} />
+        </Tooltip>
+    );
+}
+
+IconButtonWithTooltip.displayName = 'IconButtonWithTooltip';
