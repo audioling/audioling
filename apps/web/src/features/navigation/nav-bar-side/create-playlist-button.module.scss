@@ -1,12 +1,11 @@
 @use '@/styles/base';
 
-.container {
-    @include base.text-ellipsis;
-
+.button {
+    all: unset;
+    width: 100%;
     padding: var(--side-nav-item-padding);
     font-size: base.$font-size-md;
     color: var(--side-nav-item-font-color);
-    cursor: default;
     background-color: var(--side-nav-item-background-color);
     border-radius: var(--side-nav-item-border-radius);
 
@@ -14,8 +13,8 @@
         color: var(--side-nav-item-font-hover-color);
         background-color: var(--side-nav-item-background-hover-color);
     }
-}
 
-.dragged-over {
-    background: base.$primary-color;
+    svg {
+        color: base.$primary-color;
+    }
 }

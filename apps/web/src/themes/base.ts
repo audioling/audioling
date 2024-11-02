@@ -211,7 +211,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
 };
 
 export const baseThemeComponents: AppThemeConfiguration['components'] = {
-    'nav-item': {
+    'side-nav-item': {
         'active-background-color': primaryColor,
         'active-font-color': 'var(--global-font-color)',
         'background-color': 'transparent',

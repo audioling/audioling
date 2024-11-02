@@ -6,7 +6,7 @@ export type Sizes = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type AppThemeConfiguration = {
     components: {
-        'nav-item': {
+        'side-nav-item': {
             'active-background-color': CSSProperties['backgroundColor'];
             'active-font-color': CSSProperties['color'];
             'background-color': CSSProperties['backgroundColor'];

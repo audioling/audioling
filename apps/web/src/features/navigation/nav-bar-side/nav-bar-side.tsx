@@ -7,9 +7,9 @@ import styles from './nav-bar-side.module.scss';
 
 export function NavBarSide() {
     return (
-        <ScrollArea>
-            <div className={styles.container}>
-                <SearchBar />
+        <div className={styles.container}>
+            <SearchBar />
+            <ScrollArea>
                 <Accordion.Group>
                     <Accordion label="Library">
                         <div className={styles.navItems}>
@@ -22,7 +22,7 @@ export function NavBarSide() {
                         </div>
                     </Accordion>
                 </Accordion.Group>
-            </div>
-        </ScrollArea>
+            </ScrollArea>
+        </div>
     );
 }
