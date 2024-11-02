@@ -1,9 +1,13 @@
+import { forwardRef } from 'react';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import {
     LuAlertTriangle,
+    LuArrowDown,
     LuArrowDownWideNarrow,
     LuArrowLeft,
     LuArrowRight,
+    LuArrowUp,
     LuArrowUpDown,
     LuArrowUpNarrowWide,
     LuCheck,
@@ -11,6 +15,7 @@ import {
     LuChevronDown,
     LuChevronLeft,
     LuChevronRight,
+    LuChevronUp,
     LuDisc3,
     LuFlag,
     LuHeart,
@@ -44,10 +49,14 @@ import styles from './icon.module.scss';
 export const AppIcon = {
     add: LuPlus,
     album: LuDisc3,
+    arrowDown: LuArrowDown,
+    arrowDownS: LuChevronDown,
     arrowLeft: LuArrowLeft,
     arrowLeftS: LuChevronLeft,
     arrowRight: LuArrowRight,
     arrowRightS: LuChevronRight,
+    arrowUp: LuArrowUp,
+    arrowUpS: LuChevronUp,
     check: LuCheck,
     delete: LuTrash,
     dropdown: LuChevronDown,
@@ -91,7 +100,7 @@ interface IconProps {
     state?: 'success' | 'error' | 'info' | 'warn';
 }
 
-export const Icon = (props: IconProps) => {
+export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {
     const { size, icon } = props;
 
     const classNames = clsx({
@@ -104,8 +113,12 @@ export const Icon = (props: IconProps) => {
     const IconComponent = AppIcon[icon];
 
     return (
-        <span className={classNames}>
+        <span ref={ref} className={classNames}>
             <IconComponent />
         </span>
     );
-};
+});
+
+Icon.displayName = 'Icon';
+
+export const MotionIcon = motion.create(Icon);
