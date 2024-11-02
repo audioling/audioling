@@ -1,15 +1,21 @@
+import type { ReactNode } from 'react';
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './animated-page.module.scss';
 
-export function AnimatedPage({ children }: { children: React.ReactNode }) {
+interface AnimatedPageProps {
+    children: ReactNode;
+    className?: string;
+}
+
+export function AnimatedPage({ children, className }: AnimatedPageProps) {
     return (
         <motion.div
             animate="show"
-            className={styles.container}
+            className={clsx(styles.container, className)}
             exit="hidden"
             initial="hidden"
-            style={{ height: '100%', width: '100%' }}
             transition={{ duration: 1, ease: 'easeInOut' }}
             variants={animationVariants.fadeIn}
         >
