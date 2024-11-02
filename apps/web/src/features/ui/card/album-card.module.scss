@@ -57,10 +57,18 @@
     border: 0;
 }
 
-.description {
-    display: block;
+.description-container {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-xs;
+    align-items: flex-start;
     padding-top: base.$gap-xs;
+}
+
+.description {
+    display: inline-block;
     font-size: base.$font-size-md;
+    color: base.$font-color;
     transition: all 0.3s ease-in-out;
 
     @include base.text-ellipsis;
@@ -70,6 +78,6 @@
     }
 }
 
-.secondary {
+.description.secondary {
     color: base.$font-secondary-color;
 }

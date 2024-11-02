@@ -88,9 +88,14 @@ export function AlbumCard(props: AlbumCardProps) {
                         <Skeleton className={styles.image} />
                     </div>
                     <div className={styles.descriptionContainer}>
-                        <Text>&nbsp;</Text>
+                        <Text className={styles.description}>&nbsp;</Text>
                         {Array.from({ length: metadataLines }).map((_, metadataIndex) => (
-                            <Text key={`${id}-metadata-${metadataIndex}`}>&nbsp;</Text>
+                            <Text
+                                key={`${id}-metadata-${metadataIndex}`}
+                                className={styles.description}
+                            >
+                                &nbsp;
+                            </Text>
                         ))}
                     </div>
                 </div>
