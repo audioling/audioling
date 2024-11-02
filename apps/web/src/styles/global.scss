@@ -63,10 +63,12 @@ body {
     --os-size: var(--scroll-bar-size);
     --os-track-bg: var(--scroll-bar-track-background-color);
     --os-track-bg-hover: var(--scroll-bar-track-hover-background-color);
+    --os-track-border-radius: var(--scroll-bar-track-border-radius);
     --os-handle-bg: var(--scroll-bar-thumb-background-color);
     --os-handle-bg-hover: var(--scroll-bar-thumb-hover-background-color);
     --os-handle-bg-active: var(--scroll-bar-thumb-active-background-color);
-    --os-handle-border-radius: var(--scroll-bar-border-radius);
+    --os-handle-border-radius: var(--scroll-bar-thumb-border-radius);
+    --os-handle-max-size: 200px;
 }
 
 a {
