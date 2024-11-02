@@ -13,19 +13,17 @@ export function NavBarPlaylistList() {
     });
 
     return (
-        <>
-            <ScrollArea>
-                <Stack gap="xs">
-                    {playlists.data.map((playlist) => (
-                        <NavBarPlaylistItem
-                            key={playlist.id}
-                            libraryId={libraryId}
-                            name={playlist.name}
-                            playlistId={playlist.id}
-                        />
-                    ))}
-                </Stack>
-            </ScrollArea>
-        </>
+        <ScrollArea>
+            <Stack gap="xs" px="sm">
+                {playlists.data.map((playlist) => (
+                    <NavBarPlaylistItem
+                        key={playlist.id}
+                        libraryId={libraryId}
+                        name={playlist.name}
+                        playlistId={playlist.id}
+                    />
+                ))}
+            </Stack>
+        </ScrollArea>
     );
 }
