@@ -54,10 +54,11 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: base.$gap-sm;
+    padding: base.$gap-xs;
 }
 
 .size-xs {
+    padding: base.$gap-xs;
     font-size: base.$font-size-sm;
 
     &::placeholder {
@@ -66,6 +67,7 @@
 }
 
 .size-sm {
+    padding: base.$gap-sm;
     font-size: base.$font-size-sm;
 
     &::placeholder {
