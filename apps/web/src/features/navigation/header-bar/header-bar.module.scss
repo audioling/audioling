@@ -1,6 +1,9 @@
+@use '@/styles/base';
+
 .header-bar {
     display: flex;
     align-items: center;
     width: 100%;
     height: 100%;
+    padding: base.$gap-xs base.$gap-xs;
 }
