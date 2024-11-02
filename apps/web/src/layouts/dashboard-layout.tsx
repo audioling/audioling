@@ -16,6 +16,7 @@ export function DashboardLayout() {
     const isLargerThanSm = useIsLargerThanSm();
 
     const [cssVariables, setCssVariables] = useState<Record<string, string>>({
+        headerHeight: '',
         navBarBottomHeight: '',
         playerBarHeight: '',
     });
@@ -31,7 +32,10 @@ export function DashboardLayout() {
             '--layout-nav-bar-bottom-height',
         );
 
+        const headerHeight = getComputedStyle(root).getPropertyValue('--layout-header-height');
+
         setCssVariables({
+            headerHeight,
             navBarBottomHeight,
             playerBarHeight,
         });
@@ -53,7 +57,10 @@ export function DashboardLayout() {
                 variants={animationVariants.fadeIn}
             >
                 {isLargerThanSm ? (
-                    <DesktopLayout playerBarHeight={cssVariables.playerBarHeight} />
+                    <DesktopLayout
+                        headerHeight={cssVariables.headerHeight}
+                        playerBarHeight={cssVariables.playerBarHeight}
+                    />
                 ) : (
                     <MobileLayout navBarBottomHeight={cssVariables.navBarBottomHeight} />
                 )}
@@ -62,18 +69,19 @@ export function DashboardLayout() {
     );
 }
 
-function DesktopLayout(props: { playerBarHeight: string }) {
-    const { playerBarHeight } = props;
+function DesktopLayout(props: { headerHeight: string; playerBarHeight: string }) {
+    const { headerHeight, playerBarHeight } = props;
 
+    const headerHeightNumber = Number(headerHeight.replace('px', ''));
     const playerBarHeightNumber = Number(playerBarHeight.replace('px', ''));
 
     return (
         <Allotment vertical>
             <Allotment.Pane
                 className={styles.headerBarContainer}
-                maxSize={40}
-                minSize={40}
-                preferredSize={40}
+                maxSize={headerHeightNumber}
+                minSize={headerHeightNumber}
+                preferredSize={headerHeightNumber}
             >
                 <div className={styles.headerBar} id="header-bar-container">
                     <HeaderBar />
@@ -82,9 +90,9 @@ function DesktopLayout(props: { playerBarHeight: string }) {
             <Allotment>
                 <Allotment.Pane
                     className={styles.navBarContainer}
-                    maxSize={350}
-                    minSize={250}
-                    preferredSize={200}
+                    maxSize={300}
+                    minSize={225}
+                    preferredSize={250}
                     snap={true}
                 >
                     <div className={styles.navBarSide} id="nav-bar-side-container">

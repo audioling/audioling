@@ -10,7 +10,8 @@
 .nav-bar-side {
     width: 100%;
     height: 100%;
-    padding: var(--layout-nav-bar-side-padding);
+
+    // padding: var(--layout-nav-bar-side-padding);
     background-color: var(--layout-nav-bar-side-background-color);
     border-radius: var(--layout-base-border-radius);
 }
@@ -42,6 +43,7 @@
 .header-bar {
     width: 100%;
     height: 100%;
+    height: var(--layout-header-height);
 }
 
 .player-bar-container {

@@ -17,7 +17,7 @@ export function HeaderBar() {
 
     return (
         <div className={styles.headerBar} id="header-bar">
-            <div id="header-bar-left">
+            <div className={styles.left} id="header-bar-left">
                 <Group gap="xs">
                     <FileMenu />
                     <IconButton
@@ -34,8 +34,8 @@ export function HeaderBar() {
                     />
                 </Group>
             </div>
-            <div id="header-bar-center"></div>
-            <div id="header-bar-right"></div>
+            <div className={styles.center} id="header-bar-center"></div>
+            <div className={styles.right} id="header-bar-right"></div>
         </div>
     );
 }

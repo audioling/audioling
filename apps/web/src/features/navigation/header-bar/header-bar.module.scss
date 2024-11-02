@@ -1,9 +1,36 @@
 @use '@/styles/base';
 
 .header-bar {
-    display: flex;
+    display: grid;
+    grid-template-areas: 'left center right';
     align-items: center;
     width: 100%;
     height: 100%;
     padding: base.$gap-xs base.$gap-xs;
+}
+
+.header-bar button {
+    padding: base.$gap-sm base.$gap-sm;
+}
+
+.header-bar input {
+    padding: base.$gap-xs;
+}
+
+.left {
+    display: flex;
+    grid-area: left;
+    justify-content: flex-start;
+}
+
+.center {
+    display: flex;
+    grid-area: center;
+    justify-content: center;
+}
+
+.right {
+    display: flex;
+    grid-area: right;
+    justify-content: flex-end;
 }
