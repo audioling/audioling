@@ -1,4 +1,5 @@
 import { type FormEvent, useRef } from 'react';
+import type { LibraryType } from '@repo/shared-types';
 import { useForm } from '@tanstack/react-form';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import type { Library } from '@/api/api-types.ts';
@@ -76,6 +77,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                             setAuthLibrary(libraryId, {
                                 credential: response.data.credential,
                                 overrideBaseUrl: e.value.overrideBaseUrl || null,
+                                type: response.data.type as LibraryType,
                                 username: response.data.username,
                             });
 

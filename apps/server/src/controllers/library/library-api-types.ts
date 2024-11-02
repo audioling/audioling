@@ -65,6 +65,7 @@ export type LibraryAuthRequest = z.infer<typeof LibraryAuthRequestSchema>;
 export const LibraryAuthResponseSchema = createIndividualResponseSchema({
     attributes: z.object({
         credential: z.string(),
+        type: z.nativeEnum(LibraryType),
         username: z.string(),
     }),
 });

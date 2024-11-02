@@ -1,3 +1,4 @@
+import { LibraryType, SubsonicLibraryFeatures } from '@repo/shared-types';
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -6,6 +7,7 @@ import type { AuthUser } from '@/api/api-types.ts';
 export type AuthLibrary = {
     credential: string | null;
     overrideBaseUrl: string | null;
+    type: LibraryType | null;
     username: string | null;
 };
 
@@ -52,6 +54,7 @@ export const useAuthStore = create<State & Actions>()(
                                 state.libraries[id] = {
                                     credential: null,
                                     overrideBaseUrl: null,
+                                    type: null,
                                     username: null,
                                 };
                             }
@@ -148,4 +151,15 @@ export const useSetSelectedLibrary = () => {
 
 export const useAuthBaseUrl = () => {
     return useAuthStore((state) => state.baseUrl);
+};
+
+export const useLibraryFeatures = (id: string) => {
+    const library = useAuthStore((state) => state.libraries[id]);
+
+    switch (library?.type) {
+        case LibraryType.SUBSONIC:
+            return SubsonicLibraryFeatures;
+        default:
+            return SubsonicLibraryFeatures;
+    }
 };

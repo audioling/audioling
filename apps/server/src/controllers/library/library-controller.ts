@@ -217,6 +217,7 @@ export const initLibraryController = (modules: { service: AppService }) => {
             const response: LibraryAuthResponse = {
                 data: {
                     credential: authResult.credential,
+                    type: authResult.type,
                     username: authResult.username,
                 },
                 meta: {},

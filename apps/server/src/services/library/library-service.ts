@@ -117,6 +117,7 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
 
             return {
                 credential: authResult.auth.credential,
+                type: library.type,
                 username: authResult.auth.username,
             };
         },
