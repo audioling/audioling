@@ -10,6 +10,7 @@
     font-size: var(--menu-item-font-size) !important;
     font-weight: var(--menu-item-font-weight) !important;
     color: var(--menu-item-font-color) !important;
+    cursor: default !important;
     background-color: var(--menu-item-background-color) !important;
 
     &:hover {
