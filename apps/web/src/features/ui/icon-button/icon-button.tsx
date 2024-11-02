@@ -56,16 +56,19 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
 
 IconButton.displayName = 'IconButton';
 
-export function IconButtonWithTooltip(
-    props: IconButtonProps & { tooltipProps: Omit<TooltipProps, 'children'> },
-) {
-    const { tooltipProps, ...iconButtonProps } = props;
+export const IconButtonWithTooltip = forwardRef(
+    (
+        props: IconButtonProps & { tooltipProps: Omit<TooltipProps, 'children'> },
+        ref: Ref<HTMLButtonElement>,
+    ) => {
+        const { tooltipProps, ...iconButtonProps } = props;
 
-    return (
-        <Tooltip {...tooltipProps}>
-            <IconButton {...iconButtonProps} />
-        </Tooltip>
-    );
-}
+        return (
+            <Tooltip {...tooltipProps}>
+                <IconButton ref={ref} {...iconButtonProps} />
+            </Tooltip>
+        );
+    },
+);
 
 IconButtonWithTooltip.displayName = 'IconButtonWithTooltip';
