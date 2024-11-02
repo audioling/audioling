@@ -162,6 +162,12 @@ export type AppThemeConfiguration = {
         'table-row-selected-background-color': CSSProperties['backgroundColor'];
         'table-row-selected-border-color': CSSProperties['borderColor'];
         'table-row-selected-font-color': CSSProperties['color'];
+        'tooltip-background-color': CSSProperties['backgroundColor'];
+        'tooltip-border-radius': CSSProperties['borderRadius'];
+        'tooltip-font-color': CSSProperties['color'];
+        'tooltip-font-size': CSSProperties['fontSize'];
+        'tooltip-font-weight': CSSProperties['fontWeight'];
+        'tooltip-padding': CSSProperties['padding'];
     };
     type: 'light' | 'dark';
 };

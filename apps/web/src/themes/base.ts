@@ -190,6 +190,12 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'table-row-selected-background-color': 'rgba(60, 60, 60, 0.3)',
     'table-row-selected-border-color': primaryColor,
     'table-row-selected-font-color': 'rgb(255, 255, 255)',
+    'tooltip-background-color': 'rgb(255, 255, 255)',
+    'tooltip-border-radius': radius.sm,
+    'tooltip-font-color': 'rgb(25, 25, 25)',
+    'tooltip-font-size': fontSize.md,
+    'tooltip-font-weight': fontWeight.md,
+    'tooltip-padding': `${gap.xs} ${gap.sm}`,
 };
 
 export const baseThemeComponents: AppThemeConfiguration['components'] = {
