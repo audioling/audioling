@@ -15,6 +15,7 @@ module.exports = {
         project,
     },
     rules: {
+        'import/newline-after-import': 'error',
         'prettier/prettier': [
             'error',
             {
