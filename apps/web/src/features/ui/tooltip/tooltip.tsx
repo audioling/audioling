@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Tooltip as MantineTooltip } from '@mantine/core';
 import type { FloatingPosition, TooltipProps as MantineTooltipProps } from '@mantine/core';
 import styles from './tooltip.module.scss';
@@ -6,12 +6,12 @@ import styles from './tooltip.module.scss';
 export interface TooltipProps {
     children: ReactNode;
     label: string;
-    openDelay?: number;
     position?: FloatingPosition;
 }
 
 export function Tooltip(props: TooltipProps) {
-    const { children, label, openDelay = 0, position = 'top' } = props;
+    const { children, label, position = 'top' } = props;
+    const [opened, setOpened] = useState(false);
 
     const tooltipClassNames: MantineTooltipProps['classNames'] = {
         tooltip: styles.tooltip,
@@ -23,10 +23,18 @@ export function Tooltip(props: TooltipProps) {
             floatingStrategy="fixed"
             keepMounted={false}
             label={label}
-            openDelay={openDelay}
+            opened={opened}
             position={position}
+            transitionProps={{ duration: 300, transition: 'pop' }}
         >
-            {children}
+            <div
+                className="al-tooltip-target"
+                onClick={() => setOpened(false)}
+                onMouseEnter={() => setOpened(true)}
+                onMouseLeave={() => setOpened(false)}
+            >
+                {children}
+            </div>
         </MantineTooltip>
     );
 }

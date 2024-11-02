@@ -164,6 +164,7 @@ export type AppThemeConfiguration = {
         'table-row-selected-font-color': CSSProperties['color'];
         'tooltip-background-color': CSSProperties['backgroundColor'];
         'tooltip-border-radius': CSSProperties['borderRadius'];
+        'tooltip-box-shadow': CSSProperties['boxShadow'];
         'tooltip-font-color': CSSProperties['color'];
         'tooltip-font-size': CSSProperties['fontSize'];
         'tooltip-font-weight': CSSProperties['fontWeight'];

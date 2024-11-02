@@ -192,9 +192,10 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'table-row-selected-font-color': 'rgb(255, 255, 255)',
     'tooltip-background-color': 'rgb(255, 255, 255)',
     'tooltip-border-radius': radius.sm,
+    'tooltip-box-shadow': '0 2px 4px rgb(0 0 0 / 20%)',
     'tooltip-font-color': 'rgb(25, 25, 25)',
     'tooltip-font-size': fontSize.md,
-    'tooltip-font-weight': fontWeight.md,
+    'tooltip-font-weight': fontWeight.lg,
     'tooltip-padding': `${gap.xs} ${gap.sm}`,
 };
 
