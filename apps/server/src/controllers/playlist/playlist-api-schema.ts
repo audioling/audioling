@@ -6,7 +6,7 @@ import {
     playlistListRequestSchema,
     playlistListResponseSchema,
 } from '@/controllers/playlist/playlist-api-types.js';
-import { schemaResponse } from '@/controllers/shared-api-types.js';
+import { EmptyBodySchema, schemaResponse } from '@/controllers/shared-api-types.js';
 
 export const playlistApiSchema = {
     '/': {
@@ -27,6 +27,20 @@ export const playlistApiSchema = {
         },
     },
     '/{id}': {
+        delete: {
+            request: {
+                params: z.object({ id: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Delete playlist',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
         get: {
             request: {
                 params: z.object({ id: z.string(), libraryId: z.string() }),

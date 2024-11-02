@@ -164,6 +164,18 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             return [null, null];
         },
+        deletePlaylist: async (request, fetchOptions) => {
+            const { query } = request;
+
+            await apiClient.deletePlaylist.os['1'].get({
+                fetchOptions,
+                query: {
+                    id: query.id,
+                },
+            });
+
+            return [null, null];
+        },
         getAlbumArtistAlbumList: async (request, fetchOptions) => {
             const { query } = request;
 

@@ -39,6 +39,8 @@ import type {
     AdapterAddToPlaylistResponse,
     AdapterClearPlaylistRequest,
     AdapterClearPlaylistResponse,
+    AdapterDeletePlaylistRequest,
+    AdapterDeletePlaylistResponse,
     AdapterPlaylistDetailRequest,
     AdapterPlaylistDetailResponse,
     AdapterPlaylistListCountRequest,
@@ -102,6 +104,7 @@ export type AdapterApi = {
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
     clearPlaylist: AdapterFn<AdapterClearPlaylistRequest, AdapterClearPlaylistResponse>;
+    deletePlaylist: AdapterFn<AdapterDeletePlaylistRequest, AdapterDeletePlaylistResponse>;
     getAlbumArtistAlbumList: AdapterFn<
         AdapterArtistAlbumListRequest,
         AdapterArtistAlbumListResponse

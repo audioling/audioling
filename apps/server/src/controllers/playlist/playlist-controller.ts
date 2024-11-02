@@ -143,6 +143,25 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         },
     );
 
+    // ANCHOR - DELETE /{id}
+    controller.openapi(
+        createRoute({
+            method: 'delete',
+            path: '/{id}',
+            summary: 'Delete playlist',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/{id}'].delete,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const { adapter } = c.var;
+
+            await service.playlist.remove(adapter, { id: params.id });
+
+            return c.json(null, 204);
+        },
+    );
+
     return controller;
 };
 

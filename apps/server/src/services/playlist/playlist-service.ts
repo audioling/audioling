@@ -4,7 +4,11 @@ import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
-import type { FindByIdServiceArgs, FindManyServiceArgs } from '@/services/service-helpers.js';
+import type {
+    DeleteByIdServiceArgs,
+    FindByIdServiceArgs,
+    FindManyServiceArgs,
+} from '@/services/service-helpers.js';
 import type { initTrackService } from '@/services/track/track-service.js';
 
 // SECTION - Playlist Service
@@ -57,6 +61,7 @@ export const initPlaylistService = (modules: { db: AppDatabase }) => {
                 })),
             };
         },
+
         // ANCHOR - List
         list: async (adapter: AdapterApi, args: FindManyServiceArgs<PlaylistListSortOptions>) => {
             const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
@@ -84,6 +89,20 @@ export const initPlaylistService = (modules: { db: AppDatabase }) => {
                     thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
                 })),
             };
+        },
+
+        // ANCHOR - Remove
+        remove: async (adapter: AdapterApi, args: DeleteByIdServiceArgs) => {
+            const [err] = await adapter.deletePlaylist({
+                body: null,
+                query: { id: args.id },
+            });
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return null;
         },
     };
 };
