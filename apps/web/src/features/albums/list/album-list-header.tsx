@@ -1,6 +1,11 @@
+import type { LibraryFeatures } from '@repo/shared-types';
+import { AlbumListSortOptions } from '@repo/shared-types';
+import { useParams } from 'react-router-dom';
+import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
 import { ListHeader } from '@/features/shared/components/list-header.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
+import { Menu } from '@/features/ui/menu/menu.tsx';
 
 export function AlbumListHeader() {
     return (
@@ -16,11 +21,7 @@ export function AlbumListHeader() {
             <ListHeader.Footer>
                 <ListHeader.Left>
                     <Group gap="xs" wrap="nowrap">
-                        <IconButtonWithTooltip
-                            icon="sort"
-                            size="lg"
-                            tooltipProps={{ label: 'Sort by', position: 'bottom' }}
-                        />
+                        <AlbumListFilter />
                         <IconButtonWithTooltip
                             icon="sortAsc"
                             size="lg"
@@ -50,4 +51,60 @@ export function AlbumListHeader() {
             </ListHeader.Footer>
         </ListHeader>
     );
+}
+
+function AlbumListFilter() {
+    const { libraryId } = useParams() as { libraryId: string };
+    const features = useLibraryFeatures(libraryId);
+    const sortOptions = getSortOptions(features);
+
+    return (
+        <Menu>
+            <Menu.Target>
+                <IconButtonWithTooltip
+                    icon="sort"
+                    size="lg"
+                    tooltipProps={{ label: 'Sort by', position: 'bottom' }}
+                />
+            </Menu.Target>
+            <Menu.Dropdown>
+                {sortOptions.map((option) => (
+                    <Menu.Item key={`sort-${option.value}`}>{option.name}</Menu.Item>
+                ))}
+            </Menu.Dropdown>
+        </Menu>
+    );
+}
+
+const albumSortLabelMap = {
+    [AlbumListSortOptions.ALBUM_ARTIST]: 'Album Artist',
+    [AlbumListSortOptions.ARTIST]: 'Artist',
+    [AlbumListSortOptions.COMMUNITY_RATING]: 'Community Rating',
+    [AlbumListSortOptions.CRITIC_RATING]: 'Critic Rating',
+    [AlbumListSortOptions.DATE_ADDED]: 'Date Added',
+    [AlbumListSortOptions.DATE_PLAYED]: 'Date Played',
+    [AlbumListSortOptions.DURATION]: 'Duration',
+    [AlbumListSortOptions.IS_FAVORITE]: 'Is Favorite',
+    [AlbumListSortOptions.NAME]: 'Name',
+    [AlbumListSortOptions.PLAY_COUNT]: 'Play Count',
+    [AlbumListSortOptions.RANDOM]: 'Random',
+    [AlbumListSortOptions.RELEASE_DATE]: 'Release Date',
+    [AlbumListSortOptions.TRACK_COUNT]: 'Track Count',
+    [AlbumListSortOptions.YEAR]: 'Year',
+};
+
+function getSortOptions(
+    features: LibraryFeatures,
+): { name: string; value: AlbumListSortOptions }[] {
+    const albumSortFeatures = Object.keys(features)
+        .filter((key) => key.includes('album:list:filter'))
+        .filter((key) => features[key as keyof LibraryFeatures]);
+
+    return albumSortFeatures.map((feature) => {
+        const option = feature.replace('album:list:filter:', '') as AlbumListSortOptions;
+        return {
+            name: albumSortLabelMap[option],
+            value: option,
+        };
+    });
 }
