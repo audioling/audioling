@@ -7,8 +7,11 @@ export type Sizes = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type AppThemeConfiguration = {
     components: {
         'nav-item': {
+            'active-background-color': CSSProperties['backgroundColor'];
+            'active-font-color': CSSProperties['color'];
             'background-color': CSSProperties['backgroundColor'];
             'background-hover-color': CSSProperties['backgroundColor'];
+            'border-radius': CSSProperties['borderRadius'];
             'font-color': CSSProperties['color'];
             'font-hover-color': CSSProperties['color'];
             padding: CSSProperties['padding'];

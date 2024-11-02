@@ -5,13 +5,22 @@
 
     padding: var(--nav-item-padding);
     color: var(--nav-item-font-color);
+    cursor: default;
     background-color: var(--nav-item-background-color);
-    transition:
-        background-color 0.1s ease-in-out,
-        transform 0.1s ease-in-out;
+    border-radius: var(--nav-item-border-radius);
+    transition: background-color 0.2s ease-in-out;
 
     &:hover {
         color: var(--nav-item-font-hover-color);
         background-color: var(--nav-item-background-hover-color);
+    }
+}
+
+.active {
+    color: var(--nav-item-active-font-color);
+    background-color: var(--nav-item-active-background-color);
+
+    &:hover {
+        background-color: var(--nav-item-active-background-color);
     }
 }

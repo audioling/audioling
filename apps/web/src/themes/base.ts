@@ -212,8 +212,11 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
 
 export const baseThemeComponents: AppThemeConfiguration['components'] = {
     'nav-item': {
+        'active-background-color': primaryColor,
+        'active-font-color': 'var(--global-font-color)',
         'background-color': 'transparent',
         'background-hover-color': 'rgba(128, 128, 128, 0.1)',
+        'border-radius': radius.md,
         'font-color': 'var(--global-font-color)',
         'font-hover-color': 'var(--global-font-color)',
         padding: `${gap.sm} ${gap.sm}`,

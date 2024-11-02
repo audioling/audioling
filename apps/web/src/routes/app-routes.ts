@@ -7,6 +7,7 @@ export const APP_ROUTE = {
     DASHBOARD_ALBUM_DETAIL: '/dashboard/:libraryId/albums/:albumId',
     DASHBOARD_ARTISTS: '/dashboard/:libraryId/artists',
     DASHBOARD_ARTISTS_DETAIL: '/dashboard/:libraryId/artists/:artistId',
+    DASHBOARD_GENRES: '/dashboard/:libraryId/genres',
     DASHBOARD_HOME: '/dashboard/:libraryId/home',
     DASHBOARD_LIBRARY: '/dashboard/:libraryId',
     DASHBOARD_LIBRARY_ADD: '/dashboard/library/add',

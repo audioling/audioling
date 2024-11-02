@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { NavLink } from 'react-router-dom';
 import { Group } from '@/features/ui/group/group.tsx';
 import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
@@ -12,7 +13,14 @@ interface NavItemProps {
 
 export function NavItem(props: NavItemProps) {
     return (
-        <NavLink className={styles.container} to={props.to}>
+        <NavLink
+            className={({ isActive }) => {
+                return clsx(styles.container, {
+                    [styles.active]: isActive,
+                });
+            }}
+            to={props.to}
+        >
             <Group align="center" gap="md" justify="start" wrap="nowrap">
                 <Icon icon={props.icon} size="lg" />
                 <Text size="md">{props.label}</Text>
