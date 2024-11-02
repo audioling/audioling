@@ -1,0 +1,47 @@
+@use '@/styles/base';
+
+.container {
+    display: grid;
+    grid-template-areas:
+        'left right'
+        'footer footer';
+    gap: base.$gap-sm;
+    padding: base.$gap-xs base.$gap-xs base.$gap-md base.$gap-xs;
+}
+
+.left {
+    display: flex;
+    flex-direction: row;
+    grid-area: left;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.right {
+    display: flex;
+    flex-direction: row;
+    grid-area: right;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.right button {
+    padding: base.$gap-sm;
+}
+
+.title {
+    font-size: base.$title-font-size-lg;
+    font-weight: base.$font-weight-lg;
+}
+
+.footer {
+    display: grid;
+    grid-area: footer;
+    grid-template-areas: 'left right';
+    align-items: center;
+}
+
+.footer button {
+    height: 100%;
+    padding: base.$gap-sm;
+}
