@@ -5,11 +5,9 @@
 
     svg {
         color: var(--button-default-font-color);
-        fill: var(--button-default-font-color);
     }
 
     &:hover,
-    &:focus,
     &:focus-visible {
         color: var(--button-default-hover-font-color);
         background-color: var(--button-default-hover-background-color);
@@ -24,11 +22,9 @@
 
     svg {
         color: var(--button-filled-font-color);
-        fill: var(--button-filled-font-color);
     }
 
     &:hover,
-    &:focus,
     &:focus-visible {
         color: var(--button-filled-hover-font-color);
         background-color: var(--button-filled-hover-background-color);
@@ -43,11 +39,9 @@
 
     svg {
         color: var(--button-danger-font-color);
-        fill: var(--button-danger-font-color);
     }
 
     &:hover,
-    &:focus,
     &:focus-visible {
         color: var(--button-danger-hover-font-color);
         background-color: var(--button-danger-hover-background-color);
@@ -62,11 +56,9 @@
 
     svg {
         color: var(--button-primary-font-color);
-        fill: var(--button-primary-font-color);
     }
 
     &:hover,
-    &:focus,
     &:focus-visible {
         color: var(--button-primary-hover-font-color);
         background-color: var(--button-primary-hover-background-color);
@@ -81,11 +73,9 @@
 
     svg {
         color: var(--button-subtle-font-color);
-        fill: var(--button-subtle-font-color);
     }
 
     &:hover,
-    &:focus,
     &:focus-visible {
         color: var(--button-subtle-hover-font-color);
         background-color: var(--button-subtle-hover-background-color);
@@ -93,7 +83,6 @@
 
         svg {
             color: var(--button-subtle-hover-font-color);
-            fill: var(--button-subtle-hover-font-color);
         }
     }
 }
