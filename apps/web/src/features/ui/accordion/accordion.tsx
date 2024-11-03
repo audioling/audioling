@@ -10,22 +10,22 @@ import styles from './accordion.module.scss';
 interface AccordionProps {
     children: ReactNode;
     icon?: keyof typeof AppIcon;
-    isOpen?: boolean;
     label: string;
-    setIsOpen?: Dispatch<SetStateAction<boolean>>;
+    opened?: boolean;
+    setOpened?: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Accordion({ children, icon, isOpen = false, label, setIsOpen }: AccordionProps) {
-    const [uncontrolledIsOpen, setUncontrolledIsOpen] = useState(isOpen);
+export function Accordion({ children, icon, opened = false, label, setOpened }: AccordionProps) {
+    const [uncontrolledOpened, setUncontrolledOpened] = useState(opened);
 
-    const isStateOpen = isOpen || uncontrolledIsOpen;
+    const isStateOpen = opened || uncontrolledOpened;
 
     const handleClick = () => {
-        if (setIsOpen) {
-            return setIsOpen((prev) => !prev);
+        if (setOpened) {
+            return setOpened((prev) => !prev);
         }
 
-        return setUncontrolledIsOpen((prev) => !prev);
+        return setUncontrolledOpened((prev) => !prev);
     };
 
     return (
