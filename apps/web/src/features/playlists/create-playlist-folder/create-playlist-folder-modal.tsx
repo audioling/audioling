@@ -1,22 +1,26 @@
 import { useId } from 'react';
 import { createCallable } from 'react-call';
-import { CreatePlaylistForm } from '@/features/playlists/create-playlist/create-playlist-form.tsx';
+import { CreatePlaylistFolderForm } from '@/features/playlists/create-playlist-folder/create-playlist-folder-form.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Modal } from '@/features/ui/modal/modal.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 
-interface CreatePlaylistModalProps {
+interface CreatePlaylistFolderModalProps {
     libraryId: string;
 }
 
-export const CreatePlaylistModal = createCallable<CreatePlaylistModalProps, boolean>(
+export const CreatePlaylistFolderModal = createCallable<CreatePlaylistFolderModalProps, boolean>(
     ({ call, libraryId }) => {
         const formId = useId();
 
         return (
-            <Modal isClosing={call.ended} title={'Create Playlist'} onClose={() => call.end(false)}>
+            <Modal
+                isClosing={call.ended}
+                title={'Create Playlist Folder'}
+                onClose={() => call.end(false)}
+            >
                 <Stack>
-                    <CreatePlaylistForm
+                    <CreatePlaylistFolderForm
                         formId={formId}
                         libraryId={libraryId}
                         onSuccess={() => call.end(true)}

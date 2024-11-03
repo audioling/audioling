@@ -124,6 +124,29 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         },
     );
 
+    // ANCHOR - POST /folders
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/folders',
+            summary: 'Create playlist folder',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders'].post,
+        }),
+        async (c) => {
+            const body = c.req.valid('json');
+            const { user } = c.var;
+
+            await service.playlist.addFolder({
+                name: body.name,
+                parentId: body.parentId ?? null,
+                userId: user.id,
+            });
+
+            return c.json(null, 201);
+        },
+    );
+
     // ANCHOR - GET /folders/{folderId}
     controller.openapi(
         createRoute({

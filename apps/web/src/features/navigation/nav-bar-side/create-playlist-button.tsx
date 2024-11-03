@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
+import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
 import { Menu } from '@/features/ui/menu/menu.tsx';
@@ -23,7 +24,9 @@ export function CreatePlaylistButton() {
                 <Menu.Item onClick={() => CreatePlaylistModal.call({ libraryId })}>
                     Create Playlist
                 </Menu.Item>
-                <Menu.Item onClick={() => {}}>Create Folder</Menu.Item>
+                <Menu.Item onClick={() => CreatePlaylistFolderModal.call({ libraryId })}>
+                    Create Folder
+                </Menu.Item>
             </Menu.Dropdown>
         </Menu>
     );

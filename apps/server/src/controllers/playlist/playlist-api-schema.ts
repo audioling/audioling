@@ -14,7 +14,11 @@ import {
     updatePlaylistFolderRequestSchema,
     updatePlaylistRequestSchema,
 } from '@/controllers/playlist/playlist-api-types.js';
-import { EmptyBodySchema, schemaResponse } from '@/controllers/shared-api-types.js';
+import {
+    EmptyBodySchema,
+    EmptyResponseSchema,
+    schemaResponse,
+} from '@/controllers/shared-api-types.js';
 
 export const playlistApiSchema = {
     '/': {
@@ -69,13 +73,15 @@ export const playlistApiSchema = {
         },
         post: {
             request: {
-                body: createPlaylistFolderRequestSchema,
+                body: {
+                    content: { 'application/json': { schema: createPlaylistFolderRequestSchema } },
+                },
                 params: z.object({ libraryId: z.string() }),
             },
             responses: schemaResponse(
                 {
                     description: 'Create playlist folder',
-                    schema: createPlaylistFolderRequestSchema,
+                    schema: EmptyResponseSchema,
                     status: 201,
                 },
                 [401, 403, 422, 500],

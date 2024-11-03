@@ -60,6 +60,12 @@ import type {
     PostApiLibraryIdPlaylists422,
     PostApiLibraryIdPlaylists500,
     PostApiLibraryIdPlaylistsBody,
+    PostApiLibraryIdPlaylistsFolders201,
+    PostApiLibraryIdPlaylistsFolders401,
+    PostApiLibraryIdPlaylistsFolders403,
+    PostApiLibraryIdPlaylistsFolders422,
+    PostApiLibraryIdPlaylistsFolders500,
+    PostApiLibraryIdPlaylistsFoldersBody,
     PostApiLibraryIdPlaylistsFoldersFolderIdAdd204,
     PostApiLibraryIdPlaylistsFoldersFolderIdAdd401,
     PostApiLibraryIdPlaylistsFoldersFolderIdAdd403,
@@ -555,6 +561,102 @@ export function useGetApiLibraryIdPlaylistsFoldersSuspense<
     return query;
 }
 
+/**
+ * @summary Create playlist folder
+ */
+export const postApiLibraryIdPlaylistsFolders = (
+    libraryId: string,
+    postApiLibraryIdPlaylistsFoldersBody: BodyType<PostApiLibraryIdPlaylistsFoldersBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylistsFolders201>(
+        {
+            url: `/api/${libraryId}/playlists/folders`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdPlaylistsFoldersBody,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsFoldersMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsFolders401
+        | PostApiLibraryIdPlaylistsFolders403
+        | PostApiLibraryIdPlaylistsFolders422
+        | PostApiLibraryIdPlaylistsFolders500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFolders>>,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsFoldersBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFolders>>,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsFoldersBody> },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFolders>>,
+        { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsFoldersBody> }
+    > = (props) => {
+        const { libraryId, data } = props ?? {};
+
+        return postApiLibraryIdPlaylistsFolders(libraryId, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsFoldersMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFolders>>
+>;
+export type PostApiLibraryIdPlaylistsFoldersMutationBody =
+    BodyType<PostApiLibraryIdPlaylistsFoldersBody>;
+export type PostApiLibraryIdPlaylistsFoldersMutationError = ErrorType<
+    | PostApiLibraryIdPlaylistsFolders401
+    | PostApiLibraryIdPlaylistsFolders403
+    | PostApiLibraryIdPlaylistsFolders422
+    | PostApiLibraryIdPlaylistsFolders500
+>;
+
+/**
+ * @summary Create playlist folder
+ */
+export const usePostApiLibraryIdPlaylistsFolders = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsFolders401
+        | PostApiLibraryIdPlaylistsFolders403
+        | PostApiLibraryIdPlaylistsFolders422
+        | PostApiLibraryIdPlaylistsFolders500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFolders>>,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsFoldersBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFolders>>,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsFoldersBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdPlaylistsFoldersMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
 /**
  * @summary Get playlist folder by id
  */
