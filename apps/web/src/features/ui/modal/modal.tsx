@@ -7,15 +7,16 @@ import styles from './modal.module.scss';
 
 interface ModalProps {
     children: ReactNode;
+    closeOnClickOutside?: boolean;
     isClosing: boolean;
     onClose: () => void;
     title: string;
 }
 
 export function Modal(props: ModalProps) {
-    const { children, isClosing, onClose, title } = props;
+    const { children, closeOnClickOutside = false, isClosing, onClose, title } = props;
 
-    const ref = useClickOutside(onClose);
+    const ref = useClickOutside(closeOnClickOutside ? onClose : () => {});
     const focusTrapRef = useFocusTrap();
     const mergedRef = useMergedRef(ref, focusTrapRef);
 
