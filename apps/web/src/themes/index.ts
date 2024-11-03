@@ -151,6 +151,14 @@ export type AppThemeConfiguration = {
         'menu-item-hover-font-color': CSSProperties['color'];
         'menu-item-padding': CSSProperties['padding'];
         'menu-padding': CSSProperties['padding'];
+        'modal-background-color': CSSProperties['backgroundColor'];
+        'modal-border-radius': CSSProperties['borderRadius'];
+        'modal-font-color': CSSProperties['color'];
+        'modal-font-size': CSSProperties['fontSize'];
+        'modal-font-weight': CSSProperties['fontWeight'];
+        'modal-padding': CSSProperties['padding'];
+        'modal-title-font-size': CSSProperties['fontSize'];
+        'modal-title-font-weight': CSSProperties['fontWeight'];
         'paper-background-color': CSSProperties['backgroundColor'];
         'paper-border-radius': CSSProperties['borderRadius'];
         'paper-padding': CSSProperties['padding'];
