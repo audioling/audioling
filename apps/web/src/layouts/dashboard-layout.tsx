@@ -49,8 +49,8 @@ export function DashboardLayout() {
 
     return (
         <AnimatePresence mode="sync">
-            <CreatePlaylistModal.Root />
-            <CreatePlaylistFolderModal.Root />
+            <CreatePlaylistModal.Root key="create-playlist-modal" />
+            <CreatePlaylistFolderModal.Root key="create-playlist-folder-modal" />
             <motion.div
                 animate="show"
                 exit="hidden"
