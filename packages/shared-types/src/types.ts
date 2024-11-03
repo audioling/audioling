@@ -168,3 +168,9 @@ export enum ListSortOrder {
     ASC = 'asc',
     DESC = 'desc',
 }
+
+export enum PlaylistFolderListSortOptions {
+    CREATED_AT = 'createdAt',
+    NAME = 'name',
+    UPDATED_AT = 'updatedAt',
+}
