@@ -168,6 +168,8 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'menu-background-color': 'rgba(0, 0, 0, 0.9)',
     'menu-border-radius': radius.md,
     'menu-box-shadow': '0 2px 4px rgb(0 0 0 / 20%)',
+    'menu-divider-border-top': '1px solid rgb(60, 60, 60)',
+    'menu-divider-margin': `${gap.xs} 0`,
     'menu-item-background-color': 'transparent',
     'menu-item-font-color': 'rgb(230, 230, 230)',
     'menu-item-font-size': fontSize.md,

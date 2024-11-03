@@ -11,7 +11,7 @@ export function CreatePlaylistButton() {
     const { libraryId } = useParams() as { libraryId: string };
 
     return (
-        <Menu position="bottom-end">
+        <Menu align="end" side="bottom">
             <Menu.Target>
                 <button className={styles.button}>
                     <Group align="center" gap="md" justify="start" wrap="nowrap">
@@ -20,14 +20,14 @@ export function CreatePlaylistButton() {
                     </Group>
                 </button>
             </Menu.Target>
-            <Menu.Dropdown>
-                <Menu.Item onClick={() => CreatePlaylistModal.call({ libraryId })}>
+            <Menu.Content>
+                <Menu.Item onSelect={() => CreatePlaylistModal.call({ libraryId })}>
                     Create Playlist
                 </Menu.Item>
-                <Menu.Item onClick={() => CreatePlaylistFolderModal.call({ libraryId })}>
+                <Menu.Item onSelect={() => CreatePlaylistFolderModal.call({ libraryId })}>
                     Create Folder
                 </Menu.Item>
-            </Menu.Dropdown>
+            </Menu.Content>
         </Menu>
     );
 }

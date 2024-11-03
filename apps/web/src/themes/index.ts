@@ -143,6 +143,8 @@ export type AppThemeConfiguration = {
         'menu-background-color': CSSProperties['backgroundColor'];
         'menu-border-radius': CSSProperties['borderRadius'];
         'menu-box-shadow': CSSProperties['boxShadow'];
+        'menu-divider-border-top': CSSProperties['borderTop'];
+        'menu-divider-margin': CSSProperties['margin'];
         'menu-item-background-color': CSSProperties['backgroundColor'];
         'menu-item-font-color': CSSProperties['color'];
         'menu-item-font-size': CSSProperties['fontSize'];

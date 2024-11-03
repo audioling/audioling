@@ -59,7 +59,7 @@ function AlbumListFilter() {
     const sortOptions = getSortOptions(features);
 
     return (
-        <Menu>
+        <Menu align="start" side="bottom">
             <Menu.Target>
                 <IconButtonWithTooltip
                     icon="sort"
@@ -67,11 +67,11 @@ function AlbumListFilter() {
                     tooltipProps={{ label: 'Sort by', position: 'bottom' }}
                 />
             </Menu.Target>
-            <Menu.Dropdown>
+            <Menu.Content>
                 {sortOptions.map((option) => (
                     <Menu.Item key={`sort-${option.value}`}>{option.name}</Menu.Item>
                 ))}
-            </Menu.Dropdown>
+            </Menu.Content>
         </Menu>
     );
 }
