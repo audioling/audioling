@@ -1,9 +1,8 @@
 import type { FormEvent } from 'react';
 import { LibraryListSortOptions, LibraryType, ListSortOrder } from '@repo/shared-types';
-import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
 import { generatePath, useNavigate } from 'react-router-dom';
-import type { PostApiLibrariesBody } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import {
     getGetApiLibrariesQueryKey,
     usePostApiLibraries,
@@ -21,7 +20,7 @@ export const LibraryAddForm = () => {
     const queryClient = useQueryClient();
     const { mutate: addLibrary } = usePostApiLibraries();
 
-    const { Field, handleSubmit, Subscribe } = useForm<PostApiLibrariesBody>({
+    const form = useForm({
         defaultValues: {
             baseUrl: '',
             displayName: '',
@@ -29,41 +28,28 @@ export const LibraryAddForm = () => {
             type: LibraryType.SUBSONIC,
             username: '',
         },
-        onSubmit: async (e) => {
-            addLibrary(
-                {
-                    data: e.value,
-                },
-                {
-                    onError: (error) => {
-                        // TODO: handle error
-                        console.error(error);
-                    },
-                    onSuccess: async () => {
-                        navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
-                        queryClient.invalidateQueries({
-                            queryKey: getGetApiLibrariesQueryKey({
-                                sortBy: LibraryListSortOptions.NAME,
-                                sortOrder: ListSortOrder.ASC,
-                            }),
-                        });
-                    },
-                },
-            );
-        },
-        validators: {
-            onChange: ({ value }) => {
-                return {
-                    fields: {
-                        baseUrl: value.baseUrl ? undefined : 'Base URL is required',
-                        displayName: value.displayName ? undefined : 'Display Name is required',
-                        password: value.password ? undefined : 'Password is required',
-                        type: value.type ? undefined : 'Type is required',
-                        username: value.username ? undefined : 'Username is required',
-                    },
-                };
+    });
+
+    const handleSubmit = form.handleSubmit((data) => {
+        addLibrary(
+            {
+                data,
             },
-        },
+            {
+                onError: (error) => {
+                    console.error(error);
+                },
+                onSuccess: async () => {
+                    navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
+                    queryClient.invalidateQueries({
+                        queryKey: getGetApiLibrariesQueryKey({
+                            sortBy: LibraryListSortOptions.NAME,
+                            sortOrder: ListSortOrder.ASC,
+                        }),
+                    });
+                },
+            },
+        );
     });
 
     const handleFormSubmit = (e: FormEvent) => {
@@ -75,77 +61,39 @@ export const LibraryAddForm = () => {
 
     return (
         <Stack ref={ref} as="form" onSubmit={handleFormSubmit}>
-            <Field
-                children={(field) => (
-                    <TextInput
-                        label="Display Name"
-                        placeholder="My Library"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="displayName"
+            <TextInput
+                label="Display Name"
+                placeholder="My Library"
+                {...form.register('displayName', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <TextInput
-                        data-autofocus
-                        label="Base URL"
-                        placeholder="http://192.168.1.1:4533"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="baseUrl"
+            <TextInput
+                data-autofocus
+                label="Base URL"
+                placeholder="http://192.168.1.1:4533"
+                {...form.register('baseUrl', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <TextInput
-                        autoComplete="username"
-                        label="Username"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="username"
+            <TextInput
+                autoComplete="username"
+                label="Username"
+                {...form.register('username', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <PasswordInput
-                        autoComplete="current-password"
-                        label="Password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="password"
+            <PasswordInput
+                autoComplete="current-password"
+                label="Password"
+                {...form.register('password', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <LibraryTypeSelector
-                        value={field.state.value as LibraryType}
-                        onChange={(e) =>
-                            field.handleChange((e as LibraryType) || LibraryType.SUBSONIC)
-                        }
-                    />
-                )}
-                name="type"
+
+            <LibraryTypeSelector
+                value={form.watch('type')}
+                onChange={(e) => form.setValue('type', (e as LibraryType) || LibraryType.SUBSONIC)}
             />
-            <Subscribe
-                children={(props) => (
-                    <Button
-                        isDisabled={!props.canSubmit || props.isSubmitting}
-                        type="submit"
-                        variant="filled"
-                    >
-                        Save
-                    </Button>
-                )}
-            />
+            <Button
+                isDisabled={!form.formState.isValid || form.formState.isSubmitting}
+                type="submit"
+                variant="filled"
+            >
+                Save
+            </Button>
         </Stack>
     );
 };

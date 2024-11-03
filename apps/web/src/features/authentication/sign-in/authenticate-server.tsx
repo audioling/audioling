@@ -1,7 +1,6 @@
-import type { FormEvent } from 'react';
-import { useForm } from '@tanstack/react-form';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import type { Ping } from '@/api/api-types.ts';
 import { usePostAuthSignIn } from '@/api/openapi-generated/authentication/authentication.ts';
@@ -34,40 +33,36 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
     const signInToStore = useAuthSignIn();
     const { mutate } = usePostAuthSignIn();
 
-    const { Field, handleSubmit } = useForm<AuthenticationFormValues>({
+    const form = useForm<AuthenticationFormValues>({
         defaultValues: {
             password: '',
             username: '',
         },
-        onSubmit: (e) => {
-            mutate(
-                {
-                    data: {
-                        password: e.value.password,
-                        username: e.value.username,
-                    },
-                },
-                {
-                    onSuccess: (response) => {
-                        const { data } = response;
-                        Cookies.set('token', data.token.token);
-                        const cleanUrl = props.serverUrl.replace(/\/$/, '');
-                        signInToStore(data, cleanUrl);
-                        navigate({ pathname: APP_ROUTE.DASHBOARD }, { replace: true });
-                    },
-                },
-            );
-        },
     });
 
-    const handleFormSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        handleSubmit();
-    };
+    const handleSubmit = form.handleSubmit((data) => {
+        mutate(
+            {
+                data: {
+                    password: data.password,
+                    username: data.username,
+                },
+            },
+            {
+                onSuccess: (response) => {
+                    const { data } = response;
+                    Cookies.set('token', data.token.token);
+                    const cleanUrl = props.serverUrl.replace(/\/$/, '');
+                    signInToStore(data, cleanUrl);
+                    navigate({ pathname: APP_ROUTE.DASHBOARD }, { replace: true });
+                },
+            },
+        );
+    });
 
     return (
         <motion.div ref={ref} {...animationProps.fadeIn}>
-            <Stack as="form" justify="center" w="320px" onSubmit={handleFormSubmit}>
+            <Stack as="form" justify="center" w="320px" onSubmit={handleSubmit}>
                 <Group gap="xs">
                     <IconButton icon="arrowLeft" onClick={props.onBack} />
                     <Title order={1} size="lg">
@@ -77,30 +72,16 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
                 <Text isSecondary size="xs">
                     {props.serverUrl}
                 </Text>
-                <Field
-                    children={(field) => (
-                        <TextInput
-                            data-autofocus
-                            autoComplete="username"
-                            label="Username"
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.currentTarget.value)}
-                        />
-                    )}
-                    name="username"
+                <TextInput
+                    data-autofocus
+                    autoComplete="username"
+                    label="Username"
+                    {...form.register('username', { required: true })}
                 />
-                <Field
-                    children={(field) => (
-                        <PasswordInput
-                            autoComplete="current-password"
-                            label="Password"
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.currentTarget.value)}
-                        />
-                    )}
-                    name="password"
+                <PasswordInput
+                    autoComplete="current-password"
+                    label="Password"
+                    {...form.register('password', { required: true })}
                 />
                 <Button uppercase type="submit" variant="filled">
                     Sign In

@@ -1,7 +1,6 @@
-import type { FormEvent } from 'react';
 import { ListSortOrder, PlaylistFolderListSortOptions } from '@repo/shared-types';
-import { Field, useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
 import {
     useGetApiLibraryIdPlaylistsFoldersSuspense,
     usePostApiLibraryIdPlaylistsFolders,
@@ -34,81 +33,45 @@ export function CreatePlaylistFolderForm({
         value: folder.id,
     }));
 
-    const form = useForm<{ name: string; parentId: string }>({
+    const form = useForm({
         defaultValues: {
             name: '',
             parentId: '',
         },
-        onSubmit: ({ value }) => {
-            if (!libraryId) {
-                return;
-            }
-
-            createPlaylistFolder(
-                {
-                    data: {
-                        name: value.name,
-                        parentId: value.parentId || undefined,
-                    },
-                    libraryId,
-                },
-                {
-                    onSuccess: async () => {
-                        await queryClient.invalidateQueries({
-                            queryKey: [`/api/${libraryId}/playlists`],
-                        });
-
-                        await queryClient.invalidateQueries({
-                            queryKey: [`/api/${libraryId}/playlists/folders`],
-                        });
-                        onSuccess();
-                    },
-                },
-            );
-        },
-        validators: {
-            onSubmit: ({ value }) => {
-                if (value.name.length === 0) {
-                    return 'Name is required';
-                }
-
-                return undefined;
-            },
-        },
     });
 
-    const handleFormSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        form.handleSubmit();
-    };
+    const handleSubmit = form.handleSubmit((data) => {
+        createPlaylistFolder(
+            {
+                data: {
+                    name: data.name,
+                    parentId: data.parentId || undefined,
+                },
+                libraryId,
+            },
+            {
+                onSuccess: async () => {
+                    await queryClient.invalidateQueries({
+                        queryKey: [`/api/${libraryId}/playlists`],
+                    });
+
+                    await queryClient.invalidateQueries({
+                        queryKey: [`/api/${libraryId}/playlists/folders`],
+                    });
+                    onSuccess();
+                },
+            },
+        );
+    });
 
     return (
-        <Stack as="form" id={formId} onSubmit={handleFormSubmit}>
-            <Field
-                children={(field) => (
-                    <TextInput
-                        data-autofocus
-                        label="Name"
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                form={form}
-                name="name"
-            />
-            <Field
-                children={(field) => (
-                    <Select
-                        data={parentOptions}
-                        label="Parent"
-                        value={field.state.value}
-                        onChange={(e) => {
-                            if (e) field.handleChange(e);
-                        }}
-                    />
-                )}
-                form={form}
-                name="parentId"
+        <Stack as="form" id={formId} onSubmit={handleSubmit}>
+            <TextInput data-autofocus label="Name" {...form.register('name', { required: true })} />
+            <Select
+                data={parentOptions}
+                label="Parent"
+                {...form.register('parentId')}
+                onChange={(e) => form.setValue('parentId', e === null ? '' : e)}
             />
         </Stack>
     );

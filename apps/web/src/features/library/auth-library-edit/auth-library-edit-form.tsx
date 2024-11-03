@@ -1,6 +1,6 @@
 import { type FormEvent, useRef } from 'react';
 import type { LibraryType } from '@repo/shared-types';
-import { useForm } from '@tanstack/react-form';
+import { useForm } from 'react-hook-form';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import type { Library } from '@/api/api-types.ts';
 import { usePostApiLibrariesIdAuth } from '@/api/openapi-generated/libraries/libraries.ts';
@@ -37,7 +37,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
 
     const { mutate: auth } = usePostApiLibrariesIdAuth();
 
-    const { Field, handleSubmit, Subscribe } = useForm<{
+    const form = useForm<{
         overrideBaseUrl: string;
         password: string;
         username: string;
@@ -47,66 +47,55 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
             password: '',
             username: library?.username || '',
         },
-        onSubmit: async (e) => {
-            const onComplete = () => {
-                const library = useAuthStore.getState().libraries[libraryId];
-                const isConnected = Boolean(library?.username && library?.credential);
+    });
 
-                if (isConnected && submitFlag.current === SUBMIT_FLAG.SAVE_AND_CONNECT) {
-                    navigate(generatePath(APP_ROUTE.DASHBOARD_HOME, { libraryId }));
-                } else if (submitFlag.current === SUBMIT_FLAG.SAVE) {
-                    navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
-                }
-            };
+    const handleSubmit = form.handleSubmit((data) => {
+        const onComplete = () => {
+            const library = useAuthStore.getState().libraries[libraryId];
+            const isConnected = Boolean(library?.username && library?.credential);
 
-            // Handle authentication only if the user has entered a username and password
-            if (e.value.username && e.value.password) {
-                auth(
-                    {
-                        data: {
-                            password: e.value.password,
-                            username: e.value.username,
-                        },
-                        id: libraryId,
-                    },
-                    {
-                        onError: (error) => {
-                            console.error(error);
-                        },
-                        onSuccess: (response) => {
-                            setAuthLibrary(libraryId, {
-                                credential: response.data.credential,
-                                overrideBaseUrl: e.value.overrideBaseUrl || null,
-                                type: response.data.type as LibraryType,
-                                username: response.data.username,
-                            });
-
-                            return onComplete();
-                        },
-                    },
-                );
-            } else if (e.value.overrideBaseUrl) {
-                setAuthLibrary(libraryId, {
-                    overrideBaseUrl: e.value.overrideBaseUrl,
-                });
-
-                return onComplete();
-            } else {
-                return onComplete();
+            if (isConnected && submitFlag.current === SUBMIT_FLAG.SAVE_AND_CONNECT) {
+                navigate(generatePath(APP_ROUTE.DASHBOARD_HOME, { libraryId }));
+            } else if (submitFlag.current === SUBMIT_FLAG.SAVE) {
+                navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
             }
-        },
-        validators: {
-            onChange: ({ value }) => {
-                return {
-                    fields: {
-                        password:
-                            isConnected || value.password ? undefined : 'Password is required',
-                        username:
-                            isConnected || value.username ? undefined : 'Username is required',
+        };
+
+        // Handle authentication only if the user has entered a username and password
+        if (data.username && data.password) {
+            auth(
+                {
+                    data: {
+                        password: data.password,
+                        username: data.username,
                     },
-                };
-            },
-        },
+                    id: libraryId,
+                },
+                {
+                    onError: (error) => {
+                        console.error(error);
+                    },
+                    onSuccess: (response) => {
+                        setAuthLibrary(libraryId, {
+                            credential: response.data.credential,
+                            overrideBaseUrl: data.overrideBaseUrl || null,
+                            type: response.data.type as LibraryType,
+                            username: response.data.username,
+                        });
+
+                        return onComplete();
+                    },
+                },
+            );
+        } else if (data.overrideBaseUrl) {
+            setAuthLibrary(libraryId, {
+                overrideBaseUrl: data.overrideBaseUrl,
+            });
+
+            return onComplete();
+        } else {
+            return onComplete();
+        }
     });
 
     const handleFormSubmit = (e: FormEvent, flag: number) => {
@@ -128,42 +117,21 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
             as="form"
             onSubmit={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE_AND_CONNECT)}
         >
-            <Field
-                children={(field) => (
-                    <TextInput
-                        data-autofocus
-                        autoComplete="username"
-                        label="Username"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="username"
+            <TextInput
+                data-autofocus
+                autoComplete="username"
+                label="Username"
+                {...form.register('username', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <PasswordInput
-                        autoComplete="current-password"
-                        label="Password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="password"
+            <PasswordInput
+                autoComplete="current-password"
+                label="Password"
+                {...form.register('password')}
             />
-            <Field
-                children={(field) => (
-                    <TextInput
-                        label="Override URL"
-                        placeholder={serverLibrary.baseUrl}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="overrideBaseUrl"
+            <TextInput
+                label="Override URL"
+                placeholder={serverLibrary.baseUrl}
+                {...form.register('overrideBaseUrl')}
             />
             <Grid grow gutter="xs">
                 <Grid.Col grow span={4}>
@@ -175,19 +143,13 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                     </Button>
                 </Grid.Col>
                 <Grid.Col grow span={8}>
-                    <Subscribe
-                        children={(props) => {
-                            return (
-                                <Button
-                                    disabled={!props.canSubmit || props.isSubmitting}
-                                    type="submit"
-                                    variant="filled"
-                                >
-                                    Save and connect
-                                </Button>
-                            );
-                        }}
-                    />
+                    <Button
+                        disabled={!form.formState.isValid || form.formState.isSubmitting}
+                        type="submit"
+                        variant="filled"
+                    >
+                        Save and connect
+                    </Button>
                 </Grid.Col>
             </Grid>
             <Divider />

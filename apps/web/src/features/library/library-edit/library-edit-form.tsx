@@ -1,9 +1,7 @@
-import type { FormEvent } from 'react';
 import { LibraryListSortOptions, LibraryType, ListSortOrder } from '@repo/shared-types';
-import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
-import type { PutApiLibrariesIdBody } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import {
     getGetApiLibrariesQueryKey,
     useDeleteApiLibrariesId,
@@ -35,54 +33,38 @@ export const LibraryEditForm = () => {
     const { mutate: editLibrary } = usePutApiLibrariesId();
     const { mutate: removeLibrary, isPending: isRemovingLibrary } = useDeleteApiLibrariesId();
 
-    const { Field, handleSubmit, Subscribe } = useForm<PutApiLibrariesIdBody>({
+    const form = useForm({
         defaultValues: {
             baseUrl: library.data.baseUrl,
             displayName: library.data.displayName,
             password: '',
             username: '',
         },
-        onSubmit: async (e) => {
-            editLibrary(
-                {
-                    data: e.value,
-                    id: libraryId,
-                },
-                {
-                    onError: (error) => {
-                        // TODO: handle error
-                        console.error(error);
-                    },
-                    onSuccess: async () => {
-                        navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
-                        queryClient.invalidateQueries({
-                            queryKey: getGetApiLibrariesQueryKey({
-                                sortBy: LibraryListSortOptions.NAME,
-                                sortOrder: ListSortOrder.ASC,
-                            }),
-                        });
-                    },
-                },
-            );
-        },
-        validators: {
-            onChange: ({ value }) => {
-                return {
-                    fields: {
-                        baseUrl: value.baseUrl ? undefined : 'Base URL is required',
-                        displayName: value.displayName ? undefined : 'Display Name is required',
-                        password: value.password ? undefined : 'Password is required',
-                        username: value.username ? undefined : 'Username is required',
-                    },
-                };
-            },
-        },
     });
 
-    const handleFormSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        handleSubmit();
-    };
+    const handleSubmit = form.handleSubmit((data) => {
+        editLibrary(
+            {
+                data,
+                id: libraryId,
+            },
+            {
+                onError: (error) => {
+                    // TODO: handle error
+                    console.error(error);
+                },
+                onSuccess: async () => {
+                    navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));
+                    queryClient.invalidateQueries({
+                        queryKey: getGetApiLibrariesQueryKey({
+                            sortBy: LibraryListSortOptions.NAME,
+                            sortOrder: ListSortOrder.ASC,
+                        }),
+                    });
+                },
+            },
+        );
+    });
 
     const handleRemoveLibrary = () => {
         removeLibrary(
@@ -94,80 +76,49 @@ export const LibraryEditForm = () => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack ref={ref} as="form" onSubmit={handleFormSubmit}>
-            <Field
-                children={(field) => (
-                    <TextInput
-                        data-autofocus
-                        label="Display Name"
-                        placeholder="My Library"
-                        rightSection={
-                            <img
-                                height="20px"
-                                src={
-                                    library.data.type === LibraryType.SUBSONIC
-                                        ? SubsonicIcon
-                                        : library.data.type === LibraryType.NAVIDROME
-                                          ? NavidromeIcon
-                                          : JellyfinIcon
-                                }
-                                width="20px"
-                            />
+        <Stack ref={ref} as="form" onSubmit={handleSubmit}>
+            <TextInput
+                data-autofocus
+                label="Display Name"
+                placeholder="My Library"
+                rightSection={
+                    <img
+                        height="20px"
+                        src={
+                            library.data.type === LibraryType.SUBSONIC
+                                ? SubsonicIcon
+                                : library.data.type === LibraryType.NAVIDROME
+                                  ? NavidromeIcon
+                                  : JellyfinIcon
                         }
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
+                        width="20px"
                     />
-                )}
-                name="displayName"
+                }
+                {...form.register('displayName', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <TextInput
-                        label="Base URL"
-                        placeholder="http://192.168.1.1:4533"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="baseUrl"
+
+            <TextInput
+                label="Base URL"
+                placeholder="http://192.168.1.1:4533"
+                {...form.register('baseUrl', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <TextInput
-                        autoComplete="username"
-                        label="Username"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="username"
+            <TextInput
+                autoComplete="username"
+                label="Username"
+                {...form.register('username', { required: true })}
             />
-            <Field
-                children={(field) => (
-                    <PasswordInput
-                        autoComplete="current-password"
-                        label="Password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.currentTarget.value)}
-                    />
-                )}
-                name="password"
+            <PasswordInput
+                autoComplete="current-password"
+                label="Password"
+                {...form.register('password', { required: true })}
             />
-            <Subscribe
-                children={(props) => (
-                    <Button
-                        isDisabled={!props.canSubmit || props.isSubmitting}
-                        type="submit"
-                        variant="filled"
-                    >
-                        Save
-                    </Button>
-                )}
-            />
+            <Button
+                isDisabled={!form.formState.isValid || form.formState.isSubmitting}
+                type="submit"
+                variant="filled"
+            >
+                Save
+            </Button>
             <Divider />
             <Button disabled={isRemovingLibrary} variant="danger" onClick={handleRemoveLibrary}>
                 Remove library
