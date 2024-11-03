@@ -4,19 +4,44 @@
  * Audioling API
  * OpenAPI spec version: 1.0.0
  */
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import type {
+    MutationFunction,
     QueryFunction,
     QueryKey,
+    UseMutationOptions,
+    UseMutationResult,
     UseSuspenseQueryOptions,
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 import type {
+    DeleteApiLibraryIdPlaylistsFoldersFolderId204,
+    DeleteApiLibraryIdPlaylistsFoldersFolderId401,
+    DeleteApiLibraryIdPlaylistsFoldersFolderId403,
+    DeleteApiLibraryIdPlaylistsFoldersFolderId404,
+    DeleteApiLibraryIdPlaylistsFoldersFolderId500,
+    DeleteApiLibraryIdPlaylistsId204,
+    DeleteApiLibraryIdPlaylistsId401,
+    DeleteApiLibraryIdPlaylistsId403,
+    DeleteApiLibraryIdPlaylistsId404,
+    DeleteApiLibraryIdPlaylistsId500,
     GetApiLibraryIdPlaylists200,
     GetApiLibraryIdPlaylists401,
     GetApiLibraryIdPlaylists403,
     GetApiLibraryIdPlaylists422,
     GetApiLibraryIdPlaylists500,
+    GetApiLibraryIdPlaylistsFolders200,
+    GetApiLibraryIdPlaylistsFolders401,
+    GetApiLibraryIdPlaylistsFolders403,
+    GetApiLibraryIdPlaylistsFolders422,
+    GetApiLibraryIdPlaylistsFolders500,
+    GetApiLibraryIdPlaylistsFoldersFolderId200,
+    GetApiLibraryIdPlaylistsFoldersFolderId401,
+    GetApiLibraryIdPlaylistsFoldersFolderId403,
+    GetApiLibraryIdPlaylistsFoldersFolderId404,
+    GetApiLibraryIdPlaylistsFoldersFolderId500,
+    GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    GetApiLibraryIdPlaylistsFoldersParams,
     GetApiLibraryIdPlaylistsId200,
     GetApiLibraryIdPlaylistsId401,
     GetApiLibraryIdPlaylistsId403,
@@ -29,9 +54,43 @@ import type {
     GetApiLibraryIdPlaylistsIdTracks500,
     GetApiLibraryIdPlaylistsIdTracksParams,
     GetApiLibraryIdPlaylistsParams,
+    PostApiLibraryIdPlaylists201,
+    PostApiLibraryIdPlaylists401,
+    PostApiLibraryIdPlaylists403,
+    PostApiLibraryIdPlaylists422,
+    PostApiLibraryIdPlaylists500,
+    PostApiLibraryIdPlaylistsBody,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAdd204,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAdd401,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAdd403,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAdd404,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAdd422,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAdd500,
+    PostApiLibraryIdPlaylistsFoldersFolderIdAddBody,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemove204,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemove401,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemove403,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemove404,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemove422,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemove500,
+    PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody,
+    PutApiLibraryIdPlaylistsFoldersFolderId200,
+    PutApiLibraryIdPlaylistsFoldersFolderId401,
+    PutApiLibraryIdPlaylistsFoldersFolderId403,
+    PutApiLibraryIdPlaylistsFoldersFolderId404,
+    PutApiLibraryIdPlaylistsFoldersFolderId422,
+    PutApiLibraryIdPlaylistsFoldersFolderId500,
+    PutApiLibraryIdPlaylistsFoldersFolderIdBody,
+    PutApiLibraryIdPlaylistsId204,
+    PutApiLibraryIdPlaylistsId401,
+    PutApiLibraryIdPlaylistsId403,
+    PutApiLibraryIdPlaylistsId404,
+    PutApiLibraryIdPlaylistsId422,
+    PutApiLibraryIdPlaylistsId500,
+    PutApiLibraryIdPlaylistsIdBody,
 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
-import type { ErrorType } from '../../api-instance.ts';
+import type { ErrorType, BodyType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -219,6 +278,947 @@ export function useGetApiLibraryIdPlaylistsSuspense<
 }
 
 /**
+ * @summary Create playlist
+ */
+export const postApiLibraryIdPlaylists = (
+    libraryId: string,
+    postApiLibraryIdPlaylistsBody: BodyType<PostApiLibraryIdPlaylistsBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylists201>(
+        {
+            url: `/api/${libraryId}/playlists`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdPlaylistsBody,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylists401
+        | PostApiLibraryIdPlaylists403
+        | PostApiLibraryIdPlaylists422
+        | PostApiLibraryIdPlaylists500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylists>>,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylists>>,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsBody> },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylists>>,
+        { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsBody> }
+    > = (props) => {
+        const { libraryId, data } = props ?? {};
+
+        return postApiLibraryIdPlaylists(libraryId, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylists>>
+>;
+export type PostApiLibraryIdPlaylistsMutationBody = BodyType<PostApiLibraryIdPlaylistsBody>;
+export type PostApiLibraryIdPlaylistsMutationError = ErrorType<
+    | PostApiLibraryIdPlaylists401
+    | PostApiLibraryIdPlaylists403
+    | PostApiLibraryIdPlaylists422
+    | PostApiLibraryIdPlaylists500
+>;
+
+/**
+ * @summary Create playlist
+ */
+export const usePostApiLibraryIdPlaylists = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylists401
+        | PostApiLibraryIdPlaylists403
+        | PostApiLibraryIdPlaylists422
+        | PostApiLibraryIdPlaylists500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylists>>,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylists>>,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdPlaylistsBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdPlaylistsMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Get all playlist folders
+ */
+export const getApiLibraryIdPlaylistsFolders = (
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdPlaylistsFolders200>(
+        { url: `/api/${libraryId}/playlists/folders`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdPlaylistsFoldersQueryKey = (
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+) => {
+    return [`/api/${libraryId}/playlists/folders`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiLibraryIdPlaylistsFoldersSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFolders401
+        | GetApiLibraryIdPlaylistsFolders403
+        | GetApiLibraryIdPlaylistsFolders422
+        | GetApiLibraryIdPlaylistsFolders500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdPlaylistsFoldersQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>> = ({
+        signal,
+    }) => getApiLibraryIdPlaylistsFolders(libraryId, params, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdPlaylistsFoldersSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>
+>;
+export type GetApiLibraryIdPlaylistsFoldersSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdPlaylistsFolders401
+    | GetApiLibraryIdPlaylistsFolders403
+    | GetApiLibraryIdPlaylistsFolders422
+    | GetApiLibraryIdPlaylistsFolders500
+>;
+
+export function useGetApiLibraryIdPlaylistsFoldersSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFolders401
+        | GetApiLibraryIdPlaylistsFolders403
+        | GetApiLibraryIdPlaylistsFolders422
+        | GetApiLibraryIdPlaylistsFolders500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdPlaylistsFoldersSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFolders401
+        | GetApiLibraryIdPlaylistsFolders403
+        | GetApiLibraryIdPlaylistsFolders422
+        | GetApiLibraryIdPlaylistsFolders500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdPlaylistsFoldersSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFolders401
+        | GetApiLibraryIdPlaylistsFolders403
+        | GetApiLibraryIdPlaylistsFolders422
+        | GetApiLibraryIdPlaylistsFolders500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get all playlist folders
+ */
+
+export function useGetApiLibraryIdPlaylistsFoldersSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFolders401
+        | GetApiLibraryIdPlaylistsFolders403
+        | GetApiLibraryIdPlaylistsFolders422
+        | GetApiLibraryIdPlaylistsFolders500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsFoldersParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFolders>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdPlaylistsFoldersSuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Get playlist folder by id
+ */
+export const getApiLibraryIdPlaylistsFoldersFolderId = (
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdPlaylistsFoldersFolderId200>(
+        { url: `/api/${libraryId}/playlists/folders/${folderId}`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdPlaylistsFoldersFolderIdQueryKey = (
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+) => {
+    return [
+        `/api/${libraryId}/playlists/folders/${folderId}`,
+        ...(params ? [params] : []),
+    ] as const;
+};
+
+export const getGetApiLibraryIdPlaylistsFoldersFolderIdSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFoldersFolderId401
+        | GetApiLibraryIdPlaylistsFoldersFolderId403
+        | GetApiLibraryIdPlaylistsFoldersFolderId404
+        | GetApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+>(
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ??
+        getGetApiLibraryIdPlaylistsFoldersFolderIdQueryKey(libraryId, folderId, params);
+
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>
+    > = ({ signal }) =>
+        getApiLibraryIdPlaylistsFoldersFolderId(
+            libraryId,
+            folderId,
+            params,
+            requestOptions,
+            signal,
+        );
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!(libraryId && folderId),
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdPlaylistsFoldersFolderIdSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>
+>;
+export type GetApiLibraryIdPlaylistsFoldersFolderIdSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdPlaylistsFoldersFolderId401
+    | GetApiLibraryIdPlaylistsFoldersFolderId403
+    | GetApiLibraryIdPlaylistsFoldersFolderId404
+    | GetApiLibraryIdPlaylistsFoldersFolderId500
+>;
+
+export function useGetApiLibraryIdPlaylistsFoldersFolderIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFoldersFolderId401
+        | GetApiLibraryIdPlaylistsFoldersFolderId403
+        | GetApiLibraryIdPlaylistsFoldersFolderId404
+        | GetApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+>(
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdPlaylistsFoldersFolderIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFoldersFolderId401
+        | GetApiLibraryIdPlaylistsFoldersFolderId403
+        | GetApiLibraryIdPlaylistsFoldersFolderId404
+        | GetApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+>(
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdPlaylistsFoldersFolderIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFoldersFolderId401
+        | GetApiLibraryIdPlaylistsFoldersFolderId403
+        | GetApiLibraryIdPlaylistsFoldersFolderId404
+        | GetApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+>(
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get playlist folder by id
+ */
+
+export function useGetApiLibraryIdPlaylistsFoldersFolderIdSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsFoldersFolderId401
+        | GetApiLibraryIdPlaylistsFoldersFolderId403
+        | GetApiLibraryIdPlaylistsFoldersFolderId404
+        | GetApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+>(
+    libraryId: string,
+    folderId: string,
+    params: GetApiLibraryIdPlaylistsFoldersFolderIdParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsFoldersFolderId>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdPlaylistsFoldersFolderIdSuspenseQueryOptions(
+        libraryId,
+        folderId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Update playlist folder
+ */
+export const putApiLibraryIdPlaylistsFoldersFolderId = (
+    libraryId: string,
+    folderId: string,
+    putApiLibraryIdPlaylistsFoldersFolderIdBody: BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PutApiLibraryIdPlaylistsFoldersFolderId200>(
+        {
+            url: `/api/${libraryId}/playlists/folders/${folderId}`,
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            data: putApiLibraryIdPlaylistsFoldersFolderIdBody,
+        },
+        options,
+    );
+};
+
+export const getPutApiLibraryIdPlaylistsFoldersFolderIdMutationOptions = <
+    TError = ErrorType<
+        | PutApiLibraryIdPlaylistsFoldersFolderId401
+        | PutApiLibraryIdPlaylistsFoldersFolderId403
+        | PutApiLibraryIdPlaylistsFoldersFolderId404
+        | PutApiLibraryIdPlaylistsFoldersFolderId422
+        | PutApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof putApiLibraryIdPlaylistsFoldersFolderId>>,
+        TError,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof putApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError,
+    {
+        libraryId: string;
+        folderId: string;
+        data: BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>;
+    },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof putApiLibraryIdPlaylistsFoldersFolderId>>,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>;
+        }
+    > = (props) => {
+        const { libraryId, folderId, data } = props ?? {};
+
+        return putApiLibraryIdPlaylistsFoldersFolderId(libraryId, folderId, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PutApiLibraryIdPlaylistsFoldersFolderIdMutationResult = NonNullable<
+    Awaited<ReturnType<typeof putApiLibraryIdPlaylistsFoldersFolderId>>
+>;
+export type PutApiLibraryIdPlaylistsFoldersFolderIdMutationBody =
+    BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>;
+export type PutApiLibraryIdPlaylistsFoldersFolderIdMutationError = ErrorType<
+    | PutApiLibraryIdPlaylistsFoldersFolderId401
+    | PutApiLibraryIdPlaylistsFoldersFolderId403
+    | PutApiLibraryIdPlaylistsFoldersFolderId404
+    | PutApiLibraryIdPlaylistsFoldersFolderId422
+    | PutApiLibraryIdPlaylistsFoldersFolderId500
+>;
+
+/**
+ * @summary Update playlist folder
+ */
+export const usePutApiLibraryIdPlaylistsFoldersFolderId = <
+    TError = ErrorType<
+        | PutApiLibraryIdPlaylistsFoldersFolderId401
+        | PutApiLibraryIdPlaylistsFoldersFolderId403
+        | PutApiLibraryIdPlaylistsFoldersFolderId404
+        | PutApiLibraryIdPlaylistsFoldersFolderId422
+        | PutApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof putApiLibraryIdPlaylistsFoldersFolderId>>,
+        TError,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof putApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError,
+    {
+        libraryId: string;
+        folderId: string;
+        data: BodyType<PutApiLibraryIdPlaylistsFoldersFolderIdBody>;
+    },
+    TContext
+> => {
+    const mutationOptions = getPutApiLibraryIdPlaylistsFoldersFolderIdMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Delete playlist folder
+ */
+export const deleteApiLibraryIdPlaylistsFoldersFolderId = (
+    libraryId: string,
+    folderId: string,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<DeleteApiLibraryIdPlaylistsFoldersFolderId204>(
+        { url: `/api/${libraryId}/playlists/folders/${folderId}`, method: 'DELETE' },
+        options,
+    );
+};
+
+export const getDeleteApiLibraryIdPlaylistsFoldersFolderIdMutationOptions = <
+    TError = ErrorType<
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId401
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId403
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId404
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsFoldersFolderId>>,
+        TError,
+        { libraryId: string; folderId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError,
+    { libraryId: string; folderId: string },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsFoldersFolderId>>,
+        { libraryId: string; folderId: string }
+    > = (props) => {
+        const { libraryId, folderId } = props ?? {};
+
+        return deleteApiLibraryIdPlaylistsFoldersFolderId(libraryId, folderId, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteApiLibraryIdPlaylistsFoldersFolderIdMutationResult = NonNullable<
+    Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsFoldersFolderId>>
+>;
+
+export type DeleteApiLibraryIdPlaylistsFoldersFolderIdMutationError = ErrorType<
+    | DeleteApiLibraryIdPlaylistsFoldersFolderId401
+    | DeleteApiLibraryIdPlaylistsFoldersFolderId403
+    | DeleteApiLibraryIdPlaylistsFoldersFolderId404
+    | DeleteApiLibraryIdPlaylistsFoldersFolderId500
+>;
+
+/**
+ * @summary Delete playlist folder
+ */
+export const useDeleteApiLibraryIdPlaylistsFoldersFolderId = <
+    TError = ErrorType<
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId401
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId403
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId404
+        | DeleteApiLibraryIdPlaylistsFoldersFolderId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsFoldersFolderId>>,
+        TError,
+        { libraryId: string; folderId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsFoldersFolderId>>,
+    TError,
+    { libraryId: string; folderId: string },
+    TContext
+> => {
+    const mutationOptions = getDeleteApiLibraryIdPlaylistsFoldersFolderIdMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Add playlists to folder
+ */
+export const postApiLibraryIdPlaylistsFoldersFolderIdAdd = (
+    libraryId: string,
+    folderId: string,
+    postApiLibraryIdPlaylistsFoldersFolderIdAddBody: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylistsFoldersFolderIdAdd204>(
+        {
+            url: `/api/${libraryId}/playlists/folders/${folderId}/add`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdPlaylistsFoldersFolderIdAddBody,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsFoldersFolderIdAddMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd401
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd403
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd404
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd422
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdAdd>>,
+        TError,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdAdd>>,
+    TError,
+    {
+        libraryId: string;
+        folderId: string;
+        data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>;
+    },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdAdd>>,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>;
+        }
+    > = (props) => {
+        const { libraryId, folderId, data } = props ?? {};
+
+        return postApiLibraryIdPlaylistsFoldersFolderIdAdd(
+            libraryId,
+            folderId,
+            data,
+            requestOptions,
+        );
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsFoldersFolderIdAddMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdAdd>>
+>;
+export type PostApiLibraryIdPlaylistsFoldersFolderIdAddMutationBody =
+    BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>;
+export type PostApiLibraryIdPlaylistsFoldersFolderIdAddMutationError = ErrorType<
+    | PostApiLibraryIdPlaylistsFoldersFolderIdAdd401
+    | PostApiLibraryIdPlaylistsFoldersFolderIdAdd403
+    | PostApiLibraryIdPlaylistsFoldersFolderIdAdd404
+    | PostApiLibraryIdPlaylistsFoldersFolderIdAdd422
+    | PostApiLibraryIdPlaylistsFoldersFolderIdAdd500
+>;
+
+/**
+ * @summary Add playlists to folder
+ */
+export const usePostApiLibraryIdPlaylistsFoldersFolderIdAdd = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd401
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd403
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd404
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd422
+        | PostApiLibraryIdPlaylistsFoldersFolderIdAdd500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdAdd>>,
+        TError,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdAdd>>,
+    TError,
+    {
+        libraryId: string;
+        folderId: string;
+        data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdAddBody>;
+    },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdPlaylistsFoldersFolderIdAddMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Remove playlists from folder
+ */
+export const postApiLibraryIdPlaylistsFoldersFolderIdRemove = (
+    libraryId: string,
+    folderId: string,
+    postApiLibraryIdPlaylistsFoldersFolderIdRemoveBody: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylistsFoldersFolderIdRemove204>(
+        {
+            url: `/api/${libraryId}/playlists/folders/${folderId}/remove`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdPlaylistsFoldersFolderIdRemoveBody,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsFoldersFolderIdRemoveMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove401
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove403
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove404
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove422
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdRemove>>,
+        TError,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdRemove>>,
+    TError,
+    {
+        libraryId: string;
+        folderId: string;
+        data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>;
+    },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdRemove>>,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>;
+        }
+    > = (props) => {
+        const { libraryId, folderId, data } = props ?? {};
+
+        return postApiLibraryIdPlaylistsFoldersFolderIdRemove(
+            libraryId,
+            folderId,
+            data,
+            requestOptions,
+        );
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsFoldersFolderIdRemoveMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdRemove>>
+>;
+export type PostApiLibraryIdPlaylistsFoldersFolderIdRemoveMutationBody =
+    BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>;
+export type PostApiLibraryIdPlaylistsFoldersFolderIdRemoveMutationError = ErrorType<
+    | PostApiLibraryIdPlaylistsFoldersFolderIdRemove401
+    | PostApiLibraryIdPlaylistsFoldersFolderIdRemove403
+    | PostApiLibraryIdPlaylistsFoldersFolderIdRemove404
+    | PostApiLibraryIdPlaylistsFoldersFolderIdRemove422
+    | PostApiLibraryIdPlaylistsFoldersFolderIdRemove500
+>;
+
+/**
+ * @summary Remove playlists from folder
+ */
+export const usePostApiLibraryIdPlaylistsFoldersFolderIdRemove = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove401
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove403
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove404
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove422
+        | PostApiLibraryIdPlaylistsFoldersFolderIdRemove500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdRemove>>,
+        TError,
+        {
+            libraryId: string;
+            folderId: string;
+            data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsFoldersFolderIdRemove>>,
+    TError,
+    {
+        libraryId: string;
+        folderId: string;
+        data: BodyType<PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody>;
+    },
+    TContext
+> => {
+    const mutationOptions =
+        getPostApiLibraryIdPlaylistsFoldersFolderIdRemoveMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
  * @summary Get playlist by id
  */
 export const getApiLibraryIdPlaylistsId = (
@@ -393,6 +1393,195 @@ export function useGetApiLibraryIdPlaylistsIdSuspense<
     return query;
 }
 
+/**
+ * @summary Update playlist
+ */
+export const putApiLibraryIdPlaylistsId = (
+    libraryId: string,
+    id: string,
+    putApiLibraryIdPlaylistsIdBody: BodyType<PutApiLibraryIdPlaylistsIdBody>,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<PutApiLibraryIdPlaylistsId204>(
+        {
+            url: `/api/${libraryId}/playlists/${id}`,
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            data: putApiLibraryIdPlaylistsIdBody,
+        },
+        options,
+    );
+};
+
+export const getPutApiLibraryIdPlaylistsIdMutationOptions = <
+    TError = ErrorType<
+        | PutApiLibraryIdPlaylistsId401
+        | PutApiLibraryIdPlaylistsId403
+        | PutApiLibraryIdPlaylistsId404
+        | PutApiLibraryIdPlaylistsId422
+        | PutApiLibraryIdPlaylistsId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof putApiLibraryIdPlaylistsId>>,
+        TError,
+        { libraryId: string; id: string; data: BodyType<PutApiLibraryIdPlaylistsIdBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof putApiLibraryIdPlaylistsId>>,
+    TError,
+    { libraryId: string; id: string; data: BodyType<PutApiLibraryIdPlaylistsIdBody> },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof putApiLibraryIdPlaylistsId>>,
+        { libraryId: string; id: string; data: BodyType<PutApiLibraryIdPlaylistsIdBody> }
+    > = (props) => {
+        const { libraryId, id, data } = props ?? {};
+
+        return putApiLibraryIdPlaylistsId(libraryId, id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PutApiLibraryIdPlaylistsIdMutationResult = NonNullable<
+    Awaited<ReturnType<typeof putApiLibraryIdPlaylistsId>>
+>;
+export type PutApiLibraryIdPlaylistsIdMutationBody = BodyType<PutApiLibraryIdPlaylistsIdBody>;
+export type PutApiLibraryIdPlaylistsIdMutationError = ErrorType<
+    | PutApiLibraryIdPlaylistsId401
+    | PutApiLibraryIdPlaylistsId403
+    | PutApiLibraryIdPlaylistsId404
+    | PutApiLibraryIdPlaylistsId422
+    | PutApiLibraryIdPlaylistsId500
+>;
+
+/**
+ * @summary Update playlist
+ */
+export const usePutApiLibraryIdPlaylistsId = <
+    TError = ErrorType<
+        | PutApiLibraryIdPlaylistsId401
+        | PutApiLibraryIdPlaylistsId403
+        | PutApiLibraryIdPlaylistsId404
+        | PutApiLibraryIdPlaylistsId422
+        | PutApiLibraryIdPlaylistsId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof putApiLibraryIdPlaylistsId>>,
+        TError,
+        { libraryId: string; id: string; data: BodyType<PutApiLibraryIdPlaylistsIdBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof putApiLibraryIdPlaylistsId>>,
+    TError,
+    { libraryId: string; id: string; data: BodyType<PutApiLibraryIdPlaylistsIdBody> },
+    TContext
+> => {
+    const mutationOptions = getPutApiLibraryIdPlaylistsIdMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Delete playlist
+ */
+export const deleteApiLibraryIdPlaylistsId = (
+    libraryId: string,
+    id: string,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<DeleteApiLibraryIdPlaylistsId204>(
+        { url: `/api/${libraryId}/playlists/${id}`, method: 'DELETE' },
+        options,
+    );
+};
+
+export const getDeleteApiLibraryIdPlaylistsIdMutationOptions = <
+    TError = ErrorType<
+        | DeleteApiLibraryIdPlaylistsId401
+        | DeleteApiLibraryIdPlaylistsId403
+        | DeleteApiLibraryIdPlaylistsId404
+        | DeleteApiLibraryIdPlaylistsId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsId>>,
+        TError,
+        { libraryId: string; id: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsId>>,
+    TError,
+    { libraryId: string; id: string },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsId>>,
+        { libraryId: string; id: string }
+    > = (props) => {
+        const { libraryId, id } = props ?? {};
+
+        return deleteApiLibraryIdPlaylistsId(libraryId, id, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteApiLibraryIdPlaylistsIdMutationResult = NonNullable<
+    Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsId>>
+>;
+
+export type DeleteApiLibraryIdPlaylistsIdMutationError = ErrorType<
+    | DeleteApiLibraryIdPlaylistsId401
+    | DeleteApiLibraryIdPlaylistsId403
+    | DeleteApiLibraryIdPlaylistsId404
+    | DeleteApiLibraryIdPlaylistsId500
+>;
+
+/**
+ * @summary Delete playlist
+ */
+export const useDeleteApiLibraryIdPlaylistsId = <
+    TError = ErrorType<
+        | DeleteApiLibraryIdPlaylistsId401
+        | DeleteApiLibraryIdPlaylistsId403
+        | DeleteApiLibraryIdPlaylistsId404
+        | DeleteApiLibraryIdPlaylistsId500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsId>>,
+        TError,
+        { libraryId: string; id: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof deleteApiLibraryIdPlaylistsId>>,
+    TError,
+    { libraryId: string; id: string },
+    TContext
+> => {
+    const mutationOptions = getDeleteApiLibraryIdPlaylistsIdMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
 /**
  * @summary Get playlist tracks
  */
