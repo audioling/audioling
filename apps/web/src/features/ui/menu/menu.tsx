@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
-import { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
+import { createContext, Fragment, type ReactNode, useContext, useMemo, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { AnimatePresence, motion } from 'framer-motion';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
@@ -129,14 +129,27 @@ function Divider(props: DividerProps) {
     return <DropdownMenu.Separator {...props} className={styles.divider} />;
 }
 
+interface SubmenuContext {
+    open: boolean;
+    setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const SubmenuContext = createContext<SubmenuContext | null>(null);
+
 interface SubmenuProps {
     children: ReactNode;
 }
 
 function Submenu(props: SubmenuProps) {
     const { children } = props;
+    const [open, setOpen] = useState(false);
+    const context = useMemo(() => ({ open, setOpen }), [open]);
 
-    return <DropdownMenu.Sub>{children}</DropdownMenu.Sub>;
+    return (
+        <DropdownMenu.Sub open={open}>
+            <SubmenuContext.Provider value={context}>{children}</SubmenuContext.Provider>
+        </DropdownMenu.Sub>
+    );
 }
 
 interface SubmenuTargetProps {
@@ -145,8 +158,16 @@ interface SubmenuTargetProps {
 
 function SubmenuTarget(props: SubmenuTargetProps) {
     const { children } = props;
+    const { setOpen } = useContext(SubmenuContext) as SubmenuContext;
 
-    return <DropdownMenu.SubTrigger>{children}</DropdownMenu.SubTrigger>;
+    return (
+        <DropdownMenu.SubTrigger
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+        >
+            {children}
+        </DropdownMenu.SubTrigger>
+    );
 }
 
 interface SubmenuContentProps {
@@ -155,11 +176,28 @@ interface SubmenuContentProps {
 
 function SubmenuContent(props: SubmenuContentProps) {
     const { children } = props;
+    const { open, setOpen } = useContext(SubmenuContext) as SubmenuContext;
 
     return (
-        <DropdownMenu.Portal>
-            <DropdownMenu.SubContent className={styles.content}>{children}</DropdownMenu.SubContent>
-        </DropdownMenu.Portal>
+        <Fragment>
+            {open && (
+                <DropdownMenu.Portal forceMount>
+                    <DropdownMenu.SubContent
+                        className={styles.content}
+                        onMouseEnter={() => setOpen(true)}
+                        onMouseLeave={() => setOpen(false)}
+                    >
+                        <motion.div
+                            animate="show"
+                            initial="hidden"
+                            variants={animationVariants.fadeIn}
+                        >
+                            {children}
+                        </motion.div>
+                    </DropdownMenu.SubContent>
+                </DropdownMenu.Portal>
+            )}
+        </Fragment>
     );
 }
 
