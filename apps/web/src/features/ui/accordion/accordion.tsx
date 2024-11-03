@@ -1,7 +1,8 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { LayoutGroup, motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { Group } from '@/features/ui/group/group.tsx';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { Icon, MotionIcon } from '@/features/ui/icon/icon.tsx';
@@ -11,21 +12,31 @@ interface AccordionProps {
     children: ReactNode;
     icon?: keyof typeof AppIcon;
     label: string;
+    onOpenedChange?: (opened: boolean) => void;
     opened?: boolean;
-    setOpened?: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Accordion({ children, icon, opened = false, label, setOpened }: AccordionProps) {
+const variants: Variants = {
+    hidden: { height: '0px', opacity: 0 },
+    show: { height: 'auto', opacity: 1 },
+};
+
+export function Accordion({
+    children,
+    icon,
+    label,
+    onOpenedChange,
+    opened = false,
+}: AccordionProps) {
     const [uncontrolledOpened, setUncontrolledOpened] = useState(opened);
 
     const isStateOpen = opened || uncontrolledOpened;
 
     const handleClick = () => {
-        if (setOpened) {
-            return setOpened((prev) => !prev);
-        }
-
-        return setUncontrolledOpened((prev) => !prev);
+        onOpenedChange?.(isStateOpen);
+        setUncontrolledOpened((prev) => {
+            return !prev;
+        });
     };
 
     return (
@@ -39,20 +50,21 @@ export function Accordion({ children, icon, opened = false, label, setOpened }: 
                     <MotionIcon animate={{ rotate: isStateOpen ? 90 : 0 }} icon="arrowRightS" />
                 </div>
             </button>
-            <motion.div
-                layout
-                animate={{
-                    height: isStateOpen ? 'auto' : '0px',
-                    opacity: isStateOpen ? 1 : 0,
-                    overflow: 'hidden',
-                    userSelect: 'none',
-                }}
-                className={styles.content}
-                exit={{ height: '0px', opacity: 0, overflow: 'hidden', userSelect: 'none' }}
-                style={{ overflow: 'hidden', userSelect: 'none' }}
-            >
-                {children}
-            </motion.div>
+            <AnimatePresence>
+                {isStateOpen && (
+                    <motion.div
+                        layout
+                        animate="show"
+                        className={styles.content}
+                        exit="hidden"
+                        initial="hidden"
+                        style={{ overflow: 'hidden', userSelect: 'none' }}
+                        variants={variants}
+                    >
+                        {children}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 }
