@@ -176,7 +176,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'menu-item-hover-font-color': 'rgb(230, 230, 230)',
     'menu-item-padding': `${gap.xs} ${gap.sm}`,
     'menu-padding': 0,
-    'modal-background-color': 'rgba(50, 50, 50, 0.9)',
+    'modal-background-color': 'rgb(12, 12, 12)',
     'modal-border-radius': radius.md,
     'modal-font-color': 'rgb(230, 230, 230)',
     'modal-font-size': fontSize.md,
