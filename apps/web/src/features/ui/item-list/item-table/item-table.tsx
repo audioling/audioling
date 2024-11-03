@@ -180,6 +180,7 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
                     rangeChanged={onRangeChanged}
                     scrollerRef={setScroller}
                     startReached={onStartReached}
+                    style={{ overflow: 'hidden' }}
                     totalCount={itemCount}
                     onScroll={onScroll}
                 />

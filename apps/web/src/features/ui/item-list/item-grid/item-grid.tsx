@@ -132,6 +132,7 @@ export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
                 rangeChanged={onRangeChanged}
                 scrollerRef={setScroller}
                 startReached={onStartReached}
+                style={{ overflow: 'hidden' }}
                 totalCount={itemCount}
                 onScroll={onScroll}
             />
