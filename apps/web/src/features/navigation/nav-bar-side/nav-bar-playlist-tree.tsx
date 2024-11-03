@@ -4,6 +4,10 @@ import type {
     GetApiLibraryIdPlaylistsFolders200DataItem,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { NavBarPlaylistItem } from '@/features/navigation/nav-bar-side/nav-bar-playlist-item.tsx';
+import {
+    usePlaylistsNavigationSections,
+    useTogglePlaylistsSection,
+} from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
 import styles from './nav-bar-playlist-tree.module.scss';
 
@@ -14,13 +18,16 @@ interface TreeNode {
     playlist?: GetApiLibraryIdPlaylists200DataItem;
 }
 
-interface PlaylistTreeProps {
+interface NavBarPlaylistTreeProps {
     folders: GetApiLibraryIdPlaylistsFolders200DataItem[];
     libraryId: string;
     playlists: GetApiLibraryIdPlaylists200DataItem[];
 }
 
-export function NavBarPlaylistTree({ folders, libraryId, playlists }: PlaylistTreeProps) {
+export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlaylistTreeProps) {
+    const openedSections = usePlaylistsNavigationSections();
+    const toggleSection = useTogglePlaylistsSection();
+
     const tree = useMemo(() => {
         const nodes = new Map<string | null, TreeNode[]>();
 
@@ -68,19 +75,38 @@ export function NavBarPlaylistTree({ folders, libraryId, playlists }: PlaylistTr
         return nodes.get(null) || [];
     }, [folders, playlists]);
 
-    return <TreeNodeList libraryId={libraryId} nodes={tree} />;
+    const handleToggleFolder = (folderId: string) => {
+        toggleSection(folderId);
+    };
+
+    return (
+        <TreeNodeList
+            libraryId={libraryId}
+            nodes={tree}
+            openFolders={openedSections}
+            onToggleFolder={handleToggleFolder}
+        />
+    );
 }
 
 interface TreeNodeListProps {
     libraryId: string;
     nodes: TreeNode[];
+    onToggleFolder: (folderId: string) => void;
+    openFolders: Record<string, boolean>;
 }
 
-function TreeNodeList({ libraryId, nodes }: TreeNodeListProps) {
+function TreeNodeList({ libraryId, nodes, openFolders, onToggleFolder }: TreeNodeListProps) {
     return (
         <div className={styles.list}>
             {nodes.map((node) => (
-                <TreeNodeItem key={node.id} libraryId={libraryId} node={node} />
+                <TreeNodeItem
+                    key={node.id}
+                    libraryId={libraryId}
+                    node={node}
+                    openFolders={openFolders}
+                    onToggleFolder={onToggleFolder}
+                />
             ))}
         </div>
     );
@@ -89,14 +115,26 @@ function TreeNodeList({ libraryId, nodes }: TreeNodeListProps) {
 interface TreeNodeItemProps {
     libraryId: string;
     node: TreeNode;
+    onToggleFolder: (folderId: string) => void;
+    openFolders: Record<string, boolean>;
 }
 
-function TreeNodeItem({ libraryId, node }: TreeNodeItemProps) {
+function TreeNodeItem({ libraryId, node, openFolders, onToggleFolder }: TreeNodeItemProps) {
     if (node.folder) {
         return (
-            <Accordion icon="folder" label={node.folder.name}>
+            <Accordion
+                icon="folder"
+                label={node.folder.name}
+                opened={openFolders[`playlist-${node.folder.id}`]}
+                onOpenedChange={() => onToggleFolder(`playlist-${node.folder!.id}`)}
+            >
                 <div className={styles.nested}>
-                    <TreeNodeList libraryId={libraryId} nodes={node.children} />
+                    <TreeNodeList
+                        libraryId={libraryId}
+                        nodes={node.children}
+                        openFolders={openFolders}
+                        onToggleFolder={onToggleFolder}
+                    />
                 </div>
             </Accordion>
         );

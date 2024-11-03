@@ -25,7 +25,6 @@ export function NavBarPlaylistList() {
         <ScrollArea>
             <Stack gap="xs">
                 <CreatePlaylistButton />
-
                 <NavBarPlaylistTree
                     folders={folders.data}
                     libraryId={libraryId}
