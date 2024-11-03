@@ -6,6 +6,8 @@ import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
+import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
+import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
@@ -47,6 +49,8 @@ export function DashboardLayout() {
 
     return (
         <AnimatePresence mode="sync">
+            <CreatePlaylistModal.Root />
+            <CreatePlaylistFolderModal.Root />
             <motion.div
                 animate="show"
                 exit="hidden"
