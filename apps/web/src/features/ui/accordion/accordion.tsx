@@ -50,7 +50,7 @@ export function Accordion({
                     <MotionIcon animate={{ rotate: isStateOpen ? 90 : 0 }} icon="arrowRightS" />
                 </div>
             </button>
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
                 {isStateOpen && (
                     <motion.div
                         layout
