@@ -51,8 +51,10 @@ export const Select = forwardRef((props: SelectProps, ref: Ref<HTMLInputElement>
 
     const selectClassNames: MantineSelectProps['classNames'] = {
         description: styles.description,
+        dropdown: styles.dropdown,
         input: inputClassNames,
         label: styles.label,
+        option: styles.option,
         required: styles.required,
         root: rootClassNames,
         section: styles.section,
@@ -63,6 +65,10 @@ export const Select = forwardRef((props: SelectProps, ref: Ref<HTMLInputElement>
         <MantineSelect
             ref={ref}
             classNames={selectClassNames}
+            comboboxProps={{
+                withinPortal: true,
+                zIndex: 10000,
+            }}
             data={data}
             description={description}
             label={label}

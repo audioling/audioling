@@ -18,7 +18,7 @@
 }
 
 .label {
-    font-size: base.$font-size-sm;
+    font-size: base.$font-size-sm !important;
 }
 
 .input {
@@ -27,14 +27,15 @@
     font-weight: 400;
     line-height: 1.25rem;
     color: var(--input-font-color);
-    background-color: var(--input-background-color);
-    border: var(--input-border);
+    cursor: default !important;
+    background-color: var(--input-background-color) !important;
+    border: var(--input-border) !important;
     transition: all 0.15s ease-in-out;
 
     &:hover,
     &:focus-visible {
         color: var(--input-hover-font-color);
-        background-color: var(--input-hover-background-color);
+        background-color: var(--input-hover-background-color) !important;
     }
 
     &::placeholder {
@@ -57,7 +58,29 @@
     padding: base.$gap-sm;
 }
 
+.dropdown {
+    padding: var(--menu-padding) !important;
+    background-color: var(--menu-background-color) !important;
+    border-radius: var(--menu-border-radius) !important;
+    box-shadow: var(--menu-box-shadow) !important;
+}
+
+.option {
+    padding: var(--menu-item-padding) !important;
+    font-size: var(--menu-item-font-size) !important;
+    font-weight: var(--menu-item-font-weight) !important;
+    color: var(--menu-item-font-color) !important;
+    cursor: default !important;
+    background-color: var(--menu-item-background-color) !important;
+
+    &:hover {
+        color: var(--menu-item-hover-font-color) !important;
+        background-color: var(--menu-item-hover-background-color) !important;
+    }
+}
+
 .size-xs {
+    padding: base.$gap-xs;
     font-size: base.$font-size-sm;
 
     &::placeholder {
@@ -66,6 +89,7 @@
 }
 
 .size-sm {
+    padding: base.$gap-sm;
     font-size: base.$font-size-sm;
 
     &::placeholder {
