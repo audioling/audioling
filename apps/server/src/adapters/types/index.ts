@@ -39,6 +39,8 @@ import type {
     AdapterAddToPlaylistResponse,
     AdapterClearPlaylistRequest,
     AdapterClearPlaylistResponse,
+    AdapterCreatePlaylistRequest,
+    AdapterCreatePlaylistResponse,
     AdapterDeletePlaylistRequest,
     AdapterDeletePlaylistResponse,
     AdapterPlaylistDetailRequest,
@@ -53,6 +55,8 @@ import type {
     AdapterPlaylistTrackListResponse,
     AdapterRemoveFromPlaylistRequest,
     AdapterRemoveFromPlaylistResponse,
+    AdapterUpdatePlaylistRequest,
+    AdapterUpdatePlaylistResponse,
 } from '@/adapters/types/adapter-playlist-types.js';
 import type {
     AdapterSetRatingRequest,
@@ -104,6 +108,7 @@ export type AdapterApi = {
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
     clearPlaylist: AdapterFn<AdapterClearPlaylistRequest, AdapterClearPlaylistResponse>;
+    createPlaylist: AdapterFn<AdapterCreatePlaylistRequest, AdapterCreatePlaylistResponse>;
     deletePlaylist: AdapterFn<AdapterDeletePlaylistRequest, AdapterDeletePlaylistResponse>;
     getAlbumArtistAlbumList: AdapterFn<
         AdapterArtistAlbumListRequest,
@@ -155,6 +160,7 @@ export type AdapterApi = {
     setFavorite: AdapterFn<AdapterSetFavoriteRequest, AdapterSetFavoriteResponse>;
     setRating: AdapterFn<AdapterSetRatingRequest, AdapterSetRatingResponse>;
     stream: AdapterFn<AdapterStreamRequest, AdapterStreamResponse>;
+    updatePlaylist: AdapterFn<AdapterUpdatePlaylistRequest, AdapterUpdatePlaylistResponse>;
 };
 
 export type RemoteAdapter = (library: DbLibrary, db: AppDatabase) => AdapterApi;

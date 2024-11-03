@@ -14,6 +14,7 @@ import { initRootController } from '@/controllers/root/root-controller';
 import { initTrackController } from '@/controllers/track/track-controller.js';
 import { initUserController } from '@/controllers/user/user-controller.js';
 import type { AppDatabase } from '@/database/init-database.js';
+import { migrateUserConfig } from '@/database/user-database.js';
 import { adapterMiddleware } from '@/middlewares/adapter-middleware.js';
 import { authMiddleware } from '@/middlewares/auth-middleware.js';
 import { loggerMiddleware, writeLog } from '@/middlewares/logger-middleware.js';
@@ -42,6 +43,8 @@ export const initApplication = async (options: ApplicationOptions) => {
         name: CONSTANTS.APP_NAME,
         path: path.join(CONSTANTS.APP_DIR, `config-server.json`),
     });
+
+    await migrateUserConfig(db);
 
     const app = new OpenAPIHono();
 

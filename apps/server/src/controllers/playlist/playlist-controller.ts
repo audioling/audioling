@@ -4,6 +4,7 @@ import { apiSchema } from '@/controllers/index.js';
 import type {
     PlaylistDetailResponse,
     PlaylistDetailTrackListResponse,
+    PlaylistFolderListResponse,
     PlaylistListResponse,
 } from '@/controllers/playlist/playlist-api-types.js';
 import { playlistHelpers } from '@/controllers/playlist/playlist-helpers.js';
@@ -65,6 +66,191 @@ export const initPlaylistController = (modules: { service: AppService }) => {
             };
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - POST /
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/',
+            summary: 'Create playlist',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/'].post,
+        }),
+        async (c) => {
+            const body = c.req.valid('json');
+            const { adapter } = c.var;
+
+            await service.playlist.add(adapter, {
+                values: body,
+            });
+
+            return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - GET /folders
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/folders',
+            summary: 'Get all playlist folders',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders'].get,
+        }),
+        async (c) => {
+            const query = c.req.valid('query');
+            const { user } = c.var;
+
+            const folders = await service.playlist.folderList({
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+                userId: user.id,
+            });
+
+            const response: PlaylistFolderListResponse = {
+                data: folders,
+                meta: {
+                    next: false,
+                    prev: false,
+                    totalRecordCount: folders.length,
+                },
+            };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /folders/{folderId}
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/folders/{folderId}',
+            summary: 'Get playlist folder by id',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders/{folderId}'].get,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const query = c.req.valid('query');
+            const { user } = c.var;
+
+            const folder = await service.playlist.folderList({
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                playlistFolderId: params.folderId,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+                userId: user.id,
+            });
+
+            const response: PlaylistFolderListResponse = {
+                data: folder,
+                meta: {
+                    next: false,
+                    prev: false,
+                    totalRecordCount: folder.length,
+                },
+            };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - PUT /folders/{folderId}
+    controller.openapi(
+        createRoute({
+            method: 'put',
+            path: '/folders/{folderId}',
+            summary: 'Update playlist folder',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders/{folderId}'].put,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const body = c.req.valid('json');
+            const { user } = c.var;
+
+            await service.playlist.updateFolder({
+                folderId: params.folderId,
+                userId: user.id,
+                values: body,
+            });
+
+            return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - DELETE /folders/{folderId}
+    controller.openapi(
+        createRoute({
+            method: 'delete',
+            path: '/folders/{folderId}',
+            summary: 'Delete playlist folder',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders/{folderId}'].delete,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const { user } = c.var;
+
+            await service.playlist.removeFolder({
+                folderId: params.folderId,
+                userId: user.id,
+            });
+
+            return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - POST /folders/{folderId}/add
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/folders/{folderId}/add',
+            summary: 'Add playlists to folder',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders/{folderId}/add'].post,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const body = c.req.valid('json');
+            const { user } = c.var;
+
+            await service.playlist.addPlaylistToFolder({
+                folderId: params.folderId,
+                playlistIds: body.playlistIds,
+                userId: user.id,
+            });
+
+            return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - POST /folders/{folderId}/remove
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/folders/{folderId}/remove',
+            summary: 'Remove playlists from folder',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/folders/{folderId}/remove'].post,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const body = c.req.valid('json');
+            const { user } = c.var;
+
+            await service.playlist.removePlaylistsFromFolder({
+                folderId: params.folderId,
+                playlistIds: body.playlistIds,
+                userId: user.id,
+            });
+
+            return c.json(null, 204);
         },
     );
 
@@ -140,6 +326,29 @@ export const initPlaylistController = (modules: { service: AppService }) => {
             };
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - PUT /{id}
+    controller.openapi(
+        createRoute({
+            method: 'put',
+            path: '/{id}',
+            summary: 'Update playlist',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/{id}'].put,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const body = c.req.valid('json');
+            const { adapter } = c.var;
+
+            await service.playlist.update(adapter, {
+                id: params.id,
+                values: body,
+            });
+
+            return c.json(null, 204);
         },
     );
 

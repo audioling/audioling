@@ -1,10 +1,18 @@
 import { z } from '@hono/zod-openapi';
 import {
+    addPlaylistToFolderRequestSchema,
+    createPlaylistFolderRequestSchema,
+    createPlaylistRequestSchema,
     playlistDetailResponseSchema,
     playlistDetailTrackListRequestSchema,
     playlistDetailTrackListResponseSchema,
+    playlistFolderListRequestSchema,
+    playlistFolderListResponseSchema,
     playlistListRequestSchema,
     playlistListResponseSchema,
+    removePlaylistFromFolderRequestSchema,
+    updatePlaylistFolderRequestSchema,
+    updatePlaylistRequestSchema,
 } from '@/controllers/playlist/playlist-api-types.js';
 import { EmptyBodySchema, schemaResponse } from '@/controllers/shared-api-types.js';
 
@@ -22,6 +30,143 @@ export const playlistApiSchema = {
                     status: 200,
                 },
                 [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+        post: {
+            request: {
+                body: {
+                    content: { 'application/json': { schema: createPlaylistRequestSchema } },
+                },
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Create playlist',
+                    schema: playlistDetailResponseSchema,
+                    status: 201,
+                },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/folders': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: playlistFolderListRequestSchema,
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Get playlist folders',
+                    schema: playlistFolderListResponseSchema,
+                    status: 200,
+                },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+        post: {
+            request: {
+                body: createPlaylistFolderRequestSchema,
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Create playlist folder',
+                    schema: createPlaylistFolderRequestSchema,
+                    status: 201,
+                },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/folders/{folderId}': {
+        delete: {
+            request: {
+                params: z.object({ folderId: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Delete playlist folder',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+        get: {
+            request: {
+                params: z.object({ folderId: z.string(), libraryId: z.string() }),
+                query: playlistFolderListRequestSchema,
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Get playlist folder by id',
+                    schema: playlistListResponseSchema,
+                    status: 200,
+                },
+                [401, 403, 404, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+        put: {
+            request: {
+                body: {
+                    content: { 'application/json': { schema: updatePlaylistFolderRequestSchema } },
+                },
+                params: z.object({ folderId: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Update playlist folder',
+                    schema: createPlaylistFolderRequestSchema,
+                    status: 200,
+                },
+                [401, 403, 404, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/folders/{folderId}/add': {
+        post: {
+            request: {
+                body: {
+                    content: { 'application/json': { schema: addPlaylistToFolderRequestSchema } },
+                },
+                params: z.object({ folderId: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Add playlists to folder',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/folders/{folderId}/remove': {
+        post: {
+            request: {
+                body: {
+                    content: {
+                        'application/json': { schema: removePlaylistFromFolderRequestSchema },
+                    },
+                },
+                params: z.object({ folderId: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Remove playlists from folder',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 422, 500],
             ),
             security: [{ Bearer: [] }],
         },
@@ -52,6 +197,23 @@ export const playlistApiSchema = {
                     status: 200,
                 },
                 [401, 403, 404, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+        put: {
+            request: {
+                body: {
+                    content: { 'application/json': { schema: updatePlaylistRequestSchema } },
+                },
+                params: z.object({ id: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Update playlist',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 422, 500],
             ),
             security: [{ Bearer: [] }],
         },

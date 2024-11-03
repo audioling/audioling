@@ -164,6 +164,30 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             return [null, null];
         },
+        createPlaylist: async (request, fetchOptions) => {
+            const { body } = request;
+
+            const result = await apiClient.createPlaylist.os['1'].get({
+                fetchOptions,
+                query: {
+                    name: body.name,
+                    songId: [],
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'createPlaylist'));
+                return [
+                    {
+                        code: result.status,
+                        message: result.body as string,
+                    },
+                    null,
+                ];
+            }
+
+            return [null, null];
+        },
         deletePlaylist: async (request, fetchOptions) => {
             const { query } = request;
 
@@ -1197,6 +1221,26 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             return [null, result.body];
+        },
+        updatePlaylist: async (request, fetchOptions) => {
+            const { body, query } = request;
+
+            const result = await apiClient.updatePlaylist.os['1'].get({
+                fetchOptions,
+                query: {
+                    comment: body.comment,
+                    name: body.name,
+                    playlistId: query.id,
+                    public: body.public,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'updatePlaylist'));
+                return [{ code: result.status, message: result.body as string }, null];
+            }
+
+            return [null, null];
         },
     };
 

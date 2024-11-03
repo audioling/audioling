@@ -76,6 +76,12 @@ export const initUserController = (modules: { service: AppService }) => {
 
             const user = await service.user.add({
                 values: {
+                    config: {
+                        private: {},
+                        public: {
+                            playlistFolders: [],
+                        },
+                    },
                     displayName: body.displayName || '',
                     isAdmin: false,
                     isEnabled: true,

@@ -28,7 +28,7 @@ export const initServices = (modules: {
     const albumArtistService = initAlbumArtistService({ db });
     const genreService = initGenreService({ db });
     const imageService = initImageService({ db, imageModule });
-    const playlistService = initPlaylistService({ db });
+    const playlistService = initPlaylistService({ db, idFactory });
 
     const service = {
         album: albumService,
