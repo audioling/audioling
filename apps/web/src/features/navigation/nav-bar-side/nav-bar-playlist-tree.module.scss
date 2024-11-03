@@ -1,0 +1,14 @@
+@use '@/styles/base';
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-xs;
+    padding-left: base.$gap-xs;
+}
+
+.nested {
+    padding-left: base.$gap-sm;
+    margin-left: base.$gap-sm;
+    border-left: 1px solid rgb(255 255 255 / 20%);
+}

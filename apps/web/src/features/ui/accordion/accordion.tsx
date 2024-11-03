@@ -2,17 +2,20 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { useState } from 'react';
 import clsx from 'clsx';
 import { LayoutGroup, motion } from 'framer-motion';
-import { MotionIcon } from '@/features/ui/icon/icon.tsx';
+import { Group } from '@/features/ui/group/group.tsx';
+import type { AppIcon } from '@/features/ui/icon/icon.tsx';
+import { Icon, MotionIcon } from '@/features/ui/icon/icon.tsx';
 import styles from './accordion.module.scss';
 
 interface AccordionProps {
     children: ReactNode;
+    icon?: keyof typeof AppIcon;
     isOpen?: boolean;
     label: string;
     setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Accordion({ children, isOpen = false, label, setIsOpen }: AccordionProps) {
+export function Accordion({ children, icon, isOpen = false, label, setIsOpen }: AccordionProps) {
     const [uncontrolledIsOpen, setUncontrolledIsOpen] = useState(isOpen);
 
     const isStateOpen = isOpen || uncontrolledIsOpen;
@@ -26,14 +29,13 @@ export function Accordion({ children, isOpen = false, label, setIsOpen }: Accord
     };
 
     return (
-        <motion.div
-            className={clsx(styles.accordion, {
-                [styles.open]: isStateOpen,
-            })}
-        >
+        <motion.div className={clsx(styles.accordion)}>
             <button className={styles.title} onClick={handleClick}>
                 <div className={styles.titleContent}>
-                    <span className={styles.label}>{label}</span>
+                    <Group gap="sm">
+                        {icon && <Icon icon={icon} />}
+                        <span className={styles.label}>{label}</span>
+                    </Group>
                     <MotionIcon animate={{ rotate: isStateOpen ? 90 : 0 }} icon="arrowRightS" />
                 </div>
             </button>

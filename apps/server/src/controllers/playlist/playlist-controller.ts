@@ -36,7 +36,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const query = c.req.valid('query');
-            const { adapter } = c.var;
+            const { adapter, user } = c.var;
 
             const playlists = await service.playlist.list(adapter, {
                 folderId: query.folderId,
@@ -44,6 +44,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 offset: query.offset ? Number(query.offset) : undefined,
                 sortBy: query.sortBy,
                 sortOrder: query.sortOrder,
+                userId: user.id,
             });
 
             const response: PlaylistListResponse = {

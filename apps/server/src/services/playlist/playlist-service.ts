@@ -76,7 +76,7 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
         },
 
         // ANCHOR - Detail
-        detail: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        detail: async (adapter: AdapterApi, args: FindByIdServiceArgs & { userId: string }) => {
             const [err, result] = await adapter.getPlaylistDetail({ query: { id: args.id } });
 
             if (err) {
@@ -85,8 +85,23 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
 
             const libraryId = adapter._getLibrary().id;
 
+            const [foldersErr, folders] = db.user.playlistFolder.findAll(args.userId);
+
+            if (foldersErr) {
+                throw new apiError.internalServer({ message: foldersErr.message });
+            }
+
+            const playlistFoldersMap = folders.reduce<Record<string, string>>((acc, folder) => {
+                folder.playlists.forEach((playlistId) => {
+                    acc[playlistId] = folder.id;
+                });
+
+                return acc;
+            }, {});
+
             return {
                 ...result,
+                parentId: playlistFoldersMap[result.id] || null,
                 thumbHash: db.thumbhash.findById(libraryId, result.id)?.[1] || null,
             };
         },
@@ -146,7 +161,10 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
         },
 
         // ANCHOR - List
-        list: async (adapter: AdapterApi, args: FindManyServiceArgs<PlaylistListSortOptions>) => {
+        list: async (
+            adapter: AdapterApi,
+            args: FindManyServiceArgs<PlaylistListSortOptions> & { userId: string },
+        ) => {
             const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
             const offset = args.offset ?? 0;
 
@@ -165,12 +183,29 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
 
             const libraryId = adapter._getLibrary().id;
 
+            const [foldersErr, folders] = db.user.playlistFolder.findAll(args.userId);
+
+            if (foldersErr) {
+                throw new apiError.internalServer({ message: foldersErr.message });
+            }
+
+            const playlistFoldersMap = folders.reduce<Record<string, string>>((acc, folder) => {
+                folder.playlists.forEach((playlistId) => {
+                    acc[playlistId] = folder.id;
+                });
+
+                return acc;
+            }, {});
+
+            const items = result.items.map((item) => ({
+                ...item,
+                parentId: playlistFoldersMap[item.id] || null,
+                thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
+            }));
+
             return {
                 ...result,
-                items: result.items.map((item) => ({
-                    ...item,
-                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
-                })),
+                items,
             };
         },
 

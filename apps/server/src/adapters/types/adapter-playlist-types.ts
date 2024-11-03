@@ -22,6 +22,7 @@ export interface AdapterPlaylist {
     name: string;
     owner: string | null;
     ownerId: string | null;
+    parentId: string | null;
     size: number | null;
     trackCount: number | null;
     updatedDate: string;

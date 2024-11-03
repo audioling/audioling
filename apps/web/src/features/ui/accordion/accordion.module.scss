@@ -5,10 +5,6 @@
     flex-direction: column;
 }
 
-.accordion.open {
-    gap: base.$gap-xs;
-}
-
 .title {
     all: unset;
     padding: base.$gap-xs base.$gap-sm;

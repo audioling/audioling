@@ -34,8 +34,6 @@ export function CreatePlaylistFolderForm({
         value: folder.id,
     }));
 
-    console.log('parentOptions', parentOptions);
-
     const form = useForm<{ name: string; parentId: string }>({
         defaultValues: {
             name: '',
@@ -55,9 +53,13 @@ export function CreatePlaylistFolderForm({
                     libraryId,
                 },
                 {
-                    onSuccess: () => {
-                        queryClient.invalidateQueries({
+                    onSuccess: async () => {
+                        await queryClient.invalidateQueries({
                             queryKey: [`/api/${libraryId}/playlists`],
+                        });
+
+                        await queryClient.invalidateQueries({
+                            queryKey: [`/api/${libraryId}/playlists/folders`],
                         });
                         onSuccess();
                     },
@@ -97,12 +99,7 @@ export function CreatePlaylistFolderForm({
             <Field
                 children={(field) => (
                     <Select
-                        data={[
-                            {
-                                label: 'hello',
-                                value: 'hello',
-                            },
-                        ]}
+                        data={parentOptions}
                         label="Parent"
                         value={field.state.value}
                         onChange={(e) => {
