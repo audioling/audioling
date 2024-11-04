@@ -1,3 +1,5 @@
+@use '@/styles/base';
+
 .content {
     padding: var(--menu-padding) !important;
     background-color: var(--menu-background-color) !important;
@@ -6,6 +8,7 @@
 }
 
 .item {
+    position: relative;
     padding: var(--menu-item-padding) !important;
     font-size: var(--menu-item-font-size) !important;
     font-weight: var(--menu-item-font-weight) !important;
@@ -17,6 +20,18 @@
     &:hover {
         color: var(--menu-item-hover-font-color) !important;
         background-color: var(--menu-item-hover-background-color) !important;
+    }
+}
+
+.item.selected {
+    &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        content: '';
+        background-color: base.$primary-color;
     }
 }
 

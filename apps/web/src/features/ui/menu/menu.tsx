@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { createContext, Fragment, type ReactNode, useContext, useMemo, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './menu.module.scss';
@@ -86,14 +87,21 @@ function Content(props: ContentProps) {
 interface ItemProps {
     children: ReactNode;
     disabled?: boolean;
+    isSelected?: boolean;
     onSelect?: (event: Event) => void;
 }
 
 function Item(props: ItemProps) {
-    const { children, disabled, onSelect } = props;
+    const { children, disabled, onSelect, isSelected } = props;
 
     return (
-        <DropdownMenu.Item className={styles.item} disabled={disabled} onSelect={onSelect}>
+        <DropdownMenu.Item
+            className={clsx(styles.item, {
+                [styles.selected]: isSelected,
+            })}
+            disabled={disabled}
+            onSelect={onSelect}
+        >
             {children}
         </DropdownMenu.Item>
     );
