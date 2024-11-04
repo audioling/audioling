@@ -107,6 +107,10 @@ export const exactTotalRecordCount = async (
     const isLastPage = startPageRecordCount < limit && startPageRecordCount !== 0;
 
     if (isLastPage) {
+        if (estimatedStartRecordCount < limit) {
+            return estimatedStartRecordCount + startPageRecordCount;
+        }
+
         return estimatedStartRecordCount - limit + startPageRecordCount;
     }
 
