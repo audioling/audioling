@@ -1,5 +1,5 @@
 import { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
-import { AlbumInfiniteCarousel } from '@/features/shared/components/album-infinite-carousel.tsx';
+import { AlbumInfiniteCarousel } from '@/features/shared/infinite-album-carousel/album-infinite-carousel.tsx';
 
 export function RecentlyPlayedAlbumCarousel() {
     return (

@@ -1,4 +1,4 @@
-import { ListHeader } from '@/features/shared/components/list-header.tsx';
+import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 
