@@ -1,4 +1,5 @@
 import type { OpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
+import { AlbumListSortOptions } from '@repo/shared-types';
 import dayjs from 'dayjs';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
 import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
@@ -185,6 +186,7 @@ const converter = {
             name: playlist.name,
             owner: playlist.owner || null,
             ownerId: playlist.owner || null,
+            parentId: null,
             size: null,
             trackCount: playlist.songCount,
             updatedDate: dayjs(playlist.created).toISOString(),
@@ -263,6 +265,27 @@ const converter = {
     },
 };
 
+const defaultSortType = 'alphabeticalByName';
+
+const sortByMap = {
+    [AlbumListSortOptions.ALBUM_ARTIST]: 'alphabeticalByArtist',
+    [AlbumListSortOptions.ARTIST]: defaultSortType,
+    [AlbumListSortOptions.COMMUNITY_RATING]: defaultSortType,
+    [AlbumListSortOptions.CRITIC_RATING]: defaultSortType,
+    [AlbumListSortOptions.RATING]: 'highest',
+    [AlbumListSortOptions.DATE_ADDED]: 'newest',
+    [AlbumListSortOptions.DATE_PLAYED]: 'recent',
+    [AlbumListSortOptions.DURATION]: defaultSortType,
+    [AlbumListSortOptions.IS_FAVORITE]: defaultSortType,
+    [AlbumListSortOptions.NAME]: 'alphabeticalByName',
+    [AlbumListSortOptions.PLAY_COUNT]: 'frequent',
+    [AlbumListSortOptions.RANDOM]: defaultSortType,
+    [AlbumListSortOptions.RELEASE_DATE]: defaultSortType,
+    [AlbumListSortOptions.TRACK_COUNT]: defaultSortType,
+    [AlbumListSortOptions.YEAR]: defaultSortType,
+};
+
 export const subsonicHelpers = {
     converter,
+    sortByMap,
 };

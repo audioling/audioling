@@ -2,6 +2,7 @@ import type { OpenSubsonicApiClient } from '@audioling/open-subsonic-api-client'
 import { initOpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
 import { AlbumListSortOptions, LibraryType } from '@repo/shared-types';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import sortBy from 'lodash/sortBy.js';
 import md5 from 'md5';
 import { adapterHelpers } from '@/adapters/adapter-helpers.js';
@@ -60,6 +61,10 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             password: saltOrPassword,
         });
     }
+
+    type AlbumSortType = Parameters<
+        (typeof apiClient.getAlbumList2.os)['1']['get']
+    >[0]['query']['type'];
 
     const adapter: AdapterApi = {
         _getCoverArtUrl: (args) => {
@@ -427,52 +432,6 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getAlbumList: async (request, fetchOptions) => {
             const { query } = request;
 
-            type AlbumSortType = Parameters<
-                (typeof apiClient.getAlbumList2.os)['1']['get']
-            >[0]['query']['type'];
-
-            let sortType: AlbumSortType = 'alphabeticalByName';
-
-            switch (query.sortBy) {
-                case AlbumListSortOptions.DATE_ADDED:
-                    sortType = 'newest';
-                    break;
-                case AlbumListSortOptions.DATE_PLAYED:
-                    sortType = 'recent';
-                    break;
-                case AlbumListSortOptions.NAME:
-                    sortType = 'alphabeticalByName';
-                    break;
-                case AlbumListSortOptions.PLAY_COUNT:
-                    sortType = 'frequent';
-                    break;
-                case AlbumListSortOptions.YEAR:
-                    sortType = 'byYear';
-                    break;
-                default:
-                    sortType = 'alphabeticalByName';
-                    break;
-            }
-
-            const result = await apiClient.getAlbumList2.os['1'].get({
-                fetchOptions,
-                query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
-                    offset: query.offset,
-                    size: query.limit,
-                    type: sortType,
-                },
-            });
-
-            if (result.status !== 200) {
-                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumList'));
-                return [{ code: result.status, message: result.body as string }, null];
-            }
-
-            const items = (result.body.albumList2.album || []).map(
-                subsonicHelpers.converter.albumToAdapter,
-            );
-
             const [err, totalRecordCount] = await initSubsonicAdapter(
                 library,
                 db,
@@ -482,6 +441,131 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             if (err) {
                 return [err, null];
+            }
+
+            let sortType: AlbumSortType = 'alphabeticalByName';
+
+            let offset: number = 0;
+            let reverseResult: boolean = false;
+            let fromYear: number | undefined = undefined;
+            let toYear: number | undefined = undefined;
+            switch (query.sortBy) {
+                case AlbumListSortOptions.ALBUM_ARTIST:
+                    // Default is ascending
+                    sortType = 'alphabeticalByArtist';
+
+                    if (query.sortOrder === 'desc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.DATE_ADDED:
+                    // Default is descending
+                    sortType = 'newest';
+
+                    if (query.sortOrder === 'desc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.DATE_PLAYED:
+                    // Default is descending
+                    sortType = 'recent';
+
+                    if (query.sortOrder === 'asc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.IS_FAVORITE:
+                    // Default is ascending
+                    sortType = 'starred';
+
+                    if (query.sortOrder === 'desc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.NAME:
+                    // Default is ascending
+                    sortType = 'alphabeticalByName';
+
+                    if (query.sortOrder === 'desc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.PLAY_COUNT:
+                    // Default is descending
+                    sortType = 'frequent';
+
+                    if (query.sortOrder === 'asc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.RANDOM:
+                    sortType = 'random';
+                    break;
+                case AlbumListSortOptions.RATING:
+                    // Default is ascending
+                    sortType = 'highest';
+
+                    if (query.sortOrder === 'desc') {
+                        offset = totalRecordCount - query.offset - query.limit;
+                        reverseResult = true;
+                    }
+
+                    break;
+                case AlbumListSortOptions.YEAR:
+                    sortType = 'byYear';
+
+                    break;
+                default:
+                    sortType = 'alphabeticalByName';
+                    break;
+            }
+
+            if (sortType === 'byYear') {
+                const currentYear = dayjs().year();
+                if (query.sortOrder === 'asc') {
+                    fromYear = 0;
+                    toYear = currentYear;
+                } else {
+                    fromYear = currentYear;
+                    toYear = 0;
+                }
+            }
+
+            const result = await apiClient.getAlbumList2.os['1'].get({
+                fetchOptions,
+                query: {
+                    fromYear,
+                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    offset,
+                    size: query.limit,
+                    toYear,
+                    type: sortType,
+                },
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumList'));
+                return [{ code: result.status, message: result.body as string }, null];
+            }
+
+            let items = (result.body.albumList2.album || []).map(
+                subsonicHelpers.converter.albumToAdapter,
+            );
+
+            if (reverseResult) {
+                items = items.reverse();
             }
 
             return [
@@ -497,9 +581,13 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getAlbumListCount: async (request, fetchOptions) => {
             const { query } = request;
 
-            const sanitizedQuery: Pick<AdapterAlbumListQuery, 'folderId' | 'searchTerm'> = {
+            const sanitizedQuery: Pick<
+                AdapterAlbumListQuery,
+                'folderId' | 'searchTerm' | 'sortBy'
+            > = {
                 folderId: query.folderId,
                 searchTerm: query.searchTerm,
+                sortBy: query.sortBy,
             };
 
             async function getPageItemCount(page: number, limit: number): Promise<number> {
@@ -509,7 +597,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                         musicFolderId: query.folderId ? query.folderId[0] : undefined,
                         offset: page * limit,
                         size: limit,
-                        type: 'alphabeticalByName',
+                        type: subsonicHelpers.sortByMap[query.sortBy] as AlbumSortType,
                     },
                 });
 

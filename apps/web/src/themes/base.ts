@@ -165,7 +165,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'layout-side-nav-bar-background-color': 'rgb(29, 29, 29)',
     'layout-side-nav-bar-font-color': 'rgb(255, 255, 255)',
     'layout-side-nav-bar-font-hover-color': 'rgb(255, 255, 255)',
-    'menu-background-color': 'rgba(0, 0, 0, 0.9)',
+    'menu-background-color': 'rgba(20, 20, 20, 1)',
     'menu-border-radius': radius.md,
     'menu-box-shadow': '0 2px 4px rgb(0 0 0 / 20%)',
     'menu-divider-border-top': '1px solid rgb(60, 60, 60)',

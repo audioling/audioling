@@ -67,7 +67,7 @@ export type AdapterAlbumListRequest = QueryRequest<AdapterAlbumListQuery>;
 
 export type AdapterAlbumListCountQuery = Omit<
     AdapterAlbumListQuery,
-    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+    'sortOrder' | 'limit' | 'offset'
 >;
 
 export type AdapterAlbumListCountRequest = QueryRequest<AdapterAlbumListCountQuery>;

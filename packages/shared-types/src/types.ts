@@ -31,6 +31,7 @@ export type LibraryFeatures = {
     'album:list:filter:name': boolean;
     'album:list:filter:playCount': boolean;
     'album:list:filter:random': boolean;
+    'album:list:filter:rating': boolean;
     'album:list:filter:releaseDate': boolean;
     'album:list:filter:trackCount': boolean;
     'album:list:filter:year': boolean;
@@ -91,6 +92,7 @@ export enum AlbumListSortOptions {
     NAME = 'name',
     PLAY_COUNT = 'playCount',
     RANDOM = 'random',
+    RATING = 'rating',
     RELEASE_DATE = 'releaseDate',
     TRACK_COUNT = 'trackCount',
     YEAR = 'year',

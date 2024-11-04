@@ -15,7 +15,7 @@
         "package": "bun build --compile --minify --sourcemap ./src/index.ts --outfile ./dist/audioling"
     },
     "dependencies": {
-        "@audioling/open-subsonic-api-client": "^3.0.3",
+        "@audioling/open-subsonic-api-client": "^3.0.4",
         "@hono/zod-openapi": "^0.16.4",
         "@paralleldrive/cuid2": "^2.2.2",
         "@repo/logger": "workspace:*",

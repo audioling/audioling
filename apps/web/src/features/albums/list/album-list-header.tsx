@@ -1,13 +1,27 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import { AlbumListSortOptions } from '@repo/shared-types';
 import { useParams } from 'react-router-dom';
+import {
+    useAlbumListActions,
+    useAlbumListState,
+} from '@/features/albums/stores/album-list-store.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
-import { ListHeader } from '@/features/shared/components/list-header.tsx';
+import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
+import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
+import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
+import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
-import { Menu } from '@/features/ui/menu/menu.tsx';
 
 export function AlbumListHeader() {
+    const { libraryId } = useParams() as { libraryId: string };
+
+    const features = useLibraryFeatures(libraryId);
+    const sortOptions = getSortOptions(features);
+
+    const { sortBy, sortOrder } = useAlbumListState();
+    const { setSortBy, setSortOrder } = useAlbumListActions();
+
     return (
         <ListHeader>
             <ListHeader.Left>
@@ -21,17 +35,13 @@ export function AlbumListHeader() {
             <ListHeader.Footer>
                 <ListHeader.Left>
                     <Group gap="xs" wrap="nowrap">
-                        <AlbumListFilter />
-                        <IconButtonWithTooltip
-                            icon="sortAsc"
-                            size="lg"
-                            tooltipProps={{ label: 'Sort order', position: 'bottom' }}
+                        <ListSortByButton
+                            options={sortOptions}
+                            sort={sortBy}
+                            onSortChanged={setSortBy}
                         />
-                        <IconButtonWithTooltip
-                            icon="refresh"
-                            size="lg"
-                            tooltipProps={{ label: 'Refresh', position: 'bottom' }}
-                        />
+                        <SortOrderButton order={sortOrder} onOrderChanged={setSortOrder} />
+                        <RefreshButton onRefresh={() => {}} />
                     </Group>
                 </ListHeader.Left>
                 <ListHeader.Right>
@@ -53,29 +63,6 @@ export function AlbumListHeader() {
     );
 }
 
-function AlbumListFilter() {
-    const { libraryId } = useParams() as { libraryId: string };
-    const features = useLibraryFeatures(libraryId);
-    const sortOptions = getSortOptions(features);
-
-    return (
-        <Menu align="start" side="bottom">
-            <Menu.Target>
-                <IconButtonWithTooltip
-                    icon="sort"
-                    size="lg"
-                    tooltipProps={{ label: 'Sort by', position: 'bottom' }}
-                />
-            </Menu.Target>
-            <Menu.Content>
-                {sortOptions.map((option) => (
-                    <Menu.Item key={`sort-${option.value}`}>{option.name}</Menu.Item>
-                ))}
-            </Menu.Content>
-        </Menu>
-    );
-}
-
 const albumSortLabelMap = {
     [AlbumListSortOptions.ALBUM_ARTIST]: 'Album Artist',
     [AlbumListSortOptions.ARTIST]: 'Artist',
@@ -88,6 +75,7 @@ const albumSortLabelMap = {
     [AlbumListSortOptions.NAME]: 'Name',
     [AlbumListSortOptions.PLAY_COUNT]: 'Play Count',
     [AlbumListSortOptions.RANDOM]: 'Random',
+    [AlbumListSortOptions.RATING]: 'Rating',
     [AlbumListSortOptions.RELEASE_DATE]: 'Release Date',
     [AlbumListSortOptions.TRACK_COUNT]: 'Track Count',
     [AlbumListSortOptions.YEAR]: 'Year',
@@ -95,7 +83,7 @@ const albumSortLabelMap = {
 
 function getSortOptions(
     features: LibraryFeatures,
-): { name: string; value: AlbumListSortOptions }[] {
+): { label: string; value: AlbumListSortOptions }[] {
     const albumSortFeatures = Object.keys(features)
         .filter((key) => key.includes('album:list:filter'))
         .filter((key) => features[key as keyof LibraryFeatures]);
@@ -103,7 +91,7 @@ function getSortOptions(
     return albumSortFeatures.map((feature) => {
         const option = feature.replace('album:list:filter:', '') as AlbumListSortOptions;
         return {
-            name: albumSortLabelMap[option],
+            label: albumSortLabelMap[option],
             value: option,
         };
     });
