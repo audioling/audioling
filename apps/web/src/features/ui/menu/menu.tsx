@@ -37,15 +37,15 @@ export function Menu(props: MenuProps) {
 function getVariantKey(side: MenuProps['side']) {
     switch (side) {
         case 'top':
-            return 'slideInUp';
+            return 'scaleX';
         case 'right':
-            return 'slideInRight';
+            return 'fadeIn';
         case 'bottom':
-            return 'slideInDown';
+            return 'scaleX';
         case 'left':
-            return 'slideInLeft';
+            return 'fadeInLeft';
         default:
-            return 'slideInDown';
+            return 'fadeIn';
     }
 }
 

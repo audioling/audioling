@@ -55,6 +55,11 @@ const slideInRight: Variants = {
     show: { opacity: 1, x: 0 },
 };
 
+const scaleX: Variants = {
+    hidden: { height: 0, opacity: 0 },
+    show: { height: 'auto', opacity: 1 },
+};
+
 const stagger = (variants: Variants, delay?: number) => ({
     ...variants,
     show: {
@@ -71,6 +76,7 @@ export const animationVariants = {
     fadeInLeft,
     fadeInRight,
     fadeInUp,
+    scaleX,
     slideInDown,
     slideInLeft,
     slideInRight,
