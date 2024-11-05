@@ -33,6 +33,7 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
         [styles.subtleVariant]: variant === 'subtle',
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${radius || 'md'}`]]: true,
+        [styles.loading]: isLoading,
     });
 
     const buttonClassNames: MantineActionIconProps['classNames'] = {
@@ -49,7 +50,7 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
             loading={isLoading}
             {...htmlProps}
         >
-            <Icon icon={props.icon} size={size} {...iconProps} />
+            <Icon icon={isLoading ? 'spinner' : props.icon} size={size} {...iconProps} />
         </MantineActionIcon>
     );
 });

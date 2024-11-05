@@ -1,5 +1,15 @@
 @use '@/styles/base';
 
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .root {
     transition: all 0.15s ease-in-out;
 
@@ -84,4 +94,15 @@
 
 .label {
     font-weight: base.$font-weight-md;
+}
+
+.loader {
+    display: none;
+}
+
+.loading {
+    svg {
+        display: inline-block;
+        animation: spin 1s linear infinite;
+    }
 }
