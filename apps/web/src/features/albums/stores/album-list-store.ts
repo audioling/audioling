@@ -16,7 +16,7 @@ const albumListStore = create<AlbumListStore>()(
                 initialScrollIndex: 0,
                 listId: {},
                 pagination: {
-                    currentPage: 0,
+                    currentPage: 1,
                     itemsPerPage: 500,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
