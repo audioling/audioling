@@ -1,8 +1,12 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
-import type { ItemListDisplayType } from '@/features/ui/item-list/types.ts';
+import type {
+    ItemListDisplayType,
+    ItemListPaginationState,
+} from '@/features/ui/item-list/types.ts';
+import { ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import { randomString } from '@/utils/random-string.ts';
 
 interface UseListInitializeProps {
@@ -23,12 +27,25 @@ export function useListInitialize({ setListId }: UseListInitializeProps) {
 interface UseListKeyProps {
     displayType: ItemListDisplayType;
     listId: Record<string, string>;
+    pagination?: ItemListPaginationState;
+    paginationType?: ItemListPaginationType;
     sortBy: AlbumListSortOptions;
     sortOrder: ListSortOrder;
 }
 
-export function useListKey({ sortBy, sortOrder, displayType, listId }: UseListKeyProps) {
+export function useListKey({
+    displayType,
+    listId,
+    pagination,
+    paginationType,
+    sortBy,
+    sortOrder,
+}: UseListKeyProps) {
     const location = useLocation();
+
+    if (paginationType === ItemListPaginationType.PAGINATED) {
+        return `${sortBy}-${sortOrder}-${paginationType}-${pagination?.currentPage}-${listId[location.pathname]}`;
+    }
 
     return `${sortBy}-${sortOrder}-${displayType}-${listId[location.pathname]}`;
 }
@@ -48,4 +65,38 @@ export function useRefreshList({ queryKey, setListId }: UseRefreshListProps) {
     };
 
     return handleRefresh;
+}
+
+interface UseListPaginationProps {
+    pagination: ItemListPaginationState;
+    setPagination: (pagination: ItemListPaginationState) => void;
+}
+
+export function useListPagination({ pagination, setPagination }: UseListPaginationProps) {
+    const onFirstPage = useCallback(
+        () => setPagination({ ...pagination, currentPage: 0 }),
+        [pagination, setPagination],
+    );
+
+    const onLastPage = useCallback(
+        () => setPagination({ ...pagination, currentPage: 0 }),
+        [pagination, setPagination],
+    );
+
+    const onNextPage = useCallback(
+        () => setPagination({ ...pagination, currentPage: pagination.currentPage + 1 }),
+        [pagination, setPagination],
+    );
+
+    const onPageChange = useCallback(
+        (page: number) => setPagination({ ...pagination, currentPage: page }),
+        [pagination, setPagination],
+    );
+
+    const onPreviousPage = useCallback(
+        () => setPagination({ ...pagination, currentPage: pagination.currentPage - 1 }),
+        [pagination, setPagination],
+    );
+
+    return { onFirstPage, onLastPage, onNextPage, onPageChange, onPreviousPage };
 }

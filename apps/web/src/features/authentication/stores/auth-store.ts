@@ -150,7 +150,7 @@ export const useSetSelectedLibrary = () => {
 };
 
 export const useAuthBaseUrl = () => {
-    return useAuthStore((state) => state.baseUrl);
+    return useAuthStore((state) => state.baseUrl) || '';
 };
 
 export const useLibraryFeatures = (id: string) => {

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { AlbumItem } from '@/api/api-types.ts';
 import {
@@ -6,47 +6,12 @@ import {
     getGetApiLibraryIdAlbumsQueryKey,
 } from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { AlbumCard } from '@/features/ui/card/album-card.tsx';
+import type { AlbumGridItemContext } from '@/features/albums/list/album-grid-item.tsx';
+import { MemoizedAlbumGridItem } from '@/features/albums/list/album-grid-item.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 
 const PAGE_SIZE = 500;
-
-type AlbumGridItemContext = {
-    baseUrl: string;
-    libraryId: string;
-};
-
-function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridItemContext>) {
-    const { context, data, index } = props;
-
-    if (data) {
-        return (
-            <AlbumCard
-                componentState="loaded"
-                id={data.id}
-                image={`${context?.baseUrl}${data.imageUrl}&size=300`}
-                metadata={[{ path: '/', text: data.artists[0]?.name }]}
-                metadataLines={1}
-                titledata={{ path: '/', text: data.name }}
-            />
-        );
-    }
-
-    return (
-        <AlbumCard
-            componentState="loading"
-            id={index.toString()}
-            image=""
-            metadata={[]}
-            metadataLines={1}
-            titledata={{ path: '/', text: '' }}
-        />
-    );
-}
-
-const MemoizedAlbumGridItem = memo(AlbumGridItem);
 
 interface InfiniteAlbumGridProps {
     baseUrl: string;

@@ -1,9 +1,9 @@
 @use '@/styles/base';
 
 .root {
-    background-color: var(--input-background-color) !important;
+    background-color: var(--input-background-color);
 }
 
 .indicator {
-    background-color: var(--input-indicator-background-color) !important;
+    background-color: var(--input-indicator-background-color);
 }

@@ -9,11 +9,12 @@ import {
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
 import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
+import { ListPaginationTypeButton } from '@/features/shared/list-pagination-type-button/list-pagination-type-button.tsx';
 import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
 import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
-import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
+import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { useRefreshList } from '@/hooks/use-list.ts';
 
 export function AlbumListHeader() {
@@ -22,8 +23,9 @@ export function AlbumListHeader() {
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
 
-    const { sortBy, sortOrder, displayType } = useAlbumListState();
-    const { setSortBy, setSortOrder, setDisplayType, setListId } = useAlbumListActions();
+    const { sortBy, sortOrder, displayType, paginationType } = useAlbumListState();
+    const { setSortBy, setSortOrder, setDisplayType, setListId, setPaginationType } =
+        useAlbumListActions();
 
     const handleRefresh = useRefreshList({
         queryKey: [`/api/${libraryId}/albums`],
@@ -60,10 +62,9 @@ export function AlbumListHeader() {
                             displayType={displayType}
                             onChangeDisplayType={setDisplayType}
                         />
-                        <IconButtonWithTooltip
-                            icon="listInfinite"
-                            size="lg"
-                            tooltipProps={{ label: 'Infinite', position: 'bottom' }}
+                        <ListPaginationTypeButton
+                            paginationType={paginationType}
+                            onChangePaginationType={setPaginationType}
                         />
                     </Group>
                 </ListHeader.Right>
