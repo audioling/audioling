@@ -1,17 +1,20 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import { AlbumListSortOptions } from '@repo/shared-types';
+import { useIsFetching } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import {
     useAlbumListActions,
     useAlbumListState,
 } from '@/features/albums/stores/album-list-store.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
+import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
 import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
+import { useRefreshList } from '@/hooks/use-list.ts';
 
 export function AlbumListHeader() {
     const { libraryId } = useParams() as { libraryId: string };
@@ -19,8 +22,15 @@ export function AlbumListHeader() {
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
 
-    const { sortBy, sortOrder } = useAlbumListState();
-    const { setSortBy, setSortOrder } = useAlbumListActions();
+    const { sortBy, sortOrder, displayType } = useAlbumListState();
+    const { setSortBy, setSortOrder, setDisplayType, setListId } = useAlbumListActions();
+
+    const handleRefresh = useRefreshList({
+        queryKey: [`/api/${libraryId}/albums`],
+        setListId,
+    });
+
+    const isFetching = useIsFetching({ queryKey: [`/api/${libraryId}/albums`] });
 
     return (
         <ListHeader>
@@ -41,15 +51,14 @@ export function AlbumListHeader() {
                             onSortChanged={setSortBy}
                         />
                         <SortOrderButton order={sortOrder} onOrderChanged={setSortOrder} />
-                        <RefreshButton onRefresh={() => {}} />
+                        <RefreshButton isLoading={Boolean(isFetching)} onRefresh={handleRefresh} />
                     </Group>
                 </ListHeader.Left>
                 <ListHeader.Right>
                     <Group gap="xs" wrap="nowrap">
-                        <IconButtonWithTooltip
-                            icon="layoutGrid"
-                            size="lg"
-                            tooltipProps={{ label: 'Grid', position: 'bottom' }}
+                        <ListDisplayTypeButton
+                            displayType={displayType}
+                            onChangeDisplayType={setDisplayType}
                         />
                         <IconButtonWithTooltip
                             icon="listInfinite"

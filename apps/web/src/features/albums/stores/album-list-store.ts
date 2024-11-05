@@ -14,6 +14,7 @@ const albumListStore = create<AlbumListStore>()(
             immer((set) => ({
                 displayType: ItemListDisplayType.GRID,
                 initialScrollIndex: 0,
+                listId: {},
                 pagination: {
                     currentPage: 0,
                     itemsPerPage: 500,
@@ -27,6 +28,11 @@ const albumListStore = create<AlbumListStore>()(
                 setInitialScrollIndex: (initialScrollIndex) => {
                     set((state) => {
                         state.initialScrollIndex = initialScrollIndex;
+                    });
+                },
+                setListId: (key, id) => {
+                    set((state) => {
+                        state.listId[key] = id;
                     });
                 },
                 setPagination: (pagination) => {
@@ -62,6 +68,7 @@ export const useAlbumListState = () => {
         useShallow((state) => ({
             displayType: state.displayType,
             initialScrollIndex: state.initialScrollIndex,
+            listId: state.listId,
             pagination: state.pagination,
             paginationType: state.paginationType,
             sortBy: state.sortBy,
@@ -75,6 +82,7 @@ export const useAlbumListActions = () => {
         useShallow((state) => ({
             setDisplayType: state.setDisplayType,
             setInitialScrollIndex: state.setInitialScrollIndex,
+            setListId: state.setListId,
             setPagination: state.setPagination,
             setPaginationType: state.setPaginationType,
             setSortBy: state.setSortBy,
