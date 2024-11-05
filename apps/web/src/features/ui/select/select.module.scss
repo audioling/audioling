@@ -18,7 +18,7 @@
 }
 
 .label {
-    font-size: base.$font-size-sm !important;
+    font-size: base.$font-size-sm;
 }
 
 .input {
@@ -27,15 +27,15 @@
     font-weight: 400;
     line-height: 1.25rem;
     color: var(--input-font-color);
-    cursor: default !important;
-    background-color: var(--input-background-color) !important;
-    border: var(--input-border) !important;
+    cursor: default;
+    background-color: var(--input-background-color);
+    border: var(--input-border);
     transition: all 0.15s ease-in-out;
 
     &:hover,
     &:focus-visible {
         color: var(--input-hover-font-color);
-        background-color: var(--input-hover-background-color) !important;
+        background-color: var(--input-hover-background-color);
     }
 
     &::placeholder {
@@ -59,23 +59,23 @@
 }
 
 .dropdown {
-    padding: var(--menu-padding) !important;
-    background-color: var(--menu-background-color) !important;
-    border-radius: var(--menu-border-radius) !important;
-    box-shadow: var(--menu-box-shadow) !important;
+    padding: var(--menu-padding);
+    background-color: var(--menu-background-color);
+    border-radius: var(--menu-border-radius);
+    box-shadow: var(--menu-box-shadow);
 }
 
 .option {
-    padding: var(--menu-item-padding) !important;
-    font-size: var(--menu-item-font-size) !important;
-    font-weight: var(--menu-item-font-weight) !important;
-    color: var(--menu-item-font-color) !important;
-    cursor: default !important;
-    background-color: var(--menu-item-background-color) !important;
+    padding: var(--menu-item-padding);
+    font-size: var(--menu-item-font-size);
+    font-weight: var(--menu-item-font-weight);
+    color: var(--menu-item-font-color);
+    cursor: default;
+    background-color: var(--menu-item-background-color);
 
     &:hover {
-        color: var(--menu-item-hover-font-color) !important;
-        background-color: var(--menu-item-hover-background-color) !important;
+        color: var(--menu-item-hover-font-color);
+        background-color: var(--menu-item-hover-background-color);
     }
 }
 

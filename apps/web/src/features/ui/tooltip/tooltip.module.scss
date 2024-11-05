@@ -1,9 +1,9 @@
 .tooltip {
-    padding: var(--tooltip-padding) !important;
-    font-size: var(--tooltip-font-size) !important;
-    font-weight: var(--tooltip-font-weight) !important;
-    color: var(--tooltip-font-color) !important;
-    background-color: var(--tooltip-background-color) !important;
-    border-radius: var(--tooltip-border-radius) !important;
-    box-shadow: var(--tooltip-box-shadow) !important;
+    padding: var(--tooltip-padding);
+    font-size: var(--tooltip-font-size);
+    font-weight: var(--tooltip-font-weight);
+    color: var(--tooltip-font-color);
+    background-color: var(--tooltip-background-color);
+    border-radius: var(--tooltip-border-radius);
+    box-shadow: var(--tooltip-box-shadow);
 }

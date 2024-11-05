@@ -1,23 +1,23 @@
 @use '@/styles/base';
 
 .gap-xs {
-    gap: base.$gap-xs !important;
+    gap: base.$gap-xs;
 }
 
 .gap-sm {
-    gap: base.$gap-sm !important;
+    gap: base.$gap-sm;
 }
 
 .gap-md {
-    gap: base.$gap-md !important;
+    gap: base.$gap-md;
 }
 
 .gap-lg {
-    gap: base.$gap-lg !important;
+    gap: base.$gap-lg;
 }
 
 .gap-xl {
-    gap: base.$gap-xl !important;
+    gap: base.$gap-xl;
 }
 
 .margin-x-xs {

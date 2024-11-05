@@ -53,24 +53,24 @@
 
 .color-success {
     svg {
-        color: base.$success-color !important;
+        color: base.$success-color;
     }
 }
 
 .color-error {
     svg {
-        color: base.$danger-color !important;
+        color: base.$danger-color;
     }
 }
 
 .color-info {
     svg {
-        color: base.$info-color !important;
+        color: base.$info-color;
     }
 }
 
 .color-warn {
     svg {
-        color: base.$warning-color !important;
+        color: base.$warning-color;
     }
 }
