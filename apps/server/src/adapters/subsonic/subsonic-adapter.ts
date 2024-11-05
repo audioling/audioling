@@ -445,7 +445,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             let sortType: AlbumSortType = 'alphabeticalByName';
 
-            let offset: number = 0;
+            let offset: number = query.offset;
             let reverseResult: boolean = false;
             let fromYear: number | undefined = undefined;
             let toYear: number | undefined = undefined;
