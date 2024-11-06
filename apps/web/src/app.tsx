@@ -26,7 +26,7 @@ function InnerApp() {
 
     return (
         <MantineProvider classNamesPrefix="al" defaultColorScheme="dark" theme={baseMantineTheme}>
-            <RouterProvider router={appRouter} />
+            <RouterProvider future={{ v7_startTransition: true }} router={appRouter} />
         </MantineProvider>
     );
 }
