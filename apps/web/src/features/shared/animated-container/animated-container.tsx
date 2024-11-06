@@ -1,11 +1,11 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import clsx from 'clsx';
-import type { Transition } from 'framer-motion';
+import type { Transition, Variants } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import styles from './animated-page.module.scss';
+import styles from './animated-container.module.scss';
 
-interface AnimatedPageProps
+interface AnimatedContainerProps
     extends Omit<
         HTMLAttributes<HTMLDivElement>,
         'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onAnimationEnd' | 'onDrag'
@@ -13,10 +13,11 @@ interface AnimatedPageProps
     children: ReactNode;
     className?: string;
     transitionProps?: Transition;
+    variants?: Variants;
 }
 
-export function AnimatedPage(props: AnimatedPageProps) {
-    const { children, className, transitionProps, ...htmlProps } = props;
+export function AnimatedContainer(props: AnimatedContainerProps) {
+    const { children, className, transitionProps, variants, ...htmlProps } = props;
 
     return (
         <motion.div
@@ -25,7 +26,7 @@ export function AnimatedPage(props: AnimatedPageProps) {
             exit="hidden"
             initial="hidden"
             transition={{ duration: 0.5, ease: 'easeIn', ...transitionProps }}
-            variants={animationVariants.fadeIn}
+            variants={variants ?? animationVariants.fadeIn}
             {...htmlProps}
         >
             {children}
