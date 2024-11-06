@@ -40,7 +40,7 @@ export function Pagination(props: PaginationProps) {
         onNextPage,
         onPageChange,
         onPreviousPage,
-        justify = 'center',
+        justify = 'end',
         size = 'md',
         variant = 'default',
         radius = 'md',
@@ -131,6 +131,5 @@ function getResponsePaginationProps(
         siblings:
             defaults.siblings ||
             (!breakpoints.isLargerThanSm ? 0 : !breakpoints.isLargerThanMd ? 1 : 2),
-        withEdges: defaults.withEdges || breakpoints.isLargerThanMd,
     };
 }

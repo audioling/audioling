@@ -35,6 +35,7 @@ export function PaginatedAlbumGrid(props: PaginatedAlbumGridProps) {
                 currentPage={pagination.currentPage}
                 itemCount={itemCount}
                 itemsPerPage={pagination.itemsPerPage}
+                justify="end"
                 {...paginationProps}
             />
         </Stack>
