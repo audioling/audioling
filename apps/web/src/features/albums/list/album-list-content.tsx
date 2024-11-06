@@ -14,11 +14,10 @@ import { useListKey } from '@/hooks/use-list.ts';
 export function AlbumListContent() {
     const { libraryId } = useParams() as { libraryId: string };
     const { sortBy, sortOrder } = useAlbumListState();
-    const { data: itemCount } = useGetApiLibraryIdAlbumsCountSuspense(
-        libraryId,
-        { sortBy, sortOrder },
-        { query: { gcTime: Infinity, staleTime: Infinity } },
-    );
+    const { data: itemCount } = useGetApiLibraryIdAlbumsCountSuspense(libraryId, {
+        sortBy,
+        sortOrder,
+    });
 
     return <ListComponent itemCount={itemCount} />;
 }
