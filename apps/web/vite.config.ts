@@ -20,6 +20,11 @@ export default defineConfig(async () => ({
     },
     clearScreen: false,
     css: {
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler',
+            },
+        },
         modules: {
             generateScopedName: 'al_[name]_[local]',
             localsConvention: 'camelCase' as const,

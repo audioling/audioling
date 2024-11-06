@@ -67,7 +67,7 @@
         "postcss": "^8.4.47",
         "postcss-preset-mantine": "^1.17.0",
         "postcss-simple-vars": "^7.0.1",
-        "sass": "^1.80.6",
+        "sass-embedded": "^1.80.6",
         "stylelint": "^16.10.0",
         "stylelint-config-css-modules": "^4.4.0",
         "stylelint-config-recess-order": "^5.1.1",
