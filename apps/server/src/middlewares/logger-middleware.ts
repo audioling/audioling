@@ -26,7 +26,11 @@ export const writeLog = {
 
 const customLogger = (user?: AuthVariables['user']) => {
     return (message: string) => {
-        appLogger.debug(
+        if (message.includes(`/images/`)) {
+            return;
+        }
+
+        return appLogger.debug(
             `${message.padEnd(20)} — ${user ? `${user.username + '@' + user.id}` : '—'}`,
         );
     };
