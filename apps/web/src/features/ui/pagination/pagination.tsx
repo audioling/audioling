@@ -8,6 +8,7 @@ import {
     LuChevronRight,
     LuMinus,
 } from 'react-icons/lu';
+import { useContainerBreakpoints } from '@/hooks/use-container-query.ts';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './pagination.module.scss';
 
@@ -43,9 +44,9 @@ export function Pagination(props: PaginationProps) {
         size = 'md',
         variant = 'default',
         radius = 'md',
-        hasControls = true,
-        hasEdges = false,
-        pageSiblings = 3,
+        hasControls,
+        hasEdges,
+        pageSiblings,
     } = props;
 
     const pageCount = Math.ceil(itemCount / itemsPerPage);
@@ -81,8 +82,17 @@ export function Pagination(props: PaginationProps) {
         root: rootClassNames,
     };
 
+    const { ref, breakpoints } = useContainerBreakpoints();
+
+    const paginationProps = getResponsePaginationProps(breakpoints, {
+        siblings: pageSiblings,
+        withControls: hasControls,
+        withEdges: hasEdges,
+    });
+
     return (
         <MantinePagination
+            ref={ref}
             unstyled
             classNames={classNames}
             dotsIcon={DotComponent}
@@ -90,21 +100,37 @@ export function Pagination(props: PaginationProps) {
             lastIcon={LuChevronLast}
             nextIcon={LuChevronRight}
             previousIcon={LuChevronLeft}
-            siblings={pageSiblings}
             total={pageCount}
             value={currentPage}
             variant={variant}
-            withControls={hasControls}
-            withEdges={hasEdges}
             onChange={onPageChange}
             onFirstPage={onFirstPage}
             onLastPage={onLastPage}
             onNextPage={onNextPage}
             onPreviousPage={onPreviousPage}
+            {...paginationProps}
         />
     );
 }
 
 function DotComponent() {
     return <LuMinus />;
+}
+
+function getResponsePaginationProps(
+    breakpoints: {
+        isLargerThanLg: boolean;
+        isLargerThanMd: boolean;
+        isLargerThanSm: boolean;
+        isLargerThanXl: boolean;
+        isLargerThanXxl: boolean;
+    },
+    defaults: { siblings?: number; withControls?: boolean; withEdges?: boolean },
+) {
+    return {
+        siblings:
+            defaults.siblings ||
+            (!breakpoints.isLargerThanSm ? 0 : !breakpoints.isLargerThanMd ? 1 : 2),
+        withEdges: defaults.withEdges || breakpoints.isLargerThanMd,
+    };
 }
