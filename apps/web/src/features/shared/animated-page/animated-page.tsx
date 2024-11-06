@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import clsx from 'clsx';
+import type { Transition } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './animated-page.module.scss';
@@ -11,10 +12,11 @@ interface AnimatedPageProps
     > {
     children: ReactNode;
     className?: string;
+    transitionProps?: Transition;
 }
 
 export function AnimatedPage(props: AnimatedPageProps) {
-    const { children, className, ...htmlProps } = props;
+    const { children, className, transitionProps, ...htmlProps } = props;
 
     return (
         <motion.div
@@ -22,7 +24,7 @@ export function AnimatedPage(props: AnimatedPageProps) {
             className={clsx(styles.container, className)}
             exit="hidden"
             initial="hidden"
-            transition={{ duration: 0.5, ease: 'easeIn' }}
+            transition={{ duration: 0.5, ease: 'easeIn', ...transitionProps }}
             variants={animationVariants.fadeIn}
             {...htmlProps}
         >
