@@ -34,9 +34,9 @@ export function InfiniteTrackTable({
     params,
 }: InfiniteTrackTableProps) {
     const queryClient = useQueryClient();
-    const [data, setData] = useState<(TrackItem | undefined)[]>(
-        itemListHelpers.getInitialData(itemCount),
-    );
+    const [data, setData] = useState<Map<number, TrackItem>>(new Map());
+
+    console.log('data', data);
 
     const loadedPages = useRef<Record<number, boolean>>({});
 
@@ -73,10 +73,9 @@ export function InfiniteTrackTable({
                     });
 
                     setData((prevData) => {
-                        const newData = [...prevData];
-                        const startIndex = currentOffset;
+                        const newData = new Map(prevData);
                         data.forEach((item, index) => {
-                            newData[startIndex + index] = item;
+                            newData.set(currentOffset + index, item);
                         });
                         return newData;
                     });
@@ -94,10 +93,10 @@ export function InfiniteTrackTable({
         () => [
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
+                    const item = data.get(row.index);
+                    if (!item) {
                         return <Skeleton width={30} />;
                     }
-
                     return <div>{row.index + 1}</div>;
                 },
                 enableResizing: true,
@@ -107,11 +106,11 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
-                        return <Skeleton width={100} />;
+                    const item = data.get(row.index);
+                    if (!item) {
+                        return null;
                     }
-
-                    return <div>{row.original?.name}</div>;
+                    return <div>{item.name}</div>;
                 },
                 enableResizing: true,
                 header: 'Name',
@@ -120,11 +119,11 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
-                        return <Skeleton width={100} />;
+                    const item = data.get(row.index);
+                    if (!item) {
+                        return null;
                     }
-
-                    return <div>{row.original?.album}</div>;
+                    return <div>{item.album}</div>;
                 },
                 enableResizing: true,
                 header: 'Album Name',
@@ -133,13 +132,11 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
-                        return <Skeleton height={20} width={100} />;
+                    const item = data.get(row.index);
+                    if (!item) {
+                        return null;
                     }
-
-                    return (
-                        <div>{row.original?.artists.map((artist) => artist.name).join(', ')}</div>
-                    );
+                    return <div>{item.artists.map((artist) => artist.name).join(', ')}</div>;
                 },
                 enableResizing: true,
                 header: 'Artists',
@@ -147,7 +144,7 @@ export function InfiniteTrackTable({
                 size: itemListHelpers.table.numberToColumnSize(1, 'fr'),
             }),
         ],
-        [columnHelper],
+        [columnHelper, data],
     );
 
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([
@@ -157,11 +154,13 @@ export function InfiniteTrackTable({
         'artists',
     ]);
 
+    const tableContext = useMemo(() => ({ baseUrl, libraryId }), [baseUrl, libraryId]);
+
     return (
         <InfiniteItemTable<TrackItem, TrackTableItemContext>
             columnOrder={columnOrder}
             columns={columns}
-            context={{ baseUrl, libraryId }}
+            context={tableContext}
             data={data}
             itemCount={itemCount}
             setColumnOrder={setColumnOrder}

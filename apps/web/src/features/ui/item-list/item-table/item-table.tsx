@@ -36,7 +36,7 @@ interface InfiniteItemTableProps<T, C extends Record<string, unknown>> {
     columnOrder: ColumnOrderState;
     columns: DisplayColumnDef<T | undefined>[];
     context?: C;
-    data: (T | undefined)[];
+    data: Map<number, T>;
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
@@ -98,17 +98,19 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
         return () => osInstance()?.destroy();
     }, [scroller, initialize, osInstance]);
 
+    const tableData = useMemo(() => {
+        return Array.from({ length: itemCount }, (_, index) => data.get(index));
+    }, [data, itemCount]);
+
     const table = useReactTable({
         columns,
-        data,
+        data: tableData,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         state: {
             columnOrder,
         },
     });
-
-    const { rows } = table.getRowModel();
 
     const headers = table.getFlatHeaders();
 
@@ -133,6 +135,8 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
         return { sizes, styles };
     }, [headers]);
 
+    const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
+
     return (
         <div className={styles.container}>
             <div className={styles.header} style={columnStyles.styles}>
@@ -149,18 +153,13 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
             </div>
             <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
                 <Virtuoso
-                    context={{ ...context, columnStyles }}
-                    data={data}
+                    context={tableContext}
                     endReached={onEndReached}
-                    increaseViewportBy={300}
+                    increaseViewportBy={100}
                     initialTopMostItemIndex={initialScrollIndex || 0}
                     isScrolling={isScrolling}
                     itemContent={(index, _data, context) => {
-                        const row = rows[index];
-
-                        if (!row) {
-                            return null;
-                        }
+                        const row = table.getRow(index.toString());
 
                         return (
                             <div className={styles.row} style={context?.columnStyles.styles}>
@@ -278,21 +277,3 @@ function TableHeader<T>(props: TableHeaderProps<T>) {
         </div>
     );
 }
-
-// function TableBody<T>({ table }: { table: Table<T> }) {
-//     const { rows } = table.getRowModel();
-
-//     return (
-//         <div>
-//             {rows.map((row) =>
-//                 row
-//                     .getVisibleCells()
-//                     .map((cell) => flexRender(cell.column.columnDef.cell, cell.getContext())),
-//             )}
-//         </div>
-//     );
-// }
-
-// function TableCell() {
-//     return <div>TableCell</div>;
-// }
