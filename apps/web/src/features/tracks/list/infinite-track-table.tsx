@@ -10,10 +10,9 @@ import {
 } from '@/api/openapi-generated/tracks/tracks.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
+import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { throttle } from '@/utils/throttle.ts';
-
-const PAGE_SIZE = 500;
 
 type TrackTableItemContext = {
     baseUrl: string;
@@ -24,6 +23,7 @@ interface InfiniteTrackTableProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    pagination: ItemListPaginationState;
     params: GetApiLibraryIdTracksParams;
 }
 
@@ -32,17 +32,16 @@ export function InfiniteTrackTable({
     itemCount,
     libraryId,
     params,
+    pagination,
 }: InfiniteTrackTableProps) {
     const queryClient = useQueryClient();
     const [data, setData] = useState<Map<number, TrackItem>>(new Map());
 
-    console.log('data', data);
-
     const loadedPages = useRef<Record<number, boolean>>({});
 
     useEffect(() => {
-        loadedPages.current = itemListHelpers.getPageMap(itemCount, PAGE_SIZE);
-    }, [itemCount]);
+        loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
+    }, [itemCount, pagination.itemsPerPage]);
 
     const handleRangeChanged = useCallback(
         async (event: { endIndex: number; startIndex: number }) => {
@@ -50,7 +49,7 @@ export function InfiniteTrackTable({
             const pagesToLoad = itemListHelpers.getPagesToLoad(
                 startIndex,
                 endIndex,
-                PAGE_SIZE,
+                pagination.itemsPerPage,
                 loadedPages.current,
             );
 
@@ -58,11 +57,11 @@ export function InfiniteTrackTable({
                 for (const page of pagesToLoad) {
                     loadedPages.current[page] = true;
 
-                    const currentOffset = page * PAGE_SIZE;
+                    const currentOffset = page * pagination.itemsPerPage;
 
                     const paramsWithPagination = {
                         ...params,
-                        limit: PAGE_SIZE.toString(),
+                        limit: pagination.itemsPerPage.toString(),
                         offset: currentOffset.toString(),
                     };
 
@@ -82,7 +81,7 @@ export function InfiniteTrackTable({
                 }
             }
         },
-        [libraryId, params, queryClient],
+        [libraryId, pagination.itemsPerPage, params, queryClient],
     );
 
     const throttledHandleRangeChanged = throttle(handleRangeChanged, 200);
@@ -93,9 +92,9 @@ export function InfiniteTrackTable({
         () => [
             columnHelper.display({
                 cell: ({ row }) => {
-                    const item = data.get(row.index);
+                    const item = row.original;
                     if (!item) {
-                        return <Skeleton width={30} />;
+                        return <Skeleton height={20} width={30} />;
                     }
                     return <div>{row.index + 1}</div>;
                 },
@@ -106,9 +105,9 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    const item = data.get(row.index);
+                    const item = row.original;
                     if (!item) {
-                        return null;
+                        return <Skeleton height={20} width={100} />;
                     }
                     return <div>{item.name}</div>;
                 },
@@ -119,9 +118,9 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    const item = data.get(row.index);
+                    const item = row.original;
                     if (!item) {
-                        return null;
+                        return <Skeleton height={20} width={100} />;
                     }
                     return <div>{item.album}</div>;
                 },
@@ -132,9 +131,9 @@ export function InfiniteTrackTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    const item = data.get(row.index);
+                    const item = row.original;
                     if (!item) {
-                        return null;
+                        return <Skeleton height={20} width={100} />;
                     }
                     return <div>{item.artists.map((artist) => artist.name).join(', ')}</div>;
                 },
@@ -144,7 +143,7 @@ export function InfiniteTrackTable({
                 size: itemListHelpers.table.numberToColumnSize(1, 'fr'),
             }),
         ],
-        [columnHelper, data],
+        [columnHelper],
     );
 
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([

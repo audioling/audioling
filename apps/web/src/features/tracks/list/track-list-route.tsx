@@ -1,21 +1,17 @@
-import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
-import { useParams } from 'react-router-dom';
-import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
-import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
+import { Suspense } from 'react';
 import { AnimatedContainer } from '@/features/shared/animated-container/animated-container.tsx';
+import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { PageContainer } from '@/features/shared/page-container/page-container.tsx';
-import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
+import { TrackListContent } from '@/features/tracks/list/track-list-content.tsx';
 import { TrackListHeader } from '@/features/tracks/list/track-list-header.tsx';
+import { useTrackListActions } from '@/features/tracks/store/track-list-store.ts';
+import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { useDelayedRender } from '@/hooks/use-delayed-render.ts';
+import { useListInitialize } from '@/hooks/use-list.ts';
 
 export function TrackListRoute() {
-    const { libraryId } = useParams() as { libraryId: string };
-    const baseUrl = useAuthBaseUrl();
-
-    const { data: itemCount } = useGetApiLibraryIdTracksCountSuspense(libraryId, {
-        sortBy: TrackListSortOptions.NAME,
-        sortOrder: ListSortOrder.ASC,
-    });
+    const { setListId } = useTrackListActions();
+    useListInitialize({ setListId });
 
     const { show } = useDelayedRender(300);
 
@@ -24,12 +20,11 @@ export function TrackListRoute() {
             <TrackListHeader />
             {show && (
                 <AnimatedContainer>
-                    <InfiniteTrackTable
-                        baseUrl={baseUrl || ''}
-                        itemCount={itemCount}
-                        libraryId={libraryId}
-                        params={{ sortBy: TrackListSortOptions.NAME, sortOrder: ListSortOrder.ASC }}
-                    />
+                    <Suspense fallback={<EmptyPlaceholder />}>
+                        <ComponentErrorBoundary>
+                            <TrackListContent />
+                        </ComponentErrorBoundary>
+                    </Suspense>
                 </AnimatedContainer>
             )}
         </PageContainer>

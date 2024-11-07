@@ -1,20 +1,18 @@
 import { useParams } from 'react-router-dom';
-import { useGetApiLibraryIdAlbumsCountSuspense } from '@/api/openapi-generated/albums/albums.ts';
-import { InfiniteAlbumGrid } from '@/features/albums/list/infinite-album-grid.tsx';
-import { InfiniteAlbumTable } from '@/features/albums/list/infinite-album-table.tsx';
-import { PaginatedAlbumGrid } from '@/features/albums/list/paginated-album-grid.tsx';
-import {
-    useAlbumListActions,
-    useAlbumListState,
-} from '@/features/albums/stores/album-list-store.ts';
+import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
+import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
+import {
+    useTrackListActions,
+    useTrackListState,
+} from '@/features/tracks/store/track-list-store.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import { useListKey } from '@/hooks/use-list.ts';
 
-export function AlbumListContent() {
+export function TrackListContent() {
     const { libraryId } = useParams() as { libraryId: string };
-    const { sortBy, sortOrder } = useAlbumListState();
-    const { data: itemCount } = useGetApiLibraryIdAlbumsCountSuspense(libraryId, {
+    const { sortBy, sortOrder } = useTrackListState();
+    const { data: itemCount } = useGetApiLibraryIdTracksCountSuspense(libraryId, {
         sortBy,
         sortOrder,
     });
@@ -25,8 +23,8 @@ export function AlbumListContent() {
 function ListComponent({ itemCount }: { itemCount: number }) {
     const { libraryId } = useParams() as { libraryId: string };
     const { listId, sortBy, sortOrder, pagination, displayType, paginationType } =
-        useAlbumListState();
-    const { setPagination } = useAlbumListActions();
+        useTrackListState();
+    const { setPagination } = useTrackListActions();
     const baseUrl = useAuthBaseUrl();
 
     const listKey = useListKey({
@@ -41,35 +39,16 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     if (displayType === ItemListDisplayType.GRID) {
         switch (paginationType) {
             case ItemListPaginationType.PAGINATED:
-                return (
-                    <PaginatedAlbumGrid
-                        baseUrl={baseUrl}
-                        itemCount={itemCount}
-                        libraryId={libraryId}
-                        listKey={listKey}
-                        pagination={pagination}
-                        params={{ sortBy, sortOrder }}
-                        setPagination={setPagination}
-                    />
-                );
+                return null;
             case ItemListPaginationType.INFINITE:
-                return (
-                    <InfiniteAlbumGrid
-                        key={listKey}
-                        baseUrl={baseUrl}
-                        itemCount={itemCount}
-                        libraryId={libraryId}
-                        pagination={pagination}
-                        params={{ sortBy, sortOrder }}
-                    />
-                );
+                return null;
         }
     }
 
     switch (paginationType) {
         case ItemListPaginationType.PAGINATED:
             return (
-                <InfiniteAlbumTable
+                <InfiniteTrackTable
                     key={listKey}
                     baseUrl={baseUrl}
                     itemCount={itemCount}
@@ -80,7 +59,8 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             );
         case ItemListPaginationType.INFINITE:
             return (
-                <InfiniteAlbumTable
+                <InfiniteTrackTable
+                    key={listKey}
                     baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}

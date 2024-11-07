@@ -24,23 +24,23 @@ export function useListInitialize({ setListId }: UseListInitializeProps) {
     return id;
 }
 
-interface UseListKeyProps {
+interface UseListKeyProps<TSortOptions> {
     displayType: ItemListDisplayType;
     listId: Record<string, string>;
     pagination?: ItemListPaginationState;
     paginationType?: ItemListPaginationType;
-    sortBy: AlbumListSortOptions;
+    sortBy: TSortOptions;
     sortOrder: ListSortOrder;
 }
 
-export function useListKey({
+export function useListKey<TSortOptions>({
     displayType,
     listId,
     pagination,
     paginationType,
     sortBy,
     sortOrder,
-}: UseListKeyProps) {
+}: UseListKeyProps<TSortOptions>) {
     const location = useLocation();
 
     if (paginationType === ItemListPaginationType.PAGINATED) {

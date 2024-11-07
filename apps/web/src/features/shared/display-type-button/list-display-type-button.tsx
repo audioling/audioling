@@ -10,21 +10,29 @@ export function ListDisplayTypeButton({
     displayType,
     onChangeDisplayType,
 }: ListDisplayTypeButtonProps) {
+    if (displayType === ItemListDisplayType.TABLE) {
+        return (
+            <IconButtonWithTooltip
+                icon="layoutGrid"
+                size="lg"
+                tooltipProps={{
+                    label: 'Grid',
+                    position: 'bottom',
+                }}
+                onClick={() => onChangeDisplayType(ItemListDisplayType.GRID)}
+            />
+        );
+    }
+
     return (
         <IconButtonWithTooltip
-            icon={displayType === ItemListDisplayType.GRID ? 'layoutGrid' : 'layoutList'}
+            icon="layoutTable"
             size="lg"
             tooltipProps={{
-                label: displayType === ItemListDisplayType.GRID ? 'Grid' : 'List',
+                label: 'Table',
                 position: 'bottom',
             }}
-            onClick={() =>
-                onChangeDisplayType(
-                    displayType === ItemListDisplayType.GRID
-                        ? ItemListDisplayType.LIST
-                        : ItemListDisplayType.GRID,
-                )
-            }
+            onClick={() => onChangeDisplayType(ItemListDisplayType.TABLE)}
         />
     );
 }

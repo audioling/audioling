@@ -1,4 +1,5 @@
-import { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
+import { TrackListSortOptions } from '@repo/shared-types';
+import { ListSortOrder } from '@repo/shared-types';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -6,13 +7,13 @@ import { useShallow } from 'zustand/react/shallow';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import type { ListStore } from '@/store/list-store.ts';
 
-type AlbumListStore = ListStore<AlbumListSortOptions>;
+type TrackListStore = ListStore<TrackListSortOptions>;
 
-const albumListStore = create<AlbumListStore>()(
+const trackListStore = create<TrackListStore>()(
     persist(
         subscribeWithSelector(
             immer((set) => ({
-                displayType: ItemListDisplayType.GRID,
+                displayType: ItemListDisplayType.TABLE,
                 initialScrollIndex: 0,
                 listId: {},
                 pagination: {
@@ -59,16 +60,16 @@ const albumListStore = create<AlbumListStore>()(
                         state.sortOrder = sortOrder;
                     });
                 },
-                sortBy: AlbumListSortOptions.NAME,
+                sortBy: TrackListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
             })),
         ),
-        { name: 'album-list-store', version: 1 },
+        { name: 'track-list-store', version: 1 },
     ),
 );
 
-export const useAlbumListState = () => {
-    return albumListStore(
+export const useTrackListState = () => {
+    return trackListStore(
         useShallow((state) => ({
             displayType: state.displayType,
             initialScrollIndex: state.initialScrollIndex,
@@ -81,8 +82,8 @@ export const useAlbumListState = () => {
     );
 };
 
-export const useAlbumListActions = () => {
-    return albumListStore(
+export const useTrackListActions = () => {
+    return trackListStore(
         useShallow((state) => ({
             setDisplayType: state.setDisplayType,
             setInitialScrollIndex: state.setInitialScrollIndex,

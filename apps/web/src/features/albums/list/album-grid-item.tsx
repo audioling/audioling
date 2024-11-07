@@ -8,7 +8,7 @@ export type AlbumGridItemContext = {
     libraryId: string;
 };
 
-function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridItemContext>) {
+export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridItemContext>) {
     const { context, data, index } = props;
 
     if (data) {

@@ -10,13 +10,13 @@ import type { AlbumGridItemContext } from '@/features/albums/list/album-grid-ite
 import { MemoizedAlbumGridItem } from '@/features/albums/list/album-grid-item.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
-
-const PAGE_SIZE = 500;
+import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 
 interface InfiniteAlbumGridProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    pagination: ItemListPaginationState;
     params: GetApiLibraryIdAlbumsParams;
 }
 
@@ -24,6 +24,7 @@ export function InfiniteAlbumGrid({
     baseUrl,
     itemCount,
     libraryId,
+    pagination,
     params,
 }: InfiniteAlbumGridProps) {
     const queryClient = useQueryClient();
@@ -34,8 +35,8 @@ export function InfiniteAlbumGrid({
     const loadedPages = useRef<Record<number, boolean>>({});
 
     useEffect(() => {
-        loadedPages.current = itemListHelpers.getPageMap(itemCount, PAGE_SIZE);
-    }, [itemCount]);
+        loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
+    }, [itemCount, pagination.itemsPerPage]);
 
     const handleRangeChanged = useCallback(
         async (event: { endIndex: number; startIndex: number }) => {
@@ -43,7 +44,7 @@ export function InfiniteAlbumGrid({
             const pagesToLoad = itemListHelpers.getPagesToLoad(
                 startIndex,
                 endIndex,
-                PAGE_SIZE,
+                pagination.itemsPerPage,
                 loadedPages.current,
             );
 
@@ -51,11 +52,11 @@ export function InfiniteAlbumGrid({
                 for (const page of pagesToLoad) {
                     loadedPages.current[page] = true;
 
-                    const currentOffset = page * PAGE_SIZE;
+                    const currentOffset = page * pagination.itemsPerPage;
 
                     const paramsWithPagination = {
                         ...params,
-                        limit: PAGE_SIZE.toString(),
+                        limit: pagination.itemsPerPage.toString(),
                         offset: currentOffset.toString(),
                     };
 
@@ -76,7 +77,7 @@ export function InfiniteAlbumGrid({
                 }
             }
         },
-        [libraryId, params, queryClient],
+        [libraryId, pagination.itemsPerPage, params, queryClient],
     );
 
     return (

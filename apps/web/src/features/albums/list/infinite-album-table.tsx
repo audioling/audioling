@@ -10,10 +10,9 @@ import {
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
+import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { throttle } from '@/utils/throttle.ts';
-
-const PAGE_SIZE = 500;
 
 type AlbumTableItemContext = {
     baseUrl: string;
@@ -24,6 +23,7 @@ interface InfiniteAlbumTableProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    pagination: ItemListPaginationState;
     params: GetApiLibraryIdAlbumsParams;
 }
 
@@ -32,17 +32,16 @@ export function InfiniteAlbumTable({
     itemCount,
     libraryId,
     params,
+    pagination,
 }: InfiniteAlbumTableProps) {
     const queryClient = useQueryClient();
-    const [data, setData] = useState<(AlbumItem | undefined)[]>(
-        itemListHelpers.getInitialData(itemCount),
-    );
+    const [data, setData] = useState<Map<number, AlbumItem>>(new Map());
 
     const loadedPages = useRef<Record<number, boolean>>({});
 
     useEffect(() => {
-        loadedPages.current = itemListHelpers.getPageMap(itemCount, PAGE_SIZE);
-    }, [itemCount]);
+        loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
+    }, [itemCount, pagination.itemsPerPage]);
 
     const handleRangeChanged = useCallback(
         async (event: { endIndex: number; startIndex: number }) => {
@@ -50,7 +49,7 @@ export function InfiniteAlbumTable({
             const pagesToLoad = itemListHelpers.getPagesToLoad(
                 startIndex,
                 endIndex,
-                PAGE_SIZE,
+                pagination.itemsPerPage,
                 loadedPages.current,
             );
 
@@ -58,11 +57,11 @@ export function InfiniteAlbumTable({
                 for (const page of pagesToLoad) {
                     loadedPages.current[page] = true;
 
-                    const currentOffset = page * PAGE_SIZE;
+                    const currentOffset = page * pagination.itemsPerPage;
 
                     const paramsWithPagination = {
                         ...params,
-                        limit: PAGE_SIZE.toString(),
+                        limit: pagination.itemsPerPage.toString(),
                         offset: currentOffset.toString(),
                     };
 
@@ -73,17 +72,16 @@ export function InfiniteAlbumTable({
                     });
 
                     setData((prevData) => {
-                        const newData = [...prevData];
-                        const startIndex = currentOffset;
+                        const newData = new Map(prevData);
                         data.forEach((item, index) => {
-                            newData[startIndex + index] = item;
+                            newData.set(currentOffset + index, item);
                         });
                         return newData;
                     });
                 }
             }
         },
-        [libraryId, params, queryClient],
+        [libraryId, pagination.itemsPerPage, params, queryClient],
     );
 
     const throttledHandleRangeChanged = throttle(handleRangeChanged, 200);
@@ -94,10 +92,10 @@ export function InfiniteAlbumTable({
         () => [
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
+                    const item = data.get(row.index);
+                    if (!item) {
                         return <Skeleton width={30} />;
                     }
-
                     return <div>{row.index + 1}</div>;
                 },
                 enableResizing: true,
@@ -107,11 +105,11 @@ export function InfiniteAlbumTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
+                    const item = data.get(row.index);
+                    if (!item) {
                         return <Skeleton width={100} />;
                     }
-
-                    return <div>{row.original?.name}</div>;
+                    return <div>{item.name}</div>;
                 },
                 enableResizing: true,
                 header: 'Name',
@@ -120,13 +118,12 @@ export function InfiniteAlbumTable({
             }),
             columnHelper.display({
                 cell: ({ row }) => {
-                    if (!row.original) {
+                    const item = data.get(row.index);
+                    console.log('item', item);
+                    if (!item) {
                         return <Skeleton height={20} width={100} />;
                     }
-
-                    return (
-                        <div>{row.original?.artists.map((artist) => artist.name).join(', ')}</div>
-                    );
+                    return <div>{item.artists.map((artist) => artist.name).join(', ')}</div>;
                 },
                 enableResizing: true,
                 header: 'Artists',
@@ -134,7 +131,7 @@ export function InfiniteAlbumTable({
                 size: itemListHelpers.table.numberToColumnSize(1, 'fr'),
             }),
         ],
-        [columnHelper],
+        [columnHelper, data],
     );
 
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([

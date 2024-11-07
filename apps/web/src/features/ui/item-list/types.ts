@@ -1,6 +1,6 @@
 export enum ItemListDisplayType {
     GRID = 'grid',
-    LIST = 'list',
+    TABLE = 'table',
 }
 
 export enum ItemListPaginationType {
