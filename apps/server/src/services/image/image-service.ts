@@ -35,16 +35,16 @@ export const initImageService = (modules: { db: AppDatabase; imageModule: ImageM
             }
 
             const url = adapter._getCoverArtUrl(args);
-            const { arrayBuffer, buffer } = await imageModule.getBufferFromUrl(url);
-
-            const thumbHash = await imageModule.generateThumbHash(arrayBuffer);
-            db.thumbhash.insert(args.libraryId, args.id, thumbHash);
+            const { buffer } = await imageModule.getBufferFromUrl(url);
+            // const thumbHash = await imageModule.generateThumbHash(arrayBuffer);
+            // db.thumbhash.insert(args.libraryId, args.id, thumbHash);
+            const avifBuffer = await imageModule.convertToAvif(buffer);
 
             if (cache) {
-                await cacheImage(imagePath, buffer);
+                await cacheImage(imagePath, avifBuffer);
             }
 
-            return buffer;
+            return avifBuffer;
         },
         // ANCHOR - Get Thumbhash
         getThumbHash: async (args: { id: string; libraryId: string; type: LibraryItemType }) => {
