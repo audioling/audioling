@@ -124,7 +124,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
     controller.openapi(
         createRoute({
             method: 'get',
-            path: '/{id}',
+            path: '/{id}/tracks',
             summary: 'Get album tracks by id',
             tags: [...defaultOpenapiTags],
             ...apiSchema.album['/{id}/tracks'].get,
