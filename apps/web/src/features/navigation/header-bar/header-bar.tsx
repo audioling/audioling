@@ -35,7 +35,11 @@ export function HeaderBar() {
                 </Group>
             </div>
             <div className={styles.center} id="header-bar-center"></div>
-            <div className={styles.right} id="header-bar-right"></div>
+            <div className={styles.right} id="header-bar-right">
+                <Group gap="sm" wrap="nowrap">
+                    <IconButton icon="panelRightOpen" size="lg" variant="default" />
+                </Group>
+            </div>
         </div>
     );
 }

@@ -1,15 +1,28 @@
+@use '@/styles/base';
+
 .container {
     position: relative;
-    width: 100%;
-    height: 8px;
+    display: flex;
+    align-items: center;
+    width: 50vw;
+    max-width: 600px;
+    height: 16px;
 }
 
-.progress-bar {
+.handle {
     position: absolute;
-    top: 4px;
+    top: 0;
+    z-index: 1000;
+    width: 16px;
+    height: 16px;
+    background-color: base.$font-color;
+    border-radius: 50%;
+}
+
+.track {
     width: 100%;
-    height: 100%;
-    background-color: #d1d5db;
+    height: 4px;
+    background-color: base.$font-secondary-color;
     border-radius: 9999px;
 }
 

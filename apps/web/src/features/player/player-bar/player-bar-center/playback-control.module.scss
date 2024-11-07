@@ -1,0 +1,28 @@
+@use '@/styles/base';
+
+.play-pause {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+        width: 16px;
+        height: 16px;
+        margin-left: 2px;
+    }
+}
+
+.main {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+}
+
+.secondary {
+    width: 2.2rem;
+    height: 2.2rem;
+
+    svg {
+        // color: base.$font-secondary-color;
+    }
+}

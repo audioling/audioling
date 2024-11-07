@@ -6,6 +6,19 @@ export type Sizes = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type AppThemeConfiguration = {
     components: {
+        'player-progress': {
+            'handle-active-background-color': CSSProperties['backgroundColor'];
+            'handle-background-color': CSSProperties['backgroundColor'];
+            'handle-border-radius': CSSProperties['borderRadius'];
+            'handle-height': CSSProperties['height'];
+            'handle-hover-background-color': CSSProperties['backgroundColor'];
+            'handle-width': CSSProperties['width'];
+            'track-active-background-color': CSSProperties['backgroundColor'];
+            'track-background-color': CSSProperties['backgroundColor'];
+            'track-height': CSSProperties['height'];
+            'track-max-width': CSSProperties['maxWidth'];
+            'track-width': CSSProperties['width'];
+        };
         'side-nav-item': {
             'active-background-color': CSSProperties['backgroundColor'];
             'active-font-color': CSSProperties['color'];

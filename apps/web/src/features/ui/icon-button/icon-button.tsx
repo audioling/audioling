@@ -12,8 +12,8 @@ import styles from './icon-button.module.scss';
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children?: React.ReactNode;
     icon: keyof typeof AppIcon;
+    iconFill?: boolean;
     iconProps?: React.ComponentProps<typeof Icon>;
-    iconSize?: number;
     isDisabled?: boolean;
     isLoading?: boolean;
     radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -22,10 +22,12 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
-    const { isLoading, isDisabled, size, variant, iconProps, radius, ...htmlProps } = props;
+    const { isLoading, isDisabled, size, variant, iconProps, radius, iconFill, ...htmlProps } =
+        props;
 
     const rootClassNames = clsx({
         [styles.root]: true,
+        [styles.iconFill]: iconFill,
         [styles.filledVariant]: variant === 'filled',
         [styles.defaultVariant]: variant === undefined || variant === 'default',
         [styles.dangerVariant]: variant === 'danger',
@@ -50,7 +52,12 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
             loading={isLoading}
             {...htmlProps}
         >
-            <Icon icon={isLoading ? 'spinner' : props.icon} size={size} {...iconProps} />
+            <Icon
+                fill={iconFill}
+                icon={isLoading ? 'spinner' : props.icon}
+                size={size}
+                {...iconProps}
+            />
         </MantineActionIcon>
     );
 });

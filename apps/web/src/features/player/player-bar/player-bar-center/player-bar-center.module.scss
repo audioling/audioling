@@ -1,5 +1,20 @@
+@use '@/styles/base';
+
 .center {
     display: flex;
+    flex-direction: column;
+    gap: base.$gap-sm;
     align-items: center;
     justify-content: center;
+}
+
+.controls {
+    display: flex;
+    gap: base.$gap-sm;
+    align-items: center;
+    justify-content: center;
+
+    button {
+        padding: 0;
+    }
 }

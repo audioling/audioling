@@ -221,6 +221,19 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
 };
 
 export const baseThemeComponents: AppThemeConfiguration['components'] = {
+    'player-progress': {
+        'handle-active-background-color': 'rgb(230, 230, 230)',
+        'handle-background-color': 'rgb(230, 230, 230)',
+        'handle-border-radius': radius.md,
+        'handle-height': '10px',
+        'handle-hover-background-color': 'rgb(230, 230, 230)',
+        'handle-width': '10px',
+        'track-active-background-color': 'rgb(230, 230, 230)',
+        'track-background-color': 'rgb(230, 230, 230)',
+        'track-height': '10px',
+        'track-max-width': '100%',
+        'track-width': '100%',
+    },
     'side-nav-item': {
         'active-background-color': primaryColor,
         'active-font-color': 'var(--global-font-color)',

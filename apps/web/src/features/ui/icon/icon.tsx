@@ -33,18 +33,26 @@ import {
     LuMenu,
     LuMinus,
     LuMusic2,
+    LuPanelRightClose,
+    LuPanelRightOpen,
+    LuPause,
     LuPencilLine,
+    LuPlay,
     LuPlus,
     LuRotateCw,
     LuSearch,
     LuShieldAlert,
+    LuSkipBack,
+    LuSkipForward,
+    LuStepBack,
+    LuStepForward,
     LuTrash,
     LuVolume1,
     LuVolume2,
     LuVolumeX,
 } from 'react-icons/lu';
 import { MdClose, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
-import { RiMusic2Line, RiSidebarFoldFill } from 'react-icons/ri';
+import { RiMusic2Line } from 'react-icons/ri';
 import styles from './icon.module.scss';
 
 export const AppIcon = {
@@ -69,15 +77,22 @@ export const AppIcon = {
     home: LuHome,
     info: LuInfo,
     layoutGrid: LuLayoutGrid,
-    layoutList: LuLayoutList,
+    layoutTable: LuLayoutList,
     library: LuLibrary,
     listInfinite: LuInfinity,
     listPaginated: LuListOrdered,
     lock: LuLock,
+    mediaNext: LuSkipForward,
+    mediaPause: LuPause,
+    mediaPlay: LuPlay,
+    mediaPrevious: LuSkipBack,
+    mediaStepBackward: LuStepBack,
+    mediaStepForward: LuStepForward,
     menu: LuMenu,
+    panelRightClose: LuPanelRightClose,
+    panelRightOpen: LuPanelRightOpen,
     playlist: LuListMusic,
     queue: RiMusic2Line,
-    queueSide: RiSidebarFoldFill,
     refresh: LuRotateCw,
     remove: LuMinus,
     search: LuSearch,
@@ -97,16 +112,18 @@ export const AppIcon = {
 } as const;
 
 interface IconProps {
+    fill?: boolean;
     icon: keyof typeof AppIcon;
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
     state?: 'success' | 'error' | 'info' | 'warn';
 }
 
 export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {
-    const { size, icon } = props;
+    const { fill, size, icon } = props;
 
     const classNames = clsx({
         [styles.icon]: true,
+        [styles.iconFill]: fill,
         [styles.colorDefault]: !props.state,
         [styles[`color-${props.state}`]]: props.state,
         [styles[`size-${size}`]]: typeof size === 'string',
