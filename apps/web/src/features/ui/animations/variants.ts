@@ -55,8 +55,8 @@ const slideInRight: Variants = {
     show: { opacity: 1, x: 0 },
 };
 
-const scaleX: Variants = {
-    hidden: { height: 0, opacity: 0 },
+const scaleY: Variants = {
+    hidden: { height: 0, opacity: 0, overflow: 'hidden' },
     show: { height: 'auto', opacity: 1 },
 };
 
@@ -76,7 +76,7 @@ export const animationVariants = {
     fadeInLeft,
     fadeInRight,
     fadeInUp,
-    scaleX,
+    scaleY,
     slideInDown,
     slideInLeft,
     slideInRight,
