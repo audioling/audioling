@@ -1,11 +1,12 @@
 {
-  "extends": [
-    "stylelint-config-standard-scss",
-    "stylelint-config-css-modules",
-    "stylelint-config-recess-order"
-  ],
-  "rules": {
-    "selector-type-case": ["lower", { "ignoreTypes": ["/^\\$\\w+/"] }],
-    "selector-type-no-unknown": [true, { "ignoreTypes": ["/-styled-mixin/", "/^\\$\\w+/"] }]
-  }
+    "extends": [
+        "stylelint-config-standard-scss",
+        "stylelint-config-css-modules",
+        "stylelint-config-recess-order"
+    ],
+    "rules": {
+        "block-no-empty": null,
+        "selector-type-case": ["lower", { "ignoreTypes": ["/^\\$\\w+/"] }],
+        "selector-type-no-unknown": [true, { "ignoreTypes": ["/-styled-mixin/", "/^\\$\\w+/"] }]
+    }
 }
