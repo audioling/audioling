@@ -9,6 +9,7 @@ export function useContainerBreakpoints() {
         sm: 0,
         xl: 0,
         xxl: 0,
+        xxxl: 0,
     });
 
     useEffect(() => {
@@ -27,6 +28,7 @@ export function useContainerBreakpoints() {
             sm: getBreakpointValue('sm'),
             xl: getBreakpointValue('xl'),
             xxl: getBreakpointValue('xxl'),
+            xxxl: getBreakpointValue('xxxl'),
         });
     }, []);
 
@@ -35,13 +37,14 @@ export function useContainerBreakpoints() {
     const isLargerThanLg = rect?.width >= globalBreakpoints.lg;
     const isLargerThanXl = rect?.width >= globalBreakpoints.xl;
     const isLargerThanXxl = rect?.width >= globalBreakpoints.xxl;
-
+    const isLargerThanXxxl = rect?.width >= globalBreakpoints.xxxl;
     const breakpoints = {
         isLargerThanLg,
         isLargerThanMd,
         isLargerThanSm,
         isLargerThanXl,
         isLargerThanXxl,
+        isLargerThanXxxl,
     };
 
     return { breakpoints, rect, ref };
