@@ -98,7 +98,7 @@ function ExpandedAlbumGridItemContent({
                     <Title className={styles.itemTitle} order={1} size="lg" weight="lg">
                         {data.name}
                     </Title>
-                    <Title order={2} size="md" weight="md">
+                    <Title order={2} size="sm" weight="md">
                         {data.artists[0]?.name}
                     </Title>
                 </div>

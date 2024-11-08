@@ -20,6 +20,9 @@
 }
 
 .header {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-xs;
 }
 
 .content {
