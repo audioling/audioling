@@ -8,7 +8,7 @@ import type { ListStore } from '@/store/list-store.ts';
 
 type AlbumListStore = ListStore<AlbumListSortOptions>;
 
-const albumListStore = create<AlbumListStore>()(
+export const useAlbumListStore = create<AlbumListStore>()(
     persist(
         subscribeWithSelector(
             immer((set) => ({
@@ -68,7 +68,7 @@ const albumListStore = create<AlbumListStore>()(
 );
 
 export const useAlbumListState = () => {
-    return albumListStore(
+    return useAlbumListStore(
         useShallow((state) => ({
             displayType: state.displayType,
             initialScrollIndex: state.initialScrollIndex,
@@ -82,7 +82,7 @@ export const useAlbumListState = () => {
 };
 
 export const useAlbumListActions = () => {
-    return albumListStore(
+    return useAlbumListStore(
         useShallow((state) => ({
             setDisplayType: state.setDisplayType,
             setInitialScrollIndex: state.setInitialScrollIndex,

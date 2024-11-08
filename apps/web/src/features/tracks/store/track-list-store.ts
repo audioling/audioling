@@ -9,7 +9,7 @@ import type { ListStore } from '@/store/list-store.ts';
 
 type TrackListStore = ListStore<TrackListSortOptions>;
 
-const trackListStore = create<TrackListStore>()(
+export const useTrackListStore = create<TrackListStore>()(
     persist(
         subscribeWithSelector(
             immer((set) => ({
@@ -69,7 +69,7 @@ const trackListStore = create<TrackListStore>()(
 );
 
 export const useTrackListState = () => {
-    return trackListStore(
+    return useTrackListStore(
         useShallow((state) => ({
             displayType: state.displayType,
             initialScrollIndex: state.initialScrollIndex,
@@ -83,7 +83,7 @@ export const useTrackListState = () => {
 };
 
 export const useTrackListActions = () => {
-    return trackListStore(
+    return useTrackListStore(
         useShallow((state) => ({
             setDisplayType: state.setDisplayType,
             setInitialScrollIndex: state.setInitialScrollIndex,
