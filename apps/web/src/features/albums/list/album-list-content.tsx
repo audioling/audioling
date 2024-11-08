@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useGetApiLibraryIdAlbumsCountSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { InfiniteAlbumGrid } from '@/features/albums/list/infinite-album-grid.tsx';
 import { InfiniteAlbumTable } from '@/features/albums/list/infinite-album-table.tsx';
@@ -13,8 +13,10 @@ import { useListKey } from '@/hooks/use-list.ts';
 
 export function AlbumListContent() {
     const { libraryId } = useParams() as { libraryId: string };
+    const [searchParams] = useSearchParams();
     const { sortBy, sortOrder } = useAlbumListState();
     const { data: itemCount } = useGetApiLibraryIdAlbumsCountSuspense(libraryId, {
+        searchTerm: searchParams.get('search') ?? undefined,
         sortBy,
         sortOrder,
     });
@@ -24,6 +26,7 @@ export function AlbumListContent() {
 
 function ListComponent({ itemCount }: { itemCount: number }) {
     const { libraryId } = useParams() as { libraryId: string };
+    const [searchParams] = useSearchParams();
     const { listId, sortBy, sortOrder, pagination, displayType, paginationType } =
         useAlbumListState();
     const { setPagination } = useAlbumListActions();
@@ -48,7 +51,11 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                         libraryId={libraryId}
                         listKey={listKey}
                         pagination={pagination}
-                        params={{ sortBy, sortOrder }}
+                        params={{
+                            searchTerm: searchParams.get('search') ?? undefined,
+                            sortBy,
+                            sortOrder,
+                        }}
                         setPagination={setPagination}
                     />
                 );
@@ -60,7 +67,11 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                         itemCount={itemCount}
                         libraryId={libraryId}
                         pagination={pagination}
-                        params={{ sortBy, sortOrder }}
+                        params={{
+                            searchTerm: searchParams.get('search') ?? undefined,
+                            sortBy,
+                            sortOrder,
+                        }}
                     />
                 );
         }
