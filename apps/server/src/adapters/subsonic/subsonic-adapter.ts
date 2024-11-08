@@ -443,6 +443,40 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [err, null];
             }
 
+            if (query.searchTerm) {
+                const result = await apiClient.search3.os['1'].get({
+                    fetchOptions,
+                    query: {
+                        albumCount: query.limit,
+                        albumOffset: query.offset,
+                        artistCount: 0,
+                        artistOffset: 0,
+                        query: query.searchTerm,
+                        songCount: 0,
+                        songOffset: 0,
+                    },
+                });
+
+                if (result.status !== 200) {
+                    writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getAlbumList'));
+                    return [{ code: result.status, message: result.body as string }, null];
+                }
+
+                const items = (result.body.searchResult3.album || []).map(
+                    subsonicHelpers.converter.albumToAdapter,
+                );
+
+                return [
+                    null,
+                    {
+                        items,
+                        limit: query.limit,
+                        offset: query.offset,
+                        totalRecordCount,
+                    },
+                ];
+            }
+
             let sortType: AlbumSortType = 'alphabeticalByName';
 
             let offset: number = query.offset;
@@ -608,9 +642,32 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return result.body.albumList2.album?.length || 0;
             }
 
+            async function getSearchPageItemCount(page: number, limit: number): Promise<number> {
+                const result = await apiClient.search3.os['1'].get({
+                    fetchOptions,
+                    query: {
+                        albumCount: limit,
+                        albumOffset: page * limit,
+                        artistCount: 0,
+                        artistOffset: 0,
+                        query: query.searchTerm,
+                        songCount: 0,
+                        songOffset: 0,
+                    },
+                });
+
+                if (result.status !== 200) {
+                    throw new Error(JSON.stringify(result.body));
+                }
+
+                return result.body.searchResult3.album?.length || 0;
+            }
+
+            const pageItemCountFn = query.searchTerm ? getSearchPageItemCount : getPageItemCount;
+
             try {
-                const totalRecordCount = await adapterHelpers.db.getCount(db, getPageItemCount, {
-                    expiration: 1440,
+                const totalRecordCount = await adapterHelpers.db.getCount(db, pageItemCountFn, {
+                    expiration: query.searchTerm ? 0 : 1440,
                     libraryId: library.id,
                     query: sanitizedQuery,
                     type: 'album',

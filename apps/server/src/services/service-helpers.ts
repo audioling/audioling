@@ -38,6 +38,7 @@ export interface FindManyServiceArgs<TSortOptions> {
     folderId?: string[];
     limit?: number;
     offset?: number;
+    searchTerm?: string;
     sortBy: TSortOptions;
     sortOrder: ListSortOrder;
 }

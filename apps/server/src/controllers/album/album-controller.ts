@@ -42,6 +42,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
                 folderId: query.folderId,
                 limit: query.limit ? Number(query.limit) : undefined,
                 offset: query.offset ? Number(query.offset) : undefined,
+                searchTerm: query.searchTerm,
                 sortBy: query.sortBy,
                 sortOrder: query.sortOrder,
             });
@@ -82,6 +83,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
                 folderId: query.folderId,
                 limit: 1,
                 offset: 0,
+                searchTerm: query.searchTerm,
                 sortBy: query.sortBy,
                 sortOrder: query.sortOrder,
             });

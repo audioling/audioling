@@ -91,6 +91,7 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                     folderId: args.folderId,
                     limit,
                     offset,
+                    searchTerm: args.searchTerm,
                     sortBy: args.sortBy || AlbumListSortOptions.NAME,
                     sortOrder: args.sortOrder || ListSortOrder.ASC,
                 },
