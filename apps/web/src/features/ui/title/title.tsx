@@ -10,7 +10,7 @@ interface TitleProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 export const Title = (props: TitleProps) => {
-    const { children, order, size, weight, isSecondary, ...htmlProps } = props;
+    const { className, children, order, size, weight, isSecondary, ...htmlProps } = props;
 
     const HeaderComponent = getHeaderComponent(order);
 
@@ -21,7 +21,7 @@ export const Title = (props: TitleProps) => {
     });
 
     return (
-        <HeaderComponent className={classNames} {...htmlProps}>
+        <HeaderComponent className={clsx(className, classNames)} {...htmlProps}>
             {children}
         </HeaderComponent>
     );
