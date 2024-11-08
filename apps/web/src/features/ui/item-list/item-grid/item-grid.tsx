@@ -1,6 +1,16 @@
 import type { CSSProperties, ReactNode, SyntheticEvent } from 'react';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import React, {
+    Children,
+    cloneElement,
+    forwardRef,
+    isValidElement,
+    Suspense,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import clsx from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { VirtuosoGrid } from 'react-virtuoso';
 import styles from './item-grid.module.scss';
@@ -31,15 +41,81 @@ const GridItemComponent = forwardRef<
         children?: ReactNode;
         className?: string;
         context?: Record<string, unknown>;
+        'data-index': number;
         style?: CSSProperties;
     }
 >((props, ref) => {
-    const { children } = props;
+    const { children, 'data-index': index } = props;
+
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    useEffect(() => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'style') {
+                    const expandedIndex = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--opened-item-index')
+                        .trim();
+                    setIsExpanded(expandedIndex === index.toString());
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributeFilter: ['style'],
+            attributes: true,
+        });
+
+        return () => observer.disconnect();
+    }, [index]);
+
+    const handleClick = () => {
+        if (isExpanded) {
+            document.documentElement.style.removeProperty('--opened-item-index');
+        } else {
+            document.documentElement.style.setProperty('--opened-item-index', index.toString());
+        }
+    };
 
     return (
-        <div ref={ref} className={clsx(styles.gridItemComponent)}>
-            {children}
-        </div>
+        <>
+            <div ref={ref} className={clsx(styles.gridItemComponent)} onClick={handleClick}>
+                {children}
+            </div>
+            <AnimatePresence mode="wait">
+                {isExpanded && (
+                    <motion.div
+                        animate={{
+                            height: '35svh',
+                            maxHeight: '400px',
+                            opacity: 1,
+                            overflow: 'hidden',
+                            y: 0,
+                        }}
+                        className={styles.fullWidthContent}
+                        exit={{ height: '0px', opacity: 0, overflow: 'hidden' }}
+                        initial={{ height: '0px', opacity: 0, overflow: 'hidden' }}
+                        transition={{
+                            height: { duration: 0 },
+                            maxHeight: { duration: 0 },
+                            x: { duration: 0.5 },
+                        }}
+                    >
+                        <Suspense fallback={null}>
+                            {Children.map(children, (child) => {
+                                if (isValidElement(child)) {
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    return cloneElement<any>(child, {
+                                        isExpanded: true,
+                                    });
+                                }
+                                return child;
+                            })}
+                        </Suspense>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 });
 
@@ -49,6 +125,7 @@ export interface InfiniteGridItemProps<T, C extends Record<string, unknown>> {
     context?: C;
     data: T | undefined;
     index: number;
+    isExpanded?: boolean;
 }
 
 interface InfiniteItemGridProps<T, C extends Record<string, unknown>> {
@@ -123,7 +200,7 @@ export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
                 }}
                 data={data}
                 endReached={onEndReached}
-                increaseViewportBy={300}
+                increaseViewportBy={600}
                 initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={(index, data) => (

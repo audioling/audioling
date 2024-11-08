@@ -1,0 +1,89 @@
+@use '@/styles/base';
+
+.grid-item-component {
+    display: flex;
+    grid-column: span 2;
+    padding: base.$gap-sm;
+}
+
+.expanded {
+    position: relative;
+    display: grid;
+    grid-template-areas: 'content image';
+    grid-template-columns: 50svw auto;
+    gap: base.$gap-md;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    user-select: none;
+    border-radius: base.$border-radius-md;
+}
+
+.header {
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    grid-area: content;
+    gap: base.$gap-md;
+    width: 100%;
+    height: 100%;
+    padding: base.$gap-md;
+    overflow: hidden;
+}
+
+.item-title {
+    display: -webkit-box;
+    overflow: hidden;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.image-container {
+    position: relative;
+    grid-area: image;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        content: '';
+        background: linear-gradient(to right, var(--bg-color) 0%, transparent 100%);
+    }
+}
+
+.tracks {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-sm;
+    padding-right: base.$gap-md;
+}
+
+.tracks:nth-child(3) {
+    text-align: left;
+}
+
+.track {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: base.$gap-md;
+    padding: base.$gap-sm 0;
+    font-variant-numeric: tabular-nums;
+
+    @include base.text-ellipsis;
+
+    svg {
+        color: black;
+    }
+}
+
+.track.dark {
+    svg {
+        color: white;
+    }
+}

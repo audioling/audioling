@@ -119,7 +119,6 @@ export function InfiniteAlbumTable({
             columnHelper.display({
                 cell: ({ row }) => {
                     const item = data.get(row.index);
-                    console.log('item', item);
                     if (!item) {
                         return <Skeleton height={20} width={100} />;
                     }

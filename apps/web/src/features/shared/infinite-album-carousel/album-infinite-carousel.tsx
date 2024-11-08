@@ -35,7 +35,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                         <MemoizedAlbumCard
                             componentState="loaded"
                             id={album.id}
-                            image={`${baseUrl}${album.imageUrl}&size=300`}
+                            image={`${baseUrl}${album.imageUrl}&size=400`}
                             metadata={[
                                 {
                                     path: generatePath(APP_ROUTE.DASHBOARD_ARTISTS_DETAIL, {
