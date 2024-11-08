@@ -112,7 +112,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'global-background-color': 'rgb(3, 3, 3)',
     'global-danger-color': dangerColor,
     'global-font-color': 'rgb(230, 230, 230)',
-    'global-font-family': 'Poppins',
+    'global-font-family': 'Inter',
     'global-font-secondary-color': 'rgb(120, 120, 120)',
     'global-font-size': '16px',
     'global-info-color': 'rgb(50, 50, 204)',

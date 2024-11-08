@@ -13,6 +13,7 @@ body {
     height: 100%;
     overflow: hidden;
     font-family: var(--global-font-family), sans-serif !important;
+    font-variant-numeric: tabular-nums;
     color: var(--global-font-color) !important;
     background-color: var(--global-background-color) !important;
 }
