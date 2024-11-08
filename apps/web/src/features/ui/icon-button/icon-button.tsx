@@ -18,7 +18,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
     isLoading?: boolean;
     radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle';
+    variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle' | 'transparent';
 }
 
 export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
@@ -33,6 +33,7 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
         [styles.dangerVariant]: variant === 'danger',
         [styles.primaryVariant]: variant === 'primary',
         [styles.subtleVariant]: variant === 'subtle',
+        [styles.transparentVariant]: variant === 'transparent',
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${radius || 'md'}`]]: true,
         [styles.loading]: isLoading,

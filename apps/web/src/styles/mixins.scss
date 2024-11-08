@@ -87,6 +87,23 @@
     }
 }
 
+@mixin button-transparent-variant() {
+    color: var(--button-default-font-color);
+    background-color: transparent;
+    border: 1px solid transparent;
+
+    svg {
+        color: var(--button-default-font-color);
+    }
+
+    &:hover,
+    &:focus-visible {
+        color: var(--button-default-hover-font-color);
+        background-color: transparent;
+        border: 1px solid transparent;
+    }
+}
+
 @mixin text-ellipsis() {
     overflow: hidden;
     text-overflow: ellipsis;
