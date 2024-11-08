@@ -46,6 +46,10 @@
     }
 }
 
+.input.right-section {
+    padding-right: 2.5rem;
+}
+
 .section {
     position: absolute;
     top: 0;
@@ -58,8 +62,11 @@
 }
 
 .size-xs {
-    padding: base.$gap-xs;
     font-size: base.$font-size-sm;
+
+    input {
+        padding: base.$gap-xs;
+    }
 
     &::placeholder {
         font-size: base.$font-size-sm;
@@ -67,8 +74,11 @@
 }
 
 .size-sm {
-    padding: base.$gap-sm;
     font-size: base.$font-size-sm;
+
+    input {
+        padding: base.$gap-sm;
+    }
 
     &::placeholder {
         font-size: base.$font-size-sm;
