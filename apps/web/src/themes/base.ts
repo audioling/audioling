@@ -35,6 +35,14 @@ const titleFontSize = {
     xs: '0.875rem',
 };
 
+const titleFontWeight = {
+    lg: '800',
+    md: '600',
+    sm: '500',
+    xl: '900',
+    xs: '400',
+};
+
 const radius = {
     lg: '0.75rem',
     md: '0.25rem',
@@ -69,11 +77,11 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'base-title-font-size-sm': titleFontSize.sm,
     'base-title-font-size-xl': titleFontSize.xl,
     'base-title-font-size-xs': titleFontSize.xs,
-    'base-title-font-weight-lg': '700',
-    'base-title-font-weight-md': '600',
-    'base-title-font-weight-sm': '500',
-    'base-title-font-weight-xl': '800',
-    'base-title-font-weight-xs': '400',
+    'base-title-font-weight-lg': titleFontWeight.lg,
+    'base-title-font-weight-md': titleFontWeight.md,
+    'base-title-font-weight-sm': titleFontWeight.sm,
+    'base-title-font-weight-xl': titleFontWeight.xl,
+    'base-title-font-weight-xs': titleFontWeight.xs,
     'breakpoint-lg': '62rem',
     'breakpoint-md': '48rem',
     'breakpoint-sm': '36rem',
