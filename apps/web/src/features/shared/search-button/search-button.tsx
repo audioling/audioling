@@ -26,8 +26,6 @@ export function SearchButton() {
         }
     };
 
-    console.log('inputRef.current', inputRef.current);
-
     const [searchValue, setSearchValue] = useDebouncedState(searchParams.get('search') ?? '', 300);
 
     useEffect(() => {
