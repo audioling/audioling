@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import type { Variants } from 'framer-motion';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -27,28 +28,47 @@ const MemoizedCard = memo(({ content }: { content: ReactNode }) => (
 
 MemoizedCard.displayName = 'MemoizedCard';
 
+const pageVariants: Variants = {
+    animate: { opacity: 1, transition: { duration: 0.3, ease: 'easeOut' }, x: 0 },
+    exit: (custom: { isNext: boolean }) => ({
+        opacity: 0,
+        transition: { duration: 0.3, ease: 'easeIn' },
+        x: custom.isNext ? -100 : 100,
+    }),
+    initial: (custom: { isNext: boolean }) => ({ opacity: 0, x: custom.isNext ? 100 : -100 }),
+};
+
 export function GridCarousel(props: GridCarouselProps) {
     const { cards, title, rowCount = 1, onNextPage, onPrevPage, loadNextPage } = props;
-
-    const [currentPage, setCurrentPage] = useState(0);
     const { ref: containerRef, breakpoints } = useContainerBreakpoints();
 
+    const [currentPage, setCurrentPage] = useState({
+        isNext: false,
+        page: 0,
+    });
+
     const handlePrevPage = useCallback(() => {
-        setCurrentPage((prev) => (prev > 0 ? prev - 1 : 0));
-        onPrevPage(currentPage);
+        setCurrentPage((prev) => ({
+            isNext: false,
+            page: prev.page > 0 ? prev.page - 1 : 0,
+        }));
+        onPrevPage(currentPage.page);
     }, [currentPage, onPrevPage]);
 
     const handleNextPage = useCallback(() => {
-        setCurrentPage((prev) => prev + 1);
-        onNextPage(currentPage);
+        setCurrentPage((prev) => ({
+            isNext: true,
+            page: prev.page + 1,
+        }));
+        onNextPage(currentPage.page);
     }, [currentPage, onNextPage]);
 
     const cardsToShow = getCardsToShow(breakpoints);
 
     const visibleCards = useMemo(() => {
         return cards.slice(
-            currentPage * cardsToShow * rowCount,
-            (currentPage + 1) * cardsToShow * rowCount,
+            currentPage.page * cardsToShow * rowCount,
+            (currentPage.page + 1) * cardsToShow * rowCount,
         );
     }, [cards, currentPage, cardsToShow, rowCount]);
 
@@ -60,7 +80,7 @@ export function GridCarousel(props: GridCarouselProps) {
         }
     }, [loadNextPage, shouldLoadNextPage]);
 
-    const isPrevDisabled = currentPage === 0;
+    const isPrevDisabled = currentPage.page === 0;
     const isNextDisabled = visibleCards.length < cardsToShow * rowCount;
 
     return (
@@ -86,22 +106,16 @@ export function GridCarousel(props: GridCarouselProps) {
                     />
                 </Group>
             </div>
-            <AnimatePresence initial={false} mode="wait">
+            <AnimatePresence custom={currentPage} initial={false} mode="wait">
                 <motion.div
-                    key={currentPage}
-                    animate={{
-                        opacity: 1,
-                        scale: 1,
-                        transition: { duration: 0.2, ease: 'easeInOut' },
-                    }}
+                    key={currentPage.page}
+                    animate="animate"
                     className={styles.grid}
-                    exit={{
-                        opacity: 0,
-                        scale: 0.95,
-                        transition: { duration: 0.2, ease: 'easeInOut' },
-                    }}
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    custom={currentPage}
+                    exit="exit"
+                    initial="initial"
                     style={{ '--row-count': rowCount } as React.CSSProperties}
+                    variants={pageVariants}
                 >
                     {visibleCards.map((card) => (
                         <MemoizedCard key={card.id} content={card.content} />
