@@ -1,0 +1,16 @@
+@use '@/styles/base';
+
+.container {
+    container-type: inline-size;
+    container-name: item-count-display;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: base.$gap-md;
+
+    @include base.container-larger-than-sm {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

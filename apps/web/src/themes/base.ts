@@ -195,7 +195,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'modal-padding': gap.md,
     'modal-title-font-size': titleFontSize.md,
     'modal-title-font-weight': fontWeight.lg,
-    'paper-background-color': 'rgb(50, 50, 50)',
+    'paper-background-color': 'rgba(50, 50, 50, 0.3)',
     'paper-border-radius': radius.md,
     'paper-padding': gap.sm,
     'scroll-bar-size': '6px',
