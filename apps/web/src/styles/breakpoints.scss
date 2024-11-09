@@ -3,7 +3,7 @@ $screen-md-min: 48rem; // 768px
 $screen-lg-min: 62rem; // 992px
 $screen-xl-min: 75rem; // 1200px
 $screen-xxl-min: 90rem; // 1440px
-$screen-xxxl-min: 120rem; // 1920px
+$screen-xxxl-min: 160rem; // 2560px
 
 @mixin larger-than-sm {
     @media (min-width: #{$screen-sm-min}) {
