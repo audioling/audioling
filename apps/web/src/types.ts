@@ -10,3 +10,12 @@ export type PolymorphicComponentType =
     | 'nav'
     | 'section'
     | 'summary';
+
+export type Breakpoints = {
+    isLargerThanLg: boolean;
+    isLargerThanMd: boolean;
+    isLargerThanSm: boolean;
+    isLargerThanXl: boolean;
+    isLargerThanXxl: boolean;
+    isLargerThanXxxl: boolean;
+};

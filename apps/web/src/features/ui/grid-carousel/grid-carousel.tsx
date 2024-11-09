@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -32,7 +32,6 @@ export function GridCarousel(props: GridCarouselProps) {
 
     const [currentPage, setCurrentPage] = useState(0);
     const { ref: containerRef, breakpoints } = useContainerBreakpoints();
-    const cardsToShow = useRef(2);
 
     const handlePrevPage = useCallback(() => {
         setCurrentPage((prev) => (prev > 0 ? prev - 1 : 0));
@@ -44,43 +43,16 @@ export function GridCarousel(props: GridCarouselProps) {
         onNextPage(currentPage);
     }, [currentPage, onNextPage]);
 
+    const cardsToShow = getCardsToShow(breakpoints);
+
     const visibleCards = useMemo(() => {
-        if (breakpoints.isLargerThanSm) {
-            cardsToShow.current = 4;
-        }
-
-        if (breakpoints.isLargerThanMd) {
-            cardsToShow.current = 5;
-        }
-
-        if (breakpoints.isLargerThanLg) {
-            cardsToShow.current = 6;
-        }
-
-        if (breakpoints.isLargerThanXl) {
-            cardsToShow.current = 8;
-        }
-
-        if (breakpoints.isLargerThanXxl) {
-            cardsToShow.current = 10;
-        }
-
         return cards.slice(
-            currentPage * cardsToShow.current * rowCount,
-            (currentPage + 1) * cardsToShow.current * rowCount,
+            currentPage * cardsToShow * rowCount,
+            (currentPage + 1) * cardsToShow * rowCount,
         );
-    }, [
-        breakpoints.isLargerThanLg,
-        breakpoints.isLargerThanMd,
-        breakpoints.isLargerThanSm,
-        breakpoints.isLargerThanXl,
-        breakpoints.isLargerThanXxl,
-        cards,
-        currentPage,
-        rowCount,
-    ]);
+    }, [cards, currentPage, cardsToShow, rowCount]);
 
-    const shouldLoadNextPage = visibleCards.length < cardsToShow.current * rowCount;
+    const shouldLoadNextPage = visibleCards.length < cardsToShow * rowCount;
 
     useEffect(() => {
         if (shouldLoadNextPage) {
@@ -89,7 +61,7 @@ export function GridCarousel(props: GridCarouselProps) {
     }, [loadNextPage, shouldLoadNextPage]);
 
     const isPrevDisabled = currentPage === 0;
-    const isNextDisabled = visibleCards.length < cardsToShow.current * rowCount;
+    const isNextDisabled = visibleCards.length < cardsToShow * rowCount;
 
     return (
         <motion.div ref={containerRef} className={styles.gridCarousel}>
@@ -138,4 +110,39 @@ export function GridCarousel(props: GridCarouselProps) {
             </AnimatePresence>
         </motion.div>
     );
+}
+
+function getCardsToShow(breakpoints: {
+    isLargerThanLg: boolean;
+    isLargerThanMd: boolean;
+    isLargerThanSm: boolean;
+    isLargerThanXl: boolean;
+    isLargerThanXxl: boolean;
+    isLargerThanXxxl: boolean;
+}) {
+    if (breakpoints.isLargerThanXxxl) {
+        return 9;
+    }
+
+    if (breakpoints.isLargerThanXxl) {
+        return 7;
+    }
+
+    if (breakpoints.isLargerThanXl) {
+        return 6;
+    }
+
+    if (breakpoints.isLargerThanLg) {
+        return 5;
+    }
+
+    if (breakpoints.isLargerThanMd) {
+        return 4;
+    }
+
+    if (breakpoints.isLargerThanSm) {
+        return 3;
+    }
+
+    return 2;
 }

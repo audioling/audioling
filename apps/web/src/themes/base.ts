@@ -87,6 +87,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'breakpoint-sm': '36rem',
     'breakpoint-xl': '75rem',
     'breakpoint-xxl': '90rem',
+    'breakpoint-xxxl': '160rem',
     'button-danger-background-color': dangerColor,
     'button-danger-border': `1px solid ${dangerColor}`,
     'button-danger-font-color': 'rgb(230, 230, 230)',

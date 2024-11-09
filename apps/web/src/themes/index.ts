@@ -67,6 +67,7 @@ export type AppThemeConfiguration = {
         'breakpoint-sm': CSSProperties['width'];
         'breakpoint-xl': CSSProperties['width'];
         'breakpoint-xxl': CSSProperties['width'];
+        'breakpoint-xxxl': CSSProperties['width'];
         'button-danger-background-color': CSSProperties['backgroundColor'];
         'button-danger-border': CSSProperties['border'];
         'button-danger-font-color': CSSProperties['color'];

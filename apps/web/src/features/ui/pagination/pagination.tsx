@@ -10,6 +10,7 @@ import {
 } from 'react-icons/lu';
 import { useContainerBreakpoints } from '@/hooks/use-container-query.ts';
 import type { Sizes } from '@/themes/index.ts';
+import type { Breakpoints } from '@/types.ts';
 import styles from './pagination.module.scss';
 
 interface PaginationProps {
@@ -118,13 +119,7 @@ function DotComponent() {
 }
 
 function getResponsePaginationProps(
-    breakpoints: {
-        isLargerThanLg: boolean;
-        isLargerThanMd: boolean;
-        isLargerThanSm: boolean;
-        isLargerThanXl: boolean;
-        isLargerThanXxl: boolean;
-    },
+    breakpoints: Breakpoints,
     defaults: { siblings?: number; withControls?: boolean; withEdges?: boolean },
 ) {
     return {

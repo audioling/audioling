@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useResizeObserver } from '@mantine/hooks';
+import type { Breakpoints } from '@/types.ts';
 
 export function useContainerBreakpoints() {
     const [ref, rect] = useResizeObserver();
@@ -38,7 +39,8 @@ export function useContainerBreakpoints() {
     const isLargerThanXl = rect?.width >= globalBreakpoints.xl;
     const isLargerThanXxl = rect?.width >= globalBreakpoints.xxl;
     const isLargerThanXxxl = rect?.width >= globalBreakpoints.xxxl;
-    const breakpoints = {
+
+    const breakpoints: Breakpoints = {
         isLargerThanLg,
         isLargerThanMd,
         isLargerThanSm,
