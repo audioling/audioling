@@ -17,6 +17,11 @@ import type {
     GetApiLibraryIdGenres403,
     GetApiLibraryIdGenres422,
     GetApiLibraryIdGenres500,
+    GetApiLibraryIdGenresCount401,
+    GetApiLibraryIdGenresCount403,
+    GetApiLibraryIdGenresCount422,
+    GetApiLibraryIdGenresCount500,
+    GetApiLibraryIdGenresCountParams,
     GetApiLibraryIdGenresParams,
 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
@@ -192,6 +197,189 @@ export function useGetApiLibraryIdGenresSuspense<
     },
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
     const queryOptions = getGetApiLibraryIdGenresSuspenseQueryOptions(libraryId, params, options);
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: QueryKey;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Get genres count
+ */
+export const getApiLibraryIdGenresCount = (
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<number>(
+        { url: `/api/${libraryId}/genres/count`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdGenresCountQueryKey = (
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+) => {
+    return [`/api/${libraryId}/genres/count`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiLibraryIdGenresCountSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresCount401
+        | GetApiLibraryIdGenresCount403
+        | GetApiLibraryIdGenresCount422
+        | GetApiLibraryIdGenresCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdGenresCountQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>> = ({
+        signal,
+    }) => getApiLibraryIdGenresCount(libraryId, params, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+        TError,
+        TData
+    > & { queryKey: QueryKey };
+};
+
+export type GetApiLibraryIdGenresCountSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>
+>;
+export type GetApiLibraryIdGenresCountSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdGenresCount401
+    | GetApiLibraryIdGenresCount403
+    | GetApiLibraryIdGenresCount422
+    | GetApiLibraryIdGenresCount500
+>;
+
+export function useGetApiLibraryIdGenresCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresCount401
+        | GetApiLibraryIdGenresCount403
+        | GetApiLibraryIdGenresCount422
+        | GetApiLibraryIdGenresCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdGenresCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresCount401
+        | GetApiLibraryIdGenresCount403
+        | GetApiLibraryIdGenresCount422
+        | GetApiLibraryIdGenresCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+export function useGetApiLibraryIdGenresCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresCount401
+        | GetApiLibraryIdGenresCount403
+        | GetApiLibraryIdGenresCount422
+        | GetApiLibraryIdGenresCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey };
+/**
+ * @summary Get genres count
+ */
+
+export function useGetApiLibraryIdGenresCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresCount401
+        | GetApiLibraryIdGenresCount403
+        | GetApiLibraryIdGenresCount422
+        | GetApiLibraryIdGenresCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+    const queryOptions = getGetApiLibraryIdGenresCountSuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
 
     const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
         queryKey: QueryKey;

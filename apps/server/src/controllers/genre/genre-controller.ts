@@ -2,6 +2,7 @@ import { createRoute } from '@hono/zod-openapi';
 import { controllerHelpers } from '@/controllers/controller-helpers.js';
 import type { GenreListResponse } from '@/controllers/genre/genre-api-types.js';
 import { apiSchema } from '@/controllers/index.js';
+import type { CountResponse } from '@/controllers/shared-api-types.js';
 import type { AdapterVariables } from '@/middlewares/adapter-middleware.js';
 import type { AuthVariables } from '@/middlewares/auth-middleware.js';
 import { newHono } from '@/modules/hono/index.js';
@@ -54,6 +55,33 @@ export const initGenreController = (modules: { service: AppService }) => {
                     totalRecordCount: genres.totalRecordCount,
                 },
             };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /count
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/count',
+            summary: 'Get genres count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.genre['/count'].get,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            const query = c.req.valid('query');
+            const count = await service.genre.list(adapter, {
+                folderId: query.folderId,
+                limit: 1,
+                offset: 0,
+                searchTerm: query.searchTerm,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+            });
+
+            const response: CountResponse = count.totalRecordCount || 0;
 
             return c.json(response, 200);
         },

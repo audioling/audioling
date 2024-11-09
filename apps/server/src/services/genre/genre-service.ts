@@ -21,6 +21,7 @@ export const initGenreService = (modules: { db: AppDatabase }) => {
                     folderId: args.folderId,
                     limit,
                     offset,
+                    searchTerm: args.searchTerm,
                     sortBy: args.sortBy || GenreListSortOptions.NAME,
                     sortOrder: args.sortOrder || ListSortOrder.ASC,
                 },

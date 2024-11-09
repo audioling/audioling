@@ -894,6 +894,35 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 },
             ];
         },
+        getGenreCount: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const result = await apiClient.getGenres.os['1'].get({
+                fetchOptions,
+                query,
+            });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'getGenreCount'));
+                return [{ code: result.status, message: result.body as string }, null];
+            }
+
+            let items: AdapterGenre[] = (result.body.genres.genre || []).map((genre) => ({
+                albumCount: genre.albumCount ?? null,
+                id: genre.value,
+                imageUrl: null,
+                name: genre.value,
+                trackCount: genre.songCount ?? null,
+            }));
+
+            if (query.searchTerm) {
+                items = items.filter((item) =>
+                    item.name.toLowerCase().includes(query.searchTerm!.toLowerCase()),
+                );
+            }
+
+            return [null, items.length];
+        },
         getGenreList: async (request, fetchOptions) => {
             const { query } = request;
 

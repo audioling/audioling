@@ -33,3 +33,5 @@ export type AdapterGenreListCountQuery = Omit<
 >;
 
 export type AdapterGenreListCountRequest = QueryRequest<AdapterGenreListCountQuery>;
+
+export type AdapterGenreListCountResponse = number;
