@@ -21,7 +21,7 @@ const variants: Variants = {
     show: { height: 'auto', opacity: 1 },
 };
 
-export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
+const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
     ({ children, icon, label, onOpenedChange, opened = false }, ref) => {
         const [uncontrolledOpened, setUncontrolledOpened] = useState(opened);
 
@@ -75,4 +75,6 @@ function AccordionGroup({ children }: { children: ReactNode }) {
     );
 }
 
-Object.assign(Accordion, { Group: AccordionGroup });
+const AccordionNamespace = Object.assign(Accordion, { Group: AccordionGroup });
+
+export { AccordionNamespace as Accordion };
