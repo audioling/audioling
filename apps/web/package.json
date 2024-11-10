@@ -20,6 +20,7 @@
         "@mantine/core": "^7.13.4",
         "@mantine/dates": "^7.13.4",
         "@mantine/hooks": "^7.13.4",
+        "@radix-ui/react-context-menu": "^2.2.2",
         "@radix-ui/react-dropdown-menu": "^2.1.2",
         "@repo/logger": "workspace:*",
         "@repo/shared-types": "workspace:*",
