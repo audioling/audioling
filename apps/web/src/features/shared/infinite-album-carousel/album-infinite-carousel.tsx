@@ -108,7 +108,7 @@ function useAlbumListInfinite(
                 url: `/api/${libraryId}/albums`,
             });
         },
-        queryKey: [libraryId, 'albums', sortBy, sortOrder],
+        queryKey: [`/api/${libraryId}/albums`, 'infinite', { sortBy, sortOrder }],
     });
 
     return query;

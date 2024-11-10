@@ -11,7 +11,7 @@ import { useGetApiLibraryIdAlbumArtistsCountSuspense } from '@/api/openapi-gener
 import { useGetApiLibraryIdAlbumsCountSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { useGetApiLibraryIdGenresCountSuspense } from '@/api/openapi-generated/genres/genres.ts';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
-import { ItemCountCard } from '@/features/dashboard/home/item-count-card.tsx';
+import { ItemCountCard } from '@/features/dashboard/item-count/item-count-card.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 import styles from './item-count-display.module.scss';
 

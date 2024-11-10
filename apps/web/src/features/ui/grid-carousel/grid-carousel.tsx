@@ -65,8 +65,6 @@ export function GridCarousel(props: GridCarouselProps) {
 
     const cardsToShow = getCardsToShow(breakpoints);
 
-    console.log(cardsToShow, breakpoints);
-
     const visibleCards = useMemo(() => {
         return cards.slice(
             currentPage.page * cardsToShow * rowCount,
