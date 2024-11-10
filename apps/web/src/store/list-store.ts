@@ -1,4 +1,5 @@
 import type { ListSortOrder } from '@repo/shared-types';
+import type { ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 import type {
     ItemListDisplayType,
     ItemListPaginationState,
@@ -6,11 +7,13 @@ import type {
 } from '@/features/ui/item-list/types.ts';
 
 export type ListStore<TSortBy> = {
+    columnOrder: ItemListColumnOrder;
     displayType: ItemListDisplayType;
     initialScrollIndex: number;
     listId: Record<string, string>;
     pagination: ItemListPaginationState;
     paginationType: ItemListPaginationType;
+    setColumnOrder: (columnOrder: ItemListColumnOrder) => void;
     setDisplayType: (displayType: ItemListDisplayType) => void;
     setInitialScrollIndex: (initialScrollIndex: number) => void;
     setListId: (key: string, id: string) => void;

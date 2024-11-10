@@ -11,7 +11,7 @@ import {
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import type { ColumnOrderState, DisplayColumnDef, Header } from '@tanstack/react-table';
+import type { DisplayColumnDef, Header } from '@tanstack/react-table';
 import {
     flexRender,
     getCoreRowModel,
@@ -21,6 +21,7 @@ import {
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { Virtuoso } from 'react-virtuoso';
+import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { dndUtils, DragTarget } from '@/utils/drag-drop.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
@@ -33,18 +34,18 @@ export interface TableItemProps<T, C extends Record<string, unknown>> {
 }
 
 interface InfiniteItemTableProps<T, C extends Record<string, unknown>> {
-    columnOrder: ColumnOrderState;
+    columnOrder: ItemListColumn[];
     columns: DisplayColumnDef<T | undefined>[];
     context?: C;
     data: Map<number, T>;
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
+    onChangeColumnOrder: (columnOrder: ItemListColumn[]) => void;
     onEndReached?: (index: number) => void;
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
-    setColumnOrder: (columnOrder: ColumnOrderState) => void;
 }
 
 export function InfiniteItemTable<T extends { id: string }, C extends Record<string, unknown>>(
@@ -53,7 +54,7 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
     const {
         columns,
         columnOrder,
-        setColumnOrder,
+        onChangeColumnOrder,
         context,
         data,
         initialScrollIndex,
@@ -146,7 +147,7 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
                         columnOrder={columnOrder}
                         columnStyles={columnStyles.styles}
                         header={header}
-                        setColumnOrder={setColumnOrder}
+                        setColumnOrder={onChangeColumnOrder}
                         tableId={tableId}
                     />
                 ))}
@@ -189,10 +190,10 @@ export function InfiniteItemTable<T extends { id: string }, C extends Record<str
 }
 
 interface TableHeaderProps<T> {
-    columnOrder: ColumnOrderState;
+    columnOrder: ItemListColumn[];
     columnStyles: CSSProperties;
     header: Header<T | undefined, unknown>;
-    setColumnOrder: (columnOrder: ColumnOrderState) => void;
+    setColumnOrder: (columnOrder: ItemListColumn[]) => void;
     tableId: string;
 }
 
@@ -256,7 +257,7 @@ function TableHeader<T>(props: TableHeaderProps<T>) {
                         list: columnOrder,
                     });
 
-                    setColumnOrder(newColumnOrder);
+                    setColumnOrder(newColumnOrder as ItemListColumn[]);
                     setIsDraggedOver(null);
                 },
             }),

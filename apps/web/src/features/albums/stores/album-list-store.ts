@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
+import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import type { ListStore } from '@/store/list-store.ts';
 
@@ -12,6 +13,12 @@ export const useAlbumListStore = create<AlbumListStore>()(
     persist(
         subscribeWithSelector(
             immer((set) => ({
+                columnOrder: [
+                    ItemListColumn.ROW_INDEX,
+                    ItemListColumn.NAME,
+                    ItemListColumn.ARTISTS,
+                    ItemListColumn.ACTIONS,
+                ],
                 displayType: ItemListDisplayType.GRID,
                 initialScrollIndex: 0,
                 listId: {},
@@ -20,6 +27,11 @@ export const useAlbumListStore = create<AlbumListStore>()(
                     itemsPerPage: 100,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
+                setColumnOrder: (columnOrder) => {
+                    set((state) => {
+                        state.columnOrder = columnOrder;
+                    });
+                },
                 setDisplayType: (displayType) => {
                     set((state) => {
                         state.displayType = displayType;
@@ -70,6 +82,7 @@ export const useAlbumListStore = create<AlbumListStore>()(
 export const useAlbumListState = () => {
     return useAlbumListStore(
         useShallow((state) => ({
+            columnOrder: state.columnOrder,
             displayType: state.displayType,
             initialScrollIndex: state.initialScrollIndex,
             listId: state.listId,
@@ -84,6 +97,7 @@ export const useAlbumListState = () => {
 export const useAlbumListActions = () => {
     return useAlbumListStore(
         useShallow((state) => ({
+            setColumnOrder: state.setColumnOrder,
             setDisplayType: state.setDisplayType,
             setInitialScrollIndex: state.setInitialScrollIndex,
             setListId: state.setListId,

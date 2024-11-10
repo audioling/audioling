@@ -1,0 +1,8 @@
+@use '@/styles/base';
+
+.cell {
+    @include base.text-ellipsis;
+
+    padding-right: base.$gap-md;
+    font-size: base.$font-size-md;
+}
