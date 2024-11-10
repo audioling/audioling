@@ -5,7 +5,6 @@ import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { Skeleton } from '@mantine/core';
-import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router-dom';
@@ -66,7 +65,7 @@ export function AlbumCard(props: AlbumCardProps) {
                         nativeSetDragImage: data.nativeSetDragImage,
                         render: ({ container }) => {
                             const root = createRoot(container);
-                            root.render(<DragPreview itemCount={1} type={LibraryItemType.ALBUM} />);
+                            root.render(<DragPreview itemCount={1} />);
                         },
                     });
                 },

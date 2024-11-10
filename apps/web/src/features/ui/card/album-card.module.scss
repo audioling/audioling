@@ -8,7 +8,7 @@
     overflow: hidden;
 
     &.dragging {
-        filter: opacity(0.5) blur(2px);
+        filter: opacity(0.5);
     }
 }
 

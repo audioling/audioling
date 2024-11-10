@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { LibraryItemType } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import type { AlbumItem } from '@/api/api-types.ts';
 import {
@@ -100,6 +101,7 @@ export function InfiniteAlbumTable({
             context={{ baseUrl, libraryId }}
             data={data}
             itemCount={itemCount}
+            itemType={LibraryItemType.ALBUM}
             onChangeColumnOrder={setColumnOrder}
             onRangeChanged={throttledHandleRangeChanged}
         />

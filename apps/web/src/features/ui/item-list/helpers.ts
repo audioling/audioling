@@ -1,4 +1,4 @@
-import type { ColumnHelper } from '@tanstack/react-table';
+import type { ColumnHelper, Row } from '@tanstack/react-table';
 import { actionsColumn } from '@/features/ui/item-list/item-table/columns/actions-column.tsx';
 import { albumColumn } from '@/features/ui/item-list/item-table/columns/album-column.tsx';
 import { artistsColumn } from '@/features/ui/item-list/item-table/columns/artists-column.tsx';
@@ -104,6 +104,11 @@ export const itemListHelpers = {
             }
 
             return listColumns;
+        },
+        getRowRange<T>(rows: Row<T>[], currentIndex: number, selectedIndex: number): Row<T>[] {
+            const rangeStart = selectedIndex > currentIndex ? currentIndex : selectedIndex;
+            const rangeEnd = rangeStart === currentIndex ? selectedIndex : currentIndex;
+            return rows.slice(rangeStart, rangeEnd + 1);
         },
         numberToColumnSize(size: number, unit: 'px' | 'fr') {
             if (unit === 'px') return size;

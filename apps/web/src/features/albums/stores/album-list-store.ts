@@ -15,6 +15,7 @@ export const useAlbumListStore = create<AlbumListStore>()(
             immer((set) => ({
                 columnOrder: [
                     ItemListColumn.ROW_INDEX,
+                    ItemListColumn.IMAGE,
                     ItemListColumn.NAME,
                     ItemListColumn.ARTISTS,
                     ItemListColumn.ACTIONS,

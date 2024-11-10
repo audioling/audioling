@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
+import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import type { ListStore } from '@/store/list-store.ts';
 
@@ -13,6 +14,13 @@ export const useTrackListStore = create<TrackListStore>()(
     persist(
         subscribeWithSelector(
             immer((set) => ({
+                columnOrder: [
+                    ItemListColumn.ROW_INDEX,
+                    ItemListColumn.IMAGE,
+                    ItemListColumn.NAME,
+                    ItemListColumn.ARTISTS,
+                    ItemListColumn.ACTIONS,
+                ],
                 displayType: ItemListDisplayType.TABLE,
                 initialScrollIndex: 0,
                 listId: {},
@@ -21,6 +29,11 @@ export const useTrackListStore = create<TrackListStore>()(
                     itemsPerPage: 100,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
+                setColumnOrder: (columnOrder) => {
+                    set((state) => {
+                        state.columnOrder = columnOrder;
+                    });
+                },
                 setDisplayType: (displayType) => {
                     set((state) => {
                         state.displayType = displayType;
@@ -71,6 +84,7 @@ export const useTrackListStore = create<TrackListStore>()(
 export const useTrackListState = () => {
     return useTrackListStore(
         useShallow((state) => ({
+            columnOrder: state.columnOrder,
             displayType: state.displayType,
             initialScrollIndex: state.initialScrollIndex,
             listId: state.listId,
@@ -85,6 +99,7 @@ export const useTrackListState = () => {
 export const useTrackListActions = () => {
     return useTrackListStore(
         useShallow((state) => ({
+            setColumnOrder: state.setColumnOrder,
             setDisplayType: state.setDisplayType,
             setInitialScrollIndex: state.setInitialScrollIndex,
             setListId: state.setListId,

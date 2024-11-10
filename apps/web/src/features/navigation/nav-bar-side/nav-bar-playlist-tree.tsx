@@ -149,8 +149,6 @@ function TreeNodeItem({
     useEffect(() => {
         if (!ref.current) return;
 
-        console.log('openFolders', openFolders);
-
         return dropTargetForElements({
             canDrop: (args) => {
                 const data = args.source.data as DragData;
@@ -159,6 +157,7 @@ function TreeNodeItem({
                     DragTarget.ALBUM_ARTIST,
                     DragTarget.ARTIST,
                     DragTarget.PLAYLIST,
+                    DragTarget.TRACK,
                 ]);
             },
             element: ref.current,

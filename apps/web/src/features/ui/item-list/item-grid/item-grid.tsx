@@ -121,14 +121,14 @@ const GridItemComponent = forwardRef<
 
 GridItemComponent.displayName = 'GridItemComponent';
 
-export interface InfiniteGridItemProps<T, C extends Record<string, unknown>> {
+export interface InfiniteGridItemProps<T, C extends { baseUrl: string; libraryId: string }> {
     context?: C;
     data: T | undefined;
     index: number;
     isExpanded?: boolean;
 }
 
-interface InfiniteItemGridProps<T, C extends Record<string, unknown>> {
+interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: string }> {
     GridComponent: React.ComponentType<InfiniteGridItemProps<T, C>>;
     context?: C;
     data: (T | undefined)[];
@@ -141,7 +141,7 @@ interface InfiniteItemGridProps<T, C extends Record<string, unknown>> {
     onStartReached?: (index: number) => void;
 }
 
-export function InfiniteItemGrid<T, C extends Record<string, unknown>>(
+export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: string }>(
     props: InfiniteItemGridProps<T, C>,
 ) {
     const {

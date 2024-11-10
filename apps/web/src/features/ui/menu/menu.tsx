@@ -37,11 +37,11 @@ export function Menu(props: MenuProps) {
 function getVariantKey(side: MenuProps['side']) {
     switch (side) {
         case 'top':
-            return 'scaleX';
+            return 'scaleY';
         case 'right':
             return 'fadeIn';
         case 'bottom':
-            return 'scaleX';
+            return 'scaleY';
         case 'left':
             return 'fadeInLeft';
         default:

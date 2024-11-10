@@ -193,6 +193,9 @@ export type AppThemeConfiguration = {
         'table-header-font-color': CSSProperties['color'];
         'table-row-background-color': CSSProperties['backgroundColor'];
         'table-row-border-color': CSSProperties['borderColor'];
+        'table-row-config-comfortable-height': CSSProperties['height'];
+        'table-row-config-condensed-height': CSSProperties['height'];
+        'table-row-config-normal-height': CSSProperties['height'];
         'table-row-font-color': CSSProperties['color'];
         'table-row-hover-background-color': CSSProperties['backgroundColor'];
         'table-row-hover-border-color': CSSProperties['borderColor'];

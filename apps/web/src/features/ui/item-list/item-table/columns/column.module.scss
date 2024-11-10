@@ -3,6 +3,18 @@
 .cell {
     @include base.text-ellipsis;
 
+    display: flex;
+    align-items: center;
+    height: 100%;
     padding-right: base.$gap-md;
     font-size: base.$font-size-md;
+}
+
+.image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    margin: auto;
+    object-fit: cover;
+    border-radius: base.$border-radius-md;
 }

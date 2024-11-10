@@ -25,9 +25,38 @@
 
 .row {
     display: grid;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    height: var(--table-row-config-comfortable-height);
     padding: base.$gap-sm;
     font-size: base.$font-size-md;
+    font-weight: base.$font-weight-md;
+    color: var(--table-row-font-color);
+    user-select: none;
+    background-color: var(--table-row-background-color);
+    border-color: var(--table-row-border-color);
+
+    &:hover {
+        background-color: var(--table-row-hover-background-color);
+        border-color: var(--table-row-hover-border-color);
+    }
+}
+
+.row.dragging {
+    opacity: 0.5;
+}
+
+.row-condensed {
+    height: var(--table-row-config-condensed-height);
+}
+
+.row-normal {
+    height: var(--table-row-config-normal-height);
+}
+
+.row-comfortable {
+    height: var(--table-row-config-comfortable-height);
 }
 
 .dragging {
@@ -60,4 +89,14 @@
         content: '';
         background-color: base.$primary-color;
     }
+}
+
+.can-select {
+    cursor: pointer;
+}
+
+.selected {
+    color: var(--table-row-selected-font-color);
+    background-color: var(--table-row-selected-background-color);
+    border-color: var(--table-row-selected-border-color);
 }

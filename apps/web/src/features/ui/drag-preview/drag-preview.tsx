@@ -1,17 +1,11 @@
-import type { LibraryItemType } from '@repo/shared-types';
 import styles from './drag-preview.module.scss';
 
 interface DragPreviewProps {
     itemCount: number;
-    type: LibraryItemType;
 }
 
 export function DragPreview(props: DragPreviewProps) {
-    const { itemCount, type } = props;
+    const { itemCount } = props;
 
-    return (
-        <div className={styles.preview}>
-            Dragging {itemCount} {type}...
-        </div>
-    );
+    return <div className={styles.preview}>{itemCount} items</div>;
 }

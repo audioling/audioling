@@ -31,11 +31,11 @@
     }
 
     @include base.container-larger-than-xxl {
-        grid-template-columns: repeat(14, 1fr);
+        grid-template-columns: repeat(16, 1fr);
     }
 
     @include base.container-larger-than-xxxl {
-        grid-template-columns: repeat(16, 1fr);
+        grid-template-columns: repeat(30, 1fr);
     }
 }
 

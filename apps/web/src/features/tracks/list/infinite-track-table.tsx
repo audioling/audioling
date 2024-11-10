@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { LibraryItemType } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import type { TrackItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
@@ -6,7 +7,11 @@ import {
     getApiLibraryIdTracks,
     getGetApiLibraryIdTracksQueryKey,
 } from '@/api/openapi-generated/tracks/tracks.ts';
-import { ItemListColumn, itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import {
+    useTrackListActions,
+    useTrackListState,
+} from '@/features/tracks/store/track-list-store.ts';
+import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { InfiniteItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
@@ -84,11 +89,10 @@ export function InfiniteTrackTable({
 
     const throttledHandleRangeChanged = throttle(handleRangeChanged, 200);
 
-    const { columnOrder, columns, setColumnOrder } = useItemTable<TrackItem>([
-        ItemListColumn.ROW_INDEX,
-        ItemListColumn.NAME,
-        ItemListColumn.ARTISTS,
-    ]);
+    const { columnOrder } = useTrackListState();
+    const { setColumnOrder } = useTrackListActions();
+
+    const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
 
     const tableContext = useMemo(() => ({ baseUrl, libraryId }), [baseUrl, libraryId]);
 
@@ -99,6 +103,7 @@ export function InfiniteTrackTable({
             context={tableContext}
             data={data}
             itemCount={itemCount}
+            itemType={LibraryItemType.TRACK}
             onChangeColumnOrder={setColumnOrder}
             onRangeChanged={throttledHandleRangeChanged}
         />

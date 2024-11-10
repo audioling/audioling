@@ -30,6 +30,7 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                     DragTarget.ALBUM_ARTIST,
                     DragTarget.ARTIST,
                     DragTarget.PLAYLIST,
+                    DragTarget.TRACK,
                 ]);
             },
             element: ref.current,
