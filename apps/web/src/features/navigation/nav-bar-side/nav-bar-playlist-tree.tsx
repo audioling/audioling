@@ -7,6 +7,7 @@ import type {
 import { NavBarPlaylistItem } from '@/features/navigation/nav-bar-side/nav-bar-playlist-item.tsx';
 import {
     usePlaylistsNavigationSections,
+    useSetPlaylistsSection,
     useTogglePlaylistsSection,
 } from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
@@ -30,6 +31,7 @@ interface NavBarPlaylistTreeProps {
 export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlaylistTreeProps) {
     const openedSections = usePlaylistsNavigationSections();
     const toggleSection = useTogglePlaylistsSection();
+    const setSection = useSetPlaylistsSection();
 
     const tree = useMemo(() => {
         const nodes = new Map<string | null, TreeNode[]>();
@@ -82,11 +84,16 @@ export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlay
         toggleSection(folderId);
     };
 
+    const handleSetFolder = (folderId: string, open?: boolean) => {
+        setSection(folderId, open);
+    };
+
     return (
         <TreeNodeList
             libraryId={libraryId}
             nodes={tree}
             openFolders={openedSections}
+            onSetFolder={handleSetFolder}
             onToggleFolder={handleToggleFolder}
         />
     );
@@ -95,11 +102,18 @@ export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlay
 interface TreeNodeListProps {
     libraryId: string;
     nodes: TreeNode[];
+    onSetFolder: (folderId: string, open?: boolean) => void;
     onToggleFolder: (folderId: string) => void;
     openFolders: Record<string, boolean>;
 }
 
-function TreeNodeList({ libraryId, nodes, openFolders, onToggleFolder }: TreeNodeListProps) {
+function TreeNodeList({
+    libraryId,
+    nodes,
+    openFolders,
+    onSetFolder,
+    onToggleFolder,
+}: TreeNodeListProps) {
     return (
         <div className={styles.list}>
             {nodes.map((node) => (
@@ -108,6 +122,7 @@ function TreeNodeList({ libraryId, nodes, openFolders, onToggleFolder }: TreeNod
                     libraryId={libraryId}
                     node={node}
                     openFolders={openFolders}
+                    onSetFolder={onSetFolder}
                     onToggleFolder={onToggleFolder}
                 />
             ))}
@@ -118,14 +133,23 @@ function TreeNodeList({ libraryId, nodes, openFolders, onToggleFolder }: TreeNod
 interface TreeNodeItemProps {
     libraryId: string;
     node: TreeNode;
+    onSetFolder: (folderId: string, open?: boolean) => void;
     onToggleFolder: (folderId: string) => void;
     openFolders: Record<string, boolean>;
 }
 
-function TreeNodeItem({ libraryId, node, openFolders, onToggleFolder }: TreeNodeItemProps) {
+function TreeNodeItem({
+    libraryId,
+    node,
+    openFolders,
+    onSetFolder,
+    onToggleFolder,
+}: TreeNodeItemProps) {
     const ref = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         if (!ref.current) return;
+
+        console.log('openFolders', openFolders);
 
         return dropTargetForElements({
             canDrop: (args) => {
@@ -138,25 +162,29 @@ function TreeNodeItem({ libraryId, node, openFolders, onToggleFolder }: TreeNode
                 ]);
             },
             element: ref.current,
-            onDragEnter: () => onToggleFolder(`playlist-${node.folder?.id}`),
-            onDragLeave: () => onToggleFolder(`playlist-${node.folder?.id}`),
+            onDragEnter: () => onSetFolder(`playlist-${node.folder?.id}`, true),
+            onDragLeave: () => onSetFolder(`playlist-${node.folder?.id}`, false),
+            onDrop: () => onSetFolder(`playlist-${node.folder?.id}`, false),
         });
-    }, [node.folder?.id, onToggleFolder]);
+    }, [node.folder?.id, onSetFolder, onToggleFolder, openFolders]);
 
     if (node.folder) {
+        const isOpen = openFolders[`playlist-${node.folder.id}`];
+
         return (
             <Accordion
                 ref={ref}
                 icon="folder"
                 label={node.folder.name}
-                opened={openFolders[`playlist-${node.folder.id}`]}
-                onOpenedChange={() => onToggleFolder(`playlist-${node.folder!.id}`)}
+                opened={isOpen}
+                onOpenedChange={(e) => onSetFolder(`playlist-${node.folder!.id}`, !e)}
             >
                 <div className={styles.nested}>
                     <TreeNodeList
                         libraryId={libraryId}
                         nodes={node.children}
                         openFolders={openFolders}
+                        onSetFolder={onSetFolder}
                         onToggleFolder={onToggleFolder}
                     />
                 </div>
