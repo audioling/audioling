@@ -21,14 +21,14 @@ export function HeaderBar() {
                 <Group gap="xs">
                     <FileMenu />
                     <IconButton
-                        icon="arrowLeft"
-                        size="lg"
+                        icon="arrowLeftS"
+                        size="xl"
                         variant="default"
                         onClick={handleGoBack}
                     />
                     <IconButton
-                        icon="arrowRight"
-                        size="lg"
+                        icon="arrowRightS"
+                        size="xl"
                         variant="default"
                         onClick={handleGoForward}
                     />
@@ -37,7 +37,7 @@ export function HeaderBar() {
             <div className={styles.center} id="header-bar-center"></div>
             <div className={styles.right} id="header-bar-right">
                 <Group gap="sm" wrap="nowrap">
-                    <IconButton icon="panelRightOpen" size="lg" variant="default" />
+                    <IconButton icon="panelRightOpen" size="xl" variant="default" />
                 </Group>
             </div>
         </div>
