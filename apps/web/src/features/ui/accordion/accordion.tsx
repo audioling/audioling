@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import clsx from 'clsx';
 import type { Variants } from 'framer-motion';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
@@ -21,53 +21,51 @@ const variants: Variants = {
     show: { height: 'auto', opacity: 1 },
 };
 
-export function Accordion({
-    children,
-    icon,
-    label,
-    onOpenedChange,
-    opened = false,
-}: AccordionProps) {
-    const [uncontrolledOpened, setUncontrolledOpened] = useState(opened);
+export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
+    ({ children, icon, label, onOpenedChange, opened = false }, ref) => {
+        const [uncontrolledOpened, setUncontrolledOpened] = useState(opened);
 
-    const isStateOpen = opened || uncontrolledOpened;
+        const isStateOpen = opened || uncontrolledOpened;
 
-    const handleClick = () => {
-        onOpenedChange?.(isStateOpen);
-        setUncontrolledOpened((prev) => {
-            return !prev;
-        });
-    };
+        const handleClick = () => {
+            onOpenedChange?.(isStateOpen);
+            setUncontrolledOpened((prev) => {
+                return !prev;
+            });
+        };
 
-    return (
-        <motion.div className={clsx(styles.accordion)}>
-            <button className={styles.title} onClick={handleClick}>
-                <div className={styles.titleContent}>
-                    <Group gap="sm">
-                        {icon && <Icon icon={icon} />}
-                        <span className={styles.label}>{label}</span>
-                    </Group>
-                    <MotionIcon animate={{ rotate: isStateOpen ? 90 : 0 }} icon="arrowRightS" />
-                </div>
-            </button>
-            <AnimatePresence initial={false}>
-                {isStateOpen && (
-                    <motion.div
-                        layout
-                        animate="show"
-                        className={styles.content}
-                        exit="hidden"
-                        initial="hidden"
-                        style={{ overflow: 'hidden', userSelect: 'none' }}
-                        variants={variants}
-                    >
-                        {children}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.div>
-    );
-}
+        return (
+            <motion.div ref={ref} className={clsx(styles.accordion)}>
+                <button className={styles.title} onClick={handleClick}>
+                    <div className={styles.titleContent}>
+                        <Group gap="sm">
+                            {icon && <Icon icon={icon} />}
+                            <span className={styles.label}>{label}</span>
+                        </Group>
+                        <MotionIcon animate={{ rotate: isStateOpen ? 90 : 0 }} icon="arrowRightS" />
+                    </div>
+                </button>
+                <AnimatePresence initial={false}>
+                    {isStateOpen && (
+                        <motion.div
+                            layout
+                            animate="show"
+                            className={styles.content}
+                            exit="hidden"
+                            initial="hidden"
+                            style={{ overflow: 'hidden', userSelect: 'none' }}
+                            variants={variants}
+                        >
+                            {children}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.div>
+        );
+    },
+);
+
+Accordion.displayName = 'Accordion';
 
 function AccordionGroup({ children }: { children: ReactNode }) {
     return (
@@ -77,4 +75,4 @@ function AccordionGroup({ children }: { children: ReactNode }) {
     );
 }
 
-Accordion.Group = AccordionGroup;
+Object.assign(Accordion, { Group: AccordionGroup });

@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import type {
     GetApiLibraryIdPlaylists200DataItem,
     GetApiLibraryIdPlaylistsFolders200DataItem,
@@ -9,6 +10,8 @@ import {
     useTogglePlaylistsSection,
 } from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
+import type { DragData } from '@/utils/drag-drop.ts';
+import { dndUtils, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './nav-bar-playlist-tree.module.scss';
 
 interface TreeNode {
@@ -120,9 +123,30 @@ interface TreeNodeItemProps {
 }
 
 function TreeNodeItem({ libraryId, node, openFolders, onToggleFolder }: TreeNodeItemProps) {
+    const ref = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        if (!ref.current) return;
+
+        return dropTargetForElements({
+            canDrop: (args) => {
+                const data = args.source.data as DragData;
+                return dndUtils.isDropTarget(data.type, [
+                    DragTarget.ALBUM,
+                    DragTarget.ALBUM_ARTIST,
+                    DragTarget.ARTIST,
+                    DragTarget.PLAYLIST,
+                ]);
+            },
+            element: ref.current,
+            onDragEnter: () => onToggleFolder(`playlist-${node.folder?.id}`),
+            onDragLeave: () => onToggleFolder(`playlist-${node.folder?.id}`),
+        });
+    }, [node.folder?.id, onToggleFolder]);
+
     if (node.folder) {
         return (
             <Accordion
+                ref={ref}
                 icon="folder"
                 label={node.folder.name}
                 opened={openFolders[`playlist-${node.folder.id}`]}
