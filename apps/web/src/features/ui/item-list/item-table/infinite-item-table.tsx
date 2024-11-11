@@ -24,12 +24,13 @@ import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { createRoot } from 'react-dom/client';
 import { Virtuoso } from 'react-virtuoso';
+import { ItemContextMenu } from '@/features/shared/item-context-menu/item-context-menu.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { dndUtils, DragTarget, libraryItemTypeToDragTarget } from '@/utils/drag-drop.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
-import styles from './item-table.module.scss';
+import styles from './infinite-item-table.module.scss';
 
 export interface TableItemProps<T, C extends { baseUrl: string; libraryId: string }> {
     context?: C;
@@ -176,46 +177,68 @@ export function InfiniteItemTable<
         [lastSelectedId, table],
     );
 
+    const handleRowContextMenu = useCallback(
+        (e: MouseEvent<HTMLDivElement>, row: Row<T | undefined>) => {
+            e.stopPropagation();
+
+            e.currentTarget.dispatchEvent(
+                new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    clientX: e.currentTarget.getBoundingClientRect().x,
+                    clientY: e.currentTarget.getBoundingClientRect().y,
+                }),
+            );
+
+            table.resetRowSelection();
+            row.toggleSelected();
+        },
+        [table],
+    );
+
     return (
-        <div className={styles.container}>
-            <div className={styles.header} style={columnStyles.styles}>
-                {headers.map((header) => (
-                    <TableHeader
-                        key={`header-${header.id}`}
-                        columnOrder={columnOrder}
-                        columnStyles={columnStyles.styles}
-                        header={header}
-                        setColumnOrder={onChangeColumnOrder}
-                        tableId={tableId}
-                    />
-                ))}
-            </div>
-            <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
-                <Virtuoso
-                    context={tableContext}
-                    endReached={onEndReached}
-                    increaseViewportBy={100}
-                    initialTopMostItemIndex={initialScrollIndex || 0}
-                    isScrolling={isScrolling}
-                    itemContent={(index, _data, context) => (
-                        <TableRow
-                            context={context}
-                            index={index}
-                            itemType={itemType}
-                            table={table}
+        <>
+            <div className={styles.container}>
+                <div className={styles.header} style={columnStyles.styles}>
+                    {headers.map((header) => (
+                        <TableHeader
+                            key={`header-${header.id}`}
+                            columnOrder={columnOrder}
+                            columnStyles={columnStyles.styles}
+                            header={header}
+                            setColumnOrder={onChangeColumnOrder}
                             tableId={tableId}
-                            onRowClick={handleRowClick}
                         />
-                    )}
-                    rangeChanged={onRangeChanged}
-                    scrollerRef={setScroller}
-                    startReached={onStartReached}
-                    style={{ overflow: 'hidden' }}
-                    totalCount={itemCount}
-                    onScroll={onScroll}
-                />
+                    ))}
+                </div>
+                <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
+                    <Virtuoso
+                        context={tableContext}
+                        endReached={onEndReached}
+                        increaseViewportBy={100}
+                        initialTopMostItemIndex={initialScrollIndex || 0}
+                        isScrolling={isScrolling}
+                        itemContent={(index, _data, context) => (
+                            <TableRow
+                                context={context}
+                                index={index}
+                                itemType={itemType}
+                                table={table}
+                                tableId={tableId}
+                                onRowClick={handleRowClick}
+                                onRowContextMenu={handleRowContextMenu}
+                            />
+                        )}
+                        rangeChanged={onRangeChanged}
+                        scrollerRef={setScroller}
+                        startReached={onStartReached}
+                        style={{ overflow: 'hidden' }}
+                        totalCount={itemCount}
+                        onScroll={onScroll}
+                    />
+                </div>
             </div>
-        </div>
+            <ItemContextMenu />
+        </>
     );
 }
 
@@ -326,6 +349,7 @@ interface TableRowProps<
     index: number;
     itemType: LibraryItemType;
     onRowClick: (e: MouseEvent<HTMLDivElement>, row: Row<T | undefined>) => void;
+    onRowContextMenu: (e: MouseEvent<HTMLDivElement>, row: Row<T | undefined>) => void;
     table: Table<T | undefined>;
     tableId: string;
 }
@@ -343,7 +367,7 @@ function TableRow<
         libraryId: string;
     },
 >(props: TableRowProps<T, C>) {
-    const { context, index, itemType, onRowClick, table, tableId } = props;
+    const { context, index, itemType, onRowClick, onRowContextMenu, table, tableId } = props;
     const ref = useRef<HTMLDivElement>(null);
     const row = table.getRow(index.toString());
 
@@ -412,6 +436,7 @@ function TableRow<
             })}
             style={context.columnStyles.styles}
             onClick={(e) => onRowClick(e, row)}
+            onContextMenu={(e) => onRowContextMenu(e, row)}
         >
             {row?.getVisibleCells()?.map((cell) => {
                 return (
