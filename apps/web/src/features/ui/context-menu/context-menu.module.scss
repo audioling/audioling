@@ -1,0 +1,41 @@
+@use '@/styles/base';
+
+.content {
+    padding: var(--menu-padding);
+    background-color: var(--menu-background-color);
+    border-radius: var(--menu-border-radius);
+    box-shadow: var(--menu-box-shadow);
+}
+
+.item {
+    position: relative;
+    padding: var(--menu-item-padding);
+    font-size: var(--menu-item-font-size);
+    font-weight: var(--menu-item-font-weight);
+    color: var(--menu-item-font-color);
+    cursor: default;
+    user-select: none;
+    background-color: var(--menu-item-background-color);
+
+    &:hover {
+        color: var(--menu-item-hover-font-color);
+        background-color: var(--menu-item-hover-background-color);
+    }
+}
+
+.item.selected {
+    &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.divider {
+    margin: var(--menu-divider-margin);
+    border-top: var(--menu-divider-border-top);
+}
