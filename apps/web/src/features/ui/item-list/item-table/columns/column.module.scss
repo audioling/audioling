@@ -1,13 +1,13 @@
 @use '@/styles/base';
 
 .cell {
-    @include base.text-ellipsis;
-
-    display: flex;
-    align-items: center;
+    display: block;
+    align-content: center;
     height: 100%;
     padding-right: base.$gap-md;
     font-size: base.$font-size-md;
+
+    @include base.text-ellipsis;
 }
 
 .image {
