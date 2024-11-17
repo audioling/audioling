@@ -3,6 +3,7 @@ import { actionsColumn } from '@/features/ui/item-list/item-table/columns/action
 import { albumColumn } from '@/features/ui/item-list/item-table/columns/album-column.tsx';
 import { artistsColumn } from '@/features/ui/item-list/item-table/columns/artists-column.tsx';
 import { dateAddedColumn } from '@/features/ui/item-list/item-table/columns/date-added-column.tsx';
+import { durationColumn } from '@/features/ui/item-list/item-table/columns/duration-column.tsx';
 import { favoriteColumn } from '@/features/ui/item-list/item-table/columns/favorite-column.tsx';
 import { genreColumn } from '@/features/ui/item-list/item-table/columns/genre-column.tsx';
 import { imageColumn } from '@/features/ui/item-list/item-table/columns/image-column.tsx';
@@ -20,6 +21,7 @@ export enum ItemListColumn {
     ALBUM = 'album',
     ARTISTS = 'artists',
     DATE_ADDED = 'dateAdded',
+    DURATION = 'duration',
     FAVORITE = 'favorite',
     GENRE = 'genre',
     IMAGE = 'image',
@@ -42,6 +44,7 @@ const columnMap = {
     [ItemListColumn.ALBUM]: albumColumn,
     [ItemListColumn.ARTISTS]: artistsColumn,
     [ItemListColumn.DATE_ADDED]: dateAddedColumn,
+    [ItemListColumn.DURATION]: durationColumn,
     [ItemListColumn.FAVORITE]: favoriteColumn,
     [ItemListColumn.GENRE]: genreColumn,
     [ItemListColumn.IMAGE]: imageColumn,

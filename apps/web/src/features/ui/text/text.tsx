@@ -14,7 +14,7 @@ interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 export const Text = (props: TextProps) => {
-    const { as, children, isSecondary, size, weight, ...htmlProps } = props;
+    const { as, children, isSecondary, size, weight, className, ...htmlProps } = props;
 
     const classNames = clsx({
         [styles[`size-${size || 'md'}`]]: true,
@@ -23,7 +23,7 @@ export const Text = (props: TextProps) => {
     });
 
     return (
-        <MantineBox className={classNames} component={as} {...htmlProps}>
+        <MantineBox className={clsx(classNames, className)} component={as} {...htmlProps}>
             {children}
         </MantineBox>
     );
