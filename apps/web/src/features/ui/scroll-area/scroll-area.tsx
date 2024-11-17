@@ -1,5 +1,6 @@
 import type { Ref } from 'react';
 import { forwardRef, useEffect, useRef } from 'react';
+import { clsx } from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { Box } from '@/features/ui/box/box.tsx';
 import { useMergedRef } from '@/hooks/use-merged-ref.ts';
@@ -16,7 +17,7 @@ interface ScrollAreaProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivElement>) => {
-    const { as, children, scrollHideDelay, ...htmlProps } = props;
+    const { as, children, className, scrollHideDelay, ...htmlProps } = props;
 
     const containerRef = useRef(null);
 
@@ -44,7 +45,7 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
     const mergedRef = useMergedRef(ref, containerRef);
 
     return (
-        <Box ref={mergedRef} as={as} className={styles.scrollArea} {...htmlProps}>
+        <Box ref={mergedRef} as={as} className={clsx(styles.scrollArea, className)} {...htmlProps}>
             {children}
         </Box>
     );

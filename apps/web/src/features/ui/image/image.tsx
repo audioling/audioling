@@ -5,12 +5,20 @@ import 'react-lazy-load-image-component/src/effects/opacity.css';
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
     thumbHash?: string;
+    visibleByDefault?: boolean;
 }
 
 export function Image(props: ImageProps) {
-    const { ...imgProps } = props;
+    const { visibleByDefault, ...imgProps } = props;
 
-    return <LazyLoadImage {...imgProps} effect="opacity" wrapperClassName={styles.wrapper} />;
+    return (
+        <LazyLoadImage
+            {...imgProps}
+            effect={visibleByDefault ? undefined : 'opacity'}
+            visibleByDefault={visibleByDefault}
+            wrapperClassName={styles.wrapper}
+        />
+    );
 
     // const placeholderSrc = thumbHash ? imageUtils.thumbHashToDataURL(thumbHash) : undefined;
 

@@ -6,8 +6,6 @@ import styles from './column.module.scss';
 export function actionsColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
         cell: () => {
-            // const item = row.original;
-
             return (
                 <div className={styles.cell}>
                     <IconButton icon="ellipsisHorizontal" />
