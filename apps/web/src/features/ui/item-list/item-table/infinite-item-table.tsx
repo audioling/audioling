@@ -7,6 +7,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
+import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import {
     attachClosestEdge,
     extractClosestEdge,
@@ -117,6 +118,12 @@ export function InfiniteItemTable<
             initialize({
                 elements: { viewport: scroller as HTMLElement },
                 target: root,
+            });
+
+            autoScrollForElements({
+                element: scroller as HTMLElement,
+                getAllowedAxis: () => 'vertical',
+                getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
             });
         }
 

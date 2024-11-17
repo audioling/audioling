@@ -1,5 +1,6 @@
 import type { Ref } from 'react';
 import { forwardRef, useEffect, useRef } from 'react';
+import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { clsx } from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { Box } from '@/features/ui/box/box.tsx';
@@ -39,6 +40,7 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
     useEffect(() => {
         if (containerRef.current) {
             initialize(containerRef.current as HTMLDivElement);
+            autoScrollForElements({ element: containerRef.current as HTMLElement });
         }
     }, [initialize]);
 
