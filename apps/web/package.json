@@ -37,6 +37,7 @@
         "framer-motion": "^11.11.11",
         "i18next": "^23.16.4",
         "js-cookie": "^3.0.5",
+        "nanoid": "^5.0.8",
         "overlayscrollbars": "^2.10.0",
         "overlayscrollbars-react": "^0.5.6",
         "react": "^18.3.1",

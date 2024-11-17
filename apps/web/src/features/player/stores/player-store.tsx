@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { LexoRank } from '@dalet-oss/lexorank';
-import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import { create } from 'zustand';
@@ -8,7 +7,7 @@ import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
-import { fetchAlbumTracks } from '@/api/fetchers/album.ts';
+import { fetchAlbumTracks } from '@/api/fetchers/albums.ts';
 
 export enum PlayerStatus {
     PAUSED = 'paused',
@@ -50,22 +49,20 @@ export interface PlayerData {
 }
 
 export enum PlayType {
+    INDEX = 'index',
     LAST = 'last',
     NEXT = 'next',
     NOW = 'now',
 }
 
 export interface QueueData {
-    currentIndex: number;
     default: PlayQueueItem[];
-    next: PlayQueueItem[];
 }
 
 // Add new interface for the grouped queue structure
 interface GroupedQueue {
     all: PlayQueueItem[];
     current: PlayQueueItem[];
-    next: PlayQueueItem[];
     remaining: PlayQueueItem[];
 }
 
@@ -74,11 +71,15 @@ interface Actions {
     addToQueueByType: (playType: PlayType, items: TrackItem[]) => void;
     clearQueue: () => void;
     getDefaultQueue: () => PlayQueueItem[];
-    getNextQueue: () => PlayQueueItem[];
-    getPlayerData: () => PlayerData;
+    // getPlayerData: () => PlayerData;
     getQueue: () => GroupedQueue;
-    goToNextTrack: () => void;
-    goToPreviousTrack: () => void;
+    mediaNext: () => void;
+    mediaPause: () => void;
+    mediaPlay: () => void;
+    mediaPrevious: () => void;
+    mediaStepBackward: () => void;
+    mediaStepForward: () => void;
+    mediaTogglePlayPause: () => void;
 }
 
 interface State {
@@ -103,20 +104,20 @@ export const usePlayerStore = create<PlayerState>()(
         subscribeWithSelector(
             immer((set, get) => ({
                 addToQueueByIndex: (index, items) => {
-                    const queue = get().getDefaultQueue();
-
-                    const startRank = LexoRank.parse(queue[index].order);
-                    const endRank = LexoRank.parse(queue[index + 1].order);
-
-                    const between = startRank.multipleBetween(endRank, items.length);
-
                     set((state) => {
-                        for (let i = 0; i < items.length; i++) {
-                            state.queue.default.push({
-                                ...items[i],
-                                order: between[i].toString(),
-                                uniqueId: nanoid(),
-                            });
+                        const newItems = items.map((item) => ({
+                            ...item,
+                            uniqueId: nanoid(),
+                        }));
+
+                        // If we're adding to the end of the queue, just append
+                        if (index === state.queue.default.length - 1) {
+                            state.queue.default = [...state.queue.default, ...newItems];
+                        } else {
+                            // Otherwise, insert the new items at the specified index
+                            const before = state.queue.default.slice(0, index);
+                            const after = state.queue.default.slice(index);
+                            state.queue.default = [...before, ...newItems, ...after];
                         }
                     });
                 },
@@ -125,85 +126,62 @@ export const usePlayerStore = create<PlayerState>()(
                         case PlayType.NOW: {
                             set((state) => {
                                 state.queue.default = [];
-                                state.queue.currentIndex = 0;
+                                state.player.index = 0;
 
-                                let rank = LexoRank.middle();
-                                for (let i = 0; i < items.length; i++) {
-                                    rank = rank.genNext();
+                                const newItems = items.map((item) => ({
+                                    ...item,
+                                    uniqueId: nanoid(),
+                                }));
 
-                                    state.queue.default.push({
-                                        ...items[i],
-                                        order: rank.toString(),
-                                        uniqueId: nanoid(),
-                                    });
-                                }
+                                state.queue.default = [...newItems];
                             });
                             break;
                         }
                         case PlayType.NEXT: {
-                            const queue = get().getNextQueue();
-
-                            const lastIndex = queue.length - 1;
-
-                            const startRank =
-                                lastIndex === -1
-                                    ? LexoRank.middle()
-                                    : LexoRank.parse(queue[lastIndex].order);
+                            const currentIndex = get().player.index;
 
                             set((state) => {
-                                let rank = startRank;
-                                for (let i = 0; i < items.length; i++) {
-                                    rank = rank.genNext();
-                                    state.queue.next.push({
-                                        ...items[i],
-                                        order: rank.toString(),
-                                        uniqueId: nanoid(),
-                                    });
-                                }
+                                const newItems = items.map((item) => ({
+                                    ...item,
+                                    uniqueId: nanoid(),
+                                }));
+
+                                const before = state.queue.default.slice(0, currentIndex + 1);
+                                const after = state.queue.default.slice(currentIndex + 1);
+                                state.queue.default = [...before, ...newItems, ...after];
                             });
                             break;
                         }
                         case PlayType.LAST: {
-                            const queue = get().getDefaultQueue();
-
-                            const lastIndex = queue.length - 1;
-
                             set((state) => {
-                                let rank = LexoRank.parse(queue[lastIndex].order);
-                                for (let i = 0; i < items.length; i++) {
-                                    rank = rank.genNext();
+                                const newItems = items.map((item) => ({
+                                    ...item,
+                                    uniqueId: nanoid(),
+                                }));
 
-                                    state.queue.default.push({
-                                        ...items[i],
-                                        order: rank.toString(),
-                                        uniqueId: nanoid(),
-                                    });
-                                }
+                                state.queue.default = [...state.queue.default, ...newItems];
                             });
                             break;
                         }
                     }
                 },
+                clearQueue: () => {
+                    set((state) => {
+                        state.queue.default = [];
+                    });
+                },
                 getDefaultQueue: () => {
-                    return [...get().queue.default].sort((a, b) => a.order.localeCompare(b.order));
-                },
-                getNextQueue: () => {
-                    return [...get().queue.next].sort((a, b) => a.order.localeCompare(b.order));
-                },
-                getPlayerData: () => {
-                    return get().player;
+                    return get().queue.default;
                 },
                 getQueue: () => {
                     const defaultQueue = get().getDefaultQueue();
-                    const nextQueue = get().getNextQueue();
-                    const currentIndex = get().queue.currentIndex;
+                    const currentIndex = get().player.index;
 
                     // Handle case where nothing is playing
                     if (currentIndex === -1) {
                         return {
-                            all: [...defaultQueue, ...nextQueue],
+                            all: defaultQueue,
                             current: [],
-                            next: nextQueue,
                             remaining: defaultQueue,
                         };
                     }
@@ -214,14 +192,58 @@ export const usePlayerStore = create<PlayerState>()(
                     const afterCurrent = defaultQueue.slice(currentIndex + 1);
 
                     return {
-                        all: [...beforeCurrent, ...current, ...nextQueue, ...afterCurrent],
+                        all: [...beforeCurrent, ...current, ...afterCurrent],
                         current,
-                        next: nextQueue,
                         remaining: afterCurrent,
                     };
                 },
+                mediaNext: () => {
+                    const currentIndex = get().player.index;
+                    const defaultQueue = get().getDefaultQueue();
+
+                    set((state) => {
+                        state.player.index = Math.min(defaultQueue.length - 1, currentIndex + 1);
+                    });
+                },
+                mediaPause: () => {
+                    set((state) => {
+                        state.player.status = PlayerStatus.PAUSED;
+                    });
+                },
+                mediaPlay: () => {
+                    set((state) => {
+                        state.player.status = PlayerStatus.PLAYING;
+                    });
+                },
+                mediaPrevious: () => {
+                    const currentIndex = get().player.index;
+
+                    set((state) => {
+                        // Only decrement if we're not at the start
+                        state.player.index = Math.max(0, currentIndex - 1);
+                    });
+                },
+                mediaStepBackward: () => {
+                    set((state) => {
+                        state.mediaPrevious();
+                    });
+                },
+                mediaStepForward: () => {
+                    set((state) => {
+                        state.mediaNext();
+                    });
+                },
+                mediaTogglePlayPause: () => {
+                    set((state) => {
+                        if (state.player.status === PlayerStatus.PLAYING) {
+                            state.mediaPause();
+                        } else {
+                            state.mediaPlay();
+                        }
+                    });
+                },
                 player: {
-                    index: 0,
+                    index: -1,
                     muted: false,
                     playerNum: 1,
                     repeat: PlayerRepeat.OFF,
@@ -254,8 +276,16 @@ export const usePlayerState = () => {
 export const usePlayerActions = () => {
     return usePlayerStore(
         useShallow((state) => ({
-            addToQueue: state.addToQueueByType,
+            addToQueueByIndex: state.addToQueueByIndex,
+            addToQueueByType: state.addToQueueByType,
             getQueue: state.getQueue,
+            mediaNext: state.mediaNext,
+            mediaPause: state.mediaPause,
+            mediaPlay: state.mediaPlay,
+            mediaPrevious: state.mediaPrevious,
+            mediaStepBackward: state.mediaStepBackward,
+            mediaStepForward: state.mediaStepForward,
+            mediaTogglePlayPause: state.mediaTogglePlayPause,
             // autoNext: state.actions.autoNext,
             // checkIsFirstTrack: state.actions.checkIsFirstTrack,
             // checkIsLastTrack: state.actions.checkIsLastTrack,
@@ -277,38 +307,63 @@ export const usePlayerActions = () => {
     );
 };
 
-// function toPlayQueueItem(item: TrackItem): PlayQueueItem {
-//     return { ...item, uniqueId: nanoid() };
+export const usePlayerStatus = () => {
+    return usePlayerStore(useShallow((state) => state.player.status));
+};
+
+// function shuffleArray<T>(array: T[]): T[] {
+//     const newArray = [...array];
+
+//     for (let i = newArray.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+//     }
+
+//     return newArray;
 // }
 
-function shuffleArray<T>(array: T[]): T[] {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-}
-
-export const usePlayerAddToQueue = ({ libraryId }: { libraryId: string }) => {
+export const useAddToQueue = ({ libraryId }: { libraryId: string }) => {
     const queryClient = useQueryClient();
-    const { addToQueue } = usePlayerActions();
+    const { addToQueueByIndex, addToQueueByType } = usePlayerActions();
 
-    const onPlay = useCallback(
-        async (id: string, playType: PlayType, onComplete?: () => void) => {
-            const result = await fetchAlbumTracks(queryClient, libraryId, id, {
-                sortBy: TrackListSortOptions.ID,
-                sortOrder: ListSortOrder.ASC,
-            });
+    const onPlayByFetch = useCallback(
+        async (
+            args: { id: string; index?: number; itemType: LibraryItemType; playType: PlayType },
+            onComplete?: () => void,
+        ) => {
+            let items: TrackItem[] = [];
 
-            addToQueue(playType, result.data);
+            if (args.itemType === LibraryItemType.ALBUM) {
+                const result = await fetchAlbumTracks(queryClient, libraryId, args.id, {
+                    sortBy: TrackListSortOptions.ID,
+                    sortOrder: ListSortOrder.ASC,
+                });
+                items = result.data;
+            }
+
+            if (args.index !== undefined) {
+                addToQueueByIndex(args.index, items);
+            } else {
+                addToQueueByType(args.playType, items);
+            }
 
             onComplete?.();
         },
-        [addToQueue, libraryId, queryClient],
+        [addToQueueByIndex, addToQueueByType, libraryId, queryClient],
     );
 
-    return { onPlay };
+    const onPlayByData = useCallback(
+        (
+            args: { data: TrackItem[]; itemType: LibraryItemType; playType: PlayType },
+            onComplete?: () => void,
+        ) => {
+            addToQueueByType(args.playType, args.data);
+            onComplete?.();
+        },
+        [addToQueueByType],
+    );
+
+    return { onPlayByData, onPlayByFetch };
 };
 
 export const subscribePlayerQueue = (
