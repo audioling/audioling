@@ -122,7 +122,7 @@ const GridItemComponent = forwardRef<
 GridItemComponent.displayName = 'GridItemComponent';
 
 export interface InfiniteGridItemProps<T, C extends { baseUrl: string; libraryId: string }> {
-    context?: C;
+    context: C;
     data: T | undefined;
     index: number;
     isExpanded?: boolean;
@@ -130,7 +130,7 @@ export interface InfiniteGridItemProps<T, C extends { baseUrl: string; libraryId
 
 interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: string }> {
     GridComponent: React.ComponentType<InfiniteGridItemProps<T, C>>;
-    context?: C;
+    context: C;
     data: (T | undefined)[];
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;

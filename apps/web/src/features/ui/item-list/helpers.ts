@@ -12,6 +12,7 @@ import { playCountColumn } from '@/features/ui/item-list/item-table/columns/play
 import { ratingColumn } from '@/features/ui/item-list/item-table/columns/rating-column.tsx';
 import { releaseDateColumn } from '@/features/ui/item-list/item-table/columns/release-date-column.tsx';
 import { rowIndexColumn } from '@/features/ui/item-list/item-table/columns/row-index-column.tsx';
+import { standaloneCombinedColumn } from '@/features/ui/item-list/item-table/columns/standalone-combined-column.tsx';
 import { yearColumn } from '@/features/ui/item-list/item-table/columns/year-column.tsx';
 
 export enum ItemListColumn {
@@ -28,6 +29,7 @@ export enum ItemListColumn {
     RATING = 'rating',
     RELEASE_DATE = 'releaseDate',
     ROW_INDEX = 'rowIndex',
+    STANDALONE_COMBINED = 'combined',
     YEAR = 'year',
 }
 
@@ -36,6 +38,7 @@ export type ItemListColumnOrder = (typeof ItemListColumn)[keyof typeof ItemListC
 const columnMap = {
     [ItemListColumn.ROW_INDEX]: rowIndexColumn,
     [ItemListColumn.NAME]: nameColumn,
+    [ItemListColumn.STANDALONE_COMBINED]: standaloneCombinedColumn,
     [ItemListColumn.ALBUM]: albumColumn,
     [ItemListColumn.ARTISTS]: artistsColumn,
     [ItemListColumn.DATE_ADDED]: dateAddedColumn,

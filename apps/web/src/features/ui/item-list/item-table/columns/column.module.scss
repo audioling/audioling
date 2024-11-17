@@ -18,3 +18,21 @@
     object-fit: cover;
     border-radius: base.$border-radius-md;
 }
+
+.standalone-combined {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: base.$gap-sm;
+    align-items: center;
+    width: 100%;
+}
+
+.standalone-combined .inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.standalone-combined .inner > div {
+    @include base.text-ellipsis;
+}

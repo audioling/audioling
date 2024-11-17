@@ -7,6 +7,10 @@
     height: 100%;
 }
 
+.container.no-header {
+    grid-template-rows: 1fr;
+}
+
 .header {
     display: grid;
     font-size: base.$font-size-md;
@@ -70,7 +74,7 @@
         position: absolute;
         top: 0;
         bottom: 0;
-        left: 0;
+        left: -1px;
         width: 2px;
         content: '';
         background-color: base.$primary-color;
@@ -83,9 +87,37 @@
     &::before {
         position: absolute;
         top: 0;
-        right: 0;
+        right: -1px;
         bottom: 0;
         width: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-top {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: -1px;
+        right: 0;
+        left: 0;
+        height: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-bottom {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        right: 0;
+        bottom: -1px;
+        left: 0;
+        height: 2px;
         content: '';
         background-color: base.$primary-color;
     }
