@@ -8,6 +8,8 @@ import { Skeleton } from '@mantine/core';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router-dom';
+import type { PlayType } from '@/features/player/stores/player-store.tsx';
+import { CardControls } from '@/features/ui/card/card-controls.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { Image } from '@/features/ui/image/image.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -16,6 +18,10 @@ import styles from './album-card.module.scss';
 
 interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
     componentState: 'loading' | 'loaded' | 'scrolling';
+    controls: {
+        onMore: (id: string) => void;
+        onPlay: (id: string, playType: PlayType) => void;
+    };
     id: string;
     image: string;
     metadata: {
@@ -38,12 +44,14 @@ export function AlbumCard(props: AlbumCardProps) {
         metadataLines = 1,
         titledata,
         className,
+        controls,
         ...htmlProps
     } = props;
 
     const ref = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState(false);
+    const [isHovering, setIsHovering] = useState(false);
 
     useEffect(() => {
         if (!ref.current) return;
@@ -109,8 +117,19 @@ export function AlbumCard(props: AlbumCardProps) {
                     })}
                     {...htmlProps}
                 >
-                    <div className={styles.imageContainer}>
+                    <div
+                        className={styles.imageContainer}
+                        onMouseEnter={() => setIsHovering(true)}
+                        onMouseLeave={() => setIsHovering(false)}
+                    >
                         <Image className={styles.image} src={image} />
+                        {isHovering && (
+                            <CardControls
+                                id={id}
+                                onMore={controls.onMore}
+                                onPlay={controls.onPlay}
+                            />
+                        )}
                     </div>
                     <div className={styles.descriptionContainer}>
                         <NavLink className={styles.description} to={titledata.path}>
