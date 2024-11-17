@@ -5,9 +5,12 @@ import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { Skeleton } from '@mantine/core';
+import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router-dom';
+import { prefetchAlbumTracks } from '@/api/fetchers/albums.ts';
 import type { PlayType } from '@/features/player/stores/player-store.tsx';
 import { CardControls } from '@/features/ui/card/card-controls.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
@@ -24,6 +27,7 @@ interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
     };
     id: string;
     image: string;
+    libraryId: string;
     metadata: {
         path: string;
         text: string;
@@ -39,6 +43,7 @@ export function AlbumCard(props: AlbumCardProps) {
     const {
         id,
         image,
+        libraryId,
         componentState,
         metadata,
         metadataLines = 1,
@@ -48,6 +53,7 @@ export function AlbumCard(props: AlbumCardProps) {
         ...htmlProps
     } = props;
 
+    const queryClient = useQueryClient();
     const ref = useRef<HTMLDivElement>(null);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -72,7 +78,13 @@ export function AlbumCard(props: AlbumCardProps) {
                         },
                     );
                 },
-                onDragStart: () => setIsDragging(true),
+                onDragStart: async () => {
+                    setIsDragging(true);
+                    prefetchAlbumTracks(queryClient, libraryId, id, {
+                        sortBy: TrackListSortOptions.ID,
+                        sortOrder: ListSortOrder.ASC,
+                    });
+                },
                 onDrop: () => setIsDragging(false),
                 onGenerateDragPreview: (data) => {
                     disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
@@ -86,7 +98,7 @@ export function AlbumCard(props: AlbumCardProps) {
                 },
             }),
         );
-    }, [id, image, titledata.text]);
+    }, [id, image, libraryId, queryClient, titledata.text]);
 
     switch (componentState) {
         default: {

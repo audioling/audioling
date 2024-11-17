@@ -23,3 +23,23 @@ export const fetchAlbumTracks = async (
         queryKey: getGetApiLibraryIdAlbumsIdTracksQueryKey(libraryId, id, params),
     });
 };
+
+export const prefetchAlbumTracks = async (
+    queryClient: QueryClient,
+    libraryId: string,
+    id: string,
+    params: GetApiLibraryIdAlbumsIdTracksParams,
+) => {
+    await queryClient.prefetchQuery({
+        gcTime: 30 * 1000,
+        queryFn: () => {
+            return apiInstance<GetApiLibraryIdAlbumsIdTracks200>({
+                method: 'GET',
+                params,
+                url: `/api/${libraryId}/albums/${id}/tracks`,
+            });
+        },
+        queryKey: getGetApiLibraryIdAlbumsIdTracksQueryKey(libraryId, id, params),
+        staleTime: 30 * 1000,
+    });
+};

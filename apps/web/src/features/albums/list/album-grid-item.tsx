@@ -45,6 +45,7 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
                 }}
                 id={data.id}
                 image={`${context.baseUrl}${data.imageUrl}&size=400`}
+                libraryId={context.libraryId}
                 metadata={[{ path: '/', text: data.artists[0]?.name }]}
                 metadataLines={1}
                 titledata={{ path: '/', text: data.name }}
@@ -61,6 +62,7 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
             }}
             id={index.toString()}
             image=""
+            libraryId={context.libraryId}
             metadata={[]}
             metadataLines={1}
             titledata={{ path: '/', text: '' }}
