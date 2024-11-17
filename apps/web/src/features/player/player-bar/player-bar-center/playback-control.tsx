@@ -1,25 +1,44 @@
 import clsx from 'clsx';
+import {
+    PlayerStatus,
+    usePlayerActions,
+    usePlayerStatus,
+} from '@/features/player/stores/player-store.tsx';
 import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import styles from './playback-control.module.scss';
 
 export function PlayPauseButton() {
+    const status = usePlayerStatus();
+    const { mediaPlay, mediaPause } = usePlayerActions();
+
+    const handleClick = () => {
+        if (status === PlayerStatus.PLAYING) {
+            mediaPause();
+        } else {
+            mediaPlay();
+        }
+    };
+
     return (
         <IconButtonWithTooltip
             iconFill
             className={clsx(styles.playPause, styles.main)}
-            icon="mediaPlay"
+            icon={status === PlayerStatus.PLAYING ? 'mediaPause' : 'mediaPlay'}
             size="xl"
             tooltipProps={{
-                label: 'Play',
+                label: status === PlayerStatus.PLAYING ? 'Pause' : 'Play',
                 openDelay: 500,
                 position: 'top',
             }}
             variant="filled"
+            onClick={handleClick}
         />
     );
 }
 
 export function MediaPreviousButton() {
+    const { mediaPrevious } = usePlayerActions();
+
     return (
         <IconButtonWithTooltip
             iconFill
@@ -31,11 +50,14 @@ export function MediaPreviousButton() {
                 openDelay: 500,
                 position: 'top',
             }}
+            onClick={mediaPrevious}
         />
     );
 }
 
 export function MediaNextButton() {
+    const { mediaNext } = usePlayerActions();
+
     return (
         <IconButtonWithTooltip
             iconFill
@@ -47,11 +69,14 @@ export function MediaNextButton() {
                 openDelay: 500,
                 position: 'top',
             }}
+            onClick={mediaNext}
         />
     );
 }
 
 export function MediaStepBackwardButton() {
+    const { mediaStepBackward } = usePlayerActions();
+
     return (
         <IconButtonWithTooltip
             iconFill
@@ -63,11 +88,14 @@ export function MediaStepBackwardButton() {
                 openDelay: 500,
                 position: 'top',
             }}
+            onClick={mediaStepBackward}
         />
     );
 }
 
 export function MediaStepForwardButton() {
+    const { mediaStepForward } = usePlayerActions();
+
     return (
         <IconButtonWithTooltip
             iconFill
@@ -79,6 +107,7 @@ export function MediaStepForwardButton() {
                 openDelay: 500,
                 position: 'top',
             }}
+            onClick={mediaStepForward}
         />
     );
 }

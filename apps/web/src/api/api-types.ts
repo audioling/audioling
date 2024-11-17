@@ -26,3 +26,7 @@ export interface ArtistItem extends GetApiLibraryIdAlbumArtists200DataItem {}
 export interface GenreItem extends GetApiLibraryIdGenres200DataItem {}
 
 export interface TrackItem extends GetApiLibraryIdTracks200DataItem {}
+
+export interface PlayQueueItem extends TrackItem {
+    uniqueId: string;
+}

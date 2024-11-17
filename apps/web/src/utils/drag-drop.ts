@@ -11,6 +11,11 @@ export enum DragTarget {
     TABLE_COLUMN = 'tableColumn',
 }
 
+export enum DragOperation {
+    ADD = 'add',
+    REORDER = 'reorder',
+}
+
 export const libraryItemTypeToDragTarget = {
     [LibraryItemType.ALBUM]: DragTarget.ALBUM,
     [LibraryItemType.PLAYLIST]: DragTarget.PLAYLIST,
@@ -28,19 +33,24 @@ export type AlbumDragMetadata = {
 export type DragData<T extends Record<string, unknown> = Record<string, unknown>> = {
     id: string;
     metadata?: T;
+    operation?: DragOperation;
     type: DragTarget;
 };
 
 export const dndUtils = {
     generateDragData: <T extends Record<string, unknown> = Record<string, unknown>>(
-        id: string | string[],
-        type: DragTarget,
+        args: {
+            id: string | string[];
+            operation?: DragOperation[];
+            type: DragTarget;
+        },
         metadata?: T,
     ) => {
         return {
-            id,
+            id: args.id,
             metadata,
-            type,
+            operation: args.operation,
+            type: args.type,
         };
     },
     isDropTarget: (target: DragTarget, types: DragTarget[]) => {

@@ -1,5 +1,6 @@
 import { memo, useCallback, useMemo } from 'react';
-import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
+import type { AlbumListSortOptions } from '@repo/shared-types';
+import { LibraryItemType, type ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { generatePath, useParams } from 'react-router-dom';
 import { apiInstance } from '@/api/api-instance.ts';
@@ -8,6 +9,7 @@ import type {
     GetApiLibraryIdAlbumsParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
+import { useAddToQueue } from '@/features/player/stores/player-store.tsx';
 import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { GridCarousel } from '@/features/ui/grid-carousel/grid-carousel.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
@@ -27,6 +29,8 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
     const { data: albums, fetchNextPage } = useAlbumListInfinite(libraryId, sortBy, sortOrder, 20);
     const baseUrl = useAuthBaseUrl();
 
+    const { onPlayByFetch } = useAddToQueue({ libraryId });
+
     const cards = useMemo(
         () =>
             albums.pages.flatMap((page) =>
@@ -34,6 +38,15 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     content: (
                         <MemoizedAlbumCard
                             componentState="loaded"
+                            controls={{
+                                onMore: () => {},
+                                onPlay: (id, playType) =>
+                                    onPlayByFetch({
+                                        id,
+                                        itemType: LibraryItemType.ALBUM,
+                                        playType,
+                                    }),
+                            }}
                             id={album.id}
                             image={`${baseUrl}${album.imageUrl}&size=400`}
                             metadata={[
@@ -58,7 +71,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     id: album.id,
                 })),
             ),
-        [albums.pages, baseUrl, libraryId],
+        [albums.pages, baseUrl, libraryId, onPlayByFetch],
     );
 
     const handleNextPage = useCallback(() => {}, []);

@@ -10,7 +10,7 @@
     position: relative;
     display: grid;
     grid-template-areas: 'content image';
-    grid-template-columns: 50svw auto;
+    grid-template-columns: 50% auto;
     gap: base.$gap-md;
     width: 100%;
     height: 100%;

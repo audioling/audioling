@@ -5,6 +5,7 @@ import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-
 import { LibraryAddRoute } from '@/features/library/library-add/library-add-route.tsx';
 import { LibraryEditRoute } from '@/features/library/library-edit/library-edit-route.tsx';
 import { LibrarySelectionRoute } from '@/features/library/library-selection/library-selection-route.tsx';
+import { NowPlayingRoute } from '@/features/player/now-playing/now-playing-route.tsx';
 import { TrackListRoute } from '@/features/tracks/list/track-list-route.tsx';
 import { AuthProtectedLayout } from '@/layouts/auth-protected-layout.tsx';
 import { DashboardLayout } from '@/layouts/dashboard-layout.tsx';
@@ -43,7 +44,7 @@ export const dashboardRoutes: RouteObject[] = [
                                 path: 'home',
                             },
                             {
-                                element: <div>Hello, from now-playing</div>,
+                                element: <NowPlayingRoute />,
                                 path: 'now-playing',
                             },
                             {

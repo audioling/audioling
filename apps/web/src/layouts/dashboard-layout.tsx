@@ -5,6 +5,8 @@ import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
+import { useLayout, useSetLayout } from '@/features/navigation/stores/navigation-store.ts';
+import { SidePlayQueue } from '@/features/player/now-playing/side-play-queue.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
 import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
@@ -79,6 +81,9 @@ function DesktopLayout(props: { headerHeight: string; playerBarHeight: string })
     const headerHeightNumber = Number(headerHeight.replace('px', ''));
     const playerBarHeightNumber = Number(playerBarHeight.replace('px', ''));
 
+    const layout = useLayout();
+    const setLayout = useSetLayout();
+
     return (
         <Allotment vertical>
             <Allotment.Pane
@@ -91,26 +96,38 @@ function DesktopLayout(props: { headerHeight: string; playerBarHeight: string })
                     <HeaderBar />
                 </div>
             </Allotment.Pane>
-            <Allotment>
+            <Allotment
+                onDragEnd={(e) => {
+                    setLayout({ sizes: e });
+                }}
+            >
                 <Allotment.Pane
                     className={styles.navBarContainer}
                     maxSize={300}
                     minSize={225}
-                    preferredSize={250}
-                    snap={true}
+                    preferredSize={layout.sizes[0]}
                 >
                     <div className={styles.navBarSide} id="nav-bar-side-container">
                         <NavBarSide />
                     </div>
                 </Allotment.Pane>
-                <Allotment.Pane className={styles.contentContainer}>
-                    <ScrollArea>
-                        <div className={styles.content} id="content-container">
-                            <Suspense fallback={<></>}>
-                                <Outlet />
-                            </Suspense>
-                        </div>
-                    </ScrollArea>
+                <Allotment.Pane
+                    className={styles.contentContainer}
+                    preferredSize={layout.sizes[1]}
+                    visible={layout.center}
+                >
+                    <div className={styles.content} id="content-container">
+                        <Suspense fallback={<></>}>
+                            <Outlet />
+                        </Suspense>
+                    </div>
+                </Allotment.Pane>
+                <Allotment.Pane className={styles.rightContentContainer} visible={layout.right}>
+                    <div className={styles.rightContent} id="right-content-container">
+                        <Suspense fallback={<></>}>
+                            <SidePlayQueue />
+                        </Suspense>
+                    </div>
                 </Allotment.Pane>
             </Allotment>
             <Allotment.Pane

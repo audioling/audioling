@@ -4,6 +4,13 @@ import { useShallow } from 'zustand/react/shallow';
 import { createWithEqualityFn as create } from 'zustand/traditional';
 
 interface NavigationState {
+    layout: {
+        center: boolean;
+        left: boolean;
+        right: boolean;
+        sizes: number[];
+    };
+    setLayout: (layout: Partial<NavigationState['layout']>) => void;
     setSection: (section: string) => (id: string, open?: boolean) => void;
     side: {
         general: Record<string, boolean>;
@@ -15,6 +22,17 @@ interface NavigationState {
 export const useNavigationStore = create<NavigationState>()(
     persist(
         immer((set) => ({
+            layout: {
+                center: true,
+                left: true,
+                right: true,
+                sizes: [250, 1000],
+            },
+            setLayout: (layout) => {
+                set((state) => {
+                    state.layout = { ...state.layout, ...layout };
+                });
+            },
             setSection: (section) => (id, open) => {
                 set((state) => {
                     state.side[section as 'general' | 'playlists'][id] = Boolean(open);
@@ -59,4 +77,12 @@ export const useTogglePlaylistsSection = () => {
 
 export const useSetPlaylistsSection = () => {
     return useNavigationStore(useShallow((state) => state.setSection('playlists')));
+};
+
+export const useLayout = () => {
+    return useNavigationStore(useShallow((state) => state.layout));
+};
+
+export const useSetLayout = () => {
+    return useNavigationStore(useShallow((state) => state.setLayout));
 };

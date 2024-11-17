@@ -1,9 +1,10 @@
 import { memo } from 'react';
-import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import type { AlbumItem, TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsIdTracksSuspense } from '@/api/openapi-generated/albums/albums.ts';
+import { useAddToQueue } from '@/features/player/stores/player-store.tsx';
 import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
@@ -21,10 +22,7 @@ export type AlbumGridItemContext = {
 
 export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridItemContext>) {
     const { context, data, index, isExpanded } = props;
-
-    if (!context) {
-        return null;
-    }
+    const { onPlayByFetch } = useAddToQueue({ libraryId: context.libraryId });
 
     if (isExpanded && data) {
         return (
@@ -40,6 +38,11 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
         return (
             <AlbumCard
                 componentState="loaded"
+                controls={{
+                    onMore: () => {},
+                    onPlay: (id, playType) =>
+                        onPlayByFetch({ id, itemType: LibraryItemType.ALBUM, playType }),
+                }}
                 id={data.id}
                 image={`${context.baseUrl}${data.imageUrl}&size=400`}
                 metadata={[{ path: '/', text: data.artists[0]?.name }]}
@@ -52,6 +55,10 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
     return (
         <AlbumCard
             componentState="loading"
+            controls={{
+                onMore: () => {},
+                onPlay: () => {},
+            }}
             id={index.toString()}
             image=""
             metadata={[]}

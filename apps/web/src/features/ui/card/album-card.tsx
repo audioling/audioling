@@ -13,7 +13,7 @@ import { CardControls } from '@/features/ui/card/card-controls.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { Image } from '@/features/ui/image/image.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
-import { dndUtils, DragTarget } from '@/utils/drag-drop.ts';
+import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './album-card.module.scss';
 
 interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -60,10 +60,17 @@ export function AlbumCard(props: AlbumCardProps) {
             draggable({
                 element: ref.current,
                 getInitialData: () => {
-                    return dndUtils.generateDragData(id, DragTarget.ALBUM, {
-                        image,
-                        title: titledata.text,
-                    });
+                    return dndUtils.generateDragData(
+                        {
+                            id,
+                            operation: [DragOperation.ADD],
+                            type: DragTarget.ALBUM,
+                        },
+                        {
+                            image,
+                            title: titledata.text,
+                        },
+                    );
                 },
                 onDragStart: () => setIsDragging(true),
                 onDrop: () => setIsDragging(false),

@@ -28,7 +28,12 @@ import { ItemContextMenu } from '@/features/shared/item-context-menu/item-contex
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
-import { dndUtils, DragTarget, libraryItemTypeToDragTarget } from '@/utils/drag-drop.ts';
+import {
+    dndUtils,
+    DragOperation,
+    DragTarget,
+    libraryItemTypeToDragTarget,
+} from '@/utils/drag-drop.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './infinite-item-table.module.scss';
 
@@ -38,18 +43,27 @@ export interface TableItemProps<T, C extends { baseUrl: string; libraryId: strin
     index: number;
 }
 
+export type ItemTableRowDrop = {
+    data: DragData;
+    edge: Edge | null;
+    id: string;
+    index: number;
+};
+
 interface InfiniteItemTableProps<T, C extends { baseUrl: string; libraryId: string }> {
     columnOrder: ItemListColumn[];
     columns: DisplayColumnDef<T | undefined>[];
     context: C;
     data: Map<number, T>;
     initialScrollIndex?: number;
+    isHeaderVisible?: boolean;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
     itemType: LibraryItemType;
     onChangeColumnOrder: (columnOrder: ItemListColumn[]) => void;
     onEndReached?: (index: number) => void;
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
+    onRowDrop?: (args: ItemTableRowDrop) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
 }
@@ -65,11 +79,13 @@ export function InfiniteItemTable<
         context,
         data,
         initialScrollIndex,
+        isHeaderVisible = true,
         isScrolling,
         itemCount,
         itemType,
         onEndReached,
         onRangeChanged,
+        onRowDrop,
         onScroll,
         onStartReached,
     } = props;
@@ -197,19 +213,25 @@ export function InfiniteItemTable<
 
     return (
         <>
-            <div className={styles.container}>
-                <div className={styles.header} style={columnStyles.styles}>
-                    {headers.map((header) => (
-                        <TableHeader
-                            key={`header-${header.id}`}
-                            columnOrder={columnOrder}
-                            columnStyles={columnStyles.styles}
-                            header={header}
-                            setColumnOrder={onChangeColumnOrder}
-                            tableId={tableId}
-                        />
-                    ))}
-                </div>
+            <div
+                className={clsx(styles.container, {
+                    [styles.noHeader]: !isHeaderVisible,
+                })}
+            >
+                {isHeaderVisible && (
+                    <div className={styles.header} style={columnStyles.styles}>
+                        {headers.map((header) => (
+                            <TableHeader
+                                key={`header-${header.id}`}
+                                columnOrder={columnOrder}
+                                columnStyles={columnStyles.styles}
+                                header={header}
+                                setColumnOrder={onChangeColumnOrder}
+                                tableId={tableId}
+                            />
+                        ))}
+                    </div>
+                )}
                 <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
                     <Virtuoso
                         context={tableContext}
@@ -226,6 +248,7 @@ export function InfiniteItemTable<
                                 tableId={tableId}
                                 onRowClick={handleRowClick}
                                 onRowContextMenu={handleRowContextMenu}
+                                onRowDrop={onRowDrop}
                             />
                         )}
                         rangeChanged={onRangeChanged}
@@ -264,7 +287,11 @@ function TableHeader<T>(props: TableHeaderProps<T>) {
             draggable({
                 element: ref.current,
                 getInitialData: () => {
-                    const data = dndUtils.generateDragData(header.id, DragTarget.TABLE_COLUMN);
+                    const data = dndUtils.generateDragData({
+                        id: header.id,
+                        operation: [DragOperation.REORDER],
+                        type: DragTarget.TABLE_COLUMN,
+                    });
                     return data;
                 },
                 onDragStart: () => {
@@ -285,7 +312,11 @@ function TableHeader<T>(props: TableHeaderProps<T>) {
                 },
                 element: ref.current,
                 getData: ({ input, element }) => {
-                    const data = dndUtils.generateDragData(header.id, DragTarget.TABLE_COLUMN);
+                    const data = dndUtils.generateDragData({
+                        id: header.id,
+                        operation: [DragOperation.REORDER],
+                        type: DragTarget.TABLE_COLUMN,
+                    });
 
                     return attachClosestEdge(data, {
                         allowedEdges: ['left', 'right'],
@@ -350,6 +381,7 @@ interface TableRowProps<
     itemType: LibraryItemType;
     onRowClick: (e: MouseEvent<HTMLDivElement>, row: Row<T | undefined>) => void;
     onRowContextMenu: (e: MouseEvent<HTMLDivElement>, row: Row<T | undefined>) => void;
+    onRowDrop?: (args: ItemTableRowDrop) => void;
     table: Table<T | undefined>;
     tableId: string;
 }
@@ -367,7 +399,8 @@ function TableRow<
         libraryId: string;
     },
 >(props: TableRowProps<T, C>) {
-    const { context, index, itemType, onRowClick, onRowContextMenu, table, tableId } = props;
+    const { context, index, itemType, onRowClick, onRowContextMenu, onRowDrop, table, tableId } =
+        props;
     const ref = useRef<HTMLDivElement>(null);
     const row = table.getRow(index.toString());
 
@@ -375,6 +408,7 @@ function TableRow<
     const isSelected = row?.getIsSelected();
 
     const [isDragging, setIsDragging] = useState(false);
+    const [isDraggedOver, setIsDraggedOver] = useState<Edge | null>(null);
 
     useEffect(() => {
         if (!ref.current) return;
@@ -384,12 +418,13 @@ function TableRow<
                 element: ref.current,
                 getInitialData: () => {
                     const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.id);
-                    return dndUtils.generateDragData(
-                        selectedRowIds,
-                        libraryItemTypeToDragTarget[
+                    return dndUtils.generateDragData({
+                        id: selectedRowIds,
+                        operation: [DragOperation.REORDER, DragOperation.ADD],
+                        type: libraryItemTypeToDragTarget[
                             itemType as keyof typeof libraryItemTypeToDragTarget
                         ],
-                    );
+                    });
                 },
                 onDragStart: () => setIsDragging(true),
                 onDrop: () => setIsDragging(false),
@@ -405,26 +440,55 @@ function TableRow<
                     });
                 },
             }),
-            // dropTargetForElements({
-            //     canDrop: (args) => {
-            //         const data = args.source.data as DragData;
-            //         return dndUtils.isDropTarget(data.type, [
-            //             DragTarget.ALBUM,
-            //             DragTarget.ALBUM_ARTIST,
-            //             DragTarget.ARTIST,
-            //             DragTarget.PLAYLIST,
-            //             DragTarget.TRACK,
-            //         ]);
-            //     },
-            //     element: ref.current,
-            //     onDragEnter: () => setIsDraggedOver(true),
-            //     onDragLeave: () => setIsDraggedOver(false),
-            //     onDrop: () => {
-            //         setIsDraggedOver(false);
-            //     },
-            // }),
+            dropTargetForElements({
+                canDrop: (args) => {
+                    const data = args.source.data as DragData;
+                    const isTarget = dndUtils.isDropTarget(data.type, [
+                        DragTarget.ALBUM,
+                        DragTarget.ALBUM_ARTIST,
+                        DragTarget.ARTIST,
+                        DragTarget.PLAYLIST,
+                        DragTarget.TRACK,
+                    ]);
+
+                    return isTarget;
+                },
+                element: ref.current,
+                getData: ({ input, element }) => {
+                    const data = dndUtils.generateDragData({
+                        id: row.id,
+                        operation: [DragOperation.REORDER],
+                        type: DragTarget.TRACK,
+                    });
+
+                    return attachClosestEdge(data, {
+                        allowedEdges: ['bottom', 'top'],
+                        element,
+                        input,
+                    });
+                },
+                onDrag: (args) => {
+                    const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+
+                    setIsDraggedOver(closestEdgeOfTarget);
+                },
+                onDragLeave: () => {
+                    setIsDraggedOver(null);
+                },
+                onDrop: (args) => {
+                    const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+
+                    onRowDrop?.({
+                        data: args.source.data as DragData,
+                        edge: closestEdgeOfTarget,
+                        id: row.id,
+                        index,
+                    });
+                    setIsDraggedOver(null);
+                },
+            }),
         );
-    }, [itemType, row.id, table]);
+    }, [index, itemType, onRowDrop, row.id, table]);
 
     return (
         <div
@@ -433,6 +497,8 @@ function TableRow<
                 [styles.canSelect]: canSelect,
                 [styles.selected]: isSelected,
                 [styles.dragging]: isDragging && table.getSelectedRowModel().rows.length === 0,
+                [styles.draggedOverBottom]: isDraggedOver === 'bottom',
+                [styles.draggedOverTop]: isDraggedOver === 'top',
             })}
             style={context.columnStyles.styles}
             onClick={(e) => onRowClick(e, row)}
