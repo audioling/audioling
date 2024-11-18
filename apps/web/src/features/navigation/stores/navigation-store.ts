@@ -5,10 +5,14 @@ import { createWithEqualityFn as create } from 'zustand/traditional';
 
 interface NavigationState {
     layout: {
-        center: boolean;
-        left: boolean;
-        right: boolean;
-        sizes: number[];
+        left: {
+            open: boolean;
+            size: number;
+        };
+        right: {
+            open: boolean;
+            size: number;
+        };
     };
     setLayout: (layout: Partial<NavigationState['layout']>) => void;
     setSection: (section: string) => (id: string, open?: boolean) => void;
@@ -23,10 +27,14 @@ export const useNavigationStore = create<NavigationState>()(
     persist(
         immer((set) => ({
             layout: {
-                center: true,
-                left: true,
-                right: true,
-                sizes: [250, 1000],
+                left: {
+                    open: true,
+                    size: 250,
+                },
+                right: {
+                    open: true,
+                    size: 300,
+                },
             },
             setLayout: (layout) => {
                 set((state) => {

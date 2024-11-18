@@ -123,6 +123,7 @@ export type AppThemeConfiguration = {
         'layout-content-background-color': CSSProperties['backgroundColor'];
         'layout-content-padding': CSSProperties['padding'];
         'layout-divider-color': CSSProperties['borderColor'];
+        'layout-drag-handle-background-color': CSSProperties['backgroundColor'];
         'layout-header-height': CSSProperties['height'];
         'layout-nav-bar-bottom-background-color': CSSProperties['backgroundColor'];
         'layout-nav-bar-bottom-border-bottom': CSSProperties['border'];

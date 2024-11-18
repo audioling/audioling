@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import type { AllotmentProps } from 'allotment';
 import { Allotment } from 'allotment';
 import styles from './resizable-panel.module.scss';
+import 'allotment/dist/style.css';
+
 interface ResizablePanelProps extends AllotmentProps {
     children: ReactNode;
 }

@@ -1,11 +1,16 @@
 import { Suspense, useEffect, useState } from 'react';
-import { Allotment } from 'allotment';
-import { AnimatePresence, motion } from 'motion/react';
+import clsx from 'clsx';
+import type { PanInfo } from 'motion/react';
+import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
 import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
-import { useLayout, useSetLayout } from '@/features/navigation/stores/navigation-store.ts';
+import {
+    useLayout,
+    useNavigationStore,
+    useSetLayout,
+} from '@/features/navigation/stores/navigation-store.ts';
 import { SidePlayQueue } from '@/features/player/now-playing/side-play-queue.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
@@ -14,36 +19,9 @@ import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
 import styles from './dashboard-layout.module.scss';
-import 'allotment/dist/style.css';
 
 export function DashboardLayout() {
     const isLargerThanSm = useIsLargerThanSm();
-
-    const [cssVariables, setCssVariables] = useState<Record<string, string>>({
-        headerHeight: '',
-        navBarBottomHeight: '',
-        playerBarHeight: '',
-    });
-
-    useEffect(() => {
-        const root = document.documentElement;
-
-        const playerBarHeight = getComputedStyle(root).getPropertyValue(
-            '--layout-player-bar-height',
-        );
-
-        const navBarBottomHeight = getComputedStyle(root).getPropertyValue(
-            '--layout-nav-bar-bottom-height',
-        );
-
-        const headerHeight = getComputedStyle(root).getPropertyValue('--layout-header-height');
-
-        setCssVariables({
-            headerHeight,
-            navBarBottomHeight,
-            playerBarHeight,
-        });
-    }, []);
 
     if (isLargerThanSm === undefined) {
         return null;
@@ -62,106 +40,159 @@ export function DashboardLayout() {
                 transition={{ duration: 1 }}
                 variants={animationVariants.fadeIn}
             >
-                {isLargerThanSm ? (
-                    <DesktopLayout
-                        headerHeight={cssVariables.headerHeight}
-                        playerBarHeight={cssVariables.playerBarHeight}
-                    />
-                ) : (
-                    <MobileLayout navBarBottomHeight={cssVariables.navBarBottomHeight} />
-                )}
+                {isLargerThanSm ? <DesktopLayout /> : <MobileLayout />}
             </motion.div>
         </AnimatePresence>
     );
 }
 
-function DesktopLayout(props: { headerHeight: string; playerBarHeight: string }) {
-    const { headerHeight, playerBarHeight } = props;
-
-    const headerHeightNumber = Number(headerHeight.replace('px', ''));
-    const playerBarHeightNumber = Number(playerBarHeight.replace('px', ''));
-
+function DesktopLayout() {
     const layout = useLayout();
     const setLayout = useSetLayout();
+    const [isDraggingLeft, setIsDraggingLeft] = useState(false);
+    const [isDraggingRight, setIsDraggingRight] = useState(false);
+
+    useEffect(() => {
+        const layout = useNavigationStore.getState().layout;
+
+        // Set the initial width of the nav bar and right content
+        document.documentElement.style.setProperty(
+            '--layout-nav-bar-width',
+            `${layout.left.size}px`,
+        );
+
+        document.documentElement.style.setProperty(
+            '--layout-right-content-width',
+            `${layout.right.size}px`,
+        );
+    }, []);
+
+    const handleDragLeft = (_event: unknown, info: PanInfo) => {
+        const style = getComputedStyle(document.documentElement);
+        const currentWidth =
+            parseFloat(style.getPropertyValue('--layout-nav-bar-width')) || layout.left.size;
+        const newWidth = currentWidth + info.delta.x;
+        console.log('currentWidth :>> ', currentWidth);
+
+        if (newWidth >= 250 && newWidth <= 300) {
+            requestAnimationFrame(() => {
+                document.documentElement.style.setProperty(
+                    '--layout-nav-bar-width',
+                    `${newWidth}px`,
+                );
+            });
+        }
+    };
+
+    const handleDragLeftEnd = () => {
+        const style = getComputedStyle(document.documentElement);
+        setLayout({
+            left: {
+                ...layout.left,
+                size: parseFloat(style.getPropertyValue('--layout-nav-bar-width')) || 250,
+            },
+        });
+        setIsDraggingLeft(false);
+    };
+
+    const handleDragRight = (_event: unknown, info: PanInfo) => {
+        const style = getComputedStyle(document.documentElement);
+        const currentWidth =
+            parseFloat(style.getPropertyValue('--layout-right-content-width')) || layout.right.size;
+        console.log('currentWidth :>> ', currentWidth);
+        const newWidth = currentWidth - info.delta.x;
+
+        if (newWidth >= 300 && newWidth <= 400) {
+            requestAnimationFrame(() => {
+                document.documentElement.style.setProperty(
+                    '--layout-right-content-width',
+                    `${newWidth}px`,
+                );
+            });
+        }
+    };
+
+    const handleDragRightEnd = () => {
+        const style = getComputedStyle(document.documentElement);
+        setLayout({
+            right: {
+                ...layout.right,
+                size: parseFloat(style.getPropertyValue('--layout-right-content-width')) || 300,
+            },
+        });
+        setIsDraggingRight(false);
+    };
 
     return (
-        <Allotment vertical>
-            <Allotment.Pane
-                className={styles.headerBarContainer}
-                maxSize={headerHeightNumber}
-                minSize={headerHeightNumber}
-                preferredSize={headerHeightNumber}
-            >
+        <div className={styles.desktopLayout} id="desktop-layout">
+            <div className={styles.headerBarContainer}>
                 <div className={styles.headerBar} id="header-bar-container">
                     <HeaderBar />
                 </div>
-            </Allotment.Pane>
-            <Allotment
-                onDragEnd={(e) => {
-                    setLayout({ sizes: e });
-                }}
-            >
-                <Allotment.Pane
-                    className={styles.navBarContainer}
-                    maxSize={300}
-                    minSize={225}
-                    preferredSize={layout.sizes[0]}
-                >
-                    <div className={styles.navBarSide} id="nav-bar-side-container">
-                        <NavBarSide />
+            </div>
+            <motion.div className={styles.contentLayout} id="content-layout">
+                <LayoutGroup>
+                    <div className={styles.navBarContainer} id="nav-bar-container">
+                        <div className={styles.navBarSide}>
+                            <NavBarSide />
+                        </div>
+                        <motion.div
+                            className={clsx(styles.dragHandleRight, {
+                                [styles.isDraggingLeft]: isDraggingLeft,
+                            })}
+                            drag="x"
+                            dragConstraints={{ bottom: 0, left: 0, right: 0, top: 0 }}
+                            dragElastic={0}
+                            dragMomentum={false}
+                            onDrag={handleDragLeft}
+                            onDragEnd={handleDragLeftEnd}
+                            onDragStart={() => setIsDraggingLeft(true)}
+                        />
                     </div>
-                </Allotment.Pane>
-                <Allotment.Pane
-                    className={styles.contentContainer}
-                    preferredSize={layout.sizes[1]}
-                    visible={layout.center}
-                >
-                    <div className={styles.content} id="content-container">
-                        <Suspense fallback={<></>}>
-                            <Outlet />
-                        </Suspense>
+                    <div className={styles.contentContainer} id="content-container">
+                        <div className={styles.content}>
+                            <Suspense fallback={<></>}>
+                                <Outlet />
+                            </Suspense>
+                        </div>
                     </div>
-                </Allotment.Pane>
-                <Allotment.Pane className={styles.rightContentContainer} visible={layout.right}>
-                    <div className={styles.rightContent} id="right-content-container">
-                        <Suspense fallback={<></>}>
-                            <SidePlayQueue />
-                        </Suspense>
+                    <div className={styles.rightContentContainer} id="right-content-container">
+                        <div className={styles.rightContent}>
+                            <Suspense fallback={<></>}>
+                                <SidePlayQueue />
+                            </Suspense>
+                        </div>
+                        <motion.div
+                            className={clsx(styles.dragHandleLeft, {
+                                [styles.isDraggingRight]: isDraggingRight,
+                            })}
+                            drag="x"
+                            dragConstraints={{ bottom: 0, left: 0, right: 0, top: 0 }}
+                            dragElastic={0}
+                            dragMomentum={false}
+                            onDrag={handleDragRight}
+                            onDragEnd={handleDragRightEnd}
+                            onDragStart={() => setIsDraggingRight(true)}
+                        />
                     </div>
-                </Allotment.Pane>
-            </Allotment>
-            <Allotment.Pane
-                className={styles.playerBarContainer}
-                maxSize={playerBarHeightNumber}
-                minSize={playerBarHeightNumber}
-                preferredSize={playerBarHeightNumber}
-            >
-                <div className={styles.playerBar} id="player-bar-container">
+                </LayoutGroup>
+            </motion.div>
+            <div className={styles.playerBarContainer} id="player-bar-container">
+                <div className={styles.playerBar}>
                     <PlayerBar />
                 </div>
-            </Allotment.Pane>
-        </Allotment>
+            </div>
+        </div>
     );
 }
 
-function MobileLayout(props: { navBarBottomHeight: string }) {
-    const { navBarBottomHeight } = props;
-    const navBarBottomHeightNumber = Number(navBarBottomHeight.replace('px', ''));
-
+function MobileLayout() {
     return (
-        <Allotment vertical>
-            <Allotment.Pane>
-                <ScrollArea className={styles.content} id="content-container">
-                    <Outlet />
-                </ScrollArea>
-            </Allotment.Pane>
-            <Allotment.Pane
-                maxSize={navBarBottomHeightNumber}
-                minSize={navBarBottomHeightNumber}
-                preferredSize={navBarBottomHeightNumber}
-            >
-                <NavBarBottom />
-            </Allotment.Pane>
-        </Allotment>
+        <div className={styles.mobileLayout}>
+            <ScrollArea className={styles.content} id="content-container">
+                <Outlet />
+            </ScrollArea>
+            <NavBarBottom />
+        </div>
     );
 }
