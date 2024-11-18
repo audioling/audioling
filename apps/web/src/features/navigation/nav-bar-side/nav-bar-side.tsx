@@ -16,7 +16,7 @@ export function NavBarSide() {
     return (
         <div className={styles.container}>
             <SearchBar />
-            <ScrollArea>
+            <ScrollArea allowDragScroll>
                 <Accordion.Group>
                     <Accordion
                         label="Library"

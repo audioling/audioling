@@ -9,16 +9,15 @@ import type { PolymorphicComponentType } from '@/types.ts';
 import styles from './scroll-area.module.scss';
 
 interface ScrollAreaProps extends React.ComponentPropsWithoutRef<'div'> {
+    allowDragScroll?: boolean;
     as?: PolymorphicComponentType;
     children: React.ReactNode;
     debugScrollPosition?: boolean;
-    // noHeader?: boolean;
-    // scrollBarOffset?: string;
     scrollHideDelay?: number;
 }
 
 export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivElement>) => {
-    const { as, children, className, scrollHideDelay, ...htmlProps } = props;
+    const { allowDragScroll, as, children, className, scrollHideDelay, ...htmlProps } = props;
 
     const containerRef = useRef(null);
     const [scroller, setScroller] = useState<HTMLElement | Window | null>(null);
@@ -46,15 +45,18 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
                 elements: { viewport: scroller as HTMLElement },
                 target: root,
             });
-            autoScrollForElements({
-                element: scroller as HTMLElement,
-                getAllowedAxis: () => 'vertical',
-                getConfiguration: () => ({ maxScrollSpeed: 'standard' }),
-            });
+
+            if (allowDragScroll) {
+                autoScrollForElements({
+                    element: scroller as HTMLElement,
+                    getAllowedAxis: () => 'vertical',
+                    getConfiguration: () => ({ maxScrollSpeed: 'standard' }),
+                });
+            }
         }
 
         return () => osInstance()?.destroy();
-    }, [initialize, osInstance, scroller]);
+    }, [allowDragScroll, initialize, osInstance, scroller]);
 
     const mergedRef = useMergedRef(ref, containerRef);
 
