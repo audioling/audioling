@@ -1,5 +1,5 @@
 import type { Ref } from 'react';
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { clsx } from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
@@ -21,8 +21,9 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
     const { as, children, className, scrollHideDelay, ...htmlProps } = props;
 
     const containerRef = useRef(null);
+    const [scroller, setScroller] = useState<HTMLElement | Window | null>(null);
 
-    const [initialize] = useOverlayScrollbars({
+    const [initialize, osInstance] = useOverlayScrollbars({
         defer: false,
         options: {
             overflow: { x: 'hidden', y: 'scroll' },
@@ -38,16 +39,35 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
     });
 
     useEffect(() => {
-        if (containerRef.current) {
-            initialize(containerRef.current as HTMLDivElement);
-            autoScrollForElements({ element: containerRef.current as HTMLElement });
+        const { current: root } = containerRef;
+
+        if (scroller && root) {
+            initialize({
+                elements: { viewport: scroller as HTMLElement },
+                target: root,
+            });
+            autoScrollForElements({
+                element: scroller as HTMLElement,
+                getAllowedAxis: () => 'vertical',
+                getConfiguration: () => ({ maxScrollSpeed: 'standard' }),
+            });
         }
-    }, [initialize]);
+
+        return () => osInstance()?.destroy();
+    }, [initialize, osInstance, scroller]);
 
     const mergedRef = useMergedRef(ref, containerRef);
 
     return (
-        <Box ref={mergedRef} as={as} className={clsx(styles.scrollArea, className)} {...htmlProps}>
+        <Box
+            ref={(el) => {
+                setScroller(el);
+                mergedRef(el);
+            }}
+            as={as}
+            className={clsx(styles.scrollArea, className)}
+            {...htmlProps}
+        >
             {children}
         </Box>
     );
