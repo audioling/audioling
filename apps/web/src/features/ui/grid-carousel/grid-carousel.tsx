@@ -139,23 +139,23 @@ function getCardsToShow(breakpoints: {
     }
 
     if (breakpoints.isLargerThanXxl) {
-        return 9;
-    }
-
-    if (breakpoints.isLargerThanXl) {
         return 7;
     }
 
-    if (breakpoints.isLargerThanLg) {
+    if (breakpoints.isLargerThanXl) {
         return 6;
     }
 
-    if (breakpoints.isLargerThanMd) {
+    if (breakpoints.isLargerThanLg) {
         return 5;
     }
 
-    if (breakpoints.isLargerThanSm) {
+    if (breakpoints.isLargerThanMd) {
         return 4;
+    }
+
+    if (breakpoints.isLargerThanSm) {
+        return 3;
     }
 
     return 2;
