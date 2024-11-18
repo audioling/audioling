@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import type { Variants } from 'framer-motion';
-import { AnimatePresence, motion } from 'framer-motion';
+import type { Variants } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { Title } from '@/features/ui/title/title.tsx';

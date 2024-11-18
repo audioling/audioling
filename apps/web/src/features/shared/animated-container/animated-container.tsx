@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import clsx from 'clsx';
-import type { Transition, Variants } from 'framer-motion';
-import { motion } from 'framer-motion';
+import type { Transition, Variants } from 'motion/react';
+import { motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './animated-container.module.scss';
 

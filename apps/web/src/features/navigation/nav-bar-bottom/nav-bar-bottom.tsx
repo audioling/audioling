@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { generatePath, NavLink, useLocation, useParams } from 'react-router-dom';
 import { Icon } from '@/features/ui/icon/icon.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';

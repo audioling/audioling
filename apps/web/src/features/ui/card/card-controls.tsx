@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { PlayType } from '@/features/player/stores/player-store.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';

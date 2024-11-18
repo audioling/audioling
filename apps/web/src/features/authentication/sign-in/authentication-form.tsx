@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import type { Ping } from '@/api/api-types.ts';
 import { CONSTANTS } from '@/constants.ts';

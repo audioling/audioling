@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import type { AlbumItem, TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsIdTracksSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { useAddToQueue } from '@/features/player/stores/player-store.tsx';

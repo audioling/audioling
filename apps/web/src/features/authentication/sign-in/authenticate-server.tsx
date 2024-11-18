@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Cookies from 'js-cookie';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';

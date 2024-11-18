@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { createContext, Fragment, type ReactNode, useContext, useMemo, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './menu.module.scss';
 

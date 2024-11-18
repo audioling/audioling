@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { forwardRef, useState } from 'react';
 import clsx from 'clsx';
-import type { Variants } from 'framer-motion';
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import type { Variants } from 'motion/react';
+import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
 import { Group } from '@/features/ui/group/group.tsx';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { Icon, MotionIcon } from '@/features/ui/icon/icon.tsx';

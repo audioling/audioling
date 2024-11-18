@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { axiosInstance } from '@/api/api-instance.ts';
 import type { Ping } from '@/api/api-types.ts';
 import { animationProps } from '@/features/ui/animations/props.ts';

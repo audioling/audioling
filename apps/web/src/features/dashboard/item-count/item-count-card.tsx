@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import type { LinkProps } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { animationVariants } from '@/features/ui/animations/variants.ts';

@@ -2,7 +2,7 @@ import type { Ref } from 'react';
 import { forwardRef } from 'react';
 import { Button as MantineButton } from '@mantine/core';
 import { clsx } from 'clsx';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
 import styles from './button.module.scss';
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useClickOutside } from '@/hooks/use-click-outside.ts';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
 import { useMergedRef } from '@/hooks/use-merged-ref.ts';

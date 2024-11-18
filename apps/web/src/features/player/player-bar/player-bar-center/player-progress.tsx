@@ -1,6 +1,6 @@
 import type { PointerEvent } from 'react';
 import { useRef } from 'react';
-import { motion, useDragControls } from 'framer-motion';
+import { motion, useDragControls } from 'motion/react';
 import styles from './player-progress.module.scss';
 
 interface PlayerProgressProps {

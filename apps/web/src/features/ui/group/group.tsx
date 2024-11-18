@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Group as MantineGroup } from '@mantine/core';
 import clsx from 'clsx';
-import { motion, wrap } from 'framer-motion';
+import { motion, wrap } from 'motion/react';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './group.module.scss';
 

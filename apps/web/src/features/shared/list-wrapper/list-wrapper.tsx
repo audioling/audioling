@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './list-wrapper.module.scss';
 

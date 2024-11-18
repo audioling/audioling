@@ -1,5 +1,5 @@
 // Common framer motion animations
-import type { AnimationProps } from 'framer-motion';
+import type { AnimationProps } from 'motion/react';
 
 const fadeIn: AnimationProps = {
     animate: { opacity: 1 },

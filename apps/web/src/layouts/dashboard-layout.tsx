@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Allotment } from 'allotment';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';

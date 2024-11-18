@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Stack as MantineStack } from '@mantine/core';
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './stack.module.scss';
 

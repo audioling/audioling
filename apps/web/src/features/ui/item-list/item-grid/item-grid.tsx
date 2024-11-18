@@ -10,7 +10,7 @@ import React, {
     useState,
 } from 'react';
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { VirtuosoGrid } from 'react-virtuoso';
 import styles from './item-grid.module.scss';

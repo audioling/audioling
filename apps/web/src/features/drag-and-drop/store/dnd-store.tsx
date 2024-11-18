@@ -1,4 +1,4 @@
-import type { DragControls } from 'framer-motion';
+import type { DragControls } from 'motion/react';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
