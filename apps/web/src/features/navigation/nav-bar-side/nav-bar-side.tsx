@@ -6,16 +6,27 @@ import {
     useToggleGeneralSection,
 } from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
+import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import styles from './nav-bar-side.module.scss';
 
 export function NavBarSide() {
     const generalSections = useGeneralNavigationSections();
     const toggleGeneralSection = useToggleGeneralSection();
-
     return (
         <div className={styles.container}>
-            <SearchBar />
+            <div className={styles.header}>
+                <SearchBar />
+                <IconButtonWithTooltip
+                    disabled
+                    icon="panelRightClose"
+                    tooltipProps={{
+                        label: 'Collapse',
+                        openDelay: 500,
+                    }}
+                    variant="default"
+                />
+            </div>
             <ScrollArea allowDragScroll>
                 <Accordion.Group>
                     <Accordion

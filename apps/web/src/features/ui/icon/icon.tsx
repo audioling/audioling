@@ -6,7 +6,9 @@ import {
     LuArrowDown,
     LuArrowDownWideNarrow,
     LuArrowLeft,
+    LuArrowLeftToLine,
     LuArrowRight,
+    LuArrowRightToLine,
     LuArrowUp,
     LuArrowUpDown,
     LuArrowUpNarrowWide,
@@ -27,6 +29,7 @@ import {
     LuLayoutGrid,
     LuLayoutList,
     LuLibrary,
+    LuList,
     LuListMusic,
     LuListOrdered,
     LuLoader,
@@ -47,6 +50,7 @@ import {
     LuShieldAlert,
     LuSkipBack,
     LuSkipForward,
+    LuSquare,
     LuStepBack,
     LuStepForward,
     LuTrash,
@@ -55,7 +59,6 @@ import {
     LuVolumeX,
 } from 'react-icons/lu';
 import { MdClose, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
-import { RiMusic2Line } from 'react-icons/ri';
 import styles from './icon.module.scss';
 
 export const AppIcon = {
@@ -65,9 +68,11 @@ export const AppIcon = {
     arrowDownS: LuChevronDown,
     arrowLeft: LuArrowLeft,
     arrowLeftS: LuChevronLeft,
+    arrowLeftToLine: LuArrowLeftToLine,
     arrowRight: LuArrowRight,
     arrowRightLast: LuChevronLast,
     arrowRightS: LuChevronRight,
+    arrowRightToLine: LuArrowRightToLine,
     arrowUp: LuArrowUp,
     arrowUpS: LuChevronUp,
     check: LuCheck,
@@ -98,7 +103,7 @@ export const AppIcon = {
     panelRightClose: LuPanelRightClose,
     panelRightOpen: LuPanelRightOpen,
     playlist: LuListMusic,
-    queue: RiMusic2Line,
+    queue: LuList,
     refresh: LuRotateCw,
     remove: LuMinus,
     search: LuSearch,
@@ -106,6 +111,7 @@ export const AppIcon = {
     sortAsc: LuArrowUpNarrowWide,
     sortDesc: LuArrowDownWideNarrow,
     spinner: LuLoader,
+    square: LuSquare,
     success: LuCheckCircle,
     track: LuMusic2,
     visibility: MdOutlineVisibility,

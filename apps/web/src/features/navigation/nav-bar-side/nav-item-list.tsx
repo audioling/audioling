@@ -24,8 +24,8 @@ function getNavItems(libraryId: string): {
 }[] {
     return [
         {
-            icon: 'home',
-            label: 'Now Playing',
+            icon: 'queue',
+            label: 'Queue',
             to: generatePath(APP_ROUTE.DASHBOARD_NOW_PLAYING, { libraryId }),
         },
         {

@@ -20,6 +20,7 @@ interface NavigationState {
         general: Record<string, boolean>;
         playlists: Record<string, boolean>;
     };
+    toggleRightPanel: () => void;
     toggleSection: (section: string) => (id: string) => void;
 }
 
@@ -47,8 +48,16 @@ export const useNavigationStore = create<NavigationState>()(
                 });
             },
             side: {
-                general: {},
+                general: {
+                    library: true,
+                    playlists: true,
+                },
                 playlists: {},
+            },
+            toggleRightPanel: () => {
+                set((state) => {
+                    state.layout.right.open = !state.layout.right.open;
+                });
             },
             toggleSection: (section) => (id) => {
                 set((state) => {
@@ -89,6 +98,14 @@ export const useSetPlaylistsSection = () => {
 
 export const useLayout = () => {
     return useNavigationStore(useShallow((state) => state.layout));
+};
+
+export const useRightPanelOpen = () => {
+    return useNavigationStore(useShallow((state) => state.layout.right.open));
+};
+
+export const useToggleRightPanel = () => {
+    return useNavigationStore(useShallow((state) => state.toggleRightPanel));
 };
 
 export const useSetLayout = () => {

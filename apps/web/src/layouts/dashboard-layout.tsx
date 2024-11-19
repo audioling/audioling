@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import type { PanInfo } from 'motion/react';
-import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Outlet } from 'react-router-dom';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
@@ -36,7 +36,6 @@ export function DashboardLayout() {
                 exit="hidden"
                 id="dashboard-layout"
                 initial="hidden"
-                style={{ height: '100%', width: '100%' }}
                 transition={{ duration: 1 }}
                 variants={animationVariants.fadeIn}
             >
@@ -72,9 +71,8 @@ function DesktopLayout() {
         const currentWidth =
             parseFloat(style.getPropertyValue('--layout-nav-bar-width')) || layout.left.size;
         const newWidth = currentWidth + info.delta.x;
-        console.log('currentWidth :>> ', currentWidth);
 
-        if (newWidth >= 250 && newWidth <= 300) {
+        if (newWidth >= 250 && newWidth <= 350) {
             requestAnimationFrame(() => {
                 document.documentElement.style.setProperty(
                     '--layout-nav-bar-width',
@@ -99,10 +97,9 @@ function DesktopLayout() {
         const style = getComputedStyle(document.documentElement);
         const currentWidth =
             parseFloat(style.getPropertyValue('--layout-right-content-width')) || layout.right.size;
-        console.log('currentWidth :>> ', currentWidth);
         const newWidth = currentWidth - info.delta.x;
 
-        if (newWidth >= 300 && newWidth <= 400) {
+        if (newWidth >= 300 && newWidth <= 800) {
             requestAnimationFrame(() => {
                 document.documentElement.style.setProperty(
                     '--layout-right-content-width',
@@ -123,6 +120,13 @@ function DesktopLayout() {
         setIsDraggingRight(false);
     };
 
+    // Add this function to compute grid template columns
+    const getGridTemplateColumns = () => {
+        const leftColumn = layout.left.open ? `var(--layout-nav-bar-width, 300px)` : '80px';
+        const rightColumn = layout.right.open ? `var(--layout-right-content-width, 400px)` : '0';
+        return `${leftColumn} 1fr ${rightColumn}`;
+    };
+
     return (
         <div className={styles.desktopLayout} id="desktop-layout">
             <div className={styles.headerBarContainer}>
@@ -130,12 +134,18 @@ function DesktopLayout() {
                     <HeaderBar />
                 </div>
             </div>
-            <motion.div className={styles.contentLayout} id="content-layout">
-                <LayoutGroup>
+            <AnimatePresence initial={false}>
+                <motion.div
+                    className={styles.contentLayout}
+                    id="content-layout"
+                    style={{ gridTemplateColumns: getGridTemplateColumns() }}
+                >
                     <div className={styles.navBarContainer} id="nav-bar-container">
-                        <div className={styles.navBarSide}>
-                            <NavBarSide />
-                        </div>
+                        {layout.left.open && (
+                            <div className={styles.navBarSide}>
+                                <NavBarSide />
+                            </div>
+                        )}
                         <motion.div
                             className={clsx(styles.dragHandleRight, {
                                 [styles.isDraggingLeft]: isDraggingLeft,
@@ -156,27 +166,36 @@ function DesktopLayout() {
                             </Suspense>
                         </div>
                     </div>
-                    <div className={styles.rightContentContainer} id="right-content-container">
-                        <div className={styles.rightContent}>
-                            <Suspense fallback={<></>}>
-                                <SidePlayQueue />
-                            </Suspense>
-                        </div>
+                    {layout.right.open && (
                         <motion.div
-                            className={clsx(styles.dragHandleLeft, {
-                                [styles.isDraggingRight]: isDraggingRight,
-                            })}
-                            drag="x"
-                            dragConstraints={{ bottom: 0, left: 0, right: 0, top: 0 }}
-                            dragElastic={0}
-                            dragMomentum={false}
-                            onDrag={handleDragRight}
-                            onDragEnd={handleDragRightEnd}
-                            onDragStart={() => setIsDraggingRight(true)}
-                        />
-                    </div>
-                </LayoutGroup>
-            </motion.div>
+                            animate="show"
+                            className={styles.rightContentContainer}
+                            exit="hidden"
+                            id="right-content-container"
+                            initial="hidden"
+                            variants={animationVariants.fadeInLeft}
+                        >
+                            <div className={styles.rightContent}>
+                                <Suspense fallback={<></>}>
+                                    <SidePlayQueue />
+                                </Suspense>
+                            </div>
+                            <motion.div
+                                className={clsx(styles.dragHandleLeft, {
+                                    [styles.isDraggingRight]: isDraggingRight,
+                                })}
+                                drag="x"
+                                dragConstraints={{ bottom: 0, left: 0, right: 0, top: 0 }}
+                                dragElastic={0}
+                                dragMomentum={false}
+                                onDrag={handleDragRight}
+                                onDragEnd={handleDragRightEnd}
+                                onDragStart={() => setIsDraggingRight(true)}
+                            />
+                        </motion.div>
+                    )}
+                </motion.div>
+            </AnimatePresence>
             <div className={styles.playerBarContainer} id="player-bar-container">
                 <div className={styles.playerBar}>
                     <PlayerBar />

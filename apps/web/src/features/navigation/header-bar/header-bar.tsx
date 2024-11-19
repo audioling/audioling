@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { FileMenu } from '@/features/navigation/header-bar/file-menu.tsx';
+import { RightPanelButton } from '@/features/navigation/header-bar/right-panel-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import styles from './header-bar.module.scss';
@@ -18,26 +19,19 @@ export function HeaderBar() {
     return (
         <div className={styles.headerBar} id="header-bar">
             <div className={styles.left} id="header-bar-left">
-                <Group gap="xs">
+                <Group gap="xs" wrap="nowrap">
                     <FileMenu />
-                    <IconButton
-                        icon="arrowLeftS"
-                        size="xl"
-                        variant="default"
-                        onClick={handleGoBack}
-                    />
-                    <IconButton
-                        icon="arrowRightS"
-                        size="xl"
-                        variant="default"
-                        onClick={handleGoForward}
-                    />
+                    <IconButton icon="arrowLeftS" variant="default" onClick={handleGoBack} />
+                    <IconButton icon="arrowRightS" variant="default" onClick={handleGoForward} />
                 </Group>
             </div>
             <div className={styles.center} id="header-bar-center"></div>
             <div className={styles.right} id="header-bar-right">
-                <Group gap="sm" wrap="nowrap">
-                    <IconButton icon="panelRightOpen" size="xl" variant="default" />
+                <Group gap="xs" wrap="nowrap">
+                    <RightPanelButton />
+                    {/* <IconButton icon="remove" variant="default" />
+                    <IconButton icon="square" variant="default" />
+                    <IconButton icon="x" variant="default" /> */}
                 </Group>
             </div>
         </div>

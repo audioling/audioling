@@ -16,3 +16,13 @@
     background-color: var(--layout-nav-bar-side-background-color);
     border-radius: var(--layout-base-border-radius);
 }
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+}
+
+.header button {
+    height: 100%;
+}

@@ -15,10 +15,6 @@
 .content-layout {
     display: grid;
     grid-area: content-layout;
-    grid-template-columns: var(--layout-nav-bar-width, 300px) 1fr var(
-            --layout-right-content-width,
-            400px
-        );
     width: 100%;
     max-width: 100vw;
     min-height: 0;
