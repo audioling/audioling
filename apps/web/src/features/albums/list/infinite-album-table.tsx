@@ -13,7 +13,7 @@ import {
 } from '@/features/albums/stores/album-list-store.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
-import { InfiniteItemTable } from '@/features/ui/item-list/item-table/infinite-item-table.tsx';
+import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { throttle } from '@/utils/throttle.ts';
 
@@ -95,7 +95,7 @@ export function InfiniteAlbumTable({
     const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
 
     return (
-        <InfiniteItemTable<AlbumItem, AlbumTableItemContext>
+        <ItemTable<AlbumItem, AlbumTableItemContext>
             columnOrder={columnOrder}
             columns={columns}
             context={{ baseUrl, libraryId }}

@@ -36,7 +36,7 @@ import {
     libraryItemTypeToDragTarget,
 } from '@/utils/drag-drop.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
-import styles from './infinite-item-table.module.scss';
+import styles from './item-table.module.scss';
 
 export interface TableItemProps<T, C extends { baseUrl: string; libraryId: string }> {
     context?: C;
@@ -51,7 +51,7 @@ export type ItemTableRowDrop = {
     index: number;
 };
 
-interface InfiniteItemTableProps<T, C extends { baseUrl: string; libraryId: string }> {
+interface ItemTableProps<T, C extends { baseUrl: string; libraryId: string }> {
     columnOrder: ItemListColumn[];
     columns: DisplayColumnDef<T | undefined>[];
     context: C;
@@ -69,10 +69,10 @@ interface InfiniteItemTableProps<T, C extends { baseUrl: string; libraryId: stri
     onStartReached?: (index: number) => void;
 }
 
-export function InfiniteItemTable<
+export function ItemTable<
     T extends { id: string },
     C extends { baseUrl: string; libraryId: string },
->(props: InfiniteItemTableProps<T, C>) {
+>(props: ItemTableProps<T, C>) {
     const {
         columns,
         columnOrder,
@@ -449,6 +449,10 @@ function TableRow<
             }),
             dropTargetForElements({
                 canDrop: (args) => {
+                    if (!onRowDrop) {
+                        return false;
+                    }
+
                     const data = args.source.data as DragData;
                     const isTarget = dndUtils.isDropTarget(data.type, [
                         DragTarget.ALBUM,

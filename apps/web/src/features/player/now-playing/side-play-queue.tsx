@@ -11,8 +11,8 @@ import {
 } from '@/features/player/stores/player-store.tsx';
 import { ItemListColumn, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
-import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/infinite-item-table.tsx';
-import { InfiniteItemTable } from '@/features/ui/item-list/item-table/infinite-item-table.tsx';
+import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
+import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 
 interface SidePlayQueueTableItemContext {
@@ -88,7 +88,7 @@ export function SidePlayQueue() {
     };
 
     return (
-        <InfiniteItemTable<TrackItem, SidePlayQueueTableItemContext>
+        <ItemTable<TrackItem, SidePlayQueueTableItemContext>
             columnOrder={columnOrder}
             columns={columns}
             context={tableContext}

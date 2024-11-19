@@ -13,7 +13,7 @@ import {
 } from '@/features/tracks/store/track-list-store.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
-import { InfiniteItemTable } from '@/features/ui/item-list/item-table/infinite-item-table.tsx';
+import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { throttle } from '@/utils/throttle.ts';
 
@@ -97,7 +97,7 @@ export function InfiniteTrackTable({
     const tableContext = useMemo(() => ({ baseUrl, libraryId }), [baseUrl, libraryId]);
 
     return (
-        <InfiniteItemTable<TrackItem, TrackTableItemContext>
+        <ItemTable<TrackItem, TrackTableItemContext>
             columnOrder={columnOrder}
             columns={columns}
             context={tableContext}
