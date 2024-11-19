@@ -10,13 +10,26 @@
     position: relative;
     display: grid;
     grid-template-areas: 'content image';
-    grid-template-columns: 50% auto;
+    grid-template-columns: 80% auto;
     gap: base.$gap-md;
     width: 100%;
     height: 100%;
     overflow: hidden;
     user-select: none;
     border-radius: base.$border-radius-md;
+    container-name: album-grid-item-expanded;
+
+    @include base.container-larger-than-sm {
+        grid-template-columns: 70% auto;
+    }
+
+    @include base.container-larger-than-md {
+        grid-template-columns: 50% auto;
+    }
+
+    @include base.container-larger-than-lg {
+        grid-template-columns: 40% auto;
+    }
 }
 
 .header {
@@ -64,25 +77,22 @@
     display: flex;
     flex-direction: column;
     gap: base.$gap-sm;
-    padding-right: base.$gap-md;
-}
-
-.tracks:nth-child(3) {
-    text-align: left;
 }
 
 .track {
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: 0.5rem minmax(0, 1fr) auto auto;
     gap: base.$gap-md;
-    padding: base.$gap-sm 0;
+    width: 100%;
     font-variant-numeric: tabular-nums;
-
-    @include base.text-ellipsis;
 
     svg {
         color: black;
     }
+}
+
+.track-name {
+    @include base.text-ellipsis;
 }
 
 .track.dark {

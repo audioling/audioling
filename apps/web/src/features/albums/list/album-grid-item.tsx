@@ -111,10 +111,17 @@ function ExpandedAlbumGridItemContent({
                         {data.artists[0]?.name}
                     </Title>
                 </div>
-                <ScrollArea className={styles.tracks}>
-                    {tracks?.data?.map((track, index) => (
-                        <RowItem key={track.id} index={index} isDark={color.isDark} track={track} />
-                    ))}
+                <ScrollArea>
+                    <div className={styles.tracks}>
+                        {tracks?.data?.map((track, index) => (
+                            <RowItem
+                                key={track.id}
+                                index={index}
+                                isDark={color.isDark}
+                                track={track}
+                            />
+                        ))}
+                    </div>
                 </ScrollArea>
             </div>
             <div
@@ -138,7 +145,7 @@ function RowItem({ index, track, isDark }: { index: number; isDark: boolean; tra
             <Text size="md" weight="lg">
                 {index + 1}
             </Text>
-            <Text size="md" weight="lg">
+            <Text className={styles.trackName} size="md" weight="lg">
                 {track.name}
             </Text>
             <Text size="md">{formatDuration(track.duration)}</Text>
