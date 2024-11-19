@@ -8,12 +8,12 @@ export function actionsColumn<T>(columnHelper: ColumnHelper<T>) {
         cell: () => {
             return (
                 <div className={styles.cell}>
-                    <IconButton icon="ellipsisHorizontal" />
+                    <IconButton icon="ellipsisHorizontal" size="sm" />
                 </div>
             );
         },
         header: '',
         id: 'actions',
-        size: itemListHelpers.table.numberToColumnSize(60, 'px'),
+        size: itemListHelpers.table.numberToColumnSize(50, 'px'),
     });
 }
