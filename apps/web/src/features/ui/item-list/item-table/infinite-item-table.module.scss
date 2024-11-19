@@ -14,8 +14,9 @@
 .header {
     display: grid;
     font-size: base.$font-size-md;
-    color: rgb(131 131 135);
-    background-color: rgb(26 26 26);
+    color: var(--table-header-font-color);
+    background-color: var(--table-header-background-color);
+    box-shadow: 2px 2px 10px 2px rgb(0 0 0 / 20%);
 }
 
 .header-cell {
