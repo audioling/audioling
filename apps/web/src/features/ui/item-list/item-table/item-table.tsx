@@ -14,7 +14,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import type { LibraryItemType } from '@repo/shared-types';
-import type { DisplayColumnDef, Header, Row, Table } from '@tanstack/react-table';
+import type { DisplayColumnDef, ExpandedState, Header, Row, Table } from '@tanstack/react-table';
 import {
     flexRender,
     getCoreRowModel,
@@ -29,6 +29,7 @@ import { ItemContextMenu } from '@/features/shared/item-context-menu/item-contex
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { Text } from '@/features/ui/text/text.tsx';
 import {
     dndUtils,
     DragOperation,
@@ -70,7 +71,7 @@ interface ItemTableProps<T, C extends { baseUrl: string; libraryId: string }> {
 }
 
 export function ItemTable<
-    T extends { id: string },
+    T extends { _group: string; _isGroupHeader: boolean; _uniqueId: string; id: string },
     C extends { baseUrl: string; libraryId: string },
 >(props: ItemTableProps<T, C>) {
     const {
@@ -371,7 +372,7 @@ function TableHeader<T>(props: TableHeaderProps<T>) {
 }
 
 interface TableRowProps<
-    T,
+    T extends { id: string; subRows?: T[] },
     C extends {
         baseUrl: string;
         columnStyles: {
@@ -394,7 +395,7 @@ interface TableRowProps<
 }
 
 function TableRow<
-    T,
+    T extends { id: string; subRows?: T[] },
     C extends {
         baseUrl: string;
         columnStyles: {
@@ -410,6 +411,8 @@ function TableRow<
         props;
     const ref = useRef<HTMLDivElement>(null);
     const row = table.getRow(index.toString());
+
+    const isFullWidth = Boolean(row?.original?.subRows);
 
     const canSelect = row?.getCanSelect();
     const isSelected = row?.getIsSelected();
@@ -501,33 +504,38 @@ function TableRow<
         );
     }, [index, itemType, onRowDrop, row.id, table]);
 
+    const isGroupHeader = row.original?._isGroupHeader;
+
     return (
-        <div
-            ref={ref}
-            className={clsx(styles.row, {
-                [styles.canSelect]: canSelect,
-                [styles.selected]: isSelected,
-                [styles.dragging]: isDragging && table.getSelectedRowModel().rows.length === 0,
-                [styles.draggedOverBottom]: isDraggedOver === 'bottom',
-                [styles.draggedOverTop]: isDraggedOver === 'top',
-            })}
-            style={context.columnStyles.styles}
-            onClick={(e) => onRowClick(e, row)}
-            onContextMenu={(e) => onRowContextMenu(e, row)}
-        >
-            {row?.getVisibleCells()?.map((cell) => {
-                return (
-                    <Fragment key={`${tableId}-cell-${cell.id}`}>
-                        {flexRender(cell.column.columnDef.cell, {
-                            ...cell.getContext(),
-                            context: {
-                                baseUrl: context.baseUrl!,
-                                libraryId: context.libraryId!,
-                            },
-                        })}
-                    </Fragment>
-                );
-            })}
+        <div className={styles.rowContainer}>
+            {isGroupHeader && <Text className={styles.groupHeader}>{row.original._group}</Text>}
+            <div
+                ref={ref}
+                className={clsx(styles.row, {
+                    [styles.canSelect]: canSelect,
+                    [styles.selected]: isSelected,
+                    [styles.dragging]: isDragging && table.getSelectedRowModel().rows.length === 0,
+                    [styles.draggedOverBottom]: isDraggedOver === 'bottom',
+                    [styles.draggedOverTop]: isDraggedOver === 'top',
+                })}
+                style={context.columnStyles.styles}
+                onClick={(e) => onRowClick(e, row)}
+                onContextMenu={(e) => onRowContextMenu(e, row)}
+            >
+                {row?.getVisibleCells()?.map((cell) => {
+                    return (
+                        <Fragment key={`${tableId}-cell-${cell.id}`}>
+                            {flexRender(cell.column.columnDef.cell, {
+                                ...cell.getContext(),
+                                context: {
+                                    baseUrl: context.baseUrl!,
+                                    libraryId: context.libraryId!,
+                                },
+                            })}
+                        </Fragment>
+                    );
+                })}
+            </div>
         </div>
     );
 }

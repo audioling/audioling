@@ -9,7 +9,7 @@ import type {
     GetApiLibraryIdAlbumsParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
-import { useAddToQueue } from '@/features/player/stores/player-store.tsx';
+import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { GridCarousel } from '@/features/ui/grid-carousel/grid-carousel.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
@@ -29,8 +29,6 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
     const { data: albums, fetchNextPage } = useAlbumListInfinite(libraryId, sortBy, sortOrder, 20);
     const baseUrl = useAuthBaseUrl();
 
-    const { onPlayByFetch } = useAddToQueue({ libraryId });
-
     const cards = useMemo(
         () =>
             albums.pages.flatMap((page) =>
@@ -40,12 +38,17 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                             componentState="loaded"
                             controls={{
                                 onMore: () => {},
-                                onPlay: (id, playType) =>
-                                    onPlayByFetch({
-                                        id,
-                                        itemType: LibraryItemType.ALBUM,
-                                        playType,
-                                    }),
+                                onPlay: (id, playType) => {
+                                    PlayerController.call({
+                                        cmd: {
+                                            addToQueueByFetch: {
+                                                id,
+                                                itemType: LibraryItemType.ALBUM,
+                                                type: playType,
+                                            },
+                                        },
+                                    });
+                                },
                             }}
                             id={album.id}
                             image={`${baseUrl}${album.imageUrl}&size=400`}
@@ -72,7 +75,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     id: album.id,
                 })),
             ),
-        [albums.pages, baseUrl, libraryId, onPlayByFetch],
+        [albums.pages, baseUrl, libraryId],
     );
 
     const handleNextPage = useCallback(() => {}, []);

@@ -3,12 +3,8 @@ import { LibraryItemType } from '@repo/shared-types';
 import { useParams } from 'react-router-dom';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
-import {
-    PlayType,
-    subscribePlayerQueue,
-    useAddToQueue,
-    usePlayerActions,
-} from '@/features/player/stores/player-store.tsx';
+import { PlayerController } from '@/features/controllers/player-controller.tsx';
+import { subscribePlayerQueue, usePlayerActions } from '@/features/player/stores/player-store.tsx';
 import { ItemListColumn, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
@@ -58,31 +54,40 @@ export function SidePlayQueue() {
 
     const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
 
-    const { onPlayByFetch } = useAddToQueue({ libraryId });
     const onRowDrop = (args: ItemTableRowDrop) => {
-        const { index, edge, data } = args;
-
-        const insertIndex = Math.max(0, edge === 'top' ? index : index + 1);
+        const { edge, data } = args;
 
         // TODO: Handle reorder operations
         if (data.operation?.includes(DragOperation.ADD)) {
             switch (data.type) {
                 case DragTarget.ALBUM:
-                    onPlayByFetch({
+                    PlayerController.call({
+                        cmd: {
+                            addToQueueByFetch: {
                         id: data.id,
-                        index: insertIndex,
                         itemType: LibraryItemType.ALBUM,
-                        playType: PlayType.INDEX,
+                                type: {
+                                    edge,
+                                    uniqueId: data.id,
+                                },
+                            },
+                        },
                     });
                     break;
-                case DragTarget.TRACK:
-                    onPlayByFetch({
-                        id: data.id,
-                        index: insertIndex,
-                        itemType: LibraryItemType.TRACK,
-                        playType: PlayType.INDEX,
-                    });
-                    break;
+                // case DragTarget.TRACK:
+                //     PlayerController.call({
+                //         cmd: {
+                //             addToQueueByFetch: {
+                //                 id: data.id,
+                //                 itemType: LibraryItemType.TRACK,
+                //                 type: {
+                //                     edge: 'bottom',
+                //                     uniqueId: data.id,
+                //                 },
+                //             },
+                //         },
+                //     });
+                //     break;
             }
         }
     };

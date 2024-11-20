@@ -57,6 +57,7 @@ export enum PlayType {
 
 export interface QueueData {
     default: PlayQueueItem[];
+    priority: PlayQueueItem[];
 }
 
 // Add new interface for the grouped queue structure
@@ -66,13 +67,15 @@ interface GroupedQueue {
     remaining: PlayQueueItem[];
 }
 
+type GroupingProperty = keyof PlayQueueItem;
+
 interface Actions {
     addToQueueByIndex: (index: number, items: TrackItem[]) => void;
     addToQueueByType: (playType: PlayType, items: TrackItem[]) => void;
     clearQueue: () => void;
     getDefaultQueue: () => PlayQueueItem[];
     // getPlayerData: () => PlayerData;
-    getQueue: () => GroupedQueue;
+    getQueue: (groupBy?: GroupingProperty) => GroupedQueue;
     mediaNext: () => void;
     mediaPause: () => void;
     mediaPlay: () => void;
@@ -105,10 +108,7 @@ export const usePlayerStore = create<PlayerState>()(
             immer((set, get) => ({
                 addToQueueByIndex: (index, items) => {
                     set((state) => {
-                        const newItems = items.map((item) => ({
-                            ...item,
-                            uniqueId: nanoid(),
-                        }));
+                        const newItems = items.map(toPlayQueueItem);
 
                         // If we're adding to the end of the queue, just append
                         if (index === state.queue.default.length - 1) {
@@ -122,30 +122,20 @@ export const usePlayerStore = create<PlayerState>()(
                     });
                 },
                 addToQueueByType: (playType, items) => {
+                    const newItems = items.map(toPlayQueueItem);
+
                     switch (playType) {
                         case PlayType.NOW: {
                             set((state) => {
                                 state.queue.default = [];
                                 state.player.index = 0;
-
-                                const newItems = items.map((item) => ({
-                                    ...item,
-                                    uniqueId: nanoid(),
-                                }));
-
                                 state.queue.default = [...newItems];
                             });
                             break;
                         }
                         case PlayType.NEXT: {
-                            const currentIndex = get().player.index;
-
                             set((state) => {
-                                const newItems = items.map((item) => ({
-                                    ...item,
-                                    uniqueId: nanoid(),
-                                }));
-
+                                const currentIndex = state.player.index;
                                 const before = state.queue.default.slice(0, currentIndex + 1);
                                 const after = state.queue.default.slice(currentIndex + 1);
                                 state.queue.default = [...before, ...newItems, ...after];
@@ -154,11 +144,6 @@ export const usePlayerStore = create<PlayerState>()(
                         }
                         case PlayType.LAST: {
                             set((state) => {
-                                const newItems = items.map((item) => ({
-                                    ...item,
-                                    uniqueId: nanoid(),
-                                }));
-
                                 state.queue.default = [...state.queue.default, ...newItems];
                             });
                             break;
@@ -173,28 +158,52 @@ export const usePlayerStore = create<PlayerState>()(
                 getDefaultQueue: () => {
                     return get().queue.default;
                 },
-                getQueue: () => {
+                getQueue: (groupBy?: GroupingProperty) => {
                     const defaultQueue = get().getDefaultQueue();
                     const currentIndex = get().player.index;
 
+                    // Helper function to determine if an item is a group header
+                    const isGroupHeader = (
+                        item: PlayQueueItem,
+                        index: number,
+                        array: PlayQueueItem[],
+                    ) => {
+                        if (!groupBy) return false;
+                        if (index === 0) return true;
+
+                        const prevItem = array[index - 1];
+                        return item[groupBy] !== prevItem[groupBy];
+                    };
+
+                    // Add isGroupHeader property to items
+                    const processItems = (items: PlayQueueItem[]): PlayQueueItem[] => {
+                        return items.map((item, index, array) => ({
+                            ...item,
+                            _group: groupBy ? (item[groupBy] as string) : '',
+                            _isGroupHeader: isGroupHeader(item, index, array),
+                        }));
+                    };
+
                     // Handle case where nothing is playing
                     if (currentIndex === -1) {
+                        const processedQueue = processItems(defaultQueue);
                         return {
-                            all: defaultQueue,
+                            all: processedQueue,
                             current: [],
-                            remaining: defaultQueue,
+                            remaining: processedQueue,
                         };
                     }
 
                     // Split the default queue into current and remaining
-                    const current = defaultQueue.slice(currentIndex, currentIndex + 1);
                     const beforeCurrent = defaultQueue.slice(0, currentIndex);
+                    const current = defaultQueue.slice(currentIndex, currentIndex + 1);
                     const afterCurrent = defaultQueue.slice(currentIndex + 1);
 
+                    // Process each section with the grouping logic
                     return {
-                        all: [...beforeCurrent, ...current, ...afterCurrent],
-                        current,
-                        remaining: afterCurrent,
+                        all: processItems([...beforeCurrent, ...current, ...afterCurrent]),
+                        current: processItems(current),
+                        remaining: processItems(afterCurrent),
                     };
                 },
                 mediaNext: () => {
@@ -254,9 +263,8 @@ export const usePlayerStore = create<PlayerState>()(
                     volume: 1,
                 },
                 queue: {
-                    currentIndex: -1,
                     default: [],
-                    next: [],
+                    priority: [],
                 },
             })),
         ),
@@ -278,6 +286,7 @@ export const usePlayerActions = () => {
         useShallow((state) => ({
             addToQueueByIndex: state.addToQueueByIndex,
             addToQueueByType: state.addToQueueByType,
+            clearQueue: state.clearQueue,
             getQueue: state.getQueue,
             mediaNext: state.mediaNext,
             mediaPause: state.mediaPause,
@@ -322,49 +331,55 @@ export const usePlayerStatus = () => {
 //     return newArray;
 // }
 
-export const useAddToQueue = ({ libraryId }: { libraryId: string }) => {
-    const queryClient = useQueryClient();
-    const { addToQueueByIndex, addToQueueByType } = usePlayerActions();
+export type AddToQueueByUniqueId = {
+    edge: 'top' | 'bottom' | 'left' | 'right' | null;
+    uniqueId: string;
+};
 
-    const onPlayByFetch = useCallback(
-        async (
-            args: { id: string; index?: number; itemType: LibraryItemType; playType: PlayType },
-            onComplete?: () => void,
-        ) => {
+export type AddToQueueByPlayType = PlayType;
+
+export type AddToQueueType = AddToQueueByUniqueId | AddToQueueByPlayType;
+
+export async function addToQueueByFetch(
+    queryClient: QueryClient,
+    libraryId: string,
+    type: AddToQueueType,
+    args: {
+        id: string;
+        itemType: LibraryItemType;
+        params?: GetApiLibraryIdAlbumsIdTracksParams;
+    },
+) {
             let items: TrackItem[] = [];
 
             if (args.itemType === LibraryItemType.ALBUM) {
-                const result = await fetchAlbumTracks(queryClient, libraryId, args.id, {
+        const result = await fetchTracksByAlbumId(queryClient, libraryId, args.id, {
                     sortBy: TrackListSortOptions.ID,
                     sortOrder: ListSortOrder.ASC,
+            ...args.params,
                 });
+
                 items = result.data;
             }
 
-            if (args.index !== undefined) {
-                addToQueueByIndex(args.index, items);
+    if (typeof type === 'string') {
+        usePlayerStore.getState().addToQueueByType(type, items);
             } else {
-                addToQueueByType(args.playType, items);
-            }
+        const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
+        usePlayerStore.getState().addToQueueByUniqueId(type.uniqueId, items, normalizedEdge);
+    }
+}
 
-            onComplete?.();
-        },
-        [addToQueueByIndex, addToQueueByType, libraryId, queryClient],
-    );
+export async function addToQueueByData(type: AddToQueueType, data: TrackItem[]) {
+    const items = data.map(toPlayQueueItem);
 
-    const onPlayByData = useCallback(
-        (
-            args: { data: TrackItem[]; itemType: LibraryItemType; playType: PlayType },
-            onComplete?: () => void,
-        ) => {
-            addToQueueByType(args.playType, args.data);
-            onComplete?.();
-        },
-        [addToQueueByType],
-    );
-
-    return { onPlayByData, onPlayByFetch };
-};
+    if (typeof type === 'string') {
+        usePlayerStore.getState().addToQueueByType(type, items);
+    } else {
+        const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
+        usePlayerStore.getState().addToQueueByUniqueId(type.uniqueId, items, normalizedEdge);
+    }
+}
 
 export const subscribePlayerQueue = (
     onChange: (queue: QueueData, prevQueue: QueueData) => void,
@@ -376,3 +391,11 @@ export const subscribePlayerQueue = (
         },
     );
 };
+
+function toPlayQueueItem(item: TrackItem): PlayQueueItem {
+    return {
+        ...item,
+        _queueId: nanoid(),
+        _uniqueId: nanoid(),
+    };
+}

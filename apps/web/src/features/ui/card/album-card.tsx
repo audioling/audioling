@@ -10,7 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router-dom';
-import { prefetchAlbumTracks } from '@/api/fetchers/albums.ts';
+import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import type { PlayType } from '@/features/player/stores/player-store.tsx';
 import { CardControls } from '@/features/ui/card/card-controls.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
@@ -80,9 +80,16 @@ export function AlbumCard(props: AlbumCardProps) {
                 },
                 onDragStart: async () => {
                     setIsDragging(true);
-                    prefetchAlbumTracks(queryClient, libraryId, id, {
-                        sortBy: TrackListSortOptions.ID,
-                        sortOrder: ListSortOrder.ASC,
+                    PrefetchController.call({
+                        cmd: {
+                            tracksByAlbumId: {
+                                id,
+                                params: {
+                                    sortBy: TrackListSortOptions.ID,
+                                    sortOrder: ListSortOrder.ASC,
+                                },
+                            },
+                        },
                     });
                 },
                 onDrop: () => setIsDragging(false),

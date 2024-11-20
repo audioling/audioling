@@ -28,5 +28,8 @@ export interface GenreItem extends GetApiLibraryIdGenres200DataItem {}
 export interface TrackItem extends GetApiLibraryIdTracks200DataItem {}
 
 export interface PlayQueueItem extends TrackItem {
-    uniqueId: string;
+    _groupId: string;
+    _groupName: string;
+    _isGroupHeader: boolean;
+    _uniqueId: string;
 }

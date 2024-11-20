@@ -40,7 +40,8 @@
     color: var(--table-row-font-color);
     user-select: none;
     background-color: var(--table-row-background-color);
-    border-bottom: 1px solid var(--table-row-border-color);
+
+    // border-bottom: 1px solid var(--table-row-border-color);
 
     &:hover {
         background-color: var(--table-row-hover-background-color);
@@ -131,4 +132,19 @@
     color: var(--table-row-selected-font-color);
     background-color: var(--table-row-selected-background-color);
     border-color: var(--table-row-selected-border-color);
+}
+
+.row-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.group-header {
+    @include base.text-ellipsis;
+
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: base.$gap-sm;
 }

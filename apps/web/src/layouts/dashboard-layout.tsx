@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import type { PanInfo } from 'motion/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Outlet } from 'react-router-dom';
+import { PlayerController } from '@/features/controllers/player-controller.tsx';
+import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
@@ -31,6 +33,8 @@ export function DashboardLayout() {
         <AnimatePresence mode="sync">
             <CreatePlaylistModal.Root key="create-playlist-modal" />
             <CreatePlaylistFolderModal.Root key="create-playlist-folder-modal" />
+            <PlayerController.Root key="player-controller" />
+            <PrefetchController.Root key="prefetch-controller" />
             <motion.div
                 animate="show"
                 exit="hidden"

@@ -6,7 +6,7 @@ import type {
     GetApiLibraryIdAlbumsIdTracksParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 
-export const fetchAlbumTracks = async (
+export const fetchTracksByAlbumId = async (
     queryClient: QueryClient,
     libraryId: string,
     id: string,
@@ -24,7 +24,7 @@ export const fetchAlbumTracks = async (
     });
 };
 
-export const prefetchAlbumTracks = async (
+export const prefetchTracksByAlbumId = async (
     queryClient: QueryClient,
     libraryId: string,
     id: string,
