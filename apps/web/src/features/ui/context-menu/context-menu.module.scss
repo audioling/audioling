@@ -3,12 +3,15 @@
 .content {
     padding: var(--menu-padding);
     background-color: var(--menu-background-color);
+    border: var(--menu-border);
     border-radius: var(--menu-border-radius);
     box-shadow: var(--menu-box-shadow);
 }
 
 .item {
     position: relative;
+    display: flex;
+    justify-content: space-between;
     padding: var(--menu-item-padding);
     font-size: var(--menu-item-font-size);
     font-weight: var(--menu-item-font-weight);

@@ -10,6 +10,9 @@
 
 .item {
     position: relative;
+    display: flex;
+    justify-content: space-between;
+    min-width: 8rem;
     padding: var(--menu-item-padding);
     font-size: var(--menu-item-font-size);
     font-weight: var(--menu-item-font-weight);

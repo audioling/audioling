@@ -4,6 +4,8 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
+import { Group } from '@/features/ui/group/group.tsx';
+import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
 import styles from './menu.module.scss';
 
 interface MenuContext {
@@ -87,11 +89,13 @@ interface ItemProps {
     children: ReactNode;
     disabled?: boolean;
     isSelected?: boolean;
+    leftIcon?: keyof typeof AppIcon;
     onSelect?: (event: Event) => void;
+    rightIcon?: keyof typeof AppIcon;
 }
 
 function Item(props: ItemProps) {
-    const { children, disabled, onSelect, isSelected } = props;
+    const { children, disabled, leftIcon, onSelect, rightIcon, isSelected } = props;
 
     return (
         <DropdownMenu.Item
@@ -101,7 +105,11 @@ function Item(props: ItemProps) {
             disabled={disabled}
             onSelect={onSelect}
         >
-            {children}
+            <Group align="center" gap="sm">
+                {leftIcon && <Icon icon={leftIcon} />}
+                {children}
+            </Group>
+            {rightIcon && <Icon icon={rightIcon} />}
         </DropdownMenu.Item>
     );
 }
