@@ -156,6 +156,7 @@ export type AppThemeConfiguration = {
         'layout-side-nav-bar-font-color': CSSProperties['color'];
         'layout-side-nav-bar-font-hover-color': CSSProperties['color'];
         'menu-background-color': CSSProperties['backgroundColor'];
+        'menu-border': CSSProperties['border'];
         'menu-border-radius': CSSProperties['borderRadius'];
         'menu-box-shadow': CSSProperties['boxShadow'];
         'menu-divider-border-top': CSSProperties['borderTop'];

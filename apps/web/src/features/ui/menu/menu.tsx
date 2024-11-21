@@ -34,20 +34,20 @@ export function Menu(props: MenuProps) {
     );
 }
 
-function getVariantKey(side: MenuProps['side']) {
-    switch (side) {
-        case 'top':
-            return 'scaleY';
-        case 'right':
-            return 'fadeIn';
-        case 'bottom':
-            return 'scaleY';
-        case 'left':
-            return 'fadeInLeft';
-        default:
-            return 'fadeIn';
-    }
-}
+// function getVariantKey(side: MenuProps['side']) {
+//     switch (side) {
+//         case 'top':
+//             return 'fadeIn';
+//         case 'right':
+//             return 'fadeIn';
+//         case 'bottom':
+//             return 'fadeIn';
+//         case 'left':
+//             return 'fadeIn';
+//         default:
+//             return 'fadeIn';
+//     }
+// }
 
 interface ContentProps {
     children: ReactNode;
@@ -57,8 +57,6 @@ function Content(props: ContentProps) {
     const { children } = props;
     const { align, open, side } = useContext(MenuContext) as MenuContext;
 
-    const variant = animationVariants[getVariantKey(side)];
-
     return (
         <AnimatePresence>
             {open && (
@@ -67,13 +65,14 @@ function Content(props: ContentProps) {
                         asChild
                         align={align}
                         className={styles.content}
+                        collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
                         side={side}
                     >
                         <motion.div
                             animate="show"
                             exit="hidden"
                             initial="hidden"
-                            variants={variant}
+                            variants={animationVariants.fadeIn}
                         >
                             {children}
                         </motion.div>
