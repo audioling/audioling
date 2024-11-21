@@ -25,28 +25,28 @@
     overflow: hidden;
 
     @include base.container-larger-than-sm {
-        grid-template-columns: repeat(3, minmax(20%, 1fr));
-        height: calc(var(--row-count) * (100cqw / 3 + 3rem));
-    }
-
-    @include base.container-larger-than-md {
-        grid-template-columns: repeat(4, minmax(15%, 1fr));
+        grid-template-columns: repeat(4, minmax(20%, 1fr));
         height: calc(var(--row-count) * (100cqw / 4 + 3rem));
     }
 
-    @include base.container-larger-than-lg {
+    @include base.container-larger-than-md {
         grid-template-columns: repeat(5, minmax(15%, 1fr));
         height: calc(var(--row-count) * (100cqw / 5 + 3rem));
     }
 
-    @include base.container-larger-than-xl {
-        grid-template-columns: repeat(6, minmax(10%, 1fr));
+    @include base.container-larger-than-lg {
+        grid-template-columns: repeat(6, minmax(15%, 1fr));
         height: calc(var(--row-count) * (100cqw / 6 + 3rem));
     }
 
-    @include base.container-larger-than-xxl {
-        grid-template-columns: repeat(7, minmax(5%, 1fr));
+    @include base.container-larger-than-xl {
+        grid-template-columns: repeat(7, minmax(10%, 1fr));
         height: calc(var(--row-count) * (100cqw / 7 + 3rem));
+    }
+
+    @include base.container-larger-than-xxl {
+        grid-template-columns: repeat(8, minmax(5%, 1fr));
+        height: calc(var(--row-count) * (100cqw / 8 + 3rem));
     }
 
     @include base.container-larger-than-xxxl {
