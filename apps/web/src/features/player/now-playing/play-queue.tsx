@@ -28,7 +28,7 @@ export function PlayQueue() {
 
             setData(() => {
                 const newData = new Map();
-                queue.all.forEach((item, index) => {
+                queue.items.forEach((item, index) => {
                     newData.set(index, item);
                 });
                 return newData;

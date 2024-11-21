@@ -1,13 +1,13 @@
-import { useCallback } from 'react';
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
-import { useQueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
-import { fetchAlbumTracks } from '@/api/fetchers/albums.ts';
+import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
+import type { GetApiLibraryIdAlbumsIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 
 export enum PlayerStatus {
     PAUSED = 'paused',
@@ -60,22 +60,28 @@ export interface QueueData {
     priority: PlayQueueItem[];
 }
 
-// Add new interface for the grouped queue structure
+export enum QueueType {
+    DEFAULT = 'default',
+    PRIORITY = 'priority',
+}
+
 interface GroupedQueue {
-    all: PlayQueueItem[];
-    current: PlayQueueItem[];
-    remaining: PlayQueueItem[];
+    groups: { count: number; name: string }[];
+    items: PlayQueueItem[];
 }
 
 type GroupingProperty = keyof PlayQueueItem;
 
 interface Actions {
-    addToQueueByIndex: (index: number, items: TrackItem[]) => void;
     addToQueueByType: (playType: PlayType, items: TrackItem[]) => void;
+    addToQueueByUniqueId: (uniqueId: string, items: TrackItem[], edge: 'top' | 'bottom') => void;
     clearQueue: () => void;
-    getDefaultQueue: () => PlayQueueItem[];
     // getPlayerData: () => PlayerData;
     getQueue: (groupBy?: GroupingProperty) => GroupedQueue;
+    getQueueOrder: () => {
+        groups: { count: number; name: string }[];
+        items: PlayQueueItem[];
+    };
     mediaNext: () => void;
     mediaPause: () => void;
     mediaPlay: () => void;
@@ -100,118 +106,232 @@ interface State {
     queue: QueueData;
 }
 
-interface PlayerState extends State, Actions {}
+export interface PlayerState extends State, Actions {}
 
 export const usePlayerStore = create<PlayerState>()(
     persist(
         subscribeWithSelector(
             immer((set, get) => ({
-                addToQueueByIndex: (index, items) => {
-                    set((state) => {
-                        const newItems = items.map(toPlayQueueItem);
-
-                        // If we're adding to the end of the queue, just append
-                        if (index === state.queue.default.length - 1) {
-                            state.queue.default = [...state.queue.default, ...newItems];
-                        } else {
-                            // Otherwise, insert the new items at the specified index
-                            const before = state.queue.default.slice(0, index);
-                            const after = state.queue.default.slice(index);
-                            state.queue.default = [...before, ...newItems, ...after];
-                        }
-                    });
-                },
                 addToQueueByType: (playType, items) => {
                     const newItems = items.map(toPlayQueueItem);
 
-                    switch (playType) {
-                        case PlayType.NOW: {
-                            set((state) => {
-                                state.queue.default = [];
-                                state.player.index = 0;
-                                state.queue.default = [...newItems];
-                            });
+                    const queueType = getQueueType();
+
+                    switch (queueType) {
+                        case QueueType.DEFAULT: {
+                            switch (playType) {
+                                case PlayType.NOW: {
+                                    set((state) => {
+                                        state.queue.default = [];
+                                        state.player.index = 0;
+                                        state.queue.default = newItems;
+                                    });
+                                    break;
+                                }
+                                case PlayType.NEXT: {
+                                    set((state) => {
+                                        const currentIndex = state.player.index;
+                                        state.queue.default = [
+                                            ...state.queue.default.slice(0, currentIndex + 1),
+                                            ...newItems,
+                                            ...state.queue.default.slice(currentIndex + 1),
+                                        ];
+                                    });
+                                    break;
+                                }
+                                case PlayType.LAST: {
+                                    set((state) => {
+                                        state.queue.default = [...state.queue.default, ...newItems];
+                                    });
+                                    break;
+                                }
+                            }
                             break;
                         }
-                        case PlayType.NEXT: {
-                            set((state) => {
-                                const currentIndex = state.player.index;
-                                const before = state.queue.default.slice(0, currentIndex + 1);
-                                const after = state.queue.default.slice(currentIndex + 1);
-                                state.queue.default = [...before, ...newItems, ...after];
-                            });
-                            break;
-                        }
-                        case PlayType.LAST: {
-                            set((state) => {
-                                state.queue.default = [...state.queue.default, ...newItems];
-                            });
+                        case QueueType.PRIORITY: {
+                            switch (playType) {
+                                case PlayType.NOW: {
+                                    set((state) => {
+                                        state.queue.default = [];
+
+                                        // Add the first item to the top of the priority queue and the rest to the bottom of the default queue
+                                        state.queue.priority = [
+                                            ...newItems.slice(0, 1),
+                                            ...state.queue.priority.slice(1),
+                                        ];
+
+                                        state.queue.default = [
+                                            ...state.queue.default,
+                                            ...newItems.slice(1),
+                                        ];
+
+                                        state.player.index = 0;
+                                    });
+                                    break;
+                                }
+                                case PlayType.NEXT: {
+                                    set((state) => {
+                                        const currentIndex = state.player.index;
+                                        const isInPriority =
+                                            currentIndex < state.queue.priority.length;
+
+                                        if (isInPriority) {
+                                            state.queue.priority = [
+                                                ...state.queue.priority.slice(0, currentIndex + 1),
+                                                ...newItems,
+                                                ...state.queue.priority.slice(currentIndex + 1),
+                                            ];
+                                        } else {
+                                            state.queue.priority = [
+                                                ...state.queue.priority,
+                                                ...newItems,
+                                            ];
+                                        }
+                                    });
+                                    break;
+                                }
+                                case PlayType.LAST: {
+                                    set((state) => {
+                                        state.queue.priority = [
+                                            ...state.queue.priority,
+                                            ...newItems,
+                                        ];
+                                    });
+                                    break;
+                                }
+                            }
                             break;
                         }
                     }
+                },
+                addToQueueByUniqueId: (uniqueId, items, edge) => {
+                    const newItems = items.map(toPlayQueueItem);
+                    const queueType = getQueueType();
+
+                    set((state) => {
+                        if (queueType === QueueType.DEFAULT) {
+                            const index = state.queue.default.findIndex(
+                                (item) => item._uniqueId === uniqueId,
+                            );
+
+                            const insertIndex = Math.max(0, edge === 'top' ? index : index + 1);
+
+                            state.queue.default = [
+                                ...state.queue.default.slice(0, insertIndex),
+                                ...newItems,
+                                ...state.queue.default.slice(insertIndex),
+                            ];
+                        } else {
+                            const priorityIndex = state.queue.priority.findIndex(
+                                (item) => item._uniqueId === uniqueId,
+                            );
+
+                            if (priorityIndex !== -1) {
+                                const insertIndex = Math.max(
+                                    0,
+                                    edge === 'top' ? priorityIndex : priorityIndex + 1,
+                                );
+
+                                state.queue.priority = [
+                                    ...state.queue.priority.slice(0, insertIndex),
+                                    ...newItems,
+                                    ...state.queue.priority.slice(insertIndex),
+                                ];
+                            } else {
+                                const defaultIndex = state.queue.default.findIndex(
+                                    (item) => item._uniqueId === uniqueId,
+                                );
+
+                                if (defaultIndex !== -1) {
+                                    const insertIndex = Math.max(
+                                        0,
+                                        edge === 'top' ? defaultIndex : defaultIndex + 1,
+                                    );
+
+                                    state.queue.default = [
+                                        ...state.queue.default.slice(0, insertIndex),
+                                        ...newItems,
+                                        ...state.queue.default.slice(insertIndex),
+                                    ];
+                                }
+                            }
+                        }
+                    });
                 },
                 clearQueue: () => {
                     set((state) => {
                         state.queue.default = [];
+                        state.queue.priority = [];
                     });
                 },
-                getDefaultQueue: () => {
-                    return get().queue.default;
-                },
                 getQueue: (groupBy?: GroupingProperty) => {
-                    const defaultQueue = get().getDefaultQueue();
-                    const currentIndex = get().player.index;
+                    const queue = get().getQueueOrder();
+                    const queueType = getQueueType();
 
-                    // Helper function to determine if an item is a group header
-                    const isGroupHeader = (
-                        item: PlayQueueItem,
-                        index: number,
-                        array: PlayQueueItem[],
-                    ) => {
-                        if (!groupBy) return false;
-                        if (index === 0) return true;
+                    if (!groupBy || queueType === QueueType.PRIORITY) {
+                        return queue;
+                    }
 
-                        const prevItem = array[index - 1];
-                        return item[groupBy] !== prevItem[groupBy];
-                    };
+                    // Track groups in order of appearance
+                    const groups: { count: number; name: string }[] = [];
+                    const seenGroups = new Set<string>();
 
-                    // Add isGroupHeader property to items
-                    const processItems = (items: PlayQueueItem[]): PlayQueueItem[] => {
-                        return items.map((item, index, array) => ({
-                            ...item,
-                            _group: groupBy ? (item[groupBy] as string) : '',
-                            _isGroupHeader: isGroupHeader(item, index, array),
-                        }));
-                    };
+                    // Process items and build groups in order
+                    queue.items.forEach((item) => {
+                        const groupValue = String(item[groupBy] || 'Unknown');
 
-                    // Handle case where nothing is playing
-                    if (currentIndex === -1) {
-                        const processedQueue = processItems(defaultQueue);
+                        if (!seenGroups.has(groupValue)) {
+                            seenGroups.add(groupValue);
+                            groups.push({ count: 1, name: groupValue });
+                        } else {
+                            // Find the last occurrence of this group value
+                            const lastIndex = [...groups]
+                                .reverse()
+                                .findIndex((g) => g.name === groupValue);
+                            if (lastIndex === -1) return;
+
+                            // If the previous group is different, create a new group
+                            const previousGroup = groups[groups.length - 1];
+                            if (previousGroup.name !== groupValue) {
+                                groups.push({ count: 1, name: groupValue });
+                            } else {
+                                // Increment the count of the last matching group
+                                groups[groups.length - 1].count++;
+                            }
+                        }
+                    });
+
+                    return { groups, items: queue.items };
+                },
+                getQueueOrder: () => {
+                    const queueType = getQueueType();
+
+                    if (queueType === QueueType.PRIORITY) {
+                        const defaultQueue = get().queue.default;
+                        const priorityQueue = get().queue.priority;
+
                         return {
-                            all: processedQueue,
-                            current: [],
-                            remaining: processedQueue,
+                            groups: [
+                                { count: priorityQueue.length, name: 'Priority' },
+                                { count: defaultQueue.length, name: 'Default' },
+                            ],
+                            items: [...priorityQueue, ...defaultQueue],
                         };
                     }
 
-                    // Split the default queue into current and remaining
-                    const beforeCurrent = defaultQueue.slice(0, currentIndex);
-                    const current = defaultQueue.slice(currentIndex, currentIndex + 1);
-                    const afterCurrent = defaultQueue.slice(currentIndex + 1);
+                    const defaultQueue = get().queue.default;
 
-                    // Process each section with the grouping logic
                     return {
-                        all: processItems([...beforeCurrent, ...current, ...afterCurrent]),
-                        current: processItems(current),
-                        remaining: processItems(afterCurrent),
+                        groups: [{ count: defaultQueue.length, name: 'All' }],
+                        items: defaultQueue,
                     };
                 },
                 mediaNext: () => {
                     const currentIndex = get().player.index;
-                    const defaultQueue = get().getDefaultQueue();
+                    const queue = get().getQueueOrder();
 
                     set((state) => {
-                        state.player.index = Math.min(defaultQueue.length - 1, currentIndex + 1);
+                        state.player.index = Math.min(queue.items.length - 1, currentIndex + 1);
                     });
                 },
                 mediaPause: () => {
@@ -284,8 +404,8 @@ export const usePlayerState = () => {
 export const usePlayerActions = () => {
     return usePlayerStore(
         useShallow((state) => ({
-            addToQueueByIndex: state.addToQueueByIndex,
             addToQueueByType: state.addToQueueByType,
+            addToQueueByUniqueId: state.addToQueueByUniqueId,
             clearQueue: state.clearQueue,
             getQueue: state.getQueue,
             mediaNext: state.mediaNext,
@@ -350,21 +470,21 @@ export async function addToQueueByFetch(
         params?: GetApiLibraryIdAlbumsIdTracksParams;
     },
 ) {
-            let items: TrackItem[] = [];
+    let items: TrackItem[] = [];
 
-            if (args.itemType === LibraryItemType.ALBUM) {
+    if (args.itemType === LibraryItemType.ALBUM) {
         const result = await fetchTracksByAlbumId(queryClient, libraryId, args.id, {
-                    sortBy: TrackListSortOptions.ID,
-                    sortOrder: ListSortOrder.ASC,
+            sortBy: TrackListSortOptions.ID,
+            sortOrder: ListSortOrder.ASC,
             ...args.params,
-                });
+        });
 
-                items = result.data;
-            }
+        items = result.data;
+    }
 
     if (typeof type === 'string') {
         usePlayerStore.getState().addToQueueByType(type, items);
-            } else {
+    } else {
         const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
         usePlayerStore.getState().addToQueueByUniqueId(type.uniqueId, items, normalizedEdge);
     }
@@ -395,7 +515,12 @@ export const subscribePlayerQueue = (
 function toPlayQueueItem(item: TrackItem): PlayQueueItem {
     return {
         ...item,
-        _queueId: nanoid(),
         _uniqueId: nanoid(),
     };
+}
+
+function getQueueType() {
+    // eslint-disable-next-line no-constant-condition
+    const queueType: QueueType = 1 > 0 ? QueueType.DEFAULT : QueueType.PRIORITY; // TODO: Implement settings store useSettingsStore.getState().queueType
+    return queueType;
 }
