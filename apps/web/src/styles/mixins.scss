@@ -109,3 +109,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+@mixin bottom-shadow() {
+    box-shadow: 0 0 6px 3px rgba(0 0 0 / 20%);
+}
