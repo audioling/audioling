@@ -13,7 +13,7 @@ import {
     useNavigationStore,
     useSetLayout,
 } from '@/features/navigation/stores/navigation-store.ts';
-import { SidePlayQueue } from '@/features/player/now-playing/side-play-queue.tsx';
+import { SidePlayQueueContainer } from '@/features/player/now-playing/side-play-queue.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
 import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
@@ -181,7 +181,7 @@ function DesktopLayout() {
                         >
                             <div className={styles.rightContent}>
                                 <Suspense fallback={<></>}>
-                                    <SidePlayQueue />
+                                    <SidePlayQueueContainer />
                                 </Suspense>
                             </div>
                             <motion.div

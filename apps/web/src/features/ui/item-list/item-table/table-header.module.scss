@@ -1,0 +1,37 @@
+@use '@/styles/base';
+
+.header-cell {
+    padding: base.$gap-sm;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.dragged-over-left {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -1px;
+        width: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-right {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        right: -1px;
+        bottom: 0;
+        width: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
