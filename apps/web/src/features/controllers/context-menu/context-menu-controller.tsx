@@ -61,7 +61,7 @@ export const ContextMenuController = createCallable<ContextMenuControllerProps, 
                         }}
                     />
                 </ContextMenu.Target>
-                {cmd.type === 'queue' && <QueueContextMenu />}
+                {cmd.type === 'queue' && <QueueContextMenu table={cmd.table} />}
             </ContextMenu>
         );
     },

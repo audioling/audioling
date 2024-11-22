@@ -1,3 +1,5 @@
+import type { Table } from '@tanstack/react-table';
+import type { PlayQueueItem } from '@/api/api-types.ts';
 import { QueueAddToPlaylist } from '@/features/controllers/context-menu/queue/queue-add-to-playlist.tsx';
 import { QueueCache } from '@/features/controllers/context-menu/queue/queue-cache.tsx';
 import { QueueDownload } from '@/features/controllers/context-menu/queue/queue-download.tsx';
@@ -9,12 +11,16 @@ import { QueueShare } from '@/features/controllers/context-menu/queue/queue-shar
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 
-export function QueueContextMenu() {
+interface QueueContextMenuProps {
+    table: Table<PlayQueueItem | undefined>;
+}
+
+export function QueueContextMenu({ table }: QueueContextMenuProps) {
     return (
         <ContextMenu.Content>
-            <QueueRemove />
+            <QueueRemove table={table} />
             <Divider />
-            <QueueMove />
+            <QueueMove table={table} />
             <Divider />
             <QueueAddToPlaylist />
             <QueueSetItem />

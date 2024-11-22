@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { LibraryItemType } from '@repo/shared-types';
 import { createCallable } from 'react-call';
 import { useParams } from 'react-router-dom';
-import type { TrackItem } from '@/api/api-types.ts';
+import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import {
     addToQueueByData,
     addToQueueByFetch,
@@ -25,7 +25,11 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         mediaStepBackward,
         mediaStepForward,
         mediaTogglePlayPause,
+        moveSelectedToTop,
+        moveSelectedToBottom,
+        moveSelectedToNext,
         clearQueue,
+        clearSelected,
     } = usePlayerActions();
     usePlayerActions();
 
@@ -46,6 +50,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
                 addToQueueByData(command.addToQueueByData.type, command.addToQueueByData.data);
                 break;
             }
+
             case 'addToQueueByFetch': {
                 const command = cmd as AddToQueueByFetch;
 
@@ -58,36 +63,68 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
 
                 break;
             }
+
             case 'clearQueue': {
                 clearQueue();
                 break;
             }
+
+            case 'clearSelected': {
+                const command = cmd as ClearSelected;
+                clearSelected(command.clearSelected.uniqueIds);
+                break;
+            }
+
             case 'mediaPause': {
                 mediaPause();
                 break;
             }
+
             case 'mediaPlay': {
                 mediaPlay();
                 break;
             }
+
             case 'mediaNext': {
                 mediaNext();
                 break;
             }
+
             case 'mediaPrevious': {
                 mediaPrevious();
                 break;
             }
+
             case 'mediaStepBackward': {
                 mediaStepBackward();
                 break;
             }
+
             case 'mediaStepForward': {
                 mediaStepForward();
                 break;
             }
+
             case 'mediaTogglePlayPause': {
                 mediaTogglePlayPause();
+                break;
+            }
+
+            case 'moveSelectedToTop': {
+                const command = cmd as MoveSelectedToTop;
+                moveSelectedToTop(command.moveSelectedToTop.items);
+                break;
+            }
+
+            case 'moveSelectedToBottom': {
+                const command = cmd as MoveSelectedToBottom;
+                moveSelectedToBottom(command.moveSelectedToBottom.items);
+                break;
+            }
+
+            case 'moveSelectedToNext': {
+                const command = cmd as MoveSelectedToNext;
+                moveSelectedToNext(command.moveSelectedToNext.items);
                 break;
             }
         }
@@ -105,6 +142,10 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         mediaTogglePlayPause,
         clearQueue,
         libraryId,
+        clearSelected,
+        moveSelectedToTop,
+        moveSelectedToBottom,
+        moveSelectedToNext,
     ]);
 
     return null;
@@ -114,13 +155,17 @@ export type PlayerCommand =
     | AddToQueueByData
     | AddToQueueByFetch
     | ClearQueue
+    | ClearSelected
     | MediaPause
     | MediaPlay
     | MediaNext
     | MediaPrevious
     | MediaStepBackward
     | MediaStepForward
-    | MediaTogglePlayPause;
+    | MediaTogglePlayPause
+    | MoveSelectedToTop
+    | MoveSelectedToBottom
+    | MoveSelectedToNext;
 
 type AddToQueueByFetch = {
     addToQueueByFetch: {
@@ -167,4 +212,28 @@ type MediaTogglePlayPause = {
 
 type ClearQueue = {
     clearQueue: null;
+};
+
+type ClearSelected = {
+    clearSelected: {
+        uniqueIds: string[];
+    };
+};
+
+type MoveSelectedToTop = {
+    moveSelectedToTop: {
+        items: PlayQueueItem[];
+    };
+};
+
+type MoveSelectedToBottom = {
+    moveSelectedToBottom: {
+        items: PlayQueueItem[];
+    };
+};
+
+type MoveSelectedToNext = {
+    moveSelectedToNext: {
+        items: PlayQueueItem[];
+    };
 };
