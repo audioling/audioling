@@ -113,11 +113,17 @@ export function SidePlayQueue() {
 
     const onRowContextMenu = (
         e: MouseEvent<HTMLDivElement>,
-        _row: Row<PlayQueueItem | undefined>,
+        row: Row<PlayQueueItem | undefined>,
         table: Table<PlayQueueItem | undefined>,
     ) => {
         e.preventDefault();
         e.stopPropagation();
+
+        // If row is not selected, select it
+        if (!row.getIsSelected()) {
+            table.resetRowSelection();
+            row.toggleSelected(true);
+        }
 
         ContextMenuController.call({
             cmd: { table, type: 'queue' },
