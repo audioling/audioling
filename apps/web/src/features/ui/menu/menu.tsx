@@ -4,8 +4,8 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { Group } from '@/features/ui/group/group.tsx';
 import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
+import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import styles from './menu.module.scss';
 
 interface MenuContext {
@@ -101,15 +101,14 @@ function Item(props: ItemProps) {
         <DropdownMenu.Item
             className={clsx(styles.item, {
                 [styles.selected]: isSelected,
+                [styles.disabled]: disabled,
             })}
             disabled={disabled}
             onSelect={onSelect}
         >
-            <Group align="center" gap="sm">
-                {leftIcon && <Icon icon={leftIcon} />}
-                {children}
-            </Group>
-            {rightIcon && <Icon icon={rightIcon} />}
+            {leftIcon && <Icon className={styles.leftIcon} icon={leftIcon} />}
+            {children}
+            {rightIcon && <Icon className={styles.rightIcon} icon={rightIcon} />}
         </DropdownMenu.Item>
     );
 }
@@ -207,7 +206,7 @@ function SubmenuContent(props: SubmenuContentProps) {
                             initial="hidden"
                             variants={animationVariants.fadeIn}
                         >
-                            {children}
+                            <ScrollArea className={styles.submenuContent}>{children}</ScrollArea>
                         </motion.div>
                     </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
