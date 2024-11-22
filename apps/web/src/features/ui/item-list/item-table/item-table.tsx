@@ -39,6 +39,11 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     enableHeader?: boolean;
     enableMultiRowSelection?: boolean;
     enableRowSelection?: boolean;
+    getRowId?: (
+        originalRow: T | undefined,
+        index: number,
+        parent?: Row<T | undefined> | undefined,
+    ) => string;
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
@@ -64,6 +69,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     onRowDrop?: (args: ItemTableRowDrop) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
+    rowIdProperty?: string;
 }
 
 export function ItemTable<
@@ -79,6 +85,7 @@ export function ItemTable<
         enableMultiRowSelection,
         enableRowSelection,
         HeaderComponent,
+        getRowId,
         initialScrollIndex,
         enableHeader = true,
         isScrolling,
@@ -92,6 +99,7 @@ export function ItemTable<
         onRowDrop,
         onScroll,
         onStartReached,
+        rowIdProperty,
     } = props;
 
     const tableId = useId();
@@ -134,7 +142,9 @@ export function ItemTable<
     }, [scroller, initialize, osInstance]);
 
     const tableData = useMemo(() => {
-        return Array.from({ length: itemCount }, (_, index) => data.get(index));
+        return Array.from({ length: itemCount }, (_, index) => data.get(index)).filter(
+            (item): item is T => item !== undefined,
+        );
     }, [data, itemCount]);
 
     const table = useReactTable({
@@ -143,6 +153,7 @@ export function ItemTable<
         enableMultiRowSelection,
         enableRowSelection,
         getCoreRowModel: getCoreRowModel(),
+        getRowId: getRowId || undefined,
         getSortedRowModel: getSortedRowModel(),
         state: {
             columnOrder,
@@ -232,6 +243,13 @@ export function ItemTable<
                                         context={context}
                                         index={index}
                                         itemType={itemType}
+                                        rowId={
+                                            getRowId && rowIdProperty
+                                                ? (data.get(index)?.[
+                                                      rowIdProperty as keyof T
+                                                  ] as string)
+                                                : index.toString()
+                                        }
                                         table={table}
                                         tableId={tableId}
                                         onRowClick={onRowClick}

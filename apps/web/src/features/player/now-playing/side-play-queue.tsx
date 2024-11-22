@@ -113,9 +113,11 @@ export function SidePlayQueue() {
             enableHeader={false}
             enableMultiRowSelection={true}
             enableRowSelection={true}
+            getRowId={getRowId}
             groups={groups}
             itemCount={data.size}
             itemType={LibraryItemType.TRACK}
+            rowIdProperty="_uniqueId"
             onChangeColumnOrder={setColumnOrder}
             onRowClick={onRowClick}
             onRowDrop={onRowDrop}

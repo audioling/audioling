@@ -61,6 +61,7 @@ interface TableRowProps<
         table: Table<T | undefined>,
     ) => void;
     onRowDrop?: (args: ItemTableRowDrop) => void;
+    rowId: string;
     table: Table<T | undefined>;
     tableId: string;
 }
@@ -86,12 +87,13 @@ export function TableRow<
         onRowDoubleClick,
         onRowContextMenu,
         onRowDrop,
+        rowId,
         table,
         tableId,
     } = props;
     const ref = useRef<HTMLDivElement>(null);
 
-    const row = table.getRow(index.toString());
+    const row = table.getRow(rowId);
 
     const canSelect = row?.getCanSelect();
     const isSelected = row?.getIsSelected();

@@ -33,6 +33,7 @@ export function GroupedItemTable<
         data,
         enableMultiRowSelection,
         enableRowSelection,
+        getRowId,
         groups,
         HeaderComponent,
         initialScrollIndex,
@@ -48,6 +49,7 @@ export function GroupedItemTable<
         onRowDrop,
         onScroll,
         onStartReached,
+        rowIdProperty,
     } = props;
 
     const tableId = useId();
@@ -90,7 +92,9 @@ export function GroupedItemTable<
     }, [scroller, initialize, osInstance]);
 
     const tableData = useMemo(() => {
-        return Array.from({ length: itemCount }, (_, index) => data.get(index));
+        return Array.from({ length: itemCount }, (_, index) => data.get(index)).filter(
+            (item): item is T => item !== undefined,
+        );
     }, [data, itemCount]);
 
     const table = useReactTable({
@@ -99,6 +103,7 @@ export function GroupedItemTable<
         enableMultiRowSelection: enableMultiRowSelection ?? false,
         enableRowSelection: enableRowSelection ?? false,
         getCoreRowModel: getCoreRowModel(),
+        getRowId: getRowId ?? ((_, index) => index.toString()),
         getSortedRowModel: getSortedRowModel(),
         state: {
             columnOrder,
@@ -194,6 +199,13 @@ export function GroupedItemTable<
                                             context={tableContext}
                                             index={index}
                                             itemType={itemType}
+                                            rowId={
+                                                getRowId && rowIdProperty
+                                                    ? (data.get(index)?.[
+                                                          rowIdProperty as keyof T
+                                                      ] as string)
+                                                    : index.toString()
+                                            }
                                             table={table}
                                             tableId={tableId}
                                             onRowClick={onRowClick}

@@ -29,6 +29,7 @@
 }
 
 .row {
+    position: relative;
     display: grid;
     align-items: center;
     justify-content: center;
@@ -40,11 +41,21 @@
     color: var(--table-row-font-color);
     user-select: none;
     background-color: var(--table-row-background-color);
-
-    // border-bottom: 1px solid var(--table-row-border-color);
+    border-bottom: 1px solid var(--table-row-border-color);
 
     &:hover {
-        background-color: var(--table-row-hover-background-color);
+        &::before {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            content: '';
+            background-color: var(--table-row-hover-background-color);
+        }
+
+        transition: background-color 0.2s ease-in-out;
     }
 }
 
