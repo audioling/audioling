@@ -5,6 +5,7 @@ import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/rea
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { GroupedVirtuoso } from 'react-virtuoso';
+import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
@@ -150,61 +151,69 @@ export function GroupedItemTable<
                         ))}
                     </div>
                 )}
-                <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
-                    <GroupedVirtuoso
-                        components={{
-                            Header: HeaderComponent
-                                ? (props) => <HeaderComponent {...props} />
-                                : undefined,
-                        }}
-                        context={tableContext}
-                        endReached={onEndReached}
-                        groupContent={(index) => (
-                            <div
-                                style={{
-                                    background: 'rgba(0, 0, 0, 1)',
-                                    padding: '0.5rem 0.5rem',
-                                    width: '100%',
-                                }}
-                            >
-                                <Group justify="between">
-                                    <Text>{groups[index].name}</Text>
-                                    <IconButton
-                                        icon="ellipsisHorizontal"
-                                        size="sm"
-                                        variant="transparent"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            console.log(groups[index]);
-                                        }}
-                                    />
-                                </Group>
-                            </div>
-                        )}
-                        groupCounts={groups.map((group) => group.count)}
-                        increaseViewportBy={100}
-                        initialTopMostItemIndex={initialScrollIndex || 0}
-                        isScrolling={isScrolling}
-                        itemContent={(index) => (
-                            <TableRow
-                                context={tableContext}
-                                index={index}
-                                itemType={itemType}
-                                table={table}
-                                tableId={tableId}
-                                onRowClick={onRowClick}
-                                onRowContextMenu={onRowContextMenu}
-                                onRowDoubleClick={onRowDoubleClick}
-                                onRowDrop={onRowDrop}
-                            />
-                        )}
-                        rangeChanged={onRangeChanged}
-                        scrollerRef={setScroller}
-                        startReached={onStartReached}
-                        style={{ overflow: 'hidden' }}
-                        onScroll={onScroll}
-                    />
-                </div>
+                <ComponentErrorBoundary>
+                    <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
+                        <GroupedVirtuoso
+                            components={{
+                                Header: HeaderComponent
+                                    ? (props) => <HeaderComponent {...props} />
+                                    : undefined,
+                            }}
+                            context={tableContext}
+                            endReached={onEndReached}
+                            groupContent={(index) => (
+                                <div
+                                    style={{
+                                        background: 'rgba(0, 0, 0, 1)',
+                                        padding: '0.5rem 0.5rem',
+                                        width: '100%',
+                                    }}
+                                >
+                                    <Group justify="between">
+                                        <Text>{groups[index].name}</Text>
+                                        <IconButton
+                                            icon="ellipsisHorizontal"
+                                            size="sm"
+                                            variant="transparent"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log(groups[index]);
+                                            }}
+                                        />
+                                    </Group>
+                                </div>
+                            )}
+                            groupCounts={groups.map((group) => group.count)}
+                            increaseViewportBy={100}
+                            initialTopMostItemIndex={initialScrollIndex || 0}
+                            isScrolling={isScrolling}
+                            itemContent={(index) => {
+                                if (index < itemCount) {
+                                    return (
+                                        <TableRow
+                                            context={tableContext}
+                                            index={index}
+                                            itemType={itemType}
+                                            table={table}
+                                            tableId={tableId}
+                                            onRowClick={onRowClick}
+                                            onRowContextMenu={onRowContextMenu}
+                                            onRowDoubleClick={onRowDoubleClick}
+                                            onRowDrop={onRowDrop}
+                                        />
+                                    );
+                                }
+
+                                return null;
+                            }}
+                            rangeChanged={onRangeChanged}
+                            scrollerRef={setScroller}
+                            startReached={onStartReached}
+                            style={{ overflow: 'hidden' }}
+                            onScroll={onScroll}
+                        />
+                    </div>
+                </ComponentErrorBoundary>
             </div>
         </>
     );

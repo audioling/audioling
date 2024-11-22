@@ -30,7 +30,7 @@ import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './table-row.module.scss';
 
 interface TableRowProps<
-    T extends { _uniqueId: string; id: string },
+    T extends { _uniqueId?: string; id: string },
     C extends {
         baseUrl: string;
         columnStyles: {
@@ -66,7 +66,7 @@ interface TableRowProps<
 }
 
 export function TableRow<
-    T extends { _uniqueId: string; id: string },
+    T extends { _uniqueId?: string; id: string },
     C extends {
         baseUrl: string;
         columnStyles: {
@@ -77,7 +77,7 @@ export function TableRow<
         };
         libraryId: string;
     },
->(props: TableRowProps<T & { _uniqueId: string }, C>) {
+>(props: TableRowProps<T & { _uniqueId?: string }, C>) {
     const {
         context,
         index,
@@ -176,7 +176,7 @@ export function TableRow<
                         edge: closestEdgeOfTarget,
                         id: row.id,
                         index,
-                        uniqueId: row.original?._uniqueId ?? '',
+                        uniqueId: row.original?._uniqueId || row?.id,
                     });
                     setIsDraggedOver(null);
                 },

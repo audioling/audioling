@@ -8,6 +8,7 @@ import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/rea
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import { Virtuoso } from 'react-virtuoso';
+import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
@@ -66,7 +67,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
 }
 
 export function ItemTable<
-    T extends { _uniqueId: string; id: string },
+    T extends { _uniqueId?: string; id: string },
     C extends { baseUrl: string; libraryId: string },
 >(props: ItemTableProps<T, C>) {
     const {
@@ -211,39 +212,47 @@ export function ItemTable<
                     ))}
                 </div>
             )}
-            <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
-                <Virtuoso
-                    components={{
-                        Header: HeaderComponent
-                            ? (props) => <HeaderComponent {...props} />
-                            : undefined,
-                    }}
-                    context={tableContext}
-                    endReached={onEndReached}
-                    increaseViewportBy={100}
-                    initialTopMostItemIndex={initialScrollIndex || 0}
-                    isScrolling={isScrolling}
-                    itemContent={(index, _data, context) => (
-                        <TableRow
-                            context={context}
-                            index={index}
-                            itemType={itemType}
-                            table={table}
-                            tableId={tableId}
-                            onRowClick={onRowClick}
-                            onRowContextMenu={onRowContextMenu}
-                            onRowDoubleClick={onRowDoubleClick}
-                            onRowDrop={onRowDrop}
-                        />
-                    )}
-                    rangeChanged={onRangeChanged}
-                    scrollerRef={setScroller}
-                    startReached={onStartReached}
-                    style={{ overflow: 'hidden' }}
-                    totalCount={itemCount}
-                    onScroll={onScroll}
-                />
-            </div>
+            <ComponentErrorBoundary>
+                <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
+                    <Virtuoso
+                        components={{
+                            Header: HeaderComponent
+                                ? (props) => <HeaderComponent {...props} />
+                                : undefined,
+                        }}
+                        context={tableContext}
+                        endReached={onEndReached}
+                        increaseViewportBy={100}
+                        initialTopMostItemIndex={initialScrollIndex || 0}
+                        isScrolling={isScrolling}
+                        itemContent={(index, _data, context) => {
+                            if (index < itemCount) {
+                                return (
+                                    <TableRow
+                                        context={context}
+                                        index={index}
+                                        itemType={itemType}
+                                        table={table}
+                                        tableId={tableId}
+                                        onRowClick={onRowClick}
+                                        onRowContextMenu={onRowContextMenu}
+                                        onRowDoubleClick={onRowDoubleClick}
+                                        onRowDrop={onRowDrop}
+                                    />
+                                );
+                            }
+
+                            return null;
+                        }}
+                        rangeChanged={onRangeChanged}
+                        scrollerRef={setScroller}
+                        startReached={onStartReached}
+                        style={{ overflow: 'hidden' }}
+                        totalCount={itemCount}
+                        onScroll={onScroll}
+                    />
+                </div>
+            </ComponentErrorBoundary>
         </div>
     );
 }
