@@ -35,7 +35,13 @@ function fallbackRender({
     };
 
     return (
-        <Center style={{ outline: '2px solid var(--global-danger-color)' }}>
+        <Center
+            style={{
+                outline: '2px solid var(--global-danger-color)',
+                overflow: 'hidden',
+                width: '100%',
+            }}
+        >
             <Stack gap="md" maw="480px" p="md" w="100%">
                 <Title order={1} size="lg">
                     An error occurred
