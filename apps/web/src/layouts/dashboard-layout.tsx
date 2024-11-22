@@ -19,7 +19,6 @@ import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
 import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
 import styles from './dashboard-layout.module.scss';
 
@@ -40,6 +39,7 @@ export function DashboardLayout() {
             <AnimatePresence mode="sync">
                 <motion.div
                     animate="show"
+                    className={styles.dashboardLayout}
                     exit="hidden"
                     id="dashboard-layout"
                     initial="hidden"
@@ -216,9 +216,13 @@ function DesktopLayout() {
 function MobileLayout() {
     return (
         <div className={styles.mobileLayout}>
-            <ScrollArea className={styles.content} id="content-container">
-                <Outlet />
-            </ScrollArea>
+            <div className={styles.contentContainer} id="content-container">
+                <div className={styles.content}>
+                    <Suspense fallback={<></>}>
+                        <Outlet />
+                    </Suspense>
+                </div>
+            </div>
             <NavBarBottom />
         </div>
     );

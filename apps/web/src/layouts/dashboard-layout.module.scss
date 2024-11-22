@@ -1,3 +1,8 @@
+.dashboard-layout {
+    width: 100%;
+    height: 100%;
+}
+
 .desktop-layout {
     display: grid;
     grid-template-areas:
@@ -139,7 +144,14 @@
 
 .mobile-layout {
     display: grid;
+    grid-template-areas:
+        'content-layout'
+        'nav-bar';
     grid-template-rows: minmax(0, 1fr) var(--layout-nav-bar-bottom-height);
     width: 100%;
     height: 100%;
+}
+
+.mobile-layout > .content-container {
+    height: calc(100svh - var(--layout-nav-bar-bottom-height));
 }
