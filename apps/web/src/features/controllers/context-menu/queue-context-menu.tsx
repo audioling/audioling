@@ -8,6 +8,7 @@ import { QueueMove } from '@/features/controllers/context-menu/queue/queue-move.
 import { QueueRemove } from '@/features/controllers/context-menu/queue/queue-remove.tsx';
 import { QueueSetItem } from '@/features/controllers/context-menu/queue/queue-set-item.tsx';
 import { QueueShare } from '@/features/controllers/context-menu/queue/queue-share.tsx';
+import { QueueShuffle } from '@/features/controllers/context-menu/queue/queue-shuffle.tsx';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 
@@ -19,6 +20,7 @@ export function QueueContextMenu({ table }: QueueContextMenuProps) {
     return (
         <ContextMenu.Content>
             <QueueRemove table={table} />
+            <QueueShuffle table={table} />
             <Divider />
             <QueueMove table={table} />
             <Divider />

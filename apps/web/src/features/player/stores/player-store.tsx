@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
 import type { GetApiLibraryIdAlbumsIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { shuffleInPlace } from '@/utils/shuffle.ts';
 
 export enum PlayerStatus {
     PAUSED = 'paused',
@@ -76,7 +77,7 @@ interface Actions {
     addToQueueByType: (playType: PlayType, items: TrackItem[]) => void;
     addToQueueByUniqueId: (uniqueId: string, items: TrackItem[], edge: 'top' | 'bottom') => void;
     clearQueue: () => void;
-    // getPlayerData: () => PlayerData;
+    clearSelected: (uniqueIds: string[]) => void;
     getQueue: (groupBy?: GroupingProperty) => GroupedQueue;
     getQueueOrder: () => {
         groups: { count: number; name: string }[];
@@ -89,6 +90,11 @@ interface Actions {
     mediaStepBackward: () => void;
     mediaStepForward: () => void;
     mediaTogglePlayPause: () => void;
+    moveSelectedToBottom: (items: PlayQueueItem[]) => void;
+    moveSelectedToNext: (items: PlayQueueItem[]) => void;
+    moveSelectedToTop: (items: PlayQueueItem[]) => void;
+    shuffle: () => void;
+    shuffleSelected: (items: PlayQueueItem[]) => void;
 }
 
 interface State {
@@ -264,6 +270,17 @@ export const usePlayerStore = create<PlayerState>()(
                         state.queue.priority = [];
                     });
                 },
+                clearSelected: (uniqueIds: string[]) => {
+                    set((state) => {
+                        state.queue.default = state.queue.default.filter(
+                            (item) => !uniqueIds.includes(item._uniqueId),
+                        );
+
+                        state.queue.priority = state.queue.priority.filter(
+                            (item) => !uniqueIds.includes(item._uniqueId),
+                        );
+                    });
+                },
                 getQueue: (groupBy?: GroupingProperty) => {
                     const queue = get().getQueueOrder();
                     const queueType = getQueueType();
@@ -371,6 +388,60 @@ export const usePlayerStore = create<PlayerState>()(
                         }
                     });
                 },
+                moveSelectedToBottom: (items: PlayQueueItem[]) => {
+                    set((state) => {
+                        const uniqueIds = items.map((item) => item._uniqueId);
+                        const filtered = state.queue.default.filter(
+                            (item) => !uniqueIds.includes(item._uniqueId),
+                        );
+
+                        state.queue.default = [...filtered, ...items];
+                    });
+                },
+                moveSelectedToNext: (items: PlayQueueItem[]) => {
+                    const queueType = getQueueType();
+
+                    set((state) => {
+                        const uniqueIds = items.map((item) => item._uniqueId);
+
+                        if (queueType === QueueType.DEFAULT) {
+                            const currentIndex = state.player.index;
+                            const filtered = state.queue.default.filter(
+                                (item) => !uniqueIds.includes(item._uniqueId),
+                            );
+
+                            state.queue.default = [
+                                ...filtered.slice(0, currentIndex + 1),
+                                ...items,
+                                ...filtered.slice(currentIndex + 1),
+                            ];
+                        } else {
+                            const currentIndex = state.player.index;
+                            const isInPriority = currentIndex < state.queue.priority.length;
+
+                            if (isInPriority) {
+                                state.queue.priority = [
+                                    ...state.queue.priority.slice(0, currentIndex + 1),
+                                    ...items,
+                                    ...state.queue.priority.slice(currentIndex + 1),
+                                ];
+                            } else {
+                                state.queue.priority = [...state.queue.priority, ...items];
+                            }
+                        }
+                    });
+                },
+                moveSelectedToTop: (items: PlayQueueItem[]) => {
+                    set((state) => {
+                        const uniqueIds = items.map((item) => item._uniqueId);
+
+                        const filtered = state.queue.default.filter(
+                            (item) => !uniqueIds.includes(item._uniqueId),
+                        );
+
+                        state.queue.default = [...items, ...filtered];
+                    });
+                },
                 player: {
                     index: -1,
                     muted: false,
@@ -385,6 +456,24 @@ export const usePlayerStore = create<PlayerState>()(
                 queue: {
                     default: [],
                     priority: [],
+                },
+                shuffle: () => {
+                    set((state) => {
+                        state.queue.default = shuffleInPlace(state.queue.default);
+                    });
+                },
+                shuffleSelected: (items: PlayQueueItem[]) => {
+                    set((state) => {
+                        const indices = items.map((item) =>
+                            state.queue.default.findIndex((i) => i._uniqueId === item._uniqueId),
+                        );
+
+                        const shuffledItems = shuffleInPlace(items);
+
+                        indices.forEach((i, index) => {
+                            state.queue.default[i] = shuffledItems[index];
+                        });
+                    });
                 },
             })),
         ),
@@ -407,6 +496,7 @@ export const usePlayerActions = () => {
             addToQueueByType: state.addToQueueByType,
             addToQueueByUniqueId: state.addToQueueByUniqueId,
             clearQueue: state.clearQueue,
+            clearSelected: state.clearSelected,
             getQueue: state.getQueue,
             mediaNext: state.mediaNext,
             mediaPause: state.mediaPause,
@@ -415,6 +505,11 @@ export const usePlayerActions = () => {
             mediaStepBackward: state.mediaStepBackward,
             mediaStepForward: state.mediaStepForward,
             mediaTogglePlayPause: state.mediaTogglePlayPause,
+            moveSelectedToBottom: state.moveSelectedToBottom,
+            moveSelectedToNext: state.moveSelectedToNext,
+            moveSelectedToTop: state.moveSelectedToTop,
+            shuffle: state.shuffle,
+            shuffleSelected: state.shuffleSelected,
             // autoNext: state.actions.autoNext,
             // checkIsFirstTrack: state.actions.checkIsFirstTrack,
             // checkIsLastTrack: state.actions.checkIsLastTrack,
@@ -422,16 +517,12 @@ export const usePlayerActions = () => {
             // getPlayerData: state.actions.getPlayerData,
             // getQueueData: state.actions.getQueueData,
             // incrementPlayCount: state.actions.incrementPlayCount,
-            // moveToBottomOfQueue: state.actions.moveToBottomOfQueue,
-            // moveToNextOfQueue: state.actions.moveToNextOfQueue,
-            // moveToTopOfQueue: state.actions.moveToTopOfQueue,
             // next: state.actions.next,
             // pause: state.actions.pause,
             // play: state.actions.play,
             // player1: state.actions.player1,
             // player2: state.actions.player2,
             // previous: state.actions.previous,
-            // removeFromQueue: state.actions.removeFromQueue,
         })),
     );
 };

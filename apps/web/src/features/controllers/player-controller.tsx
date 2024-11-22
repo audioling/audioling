@@ -30,6 +30,8 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         moveSelectedToNext,
         clearQueue,
         clearSelected,
+        shuffle,
+        shuffleSelected,
     } = usePlayerActions();
     usePlayerActions();
 
@@ -127,6 +129,17 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
                 moveSelectedToNext(command.moveSelectedToNext.items);
                 break;
             }
+
+            case 'shuffle': {
+                shuffle();
+                break;
+            }
+
+            case 'shuffleSelected': {
+                const command = cmd as ShuffleSelected;
+                shuffleSelected(command.shuffleSelected.items);
+                break;
+            }
         }
 
         call.end();
@@ -146,6 +159,8 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         moveSelectedToTop,
         moveSelectedToBottom,
         moveSelectedToNext,
+        shuffle,
+        shuffleSelected,
     ]);
 
     return null;
@@ -165,7 +180,9 @@ export type PlayerCommand =
     | MediaTogglePlayPause
     | MoveSelectedToTop
     | MoveSelectedToBottom
-    | MoveSelectedToNext;
+    | MoveSelectedToNext
+    | Shuffle
+    | ShuffleSelected;
 
 type AddToQueueByFetch = {
     addToQueueByFetch: {
@@ -234,6 +251,16 @@ type MoveSelectedToBottom = {
 
 type MoveSelectedToNext = {
     moveSelectedToNext: {
+        items: PlayQueueItem[];
+    };
+};
+
+type Shuffle = {
+    shuffle: null;
+};
+
+type ShuffleSelected = {
+    shuffleSelected: {
         items: PlayQueueItem[];
     };
 };
