@@ -13,7 +13,11 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "js",
     "typescript.tsserver.experimental.enableProjectDiagnostics": false,
-    "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/core", "@mantine/hooks"],
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "@mantine/core",
+        "@mantine/hooks",
+        "@radix-ui/*"
+    ],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit",
         "source.fixAll.stylelint": "explicit",
