@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type { PanInfo } from 'motion/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Outlet } from 'react-router-dom';
+import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
@@ -30,22 +31,25 @@ export function DashboardLayout() {
     }
 
     return (
-        <AnimatePresence mode="sync">
+        <>
             <CreatePlaylistModal.Root key="create-playlist-modal" />
             <CreatePlaylistFolderModal.Root key="create-playlist-folder-modal" />
             <PlayerController.Root key="player-controller" />
             <PrefetchController.Root key="prefetch-controller" />
-            <motion.div
-                animate="show"
-                exit="hidden"
-                id="dashboard-layout"
-                initial="hidden"
-                transition={{ duration: 1 }}
-                variants={animationVariants.fadeIn}
-            >
-                {isLargerThanSm ? <DesktopLayout /> : <MobileLayout />}
-            </motion.div>
-        </AnimatePresence>
+            <ContextMenuController.Root key="context-menu-controller" />
+            <AnimatePresence mode="sync">
+                <motion.div
+                    animate="show"
+                    exit="hidden"
+                    id="dashboard-layout"
+                    initial="hidden"
+                    transition={{ duration: 1 }}
+                    variants={animationVariants.fadeIn}
+                >
+                    {isLargerThanSm ? <DesktopLayout /> : <MobileLayout />}
+                </motion.div>
+            </AnimatePresence>
+        </>
     );
 }
 

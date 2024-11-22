@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import {
     LuAlertTriangle,
     LuArrowDown,
+    LuArrowDownToLine,
     LuArrowDownWideNarrow,
     LuArrowLeft,
     LuArrowLeftToLine,
@@ -12,6 +13,8 @@ import {
     LuArrowUp,
     LuArrowUpDown,
     LuArrowUpNarrowWide,
+    LuArrowUpToLine,
+    LuBookOpen,
     LuCheck,
     LuCheckCircle,
     LuChevronDown,
@@ -20,9 +23,12 @@ import {
     LuChevronRight,
     LuChevronUp,
     LuDisc3,
+    LuFileDown,
     LuFlag,
     LuFolderOpen,
+    LuHardDriveDownload,
     LuHeart,
+    LuHeartCrack,
     LuHome,
     LuInfinity,
     LuInfo,
@@ -32,6 +38,7 @@ import {
     LuList,
     LuListMusic,
     LuListOrdered,
+    LuListPlus,
     LuLoader,
     LuLock,
     LuMenu,
@@ -47,10 +54,12 @@ import {
     LuPlus,
     LuRotateCw,
     LuSearch,
+    LuShare2,
     LuShieldAlert,
     LuSkipBack,
     LuSkipForward,
     LuSquare,
+    LuStar,
     LuStepBack,
     LuStepForward,
     LuTrash,
@@ -66,6 +75,7 @@ export const AppIcon = {
     album: LuDisc3,
     arrowDown: LuArrowDown,
     arrowDownS: LuChevronDown,
+    arrowDownToLine: LuArrowDownToLine,
     arrowLeft: LuArrowLeft,
     arrowLeftS: LuChevronLeft,
     arrowLeftToLine: LuArrowLeftToLine,
@@ -75,8 +85,11 @@ export const AppIcon = {
     arrowRightToLine: LuArrowRightToLine,
     arrowUp: LuArrowUp,
     arrowUpS: LuChevronUp,
+    arrowUpToLine: LuArrowUpToLine,
+    cache: LuHardDriveDownload,
     check: LuCheck,
     delete: LuTrash,
+    download: LuFileDown,
     dropdown: LuChevronDown,
     edit: LuPencilLine,
     ellipsisHorizontal: LuMoreHorizontal,
@@ -100,20 +113,25 @@ export const AppIcon = {
     mediaStepBackward: LuStepBack,
     mediaStepForward: LuStepForward,
     menu: LuMenu,
+    metadata: LuBookOpen,
     panelRightClose: LuPanelRightClose,
     panelRightOpen: LuPanelRightOpen,
     playlist: LuListMusic,
+    playlistAdd: LuListPlus,
     queue: LuList,
     refresh: LuRotateCw,
     remove: LuMinus,
     search: LuSearch,
+    share: LuShare2,
     sort: LuArrowUpDown,
     sortAsc: LuArrowUpNarrowWide,
     sortDesc: LuArrowDownWideNarrow,
     spinner: LuLoader,
     square: LuSquare,
+    star: LuStar,
     success: LuCheckCircle,
     track: LuMusic2,
+    unfavorite: LuHeartCrack,
     visibility: MdOutlineVisibility,
     visibilityOff: MdOutlineVisibilityOff,
     volumeMax: LuVolume2,
@@ -124,6 +142,7 @@ export const AppIcon = {
 } as const;
 
 interface IconProps {
+    className?: string;
     fill?: boolean;
     icon: keyof typeof AppIcon;
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
@@ -131,9 +150,9 @@ interface IconProps {
 }
 
 export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {
-    const { fill, size, icon } = props;
+    const { className, fill, size, icon } = props;
 
-    const classNames = clsx({
+    const classNames = clsx(className, {
         [styles.icon]: true,
         [styles.iconFill]: fill,
         [styles.colorDefault]: !props.state,
