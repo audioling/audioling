@@ -1,9 +1,11 @@
-import type { MouseEvent } from 'react';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import type { MouseEvent, MutableRefObject } from 'react';
+import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
+import type { Table } from '@tanstack/react-table';
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
+import type { GroupedVirtuosoHandle } from 'react-virtuoso';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
@@ -18,13 +20,20 @@ import styles from './item-table.module.scss';
 interface GroupedItemTableProps<T, C extends { baseUrl: string; libraryId: string }>
     extends ItemTableProps<T, C> {
     groups: { count: number; name: string }[];
+    itemTableRef?: MutableRefObject<GroupedVirtuosoHandle | undefined>;
     onGroupClick?: (e: MouseEvent<HTMLDivElement>, group: { count: number; name: string }) => void;
 }
 
-export function GroupedItemTable<
+export type GroupedItemTableHandle<T> = GroupedVirtuosoHandle & {
+    getTable: () => Table<T | undefined>;
+};
+
+export const GroupedItemTable = <
     T extends { _uniqueId: string; id: string },
     C extends { baseUrl: string; libraryId: string },
->(props: GroupedItemTableProps<T, C>) {
+>(
+    props: GroupedItemTableProps<T, C>,
+) => {
     const {
         columns,
         columnOrder,
@@ -50,6 +59,7 @@ export function GroupedItemTable<
         onScroll,
         onStartReached,
         rowIdProperty,
+        itemTableRef,
     } = props;
 
     const tableId = useId();
@@ -135,98 +145,111 @@ export function GroupedItemTable<
 
     const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
 
-    return (
-        <>
-            <div
-                className={clsx(styles.container, {
-                    [styles.noHeader]: !enableHeader,
-                })}
-            >
-                {enableHeader && (
-                    <div className={styles.header} style={columnStyles.styles}>
-                        {headers.map((header) => (
-                            <TableHeader
-                                key={`header-${header.id}`}
-                                columnOrder={columnOrder}
-                                columnStyles={columnStyles.styles}
-                                header={header}
-                                setColumnOrder={onChangeColumnOrder}
-                                tableId={tableId}
-                            />
-                        ))}
-                    </div>
-                )}
-                <ComponentErrorBoundary>
-                    <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
-                        <GroupedVirtuoso
-                            components={{
-                                Header: HeaderComponent
-                                    ? (props) => <HeaderComponent {...props} />
-                                    : undefined,
-                            }}
-                            context={tableContext}
-                            endReached={onEndReached}
-                            groupContent={(index) => (
-                                <div
-                                    style={{
-                                        background: 'rgba(0, 0, 0, 1)',
-                                        padding: '0.5rem 0.5rem',
-                                        width: '100%',
-                                    }}
-                                >
-                                    <Group justify="between">
-                                        <Text>{groups[index].name}</Text>
-                                        <IconButton
-                                            icon="ellipsisHorizontal"
-                                            size="sm"
-                                            variant="transparent"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                console.log(groups[index]);
-                                            }}
-                                        />
-                                    </Group>
-                                </div>
-                            )}
-                            groupCounts={groups.map((group) => group.count)}
-                            increaseViewportBy={100}
-                            initialTopMostItemIndex={initialScrollIndex || 0}
-                            isScrolling={isScrolling}
-                            itemContent={(index) => {
-                                if (index < itemCount) {
-                                    return (
-                                        <TableRow
-                                            context={tableContext}
-                                            index={index}
-                                            itemType={itemType}
-                                            rowId={
-                                                getRowId && rowIdProperty
-                                                    ? (data.get(index)?.[
-                                                          rowIdProperty as keyof T
-                                                      ] as string)
-                                                    : index.toString()
-                                            }
-                                            table={table}
-                                            tableId={tableId}
-                                            onRowClick={onRowClick}
-                                            onRowContextMenu={onRowContextMenu}
-                                            onRowDoubleClick={onRowDoubleClick}
-                                            onRowDrop={onRowDrop}
-                                        />
-                                    );
-                                }
+    useImperativeHandle<
+        GroupedVirtuosoHandle | undefined,
+        (GroupedVirtuosoHandle & { getTable: () => Table<T | undefined> }) | undefined
+    >(itemTableRef, () => {
+        if (itemTableRef && 'current' in itemTableRef && itemTableRef.current) {
+            return {
+                ...itemTableRef.current,
+                getTable: () => table,
+            };
+        }
 
-                                return null;
-                            }}
-                            rangeChanged={onRangeChanged}
-                            scrollerRef={setScroller}
-                            startReached={onStartReached}
-                            style={{ overflow: 'hidden' }}
-                            onScroll={onScroll}
+        return undefined;
+    });
+
+    return (
+        <div
+            className={clsx(styles.container, {
+                [styles.noHeader]: !enableHeader,
+            })}
+        >
+            {enableHeader && (
+                <div className={styles.header} style={columnStyles.styles}>
+                    {headers.map((header) => (
+                        <TableHeader
+                            key={`header-${header.id}`}
+                            columnOrder={columnOrder}
+                            columnStyles={columnStyles.styles}
+                            header={header}
+                            setColumnOrder={onChangeColumnOrder}
+                            tableId={tableId}
                         />
-                    </div>
-                </ComponentErrorBoundary>
-            </div>
-        </>
+                    ))}
+                </div>
+            )}
+            <ComponentErrorBoundary>
+                <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
+                    <GroupedVirtuoso
+                        ref={itemTableRef as MutableRefObject<GroupedVirtuosoHandle>}
+                        components={{
+                            Header: HeaderComponent
+                                ? (props) => <HeaderComponent {...props} />
+                                : undefined,
+                        }}
+                        context={tableContext}
+                        endReached={onEndReached}
+                        groupContent={(index) => (
+                            <div
+                                style={{
+                                    background: 'rgba(0, 0, 0, 1)',
+                                    padding: '0.5rem 0.5rem',
+                                    width: '100%',
+                                }}
+                            >
+                                <Group justify="between">
+                                    <Text>{groups[index].name}</Text>
+                                    <IconButton
+                                        icon="ellipsisHorizontal"
+                                        size="sm"
+                                        variant="transparent"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            console.log(groups[index]);
+                                        }}
+                                    />
+                                </Group>
+                            </div>
+                        )}
+                        groupCounts={groups.map((group) => group.count)}
+                        increaseViewportBy={100}
+                        initialTopMostItemIndex={initialScrollIndex || 0}
+                        isScrolling={isScrolling}
+                        itemContent={(index) => {
+                            if (index < itemCount) {
+                                return (
+                                    <TableRow
+                                        context={tableContext}
+                                        index={index}
+                                        itemType={itemType}
+                                        rowId={
+                                            getRowId && rowIdProperty
+                                                ? (data.get(index)?.[
+                                                      rowIdProperty as keyof T
+                                                  ] as string)
+                                                : index.toString()
+                                        }
+                                        table={table}
+                                        tableId={tableId}
+                                        onRowClick={onRowClick}
+                                        onRowContextMenu={onRowContextMenu}
+                                        onRowDoubleClick={onRowDoubleClick}
+                                        onRowDrop={onRowDrop}
+                                    />
+                                );
+                            }
+
+                            return null;
+                        }}
+                        rangeChanged={onRangeChanged}
+                        scrollerRef={setScroller}
+                        startReached={onStartReached}
+                        style={{ overflow: 'hidden' }}
+                        onScroll={onScroll}
+                    />
+                </div>
+            </ComponentErrorBoundary>
+        </div>
     );
-}
+};

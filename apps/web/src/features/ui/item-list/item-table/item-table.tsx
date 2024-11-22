@@ -1,5 +1,5 @@
-import type { ElementType, MouseEvent, SyntheticEvent } from 'react';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import type { ElementType, MouseEvent, MutableRefObject, SyntheticEvent } from 'react';
+import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import type { LibraryItemType } from '@repo/shared-types';
@@ -7,6 +7,7 @@ import type { DisplayColumnDef, Row, Table } from '@tanstack/react-table';
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
+import type { VirtuosoHandle } from 'react-virtuoso';
 import { Virtuoso } from 'react-virtuoso';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
@@ -47,6 +48,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
+    itemTableRef?: MutableRefObject<VirtuosoHandle | undefined>;
     itemType: LibraryItemType;
     onChangeColumnOrder: (columnOrder: ItemListColumn[]) => void;
     onEndReached?: (index: number) => void;
@@ -90,6 +92,7 @@ export function ItemTable<
         enableHeader = true,
         isScrolling,
         itemCount,
+        itemTableRef,
         itemType,
         onEndReached,
         onRangeChanged,
@@ -185,23 +188,19 @@ export function ItemTable<
 
     const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
 
-    // const handleRowContextMenu = useCallback(
-    //     (e: MouseEvent<HTMLDivElement>, row: Row<T | undefined>) => {
-    //         e.stopPropagation();
+    useImperativeHandle<
+        VirtuosoHandle | undefined,
+        (VirtuosoHandle & { getTable: () => Table<T | undefined> }) | undefined
+    >(itemTableRef, () => {
+        if (itemTableRef && 'current' in itemTableRef && itemTableRef.current) {
+            return {
+                ...itemTableRef.current,
+                getTable: () => table,
+            };
+        }
 
-    //         e.currentTarget.dispatchEvent(
-    //             new MouseEvent('contextmenu', {
-    //                 bubbles: true,
-    //                 clientX: e.currentTarget.getBoundingClientRect().x,
-    //                 clientY: e.currentTarget.getBoundingClientRect().y,
-    //             }),
-    //         );
-
-    //         table.resetRowSelection();
-    //         row.toggleSelected();
-    //     },
-    //     [table],
-    // );
+        return undefined;
+    });
 
     return (
         <div
