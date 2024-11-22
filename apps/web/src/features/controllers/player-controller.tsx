@@ -73,7 +73,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
 
             case 'clearSelected': {
                 const command = cmd as ClearSelected;
-                clearSelected(command.clearSelected.uniqueIds);
+                clearSelected(command.clearSelected.items);
                 break;
             }
 
@@ -233,7 +233,7 @@ type ClearQueue = {
 
 type ClearSelected = {
     clearSelected: {
-        uniqueIds: string[];
+        items: PlayQueueItem[];
     };
 };
 

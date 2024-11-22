@@ -71,14 +71,14 @@ interface GroupedQueue {
     items: PlayQueueItem[];
 }
 
-type GroupingProperty = keyof PlayQueueItem;
+export type QueueGroupingProperty = keyof PlayQueueItem;
 
 interface Actions {
     addToQueueByType: (playType: PlayType, items: TrackItem[]) => void;
     addToQueueByUniqueId: (uniqueId: string, items: TrackItem[], edge: 'top' | 'bottom') => void;
     clearQueue: () => void;
-    clearSelected: (uniqueIds: string[]) => void;
-    getQueue: (groupBy?: GroupingProperty) => GroupedQueue;
+    clearSelected: (items: PlayQueueItem[]) => void;
+    getQueue: (groupBy?: QueueGroupingProperty) => GroupedQueue;
     getQueueOrder: () => {
         groups: { count: number; name: string }[];
         items: PlayQueueItem[];
@@ -270,8 +270,10 @@ export const usePlayerStore = create<PlayerState>()(
                         state.queue.priority = [];
                     });
                 },
-                clearSelected: (uniqueIds: string[]) => {
+                clearSelected: (items: PlayQueueItem[]) => {
                     set((state) => {
+                        const uniqueIds = items.map((item) => item._uniqueId);
+
                         state.queue.default = state.queue.default.filter(
                             (item) => !uniqueIds.includes(item._uniqueId),
                         );
@@ -281,7 +283,7 @@ export const usePlayerStore = create<PlayerState>()(
                         );
                     });
                 },
-                getQueue: (groupBy?: GroupingProperty) => {
+                getQueue: (groupBy?: QueueGroupingProperty) => {
                     const queue = get().getQueueOrder();
                     const queueType = getQueueType();
 

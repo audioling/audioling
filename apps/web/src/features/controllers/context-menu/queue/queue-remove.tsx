@@ -9,15 +9,15 @@ interface QueueRemoveProps {
 
 export function QueueRemove({ table }: QueueRemoveProps) {
     const onSelect = () => {
-        const uniqueIds = table
+        const items = table
             .getSelectedRowModel()
-            .rows.map((row) => row.original?._uniqueId)
-            .filter((id): id is string => id !== undefined);
+            .rows.map((row) => row.original)
+            .filter((item): item is PlayQueueItem => item !== undefined);
 
         PlayerController.call({
             cmd: {
                 clearSelected: {
-                    uniqueIds,
+                    items,
                 },
             },
         });

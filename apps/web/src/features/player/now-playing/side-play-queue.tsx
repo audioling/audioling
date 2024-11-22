@@ -1,14 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
+import type { Row, Table } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
+import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
+import type { QueueGroupingProperty } from '@/features/player/stores/player-store.tsx';
 import { subscribePlayerQueue, usePlayerActions } from '@/features/player/stores/player-store.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { ItemListColumn, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
+import type { GroupedItemTableHandle } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
 import { GroupedItemTable } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
@@ -28,9 +33,11 @@ export function SidePlayQueue() {
 
     const { getQueue } = usePlayerActions();
 
+    const [groupBy, setGroupBy] = useState<QueueGroupingProperty | undefined>(undefined);
+
     useEffect(() => {
         const setQueue = () => {
-            const queue = getQueue();
+            const queue = getQueue(groupBy) || { groups: [], items: [] };
 
             setData(() => {
                 const newData = new Map();
@@ -50,7 +57,7 @@ export function SidePlayQueue() {
         setQueue();
 
         return () => unsub();
-    }, [getQueue]);
+    }, [getQueue, groupBy]);
 
     const [data, setData] = useState<Map<number, PlayQueueItem>>(new Map());
     const [groups, setGroups] = useState<{ count: number; name: string }[]>([]);
@@ -104,47 +111,168 @@ export function SidePlayQueue() {
 
     const { onRowClick } = useMultiRowSelection<PlayQueueItem>();
 
-    return (
-        <GroupedItemTable<PlayQueueItem, SidePlayQueueTableItemContext>
-            columnOrder={columnOrder}
-            columns={columns}
-            context={tableContext}
-            data={data}
-            enableHeader={false}
-            enableMultiRowSelection={true}
-            enableRowSelection={true}
-            getRowId={getRowId}
-            groups={groups}
-            itemCount={data.size}
-            itemType={LibraryItemType.TRACK}
-            rowIdProperty="_uniqueId"
-            onChangeColumnOrder={setColumnOrder}
-            onRowClick={onRowClick}
-            onRowDrop={onRowDrop}
-        />
-    );
-}
+    const onRowContextMenu = (
+        e: MouseEvent<HTMLDivElement>,
+        _row: Row<PlayQueueItem | undefined>,
+        table: Table<PlayQueueItem | undefined>,
+    ) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-export function SidePlayQueueContainer() {
+        ContextMenuController.call({
+            cmd: { table, type: 'queue' },
+            event: e,
+        });
+    };
+
+    const getRowId = useCallback((row: PlayQueueItem | undefined, index: number) => {
+        return row?._uniqueId ?? index.toString();
+    }, []);
+
+    const itemTableRef = useRef<GroupedItemTableHandle<PlayQueueItem> | undefined>(undefined);
+
     return (
         <div className={styles.container}>
             <Group className={styles.header} gap="sm" justify="between">
                 <Button size="md" variant="default">
                     Queue
                 </Button>
-                <QueueControls />
+                <QueueControls
+                    groupBy={groupBy}
+                    table={itemTableRef.current?.getTable() ?? undefined}
+                    onGroupBy={setGroupBy}
+                />
             </Group>
             <div className={styles.content}>
-                <SidePlayQueue />
+                <GroupedItemTable<PlayQueueItem, SidePlayQueueTableItemContext>
+                    columnOrder={columnOrder}
+                    columns={columns}
+                    context={tableContext}
+                    data={data}
+                    enableHeader={false}
+                    enableMultiRowSelection={true}
+                    enableRowSelection={true}
+                    getRowId={getRowId}
+                    groups={groups}
+                    itemCount={data.size}
+                    itemTableRef={itemTableRef}
+                    itemType={LibraryItemType.TRACK}
+                    rowIdProperty="_uniqueId"
+                    onChangeColumnOrder={setColumnOrder}
+                    onRowClick={onRowClick}
+                    onRowContextMenu={onRowContextMenu}
+                    onRowDrop={onRowDrop}
+                />
             </div>
         </div>
     );
 }
 
-export function QueueControls() {
-    const handleClear = () => {
+SidePlayQueue.displayName = 'SidePlayQueue';
+
+export function QueueControls({
+    table,
+    onGroupBy,
+    groupBy,
+}: {
+    groupBy: QueueGroupingProperty | undefined;
+    onGroupBy: (value: QueueGroupingProperty | undefined) => void;
+    table?: Table<PlayQueueItem | undefined>;
+}) {
+    const handleClear = useCallback(() => {
         PlayerController.call({ cmd: { clearQueue: null } });
-    };
+    }, []);
+
+    const handleClearSelected = useCallback(() => {
+        if (!table) {
+            return;
+        }
+
+        PlayerController.call({
+            cmd: {
+                clearSelected: {
+                    items: table
+                        .getSelectedRowModel()
+                        .rows.map((row) => row.original)
+                        .filter((item): item is PlayQueueItem => item !== undefined),
+                },
+            },
+        });
+    }, [table]);
+
+    const handleSelect = useCallback(
+        (value: boolean) => {
+            if (!table) {
+                return;
+            }
+
+            table.getRowModel().rows.forEach((row) => {
+                row.toggleSelected(value);
+            });
+        },
+        [table],
+    );
+
+    const handleMoveToTop = useCallback(() => {
+        if (!table) {
+            return;
+        }
+
+        const rows = table.getSelectedRowModel().rows;
+
+        PlayerController.call({
+            cmd: {
+                moveSelectedToTop: {
+                    items: rows
+                        .map((row) => row.original)
+                        .filter((item): item is PlayQueueItem => item !== undefined),
+                },
+            },
+        });
+    }, [table]);
+
+    const handleMoveToBottom = useCallback(() => {
+        if (!table) {
+            return;
+        }
+
+        const rows = table.getSelectedRowModel().rows;
+
+        PlayerController.call({
+            cmd: {
+                moveSelectedToBottom: {
+                    items: rows
+                        .map((row) => row.original)
+                        .filter((item): item is PlayQueueItem => item !== undefined),
+                },
+            },
+        });
+    }, [table]);
+
+    const handleMoveToNext = useCallback(() => {
+        if (!table) {
+            return;
+        }
+
+        const rows = table.getSelectedRowModel().rows;
+
+        PlayerController.call({
+            cmd: {
+                moveSelectedToNext: {
+                    items: rows
+                        .map((row) => row.original)
+                        .filter((item): item is PlayQueueItem => item !== undefined),
+                },
+            },
+        });
+    }, [table]);
+
+    const handleGroupBy = useCallback(
+        (value: QueueGroupingProperty | undefined) => {
+            onGroupBy(value);
+        },
+        [onGroupBy],
+    );
 
     return (
         <Group gap="sm" justify="center" p="sm">
@@ -153,27 +281,75 @@ export function QueueControls() {
                     <IconButton icon="ellipsisHorizontal" size="sm" />
                 </Menu.Target>
                 <Menu.Content>
-                    <Menu.Item>Select all</Menu.Item>
-                    <Menu.Item>Deselect all</Menu.Item>
-                    <Menu.Item>Move selected to top</Menu.Item>
-                    <Menu.Item>Move selected to bottom</Menu.Item>
-                    <Menu.Item>Move selected to next</Menu.Item>
+                    <Menu.Item onSelect={() => handleSelect(true)}>Select all</Menu.Item>
+                    <Menu.Item onSelect={() => handleSelect(false)}>Select none</Menu.Item>
                     <Menu.Divider />
-                    <Menu.Item>Clear selected</Menu.Item>
-                    <Menu.Item onSelect={handleClear}>Clear all</Menu.Item>
-                    <Menu.Divider />
-                    <Menu.Item>Shuffle selected</Menu.Item>
-                    <Menu.Item>Shuffle all</Menu.Item>
+                    <Menu.Submenu>
+                        <Menu.SubmenuTarget>
+                            <Menu.Item rightIcon="arrowRightS">Remove</Menu.Item>
+                        </Menu.SubmenuTarget>
+                        <Menu.SubmenuContent>
+                            <Menu.Item onSelect={handleClearSelected}>Selected</Menu.Item>
+                            <Menu.Item onSelect={handleClear}>All</Menu.Item>
+                        </Menu.SubmenuContent>
+                    </Menu.Submenu>
+                    <Menu.Submenu>
+                        <Menu.SubmenuTarget>
+                            <Menu.Item rightIcon="arrowRightS">Shuffle</Menu.Item>
+                        </Menu.SubmenuTarget>
+                        <Menu.SubmenuContent>
+                            <Menu.Item>Selected</Menu.Item>
+                            <Menu.Item>All</Menu.Item>
+                        </Menu.SubmenuContent>
+                    </Menu.Submenu>
+                    <Menu.Submenu>
+                        <Menu.SubmenuTarget>
+                            <Menu.Item rightIcon="arrowRightS">Move to</Menu.Item>
+                        </Menu.SubmenuTarget>
+                        <Menu.SubmenuContent>
+                            <Menu.Item leftIcon="arrowRightS" onSelect={handleMoveToNext}>
+                                Next
+                            </Menu.Item>
+                            <Menu.Item leftIcon="arrowUpToLine" onSelect={handleMoveToTop}>
+                                Top
+                            </Menu.Item>
+                            <Menu.Item leftIcon="arrowDownToLine" onSelect={handleMoveToBottom}>
+                                Bottom
+                            </Menu.Item>
+                        </Menu.SubmenuContent>
+                    </Menu.Submenu>
                     <Menu.Divider />
                     <Menu.Submenu>
                         <Menu.SubmenuTarget>
                             <Menu.Item rightIcon="arrowRightS">Group By</Menu.Item>
                         </Menu.SubmenuTarget>
                         <Menu.SubmenuContent>
-                            <Menu.Item>None</Menu.Item>
-                            <Menu.Item>Album</Menu.Item>
-                            <Menu.Item>Artist</Menu.Item>
-                            <Menu.Item>Genre</Menu.Item>
+                            <Menu.Item
+                                isSelected={groupBy === undefined}
+                                onSelect={() => handleGroupBy(undefined)}
+                            >
+                                None
+                            </Menu.Item>
+                            <Menu.Item
+                                isSelected={groupBy === 'album'}
+                                onSelect={() => handleGroupBy('album')}
+                            >
+                                Album
+                            </Menu.Item>
+                            <Menu.Item
+                                disabled
+                                isSelected={groupBy === 'artists'}
+                                onSelect={() => handleGroupBy('artists')}
+                            >
+                                Artist
+                            </Menu.Item>
+                            <Menu.Item
+                                disabled
+                                isSelected={groupBy === 'genres'}
+                                onSelect={() => handleGroupBy('genres')}
+                            >
+                                Genre
+                            </Menu.Item>
                         </Menu.SubmenuContent>
                     </Menu.Submenu>
                 </Menu.Content>
