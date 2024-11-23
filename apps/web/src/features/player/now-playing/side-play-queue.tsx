@@ -71,11 +71,26 @@ export function SidePlayQueue() {
 
     const { columns } = useItemTable<PlayQueueItem>(columnOrder, setColumnOrder);
 
-    const onRowDrop = (args: ItemTableRowDrop) => {
-        const { edge, data, uniqueId } = args;
+    const onRowDrop = (args: ItemTableRowDrop<PlayQueueItem>) => {
+        const { edge, data, table, uniqueId } = args;
 
-        // TODO: Handle reorder operations
-        if (data.operation?.includes(DragOperation.ADD)) {
+        if (data.operation?.includes(DragOperation.REORDER)) {
+            const items = table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original)
+                .filter((item): item is PlayQueueItem => item !== undefined);
+
+            PlayerController.call({
+                cmd: {
+                    moveSelectedTo: {
+                        edge: edge as 'top' | 'bottom',
+                        items: items,
+                        uniqueId,
+                    },
+                },
+            });
+            return;
+        } else if (data.operation?.includes(DragOperation.ADD)) {
             switch (data.type) {
                 case DragTarget.ALBUM:
                     PlayerController.call({

@@ -74,8 +74,8 @@ interface GroupedQueue {
 export type QueueGroupingProperty = keyof PlayQueueItem;
 
 interface Actions {
-    addToQueueByType: (playType: PlayType, items: TrackItem[]) => void;
-    addToQueueByUniqueId: (uniqueId: string, items: TrackItem[], edge: 'top' | 'bottom') => void;
+    addToQueueByType: (items: TrackItem[], playType: PlayType) => void;
+    addToQueueByUniqueId: (items: TrackItem[], uniqueId: string, edge: 'top' | 'bottom') => void;
     clearQueue: () => void;
     clearSelected: (items: PlayQueueItem[]) => void;
     getQueue: (groupBy?: QueueGroupingProperty) => GroupedQueue;
@@ -90,6 +90,7 @@ interface Actions {
     mediaStepBackward: () => void;
     mediaStepForward: () => void;
     mediaTogglePlayPause: () => void;
+    moveSelectedTo: (items: PlayQueueItem[], uniqueId: string, edge: 'top' | 'bottom') => void;
     moveSelectedToBottom: (items: PlayQueueItem[]) => void;
     moveSelectedToNext: (items: PlayQueueItem[]) => void;
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
@@ -118,7 +119,7 @@ export const usePlayerStore = create<PlayerState>()(
     persist(
         subscribeWithSelector(
             immer((set, get) => ({
-                addToQueueByType: (playType, items) => {
+                addToQueueByType: (items, playType) => {
                     const newItems = items.map(toPlayQueueItem);
 
                     const queueType = getQueueType();
@@ -210,7 +211,7 @@ export const usePlayerStore = create<PlayerState>()(
                         }
                     }
                 },
-                addToQueueByUniqueId: (uniqueId, items, edge) => {
+                addToQueueByUniqueId: (items, uniqueId, edge) => {
                     const newItems = items.map(toPlayQueueItem);
                     const queueType = getQueueType();
 
@@ -390,6 +391,80 @@ export const usePlayerStore = create<PlayerState>()(
                         }
                     });
                 },
+                moveSelectedTo: (
+                    items: PlayQueueItem[],
+                    uniqueId: string,
+                    edge: 'top' | 'bottom',
+                ) => {
+                    const queueType = getQueueType();
+
+                    set((state) => {
+                        const uniqueIdMap = new Map(items.map((item) => [item._uniqueId, item]));
+
+                        if (queueType == QueueType.DEFAULT) {
+                            // Find the index of the drop target
+                            const index = state.queue.default.findIndex(
+                                (item) => item._uniqueId === uniqueId,
+                            );
+
+                            // Get the new index based on the edge
+                            const newIndex = Math.max(0, edge === 'top' ? index : index + 1);
+
+                            const itemsBefore = state.queue.default
+                                .slice(0, newIndex)
+                                .filter((item) => !uniqueIdMap.has(item._uniqueId));
+
+                            const itemsAfter = state.queue.default
+                                .slice(newIndex)
+                                .filter((item) => !uniqueIdMap.has(item._uniqueId));
+
+                            state.queue.default = [...itemsBefore, ...items, ...itemsAfter];
+                        } else {
+                            const priorityIndex = state.queue.priority.findIndex(
+                                (item) => item._uniqueId === uniqueId,
+                            );
+
+                            // If the item is in the priority queue
+                            if (priorityIndex !== -1) {
+                                const newIndex = Math.max(
+                                    0,
+                                    edge === 'top' ? priorityIndex : priorityIndex + 1,
+                                );
+
+                                const itemsBefore = state.queue.priority
+                                    .slice(0, newIndex)
+                                    .filter((item) => !uniqueIdMap.has(item._uniqueId));
+
+                                const itemsAfter = state.queue.priority
+                                    .slice(newIndex)
+                                    .filter((item) => !uniqueIdMap.has(item._uniqueId));
+
+                                state.queue.priority = [...itemsBefore, ...items, ...itemsAfter];
+                            } else {
+                                const defaultIndex = state.queue.default.findIndex(
+                                    (item) => item._uniqueId === uniqueId,
+                                );
+
+                                if (defaultIndex !== -1) {
+                                    const newIndex = Math.max(
+                                        0,
+                                        edge === 'top' ? defaultIndex : defaultIndex + 1,
+                                    );
+
+                                    const itemsBefore = state.queue.default
+                                        .slice(0, newIndex)
+                                        .filter((item) => !uniqueIdMap.has(item._uniqueId));
+
+                                    const itemsAfter = state.queue.default
+                                        .slice(newIndex)
+                                        .filter((item) => !uniqueIdMap.has(item._uniqueId));
+
+                                    state.queue.default = [...itemsBefore, ...items, ...itemsAfter];
+                                }
+                            }
+                        }
+                    });
+                },
                 moveSelectedToBottom: (items: PlayQueueItem[]) => {
                     set((state) => {
                         const uniqueIds = items.map((item) => item._uniqueId);
@@ -507,6 +582,7 @@ export const usePlayerActions = () => {
             mediaStepBackward: state.mediaStepBackward,
             mediaStepForward: state.mediaStepForward,
             mediaTogglePlayPause: state.mediaTogglePlayPause,
+            moveSelectedTo: state.moveSelectedTo,
             moveSelectedToBottom: state.moveSelectedToBottom,
             moveSelectedToNext: state.moveSelectedToNext,
             moveSelectedToTop: state.moveSelectedToTop,
@@ -576,10 +652,10 @@ export async function addToQueueByFetch(
     }
 
     if (typeof type === 'string') {
-        usePlayerStore.getState().addToQueueByType(type, items);
+        usePlayerStore.getState().addToQueueByType(items, type);
     } else {
         const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
-        usePlayerStore.getState().addToQueueByUniqueId(type.uniqueId, items, normalizedEdge);
+        usePlayerStore.getState().addToQueueByUniqueId(items, type.uniqueId, normalizedEdge);
     }
 }
 
@@ -587,10 +663,10 @@ export async function addToQueueByData(type: AddToQueueType, data: TrackItem[]) 
     const items = data.map(toPlayQueueItem);
 
     if (typeof type === 'string') {
-        usePlayerStore.getState().addToQueueByType(type, items);
+        usePlayerStore.getState().addToQueueByType(items, type);
     } else {
         const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
-        usePlayerStore.getState().addToQueueByUniqueId(type.uniqueId, items, normalizedEdge);
+        usePlayerStore.getState().addToQueueByUniqueId(items, type.uniqueId, normalizedEdge);
     }
 }
 

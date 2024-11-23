@@ -23,11 +23,12 @@ export interface TableItemProps<T, C extends { baseUrl: string; libraryId: strin
     index: number;
 }
 
-export type ItemTableRowDrop = {
+export type ItemTableRowDrop<T> = {
     data: DragData;
     edge: Edge | null;
     id: string;
     index: number;
+    table: Table<T | undefined>;
     uniqueId: string;
 };
 
@@ -68,7 +69,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
         row: Row<T | undefined>,
         table: Table<T | undefined>,
     ) => void;
-    onRowDrop?: (args: ItemTableRowDrop) => void;
+    onRowDrop?: (args: ItemTableRowDrop<T>) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
     rowIdProperty?: string;

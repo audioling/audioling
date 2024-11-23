@@ -60,7 +60,7 @@ interface TableRowProps<
         row: Row<T | undefined>,
         table: Table<T | undefined>,
     ) => void;
-    onRowDrop?: (args: ItemTableRowDrop) => void;
+    onRowDrop?: (args: ItemTableRowDrop<T>) => void;
     rowId: string;
     table: Table<T | undefined>;
     tableId: string;
@@ -117,7 +117,17 @@ export function TableRow<
                         ],
                     });
                 },
-                onDragStart: () => setIsDragging(true),
+                onDragStart: () => {
+                    const isSelfSelected = row.getIsSelected();
+
+                    // If attempting to drag a row that is not selected, select it
+                    if (!isSelfSelected) {
+                        table.resetRowSelection();
+                        setTimeout(() => row.toggleSelected(true), 50);
+                    }
+
+                    setIsDragging(true);
+                },
                 onDrop: () => setIsDragging(false),
                 onGenerateDragPreview: (data) => {
                     disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
@@ -178,6 +188,7 @@ export function TableRow<
                         edge: closestEdgeOfTarget,
                         id: row.id,
                         index,
+                        table,
                         uniqueId: row.original?._uniqueId || row?.id,
                     });
                     setIsDraggedOver(null);

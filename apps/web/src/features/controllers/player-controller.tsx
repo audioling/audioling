@@ -25,6 +25,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         mediaStepBackward,
         mediaStepForward,
         mediaTogglePlayPause,
+        moveSelectedTo,
         moveSelectedToTop,
         moveSelectedToBottom,
         moveSelectedToNext,
@@ -112,6 +113,16 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
                 break;
             }
 
+            case 'moveSelectedTo': {
+                const command = cmd as MoveSelectedTo;
+                moveSelectedTo(
+                    command.moveSelectedTo.items,
+                    command.moveSelectedTo.uniqueId,
+                    command.moveSelectedTo.edge,
+                );
+                break;
+            }
+
             case 'moveSelectedToTop': {
                 const command = cmd as MoveSelectedToTop;
                 moveSelectedToTop(command.moveSelectedToTop.items);
@@ -146,6 +157,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
     }, [
         cmd,
         call,
+        libraryId,
         mediaNext,
         mediaPause,
         mediaPlay,
@@ -154,13 +166,13 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         mediaStepForward,
         mediaTogglePlayPause,
         clearQueue,
-        libraryId,
         clearSelected,
         moveSelectedToTop,
         moveSelectedToBottom,
         moveSelectedToNext,
         shuffle,
         shuffleSelected,
+        moveSelectedTo,
     ]);
 
     return null;
@@ -178,6 +190,7 @@ export type PlayerCommand =
     | MediaStepBackward
     | MediaStepForward
     | MediaTogglePlayPause
+    | MoveSelectedTo
     | MoveSelectedToTop
     | MoveSelectedToBottom
     | MoveSelectedToNext
@@ -252,6 +265,14 @@ type MoveSelectedToBottom = {
 type MoveSelectedToNext = {
     moveSelectedToNext: {
         items: PlayQueueItem[];
+    };
+};
+
+type MoveSelectedTo = {
+    moveSelectedTo: {
+        edge: 'top' | 'bottom';
+        items: PlayQueueItem[];
+        uniqueId: string;
     };
 };
 
