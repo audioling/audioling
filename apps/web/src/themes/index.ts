@@ -191,6 +191,8 @@ export type AppThemeConfiguration = {
         'scroll-bar-track-hover-background-color': CSSProperties['backgroundColor'];
         'table-border-color': CSSProperties['borderColor'];
         'table-cell-border-color': CSSProperties['borderColor'];
+        'table-group-background-color': CSSProperties['backgroundColor'];
+        'table-group-font-color': CSSProperties['color'];
         'table-header-background-color': CSSProperties['backgroundColor'];
         'table-header-font-color': CSSProperties['color'];
         'table-row-background-color': CSSProperties['backgroundColor'];

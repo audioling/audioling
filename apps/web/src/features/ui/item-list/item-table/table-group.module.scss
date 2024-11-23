@@ -1,0 +1,19 @@
+@use '@/styles/base';
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--base-gap-sm);
+    width: 100%;
+    height: 100%;
+    padding: var(--base-gap-sm);
+    color: var(--table-group-font-color);
+    background-color: var(--table-group-background-color);
+}
+
+.text {
+    font-size: var(--base-font-size-md);
+    user-select: none;
+
+    @include base.text-ellipsis;
+}

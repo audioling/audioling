@@ -211,6 +211,8 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'scroll-bar-track-hover-background-color': 'rgba(0, 0, 0, 0)',
     'table-border-color': primaryColor,
     'table-cell-border-color': primaryColor,
+    'table-group-background-color': 'rgba(0, 0, 0, 0.8)',
+    'table-group-font-color': 'rgb(230, 230, 230)',
     'table-header-background-color': 'rgb(30, 30, 30)',
     'table-header-font-color': 'rgb(230, 230, 230)',
     'table-row-background-color': 'transparent',

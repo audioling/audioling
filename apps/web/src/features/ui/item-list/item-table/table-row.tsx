@@ -97,6 +97,7 @@ export function TableRow<
 
     const canSelect = row?.getCanSelect();
     const isSelected = row?.getIsSelected();
+    const isExpanded = row?.getIsExpanded();
 
     const [isDragging, setIsDragging] = useState(false);
     const [isDraggedOver, setIsDraggedOver] = useState<Edge | null>(null);
@@ -196,6 +197,10 @@ export function TableRow<
             }),
         );
     }, [index, itemType, onRowDrop, row, row.id, table]);
+
+    if (!isExpanded) {
+        return null;
+    }
 
     return (
         <div className={styles.rowContainer}>

@@ -1,28 +1,33 @@
 import type { MouseEvent, MutableRefObject } from 'react';
 import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
-import type { Table } from '@tanstack/react-table';
+import type { ExpandedState, Row, Table } from '@tanstack/react-table';
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import type { GroupedVirtuosoHandle } from 'react-virtuoso';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
-import { Group } from '@/features/ui/group/group.tsx';
-import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableProps } from '@/features/ui/item-list/item-table/item-table.tsx';
+import { TableGroup } from '@/features/ui/item-list/item-table/table-group.tsx';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
 import { TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
-import { Text } from '@/features/ui/text/text.tsx';
 import styles from './item-table.module.scss';
 
 interface GroupedItemTableProps<T, C extends { baseUrl: string; libraryId: string }>
     extends ItemTableProps<T, C> {
-    groups: { count: number; name: string }[];
+    groups: ItemTableGroup[];
     itemTableRef?: MutableRefObject<GroupedVirtuosoHandle | undefined>;
-    onGroupClick?: (e: MouseEvent<HTMLDivElement>, group: { count: number; name: string }) => void;
+    onGroupClick?: (
+        e: MouseEvent<HTMLDivElement>,
+        items: Row<T | undefined>[],
+        group: ItemTableGroup,
+        table: Table<T | undefined>,
+    ) => void;
 }
+
+export type ItemTableGroup = { count: number; name: string };
 
 export type GroupedItemTableHandle<T> = GroupedVirtuosoHandle & {
     getTable: () => Table<T | undefined>;
@@ -101,7 +106,11 @@ export const GroupedItemTable = <
         return () => osInstance()?.destroy();
     }, [scroller, initialize, osInstance]);
 
+    const [expanded, setExpanded] = useState<ExpandedState>(true);
+
     const tableData = useMemo(() => {
+        setExpanded(true);
+
         return Array.from({ length: itemCount }, (_, index) => data.get(index)).filter(
             (item): item is T => item !== undefined,
         );
@@ -115,8 +124,10 @@ export const GroupedItemTable = <
         getCoreRowModel: getCoreRowModel(),
         getRowId: getRowId ?? ((_, index) => index.toString()),
         getSortedRowModel: getSortedRowModel(),
+        onExpandedChange: setExpanded,
         state: {
             columnOrder,
+            expanded,
         },
     });
 
@@ -191,26 +202,7 @@ export const GroupedItemTable = <
                         context={tableContext}
                         endReached={onEndReached}
                         groupContent={(index) => (
-                            <div
-                                style={{
-                                    background: 'rgba(0, 0, 0, 1)',
-                                    padding: '0.5rem 0.5rem',
-                                    width: '100%',
-                                }}
-                            >
-                                <Group justify="between">
-                                    <Text>{groups[index].name}</Text>
-                                    <IconButton
-                                        icon="ellipsisHorizontal"
-                                        size="sm"
-                                        variant="transparent"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            console.log(groups[index]);
-                                        }}
-                                    />
-                                </Group>
-                            </div>
+                            <TableGroup groups={groups} index={index} table={table} />
                         )}
                         groupCounts={groups.map((group) => group.count)}
                         increaseViewportBy={100}
@@ -242,10 +234,10 @@ export const GroupedItemTable = <
 
                             return null;
                         }}
+                        logLevel={undefined}
                         rangeChanged={onRangeChanged}
                         scrollerRef={setScroller}
                         startReached={onStartReached}
-                        style={{ overflow: 'hidden' }}
                         onScroll={onScroll}
                     />
                 </div>
