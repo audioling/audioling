@@ -26,7 +26,7 @@ export default defineConfig(async () => ({
             },
         },
         modules: {
-            generateScopedName: 'al_[name]_[local]',
+            generateScopedName: '[name]_[local]',
             localsConvention: 'camelCase' as const,
         },
     },
