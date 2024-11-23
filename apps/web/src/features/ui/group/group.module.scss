@@ -1,5 +1,14 @@
 @use '@/styles/base';
 
+.group {
+    display: flex;
+    flex-direction: row;
+}
+
+.grow > * {
+    flex-grow: 1;
+}
+
 .gap-xs {
     gap: base.$gap-xs;
 }
@@ -18,6 +27,14 @@
 
 .gap-xl {
     gap: base.$gap-xl;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+.no-wrap {
+    flex-wrap: nowrap;
 }
 
 .margin-x-xs {
@@ -118,4 +135,36 @@
 .padding-y-xl {
     padding-top: base.$gap-xl;
     padding-bottom: base.$gap-xl;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.align-start {
+    align-items: flex-start;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.align-end {
+    align-items: flex-end;
+}
+
+.align-between {
+    align-items: space-between;
 }

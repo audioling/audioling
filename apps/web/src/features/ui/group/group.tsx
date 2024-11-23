@@ -1,14 +1,13 @@
 import { forwardRef } from 'react';
-import { Group as MantineGroup } from '@mantine/core';
 import clsx from 'clsx';
-import { motion, wrap } from 'motion/react';
+import { motion } from 'motion/react';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './group.module.scss';
 
 interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
     align?: 'start' | 'center' | 'end' | 'between';
-    as?: React.ElementType;
     children: React.ReactNode;
+    className?: string;
     gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string;
     grow?: boolean;
     h?: string;
@@ -21,7 +20,6 @@ interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
     mx?: Sizes;
     my?: Sizes;
     p?: Sizes;
-    preventOverflow?: boolean;
     px?: Sizes;
     py?: Sizes;
     w?: string;
@@ -31,19 +29,19 @@ interface GroupProps extends React.ComponentPropsWithoutRef<'div'> {
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, ref) => {
     const {
         align,
-        as,
+        className,
         children,
         gap,
         grow,
         justify,
-        preventOverflow,
         wrap,
+        w,
+        h,
+        m,
         mah,
         maw,
         mih,
         miw,
-        w,
-        m,
         mx,
         my,
         p,
@@ -52,7 +50,9 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
         ...htmlProps
     } = props;
 
-    const rootClassNames = clsx({
+    const classNames = clsx(className, {
+        [styles.group]: true,
+        [styles.grow]: grow,
         [styles.gapXs]: gap === 'xs',
         [styles.gapSm]: gap === 'sm',
         [styles.gapMd]: gap === 'md',
@@ -74,60 +74,37 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
         [styles.paddingYMd]: py === 'md' || p === 'md',
         [styles.paddingYlg]: py === 'lg' || p === 'lg',
         [styles.paddingYxl]: py === 'xl' || p === 'xl',
+        [styles.justifyStart]: justify === 'start',
+        [styles.justifyCenter]: justify === 'center',
+        [styles.justifyEnd]: justify === 'end',
+        [styles.justifyBetween]: justify === 'between',
+        [styles.alignStart]: align === 'start',
+        [styles.alignCenter]: align === 'center',
+        [styles.alignEnd]: align === 'end',
+        [styles.alignBetween]: align === 'between',
+        [styles.wrap]: wrap === 'wrap',
+        [styles.noWrap]: wrap === 'nowrap' || !wrap,
     });
 
     return (
-        <MantineGroup
+        <div
             ref={ref}
-            align={getAlign(align)}
-            classNames={{ root: rootClassNames }}
-            component={as}
-            grow={grow}
-            justify={getJustify(justify)}
-            mah={mah}
-            maw={maw}
-            mih={mih}
-            miw={miw}
-            preventGrowOverflow={preventOverflow}
-            w={w}
-            wrap={wrap}
+            className={classNames}
+            style={{
+                height: h,
+                maxHeight: mah,
+                maxWidth: maw,
+                minHeight: mih,
+                minWidth: miw,
+                width: w,
+            }}
             {...htmlProps}
         >
             {children}
-        </MantineGroup>
+        </div>
     );
 });
 
 export const MotionGroup = motion.create(Group);
 
 Group.displayName = 'Group';
-
-function getJustify(justify: GroupProps['justify']) {
-    switch (justify) {
-        case 'start':
-            return 'flex-start';
-        case 'center':
-            return 'center';
-        case 'end':
-            return 'flex-end';
-        case 'between':
-            return 'space-between';
-    }
-
-    return undefined;
-}
-
-function getAlign(align: GroupProps['align']) {
-    switch (align) {
-        case 'start':
-            return 'flex-start';
-        case 'center':
-            return 'center';
-        case 'end':
-            return 'flex-end';
-        case 'between':
-            return 'space-between';
-    }
-
-    return undefined;
-}
