@@ -83,36 +83,38 @@ export const ValidateServer = (props: ValidateServerProps) => {
 
     return (
         <motion.div {...animationProps.fadeIn}>
-            <Stack ref={ref} as="form" w="350px" onSubmit={handleSubmit}>
-                <Title order={1} size="md" weight="lg">
-                    Connect
-                </Title>
-                <Grid>
-                    <Grid.Col span={10}>
-                        <TextInput
-                            data-autofocus
-                            placeholder="http://localhost:4544"
-                            size="md"
-                            value={props.value}
-                            onChange={(e) => props.onChange(e.currentTarget.value)}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={2}>
-                        <Icon
-                            icon={validationState === 'valid' ? 'check' : 'x'}
-                            state={validationState === 'valid' ? 'success' : 'error'}
-                        />
-                    </Grid.Col>
-                </Grid>
-                <Button
-                    isDisabled={validationState !== 'valid' || props.value === ''}
-                    type="submit"
-                    variant="filled"
-                    onClick={handleNext}
-                >
-                    Next
-                </Button>
-            </Stack>
+            <form onSubmit={handleSubmit}>
+                <Stack ref={ref} w="350px">
+                    <Title order={1} size="md" weight="lg">
+                        Connect
+                    </Title>
+                    <Grid>
+                        <Grid.Col span={10}>
+                            <TextInput
+                                data-autofocus
+                                placeholder="http://localhost:4544"
+                                size="md"
+                                value={props.value}
+                                onChange={(e) => props.onChange(e.currentTarget.value)}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={2}>
+                            <Icon
+                                icon={validationState === 'valid' ? 'check' : 'x'}
+                                state={validationState === 'valid' ? 'success' : 'error'}
+                            />
+                        </Grid.Col>
+                    </Grid>
+                    <Button
+                        isDisabled={validationState !== 'valid' || props.value === ''}
+                        type="submit"
+                        variant="filled"
+                        onClick={handleNext}
+                    >
+                        Next
+                    </Button>
+                </Stack>
+            </form>
         </motion.div>
     );
 };

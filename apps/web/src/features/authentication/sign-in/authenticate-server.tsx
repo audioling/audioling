@@ -1,5 +1,5 @@
-import { motion } from 'motion/react';
 import Cookies from 'js-cookie';
+import { motion } from 'motion/react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import type { Ping } from '@/api/api-types.ts';
@@ -62,37 +62,39 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
 
     return (
         <motion.div ref={ref} {...animationProps.fadeIn}>
-            <Stack as="form" justify="center" w="320px" onSubmit={handleSubmit}>
-                <Group gap="xs">
-                    <IconButton icon="arrowLeft" onClick={props.onBack} />
-                    <Title order={1} size="lg">
+            <form onSubmit={handleSubmit}>
+                <Stack justify="center" w="350px">
+                    <Group gap="xs">
+                        <IconButton icon="arrowLeft" onClick={props.onBack} />
+                        <Title order={1} size="lg">
+                            Sign In
+                        </Title>
+                    </Group>
+                    <Text isSecondary size="xs">
+                        {props.serverUrl}
+                    </Text>
+                    <TextInput
+                        data-autofocus
+                        autoComplete="username"
+                        label="Username"
+                        {...form.register('username', { required: true })}
+                    />
+                    <PasswordInput
+                        autoComplete="current-password"
+                        label="Password"
+                        {...form.register('password', { required: true })}
+                    />
+                    <Button uppercase type="submit" variant="filled">
                         Sign In
-                    </Title>
-                </Group>
-                <Text isSecondary size="xs">
-                    {props.serverUrl}
-                </Text>
-                <TextInput
-                    data-autofocus
-                    autoComplete="username"
-                    label="Username"
-                    {...form.register('username', { required: true })}
-                />
-                <PasswordInput
-                    autoComplete="current-password"
-                    label="Password"
-                    {...form.register('password', { required: true })}
-                />
-                <Button uppercase type="submit" variant="filled">
-                    Sign In
-                </Button>
-                <Divider label="Or" />
-                <Center>
-                    <ButtonLink to={APP_ROUTE.SIGN_UP} variant="subtle">
-                        Create a new account
-                    </ButtonLink>
-                </Center>
-            </Stack>
+                    </Button>
+                    <Divider label="Or" />
+                    <Center>
+                        <ButtonLink to={APP_ROUTE.SIGN_UP} variant="subtle">
+                            Create a new account
+                        </ButtonLink>
+                    </Center>
+                </Stack>
+            </form>
         </motion.div>
     );
 };

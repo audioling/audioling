@@ -1,5 +1,10 @@
 @use '@/styles/base';
 
+.stack {
+    display: flex;
+    flex-direction: column;
+}
+
 .gap-xs {
     gap: base.$gap-xs;
 }
@@ -118,4 +123,40 @@
 .padding-y-xl {
     padding-top: base.$gap-xl;
     padding-bottom: base.$gap-xl;
+}
+
+.align-start {
+    align-items: flex-start;
+}
+
+.align-end {
+    align-items: flex-end;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.align-between {
+    align-items: space-between;
+}
+
+.align-stretch {
+    align-items: stretch;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
 }

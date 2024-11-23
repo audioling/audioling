@@ -76,53 +76,55 @@ export const LibraryEditForm = () => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack ref={ref} as="form" onSubmit={handleSubmit}>
-            <TextInput
-                data-autofocus
-                label="Display Name"
-                placeholder="My Library"
-                rightSection={
-                    <img
-                        height="20px"
-                        src={
-                            library.data.type === LibraryType.SUBSONIC
-                                ? SubsonicIcon
-                                : library.data.type === LibraryType.NAVIDROME
-                                  ? NavidromeIcon
-                                  : JellyfinIcon
-                        }
-                        width="20px"
-                    />
-                }
-                {...form.register('displayName', { required: true })}
-            />
+        <form onSubmit={handleSubmit}>
+            <Stack ref={ref}>
+                <TextInput
+                    data-autofocus
+                    label="Display Name"
+                    placeholder="My Library"
+                    rightSection={
+                        <img
+                            height="20px"
+                            src={
+                                library.data.type === LibraryType.SUBSONIC
+                                    ? SubsonicIcon
+                                    : library.data.type === LibraryType.NAVIDROME
+                                      ? NavidromeIcon
+                                      : JellyfinIcon
+                            }
+                            width="20px"
+                        />
+                    }
+                    {...form.register('displayName', { required: true })}
+                />
 
-            <TextInput
-                label="Base URL"
-                placeholder="http://192.168.1.1:4533"
-                {...form.register('baseUrl', { required: true })}
-            />
-            <TextInput
-                autoComplete="username"
-                label="Username"
-                {...form.register('username', { required: true })}
-            />
-            <PasswordInput
-                autoComplete="current-password"
-                label="Password"
-                {...form.register('password', { required: true })}
-            />
-            <Button
-                isDisabled={!form.formState.isValid || form.formState.isSubmitting}
-                type="submit"
-                variant="filled"
-            >
-                Save
-            </Button>
-            <Divider />
-            <Button disabled={isRemovingLibrary} variant="danger" onClick={handleRemoveLibrary}>
-                Remove library
-            </Button>
-        </Stack>
+                <TextInput
+                    label="Base URL"
+                    placeholder="http://192.168.1.1:4533"
+                    {...form.register('baseUrl', { required: true })}
+                />
+                <TextInput
+                    autoComplete="username"
+                    label="Username"
+                    {...form.register('username', { required: true })}
+                />
+                <PasswordInput
+                    autoComplete="current-password"
+                    label="Password"
+                    {...form.register('password', { required: true })}
+                />
+                <Button
+                    isDisabled={!form.formState.isValid || form.formState.isSubmitting}
+                    type="submit"
+                    variant="filled"
+                >
+                    Save
+                </Button>
+                <Divider />
+                <Button disabled={isRemovingLibrary} variant="danger" onClick={handleRemoveLibrary}>
+                    Remove library
+                </Button>
+            </Stack>
+        </form>
     );
 };

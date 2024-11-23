@@ -1,5 +1,4 @@
 import { forwardRef } from 'react';
-import { Stack as MantineStack } from '@mantine/core';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import type { Sizes } from '@/themes/index.ts';
@@ -28,29 +27,29 @@ interface StackProps extends React.ComponentPropsWithoutRef<'div'> {
 export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, ref) => {
     const {
         align,
-        as,
         children,
         gap,
-        justify,
-        w,
-        maw,
         h,
+        justify,
+        m,
         mah,
+        maw,
         mih,
         miw,
-        m,
         mx,
         my,
         p,
         px,
         py,
+        w,
         ...htmlProps
     } = props;
 
-    const rootClassNames = clsx({
+    const classNames = clsx({
+        [styles.stack]: true,
         [styles.gapXs]: gap === 'xs',
         [styles.gapSm]: gap === 'sm',
-        [styles.gapMd]: gap === 'md',
+        [styles.gapMd]: gap === 'md' || !gap,
         [styles.gapLg]: gap === 'lg',
         [styles.gapXl]: gap === 'xl',
         [styles.marginXSm]: mx === 'sm' || m === 'sm',
@@ -69,60 +68,36 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, 
         [styles.paddingYMd]: py === 'md' || p === 'md',
         [styles.paddingYlg]: py === 'lg' || p === 'lg',
         [styles.paddingYxl]: py === 'xl' || p === 'xl',
+        [styles.alignStart]: align === 'start',
+        [styles.alignCenter]: align === 'center',
+        [styles.alignEnd]: align === 'end',
+        [styles.alignBetween]: align === 'between',
+        [styles.alignStretch]: align === 'stretch',
+        [styles.justifyStart]: justify === 'start',
+        [styles.justifyCenter]: justify === 'center',
+        [styles.justifyEnd]: justify === 'end',
+        [styles.justifyBetween]: justify === 'between',
     });
 
     return (
-        <MantineStack
+        <div
             ref={ref}
-            align={getAlign(align)}
-            classNames={{ root: rootClassNames }}
-            component={as}
-            h={h}
-            justify={getJustify(justify)}
-            mah={mah}
-            maw={maw}
-            mih={mih}
-            miw={miw}
-            w={w}
+            className={classNames}
+            style={{
+                height: h,
+                maxHeight: mah,
+                maxWidth: maw,
+                minHeight: mih,
+                minWidth: miw,
+                width: w,
+            }}
             {...htmlProps}
         >
             {children}
-        </MantineStack>
+        </div>
     );
 });
 
 Stack.displayName = 'Stack';
 
 export const MotionStack = motion.create(Stack);
-
-function getJustify(justify: StackProps['justify']) {
-    switch (justify) {
-        case 'start':
-            return 'flex-start';
-        case 'center':
-            return 'center';
-        case 'end':
-            return 'flex-end';
-        case 'between':
-            return 'space-between';
-    }
-
-    return undefined;
-}
-
-function getAlign(align: StackProps['align']) {
-    switch (align) {
-        case 'start':
-            return 'flex-start';
-        case 'center':
-            return 'center';
-        case 'end':
-            return 'flex-end';
-        case 'between':
-            return 'space-between';
-        case 'stretch':
-            return 'stretch';
-    }
-
-    return undefined;
-}

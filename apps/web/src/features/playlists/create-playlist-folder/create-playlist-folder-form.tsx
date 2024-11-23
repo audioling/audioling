@@ -65,14 +65,20 @@ export function CreatePlaylistFolderForm({
     });
 
     return (
-        <Stack as="form" id={formId} onSubmit={handleSubmit}>
-            <TextInput data-autofocus label="Name" {...form.register('name', { required: true })} />
-            <Select
-                data={parentOptions}
-                label="Parent"
-                {...form.register('parentId')}
-                onChange={(e) => form.setValue('parentId', e === null ? '' : e)}
-            />
-        </Stack>
+        <form id={formId} onSubmit={handleSubmit}>
+            <Stack>
+                <TextInput
+                    data-autofocus
+                    label="Name"
+                    {...form.register('name', { required: true })}
+                />
+                <Select
+                    data={parentOptions}
+                    label="Parent"
+                    {...form.register('parentId')}
+                    onChange={(e) => form.setValue('parentId', e === null ? '' : e)}
+                />
+            </Stack>
+        </form>
     );
 }

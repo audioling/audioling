@@ -60,40 +60,44 @@ export const LibraryAddForm = () => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack ref={ref} as="form" onSubmit={handleFormSubmit}>
-            <TextInput
-                label="Display Name"
-                placeholder="My Library"
-                {...form.register('displayName', { required: true })}
-            />
-            <TextInput
-                data-autofocus
-                label="Base URL"
-                placeholder="http://192.168.1.1:4533"
-                {...form.register('baseUrl', { required: true })}
-            />
-            <TextInput
-                autoComplete="username"
-                label="Username"
-                {...form.register('username', { required: true })}
-            />
-            <PasswordInput
-                autoComplete="current-password"
-                label="Password"
-                {...form.register('password', { required: true })}
-            />
+        <form onSubmit={handleFormSubmit}>
+            <Stack ref={ref}>
+                <TextInput
+                    label="Display Name"
+                    placeholder="My Library"
+                    {...form.register('displayName', { required: true })}
+                />
+                <TextInput
+                    data-autofocus
+                    label="Base URL"
+                    placeholder="http://192.168.1.1:4533"
+                    {...form.register('baseUrl', { required: true })}
+                />
+                <TextInput
+                    autoComplete="username"
+                    label="Username"
+                    {...form.register('username', { required: true })}
+                />
+                <PasswordInput
+                    autoComplete="current-password"
+                    label="Password"
+                    {...form.register('password', { required: true })}
+                />
 
-            <LibraryTypeSelector
-                value={form.watch('type')}
-                onChange={(e) => form.setValue('type', (e as LibraryType) || LibraryType.SUBSONIC)}
-            />
-            <Button
-                isDisabled={!form.formState.isValid || form.formState.isSubmitting}
-                type="submit"
-                variant="filled"
-            >
-                Save
-            </Button>
-        </Stack>
+                <LibraryTypeSelector
+                    value={form.watch('type')}
+                    onChange={(e) =>
+                        form.setValue('type', (e as LibraryType) || LibraryType.SUBSONIC)
+                    }
+                />
+                <Button
+                    isDisabled={!form.formState.isValid || form.formState.isSubmitting}
+                    type="submit"
+                    variant="filled"
+                >
+                    Save
+                </Button>
+            </Stack>
+        </form>
     );
 };

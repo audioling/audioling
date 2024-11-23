@@ -49,34 +49,36 @@ export const RegistrationForm = (props: { isSetup?: boolean }) => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack ref={ref} as="form" justify="center" w="320px" onSubmit={handleSubmit}>
-            <Group>
-                <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
-                <Title order={1} size="lg">
-                    Sign Up
-                </Title>
-            </Group>
-            <TextInput
-                data-autofocus
-                autoComplete="username"
-                label="Username"
-                {...form.register('username', { required: true })}
-            />
-            <PasswordInput
-                autoComplete="new-password"
-                label="Password"
-                {...form.register('password', { required: true })}
-            />
-            <Button disabled={form.formState.isSubmitting} type="submit" variant="filled">
-                Submit
-            </Button>
-            {isSetup && (
-                <Alert
-                    message="The server is not set up yet. The account created will be the primary admin user."
-                    state="info"
-                    title="Create your admin account"
+        <form onSubmit={handleSubmit}>
+            <Stack ref={ref} justify="center" w="320px">
+                <Group>
+                    <IconButton icon="arrowLeft" onClick={() => navigate(-1)} />
+                    <Title order={1} size="lg">
+                        Sign Up
+                    </Title>
+                </Group>
+                <TextInput
+                    data-autofocus
+                    autoComplete="username"
+                    label="Username"
+                    {...form.register('username', { required: true })}
                 />
-            )}
-        </Stack>
+                <PasswordInput
+                    autoComplete="new-password"
+                    label="Password"
+                    {...form.register('password', { required: true })}
+                />
+                <Button disabled={form.formState.isSubmitting} type="submit" variant="filled">
+                    Submit
+                </Button>
+                {isSetup && (
+                    <Alert
+                        message="The server is not set up yet. The account created will be the primary admin user."
+                        state="info"
+                        title="Create your admin account"
+                    />
+                )}
+            </Stack>
+        </form>
     );
 };

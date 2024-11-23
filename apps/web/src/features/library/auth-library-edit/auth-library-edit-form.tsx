@@ -112,50 +112,52 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
     const ref = useFocusTrap(true);
 
     return (
-        <Stack
-            ref={ref}
-            as="form"
-            onSubmit={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE_AND_CONNECT)}
-        >
-            <TextInput
-                data-autofocus
-                autoComplete="username"
-                label="Username"
-                {...form.register('username', { required: true })}
-            />
-            <PasswordInput
-                autoComplete="current-password"
-                label="Password"
-                {...form.register('password')}
-            />
-            <TextInput
-                label="Override URL"
-                placeholder={serverLibrary.baseUrl}
-                {...form.register('overrideBaseUrl')}
-            />
-            <Grid grow gutter="xs">
-                <Grid.Col grow span={4}>
-                    <Button
-                        variant="default"
-                        onClick={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE)}
-                    >
-                        Save
-                    </Button>
-                </Grid.Col>
-                <Grid.Col grow span={8}>
-                    <Button
-                        disabled={!form.formState.isValid || form.formState.isSubmitting}
-                        type="submit"
-                        variant="filled"
-                    >
-                        Save and connect
-                    </Button>
-                </Grid.Col>
-            </Grid>
-            <Divider />
-            <Button disabled={!isConnected} variant="subtle" onClick={handleInvalidateCredentials}>
-                Invalidate credentials
-            </Button>
-        </Stack>
+        <form onSubmit={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE_AND_CONNECT)}>
+            <Stack ref={ref} w="350px">
+                <TextInput
+                    data-autofocus
+                    autoComplete="username"
+                    label="Username"
+                    {...form.register('username', { required: true })}
+                />
+                <PasswordInput
+                    autoComplete="current-password"
+                    label="Password"
+                    {...form.register('password')}
+                />
+                <TextInput
+                    label="Override URL"
+                    placeholder={serverLibrary.baseUrl}
+                    {...form.register('overrideBaseUrl')}
+                />
+                <Grid grow gutter="xs">
+                    <Grid.Col grow span={4}>
+                        <Button
+                            variant="default"
+                            onClick={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE)}
+                        >
+                            Save
+                        </Button>
+                    </Grid.Col>
+                    <Grid.Col grow span={8}>
+                        <Button
+                            disabled={!form.formState.isValid || form.formState.isSubmitting}
+                            type="submit"
+                            variant="filled"
+                        >
+                            Save and connect
+                        </Button>
+                    </Grid.Col>
+                </Grid>
+                <Divider />
+                <Button
+                    disabled={!isConnected}
+                    variant="subtle"
+                    onClick={handleInvalidateCredentials}
+                >
+                    Invalidate credentials
+                </Button>
+            </Stack>
+        </form>
     );
 };

@@ -42,8 +42,14 @@ export function CreatePlaylistForm({ formId, libraryId, onSuccess }: CreatePlayl
     });
 
     return (
-        <Stack as="form" id={formId} onSubmit={handleSubmit}>
-            <TextInput data-autofocus label="Name" {...form.register('name', { required: true })} />
-        </Stack>
+        <form id={formId} onSubmit={handleSubmit}>
+            <Stack>
+                <TextInput
+                    data-autofocus
+                    label="Name"
+                    {...form.register('name', { required: true })}
+                />
+            </Stack>
+        </form>
     );
 }
