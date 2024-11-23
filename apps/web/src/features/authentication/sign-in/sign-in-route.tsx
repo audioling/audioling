@@ -7,7 +7,7 @@ export const SignInRoute = () => {
     return (
         <Box className={styles.container}>
             <section className={styles.info} />
-            <Center as="section" className={styles.form}>
+            <Center className={styles.form}>
                 <AuthenticationForm />
             </Center>
         </Box>

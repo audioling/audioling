@@ -1,33 +1,26 @@
+import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
-import { Center as MantineCenter } from '@mantine/core';
 import clsx from 'clsx';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './center.module.scss';
 
 interface CenterProps extends React.ComponentPropsWithoutRef<'div'> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    as?: React.ElementType | any;
-    children: React.ReactNode;
-    h?: string;
-    inline?: boolean;
+    children: ReactNode;
+    className?: string;
+    h?: Sizes;
     m?: Sizes;
-    mah?: string;
-    maw?: string;
-    mih?: string;
-    miw?: string;
     mx?: Sizes;
     my?: Sizes;
     p?: Sizes;
     px?: Sizes;
     py?: Sizes;
-    w?: string;
+    w?: Sizes;
 }
 
 export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProps, ref) => {
-    const { as, children, inline, h, mah, maw, mih, miw, w, m, mx, my, p, px, py, ...htmlProps } =
-        props;
+    const { children, className, h, m, mx, my, p, px, py, w, ...htmlProps } = props;
 
-    const rootClassNames = clsx({
+    const classNames = clsx({
         [styles.center]: true,
         [styles.marginXSm]: mx === 'sm' || m === 'sm',
         [styles.marginXMd]: mx === 'md' || m === 'md',
@@ -48,23 +41,14 @@ export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProp
     });
 
     return (
-        <MantineCenter
+        <div
             ref={ref}
-            classNames={{
-                root: rootClassNames,
-            }}
-            component={as}
-            h={h}
-            inline={inline}
-            mah={mah}
-            maw={maw}
-            mih={mih}
-            miw={miw}
-            w={w}
+            className={clsx(classNames, className)}
+            style={{ height: h, width: w }}
             {...htmlProps}
         >
             {children}
-        </MantineCenter>
+        </div>
     );
 });
 
