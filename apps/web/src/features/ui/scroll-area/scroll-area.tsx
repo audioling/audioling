@@ -3,21 +3,18 @@ import { forwardRef, useEffect, useRef, useState } from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import { clsx } from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
-import { Box } from '@/features/ui/box/box.tsx';
 import { useMergedRef } from '@/hooks/use-merged-ref.ts';
-import type { PolymorphicComponentType } from '@/types.ts';
 import styles from './scroll-area.module.scss';
 
 interface ScrollAreaProps extends React.ComponentPropsWithoutRef<'div'> {
     allowDragScroll?: boolean;
-    as?: PolymorphicComponentType;
     children: React.ReactNode;
     debugScrollPosition?: boolean;
     scrollHideDelay?: number;
 }
 
 export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivElement>) => {
-    const { allowDragScroll, as, children, className, scrollHideDelay, ...htmlProps } = props;
+    const { allowDragScroll, children, className, scrollHideDelay, ...htmlProps } = props;
 
     const containerRef = useRef(null);
     const [scroller, setScroller] = useState<HTMLElement | Window | null>(null);
@@ -61,17 +58,16 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
     const mergedRef = useMergedRef(ref, containerRef);
 
     return (
-        <Box
+        <div
             ref={(el) => {
                 setScroller(el);
                 mergedRef(el);
             }}
-            as={as}
             className={clsx(styles.scrollArea, className)}
             {...htmlProps}
         >
             {children}
-        </Box>
+        </div>
     );
 });
 
