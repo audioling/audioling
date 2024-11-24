@@ -31,16 +31,16 @@ export type AlbumDragMetadata = {
 };
 
 export type DragData<T extends Record<string, unknown> = Record<string, unknown>> = {
-    id: string;
+    id: string[];
     metadata?: T;
-    operation?: DragOperation;
+    operation?: DragOperation[];
     type: DragTarget;
 };
 
 export const dndUtils = {
     generateDragData: <T extends Record<string, unknown> = Record<string, unknown>>(
         args: {
-            id: string | string[];
+            id: string[];
             operation?: DragOperation[];
             type: DragTarget;
         },

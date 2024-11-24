@@ -199,7 +199,7 @@ export type PlayerCommand =
 
 type AddToQueueByFetch = {
     addToQueueByFetch: {
-        id: string;
+        id: string[];
         itemType: LibraryItemType;
         type: AddToQueueType;
     };

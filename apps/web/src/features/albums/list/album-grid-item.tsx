@@ -36,7 +36,9 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
 
     const handlePlay = (id: string, playType: PlayType) => {
         PlayerController.call({
-            cmd: { addToQueueByFetch: { id, itemType: LibraryItemType.ALBUM, type: playType } },
+            cmd: {
+                addToQueueByFetch: { id: [id], itemType: LibraryItemType.ALBUM, type: playType },
+            },
         });
     };
 

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { Row, Table } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
-import type { PlayQueueItem } from '@/api/api-types.ts';
+import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
@@ -71,8 +71,12 @@ export function SidePlayQueue() {
 
     const { columns } = useItemTable<PlayQueueItem>(columnOrder, setColumnOrder);
 
-    const onRowDrop = (args: ItemTableRowDrop<PlayQueueItem>) => {
-        const { edge, data, table, uniqueId } = args;
+    const onRowDrop = (
+        _row: Row<PlayQueueItem>,
+        table: Table<PlayQueueItem | undefined>,
+        args: ItemTableRowDrop<PlayQueueItem>,
+    ) => {
+        const { edge, data, uniqueId } = args;
 
         if (data.operation?.includes(DragOperation.REORDER)) {
             const items = table
@@ -106,20 +110,19 @@ export function SidePlayQueue() {
                         },
                     });
                     break;
-                // case DragTarget.TRACK:
-                //     PlayerController.call({
-                //         cmd: {
-                //             addToQueueByFetch: {
-                //                 id: data.id,
-                //                 itemType: LibraryItemType.TRACK,
-                //                 type: {
-                //                     edge: 'bottom',
-                //                     uniqueId: data.id,
-                //                 },
-                //             },
-                //         },
-                //     });
-                //     break;
+                case DragTarget.TRACK:
+                    PlayerController.call({
+                        cmd: {
+                            addToQueueByData: {
+                                data: (data.metadata?.items as TrackItem[]) || [],
+                                type: {
+                                    edge,
+                                    uniqueId,
+                                },
+                            },
+                        },
+                    });
+                    break;
             }
         }
     };

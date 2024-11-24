@@ -58,8 +58,10 @@ export const GroupedItemTable = <
         onEndReached,
         onRangeChanged,
         onRowClick,
-        onRowDoubleClick,
         onRowContextMenu,
+        onRowDoubleClick,
+        onRowDrag,
+        onRowDragData,
         onRowDrop,
         onScroll,
         onStartReached,
@@ -228,6 +230,8 @@ export const GroupedItemTable = <
                                         onRowClick={onRowClick}
                                         onRowContextMenu={onRowContextMenu}
                                         onRowDoubleClick={onRowDoubleClick}
+                                        onRowDrag={onRowDrag}
+                                        onRowDragData={onRowDragData}
                                         onRowDrop={onRowDrop}
                                     />
                                 );

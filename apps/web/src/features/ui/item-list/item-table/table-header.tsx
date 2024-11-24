@@ -42,7 +42,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
                 element: ref.current,
                 getInitialData: () => {
                     const data = dndUtils.generateDragData({
-                        id: header.id,
+                        id: [header.id],
                         operation: [DragOperation.REORDER],
                         type: DragTarget.TABLE_COLUMN,
                     });
@@ -67,7 +67,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
                 element: ref.current,
                 getData: ({ input, element }) => {
                     const data = dndUtils.generateDragData({
-                        id: header.id,
+                        id: [header.id],
                         operation: [DragOperation.REORDER],
                         type: DragTarget.TABLE_COLUMN,
                     });

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
+import type { Row, Table } from '@tanstack/react-table';
 import { useParams } from 'react-router-dom';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
@@ -58,7 +59,11 @@ export function PlayQueue() {
 
     const { columns } = useItemTable<PlayQueueItem>(columnOrder, setColumnOrder);
 
-    const onRowDrop = (args: ItemTableRowDrop<PlayQueueItem>) => {
+    const onRowDrop = (
+        _row: Row<PlayQueueItem>,
+        _table: Table<PlayQueueItem | undefined>,
+        args: ItemTableRowDrop<PlayQueueItem>,
+    ) => {
         const { edge, data } = args;
 
         // TODO: Handle reorder operations
@@ -72,7 +77,7 @@ export function PlayQueue() {
                                 itemType: LibraryItemType.ALBUM,
                                 type: {
                                     edge,
-                                    uniqueId: data.id,
+                                    uniqueId: data.id[0],
                                 },
                             },
                         },

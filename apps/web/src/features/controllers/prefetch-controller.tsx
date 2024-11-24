@@ -27,11 +27,13 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
         switch (action) {
             case 'tracksByAlbumId': {
                 const command = cmd as PrefetchTracksByAlbumId;
-                prefetchTracksByAlbumId(queryClient, libraryId, command.tracksByAlbumId.id, {
-                    sortBy: TrackListSortOptions.ID,
-                    sortOrder: ListSortOrder.ASC,
-                    ...(command.tracksByAlbumId.params ?? {}),
-                });
+                for (const id of command.tracksByAlbumId.id) {
+                    prefetchTracksByAlbumId(queryClient, libraryId, id, {
+                        sortBy: TrackListSortOptions.ID,
+                        sortOrder: ListSortOrder.ASC,
+                        ...(command.tracksByAlbumId.params ?? {}),
+                    });
+                }
                 break;
             }
         }
@@ -44,7 +46,7 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
 
 type PrefetchTracksByAlbumId = {
     tracksByAlbumId: {
-        id: string;
+        id: string[];
         params?: GetApiLibraryIdAlbumsIdTracksParams;
     };
 };

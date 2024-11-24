@@ -634,21 +634,23 @@ export async function addToQueueByFetch(
     libraryId: string,
     type: AddToQueueType,
     args: {
-        id: string;
+        id: string[];
         itemType: LibraryItemType;
         params?: GetApiLibraryIdAlbumsIdTracksParams;
     },
 ) {
-    let items: TrackItem[] = [];
+    const items: TrackItem[] = [];
 
     if (args.itemType === LibraryItemType.ALBUM) {
-        const result = await fetchTracksByAlbumId(queryClient, libraryId, args.id, {
-            sortBy: TrackListSortOptions.ID,
-            sortOrder: ListSortOrder.ASC,
-            ...args.params,
-        });
+        for (const id of args.id) {
+            const result = await fetchTracksByAlbumId(queryClient, libraryId, id, {
+                sortBy: TrackListSortOptions.ID,
+                sortOrder: ListSortOrder.ASC,
+                ...args.params,
+            });
 
-        items = result.data;
+            items.push(...result.data);
+        }
     }
 
     if (typeof type === 'string') {

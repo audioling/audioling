@@ -42,7 +42,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                                     PlayerController.call({
                                         cmd: {
                                             addToQueueByFetch: {
-                                                id,
+                                                id: [id],
                                                 itemType: LibraryItemType.ALBUM,
                                                 type: playType,
                                             },

@@ -62,7 +62,9 @@ interface TableRowProps<
         row: Row<T | undefined>,
         table: Table<T | undefined>,
     ) => void;
-    onRowDrop?: (args: ItemTableRowDrop<T>) => void;
+    onRowDrag?: (row: Row<T>, table: Table<T | undefined>) => void;
+    onRowDragData?: (row: Row<T>, table: Table<T | undefined>) => DragData;
+    onRowDrop?: (row: Row<T>, table: Table<T | undefined>, args: ItemTableRowDrop<T>) => void;
     rowId: string;
     table: Table<T | undefined>;
     tableId: string;
@@ -90,6 +92,8 @@ export function TableRow<
         onRowDoubleClick,
         onRowContextMenu,
         onRowDrop,
+        onRowDrag,
+        onRowDragData,
         rowId,
         table,
         tableId,
@@ -102,7 +106,6 @@ export function TableRow<
     const isSelected = row?.getIsSelected();
     const isExpanded = row?.getIsExpanded();
 
-    const [isDragging, setIsDragging] = useState(false);
     const [isDraggedOver, setIsDraggedOver] = useState<Edge | null>(null);
 
     useEffect(() => {
@@ -112,7 +115,12 @@ export function TableRow<
             draggable({
                 element: ref.current,
                 getInitialData: () => {
+                    if (onRowDragData) {
+                        return onRowDragData(row as Row<T>, table);
+                    }
+
                     const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.id);
+
                     return dndUtils.generateDragData({
                         id: selectedRowIds,
                         operation: [DragOperation.REORDER, DragOperation.ADD],
@@ -127,12 +135,12 @@ export function TableRow<
                     // If attempting to drag a row that is not selected, select it
                     if (!isSelfSelected) {
                         table.resetRowSelection();
-                        setTimeout(() => row.toggleSelected(true), 50);
+                        row.toggleSelected(true);
                     }
 
-                    setIsDragging(true);
+                    onRowDrag?.(row as Row<T>, table);
                 },
-                onDrop: () => setIsDragging(false),
+                onDrop: () => {},
                 onGenerateDragPreview: (data) => {
                     disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
                     setCustomNativeDragPreview({
@@ -165,7 +173,7 @@ export function TableRow<
                 element: ref.current,
                 getData: ({ input, element }) => {
                     const data = dndUtils.generateDragData({
-                        id: row.id,
+                        id: [row.id],
                         operation: [DragOperation.REORDER],
                         type: DragTarget.TRACK,
                     });
@@ -187,7 +195,7 @@ export function TableRow<
                 onDrop: (args) => {
                     const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
 
-                    onRowDrop?.({
+                    onRowDrop?.(row as Row<T>, table, {
                         data: args.source.data as DragData,
                         edge: closestEdgeOfTarget,
                         id: row.id,
@@ -199,7 +207,7 @@ export function TableRow<
                 },
             }),
         );
-    }, [index, itemType, onRowDrop, row, row.id, table]);
+    }, [index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
 
     if (enableExpanded && !isExpanded) {
         return null;
@@ -212,7 +220,7 @@ export function TableRow<
                 className={clsx(styles.row, {
                     [styles.canSelect]: canSelect,
                     [styles.selected]: isSelected,
-                    [styles.dragging]: isDragging && table.getSelectedRowModel().rows.length === 0,
+                    // [styles.dragging]: isDragging && table.getSelectedRowModel().rows.length === 0,
                     [styles.draggedOverBottom]: isDraggedOver === 'bottom',
                     [styles.draggedOverTop]: isDraggedOver === 'top',
                 })}

@@ -3,7 +3,13 @@ import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import type { LibraryItemType } from '@repo/shared-types';
-import type { DisplayColumnDef, ExpandedState, Row, Table } from '@tanstack/react-table';
+import type {
+    DisplayColumnDef,
+    ExpandedState,
+    Row,
+    RowSelectionState,
+    Table,
+} from '@tanstack/react-table';
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
@@ -24,6 +30,15 @@ export interface TableItemProps<T, C extends { baseUrl: string; libraryId: strin
 }
 
 export type ItemTableRowDrop<T> = {
+    data: DragData;
+    edge: Edge | null;
+    id: string;
+    index: number;
+    table: Table<T | undefined>;
+    uniqueId: string;
+};
+
+export type ItemTableRowDragData<T> = {
     data: DragData;
     edge: Edge | null;
     id: string;
@@ -69,7 +84,9 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
         row: Row<T | undefined>,
         table: Table<T | undefined>,
     ) => void;
-    onRowDrop?: (args: ItemTableRowDrop<T>) => void;
+    onRowDrag?: (row: Row<T>, table: Table<T | undefined>) => void;
+    onRowDragData?: (row: Row<T>, table: Table<T | undefined>) => DragData;
+    onRowDrop?: (row: Row<T>, table: Table<T | undefined>, args: ItemTableRowDrop<T>) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
     rowIdProperty?: string;
@@ -100,6 +117,8 @@ export function ItemTable<
         onRowClick,
         onRowContextMenu,
         onRowDoubleClick,
+        onRowDragData,
+        onRowDrag,
         onRowDrop,
         onScroll,
         onStartReached,
@@ -145,6 +164,7 @@ export function ItemTable<
         return () => osInstance()?.destroy();
     }, [scroller, initialize, osInstance]);
 
+    const [selection, setSelection] = useState<RowSelectionState>({});
     const [expanded, setExpanded] = useState<ExpandedState>(true);
 
     const tableData = useMemo(() => {
@@ -164,9 +184,11 @@ export function ItemTable<
         getRowId: getRowId || undefined,
         getSortedRowModel: getSortedRowModel(),
         onExpandedChange: setExpanded,
+        onRowSelectionChange: setSelection,
         state: {
             columnOrder,
             expanded,
+            rowSelection: selection,
         },
     });
 
@@ -194,8 +216,6 @@ export function ItemTable<
     }, [headers]);
 
     const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
-
-    console.log('data', data, itemCount);
 
     useImperativeHandle<
         VirtuosoHandle | undefined,
@@ -265,6 +285,8 @@ export function ItemTable<
                                             onRowClick={onRowClick}
                                             onRowContextMenu={onRowContextMenu}
                                             onRowDoubleClick={onRowDoubleClick}
+                                            onRowDrag={onRowDrag}
+                                            onRowDragData={onRowDragData}
                                             onRowDrop={onRowDrop}
                                         />
                                     );
