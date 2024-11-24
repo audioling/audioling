@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import { useParams } from 'react-router-dom';
-import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
+import type { PlayQueueItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { subscribePlayerQueue, usePlayerActions } from '@/features/player/stores/player-store.tsx';
@@ -56,9 +56,9 @@ export function PlayQueue() {
         ItemListColumn.ARTISTS,
     ]);
 
-    const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
+    const { columns } = useItemTable<PlayQueueItem>(columnOrder, setColumnOrder);
 
-    const onRowDrop = (args: ItemTableRowDrop) => {
+    const onRowDrop = (args: ItemTableRowDrop<PlayQueueItem>) => {
         const { edge, data } = args;
 
         // TODO: Handle reorder operations
@@ -97,7 +97,7 @@ export function PlayQueue() {
     };
 
     return (
-        <ItemTable<TrackItem, PlayQueueTableItemContext>
+        <ItemTable<PlayQueueItem, PlayQueueTableItemContext>
             columnOrder={columnOrder}
             columns={columns}
             context={tableContext}

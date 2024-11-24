@@ -100,6 +100,8 @@ export function InfiniteAlbumTable({
             columns={columns}
             context={{ baseUrl, libraryId }}
             data={data}
+            enableHeader={true}
+            enableMultiRowSelection={true}
             itemCount={itemCount}
             itemType={LibraryItemType.ALBUM}
             onChangeColumnOrder={setColumnOrder}

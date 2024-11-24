@@ -213,6 +213,7 @@ export const GroupedItemTable = <
                                 return (
                                     <TableRow
                                         context={tableContext}
+                                        enableExpanded={true}
                                         index={index}
                                         itemType={itemType}
                                         rowId={

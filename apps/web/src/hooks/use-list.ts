@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types';
+import type { ListSortOrder } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import type {

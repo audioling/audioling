@@ -3,7 +3,7 @@ import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
 import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import type { LibraryItemType } from '@repo/shared-types';
-import type { DisplayColumnDef, Row, Table } from '@tanstack/react-table';
+import type { DisplayColumnDef, ExpandedState, Row, Table } from '@tanstack/react-table';
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
@@ -13,7 +13,7 @@ import { ComponentErrorBoundary } from '@/features/shared/error-boundary/compone
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
-import { TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
+import { LoaderRow, TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './item-table.module.scss';
 
@@ -145,7 +145,11 @@ export function ItemTable<
         return () => osInstance()?.destroy();
     }, [scroller, initialize, osInstance]);
 
+    const [expanded, setExpanded] = useState<ExpandedState>(true);
+
     const tableData = useMemo(() => {
+        setExpanded(true);
+
         return Array.from({ length: itemCount }, (_, index) => data.get(index)).filter(
             (item): item is T => item !== undefined,
         );
@@ -159,8 +163,10 @@ export function ItemTable<
         getCoreRowModel: getCoreRowModel(),
         getRowId: getRowId || undefined,
         getSortedRowModel: getSortedRowModel(),
+        onExpandedChange: setExpanded,
         state: {
             columnOrder,
+            expanded,
         },
     });
 
@@ -188,6 +194,8 @@ export function ItemTable<
     }, [headers]);
 
     const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
+
+    console.log('data', data, itemCount);
 
     useImperativeHandle<
         VirtuosoHandle | undefined,
@@ -238,26 +246,31 @@ export function ItemTable<
                         isScrolling={isScrolling}
                         itemContent={(index, _data, context) => {
                             if (index < itemCount) {
-                                return (
-                                    <TableRow
-                                        context={context}
-                                        index={index}
-                                        itemType={itemType}
-                                        rowId={
-                                            getRowId && rowIdProperty
-                                                ? (data.get(index)?.[
-                                                      rowIdProperty as keyof T
-                                                  ] as string)
-                                                : index.toString()
-                                        }
-                                        table={table}
-                                        tableId={tableId}
-                                        onRowClick={onRowClick}
-                                        onRowContextMenu={onRowContextMenu}
-                                        onRowDoubleClick={onRowDoubleClick}
-                                        onRowDrop={onRowDrop}
-                                    />
-                                );
+                                if (data.get(index)) {
+                                    return (
+                                        <TableRow
+                                            context={context}
+                                            enableExpanded={false}
+                                            index={index}
+                                            itemType={itemType}
+                                            rowId={
+                                                getRowId && rowIdProperty
+                                                    ? (data.get(index)?.[
+                                                          rowIdProperty as keyof T
+                                                      ] as string)
+                                                    : index.toString()
+                                            }
+                                            table={table}
+                                            tableId={tableId}
+                                            onRowClick={onRowClick}
+                                            onRowContextMenu={onRowContextMenu}
+                                            onRowDoubleClick={onRowDoubleClick}
+                                            onRowDrop={onRowDrop}
+                                        />
+                                    );
+                                }
+
+                                return <LoaderRow />;
                             }
 
                             return null;

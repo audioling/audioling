@@ -20,6 +20,7 @@ import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
+import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import {
     dndUtils,
     DragOperation,
@@ -43,6 +44,7 @@ interface TableRowProps<
     },
 > {
     context: C;
+    enableExpanded: boolean;
     index: number;
     itemType: LibraryItemType;
     onRowClick?: (
@@ -81,6 +83,7 @@ export function TableRow<
 >(props: TableRowProps<T & { _uniqueId?: string }, C>) {
     const {
         context,
+        enableExpanded,
         index,
         itemType,
         onRowClick,
@@ -198,7 +201,7 @@ export function TableRow<
         );
     }, [index, itemType, onRowDrop, row, row.id, table]);
 
-    if (!isExpanded) {
+    if (enableExpanded && !isExpanded) {
         return null;
     }
 
@@ -232,6 +235,14 @@ export function TableRow<
                     );
                 })}
             </div>
+        </div>
+    );
+}
+
+export function LoaderRow() {
+    return (
+        <div className={styles.loaderRow}>
+            <Skeleton h="20px" w="100%" />
         </div>
     );
 }
