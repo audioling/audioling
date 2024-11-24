@@ -18,7 +18,7 @@ interface CenterProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProps, ref) => {
-    const { children, className, h, m, mx, my, p, px, py, w, ...htmlProps } = props;
+    const { children, className, h, m, mx, my, p, px, py, w, style, ...htmlProps } = props;
 
     const classNames = clsx({
         [styles.center]: true,
@@ -44,7 +44,7 @@ export const Center = forwardRef<HTMLDivElement, CenterProps>((props: CenterProp
         <div
             ref={ref}
             className={clsx(classNames, className)}
-            style={{ height: h, width: w }}
+            style={{ height: h, width: w, ...style }}
             {...htmlProps}
         >
             {children}

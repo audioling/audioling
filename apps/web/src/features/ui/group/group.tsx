@@ -47,6 +47,7 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
         p,
         px,
         py,
+        style,
         ...htmlProps
     } = props;
 
@@ -97,6 +98,7 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props: GroupProps, 
                 minHeight: mih,
                 minWidth: miw,
                 width: w,
+                ...style,
             }}
             {...htmlProps}
         >

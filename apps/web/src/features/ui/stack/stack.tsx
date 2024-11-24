@@ -42,6 +42,7 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, 
         px,
         py,
         w,
+        style,
         ...htmlProps
     } = props;
 
@@ -90,6 +91,7 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>((props: StackProps, 
                 minHeight: mih,
                 minWidth: miw,
                 width: w,
+                ...style,
             }}
             {...htmlProps}
         >
