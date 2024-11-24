@@ -23,7 +23,7 @@ const imageModule = initImageModule();
 
 const db = initDatabase({ idFactory });
 
-await initApplication({
+initApplication({
     config,
     modules: {
         db,

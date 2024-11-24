@@ -8,7 +8,10 @@
     "scripts": {
         "build:apps": "bun --filter './apps/**' build",
         "build:packages": "bun --filter './packages/**' build",
+        "build:server:desktop": "bun --filter './apps/server' build:desktop",
+        "build:web:desktop": "bun --filter './apps/web' build:desktop",
         "commit": "git-cz",
+        "deploy": "bun run deploy.ts",
         "lint:apps": "bun --filter './apps/**' lint",
         "lint:packages": "bun --filter './packages/** lint",
         "prepare": "husky"

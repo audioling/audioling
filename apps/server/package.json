@@ -8,11 +8,11 @@
     "type": "module",
     "scripts": {
         "build": "tsc -p tsconfig.cjs.json && tsc-alias -p tsconfig.cjs.json",
+        "build:desktop": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile ./dist/audioling-server",
         "db:init": "pwsh -c 'Remove-Item ./app.db' && pnpm run db:push",
         "dev": "cross-env NODE_ENV=development APP_LOG_LEVEL=debug bun --watch run ./src/index.ts",
         "dev:trace": "cross-env NODE_ENV=development APP_LOG_LEVEL=trace bun --watch run ./src/index.ts",
-        "lint": "eslint . --ext .js,.ts --fix",
-        "package": "bun build --compile --minify --sourcemap ./src/index.ts --outfile ./dist/audioling"
+        "lint": "eslint . --ext .js,.ts --fix"
     },
     "dependencies": {
         "@audioling/open-subsonic-api-client": "^3.0.4",
