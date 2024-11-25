@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
+import { PaginatedTrackTable } from '@/features/tracks/list/paginated-track-table.tsx';
 import {
     useTrackListActions,
     useTrackListState,
@@ -48,13 +49,15 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     switch (paginationType) {
         case ItemListPaginationType.PAGINATED:
             return (
-                <InfiniteTrackTable
+                <PaginatedTrackTable
                     key={listKey}
                     baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
+                    listKey={listKey}
                     pagination={pagination}
                     params={{ sortBy, sortOrder }}
+                    setPagination={setPagination}
                 />
             );
         case ItemListPaginationType.INFINITE:

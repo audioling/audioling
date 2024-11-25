@@ -3,6 +3,7 @@ import { useGetApiLibraryIdAlbumsCountSuspense } from '@/api/openapi-generated/a
 import { InfiniteAlbumGrid } from '@/features/albums/list/infinite-album-grid.tsx';
 import { InfiniteAlbumTable } from '@/features/albums/list/infinite-album-table.tsx';
 import { PaginatedAlbumGrid } from '@/features/albums/list/paginated-album-grid.tsx';
+import { PaginatedAlbumTable } from '@/features/albums/list/paginated-album-table.tsx';
 import {
     useAlbumListActions,
     useAlbumListState,
@@ -80,13 +81,14 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     switch (paginationType) {
         case ItemListPaginationType.PAGINATED:
             return (
-                <InfiniteAlbumTable
-                    key={listKey}
+                <PaginatedAlbumTable
                     baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
+                    listKey={listKey}
                     pagination={pagination}
                     params={{ sortBy, sortOrder }}
+                    setPagination={setPagination}
                 />
             );
         case ItemListPaginationType.INFINITE:

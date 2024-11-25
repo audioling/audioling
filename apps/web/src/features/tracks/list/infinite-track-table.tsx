@@ -21,7 +21,7 @@ import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import { throttle } from '@/utils/throttle.ts';
 
-type TrackTableItemContext = {
+export type TrackTableItemContext = {
     baseUrl: string;
     libraryId: string;
 };
