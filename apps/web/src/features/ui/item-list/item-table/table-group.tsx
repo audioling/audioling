@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { type MouseEvent } from 'react';
 import type { Row, Table } from '@tanstack/react-table';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import type { ItemTableGroup } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
@@ -17,17 +17,19 @@ interface TableGroupProps<T> {
 }
 
 export function TableGroup<T>({ groups, index, onGroupClick, table }: TableGroupProps<T>) {
-    const [initialSelection, setInitialSelection] = useState(true);
-
     const handleGroupClick = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         const rows = getGroupRows(table, groups, index);
+        const isSomeSelected = rows.some((row) => row.getIsSelected());
+
+        if (!e.ctrlKey) {
+            table.resetRowSelection();
+        }
 
         rows.forEach((row) => {
-            row.toggleSelected(initialSelection);
+            row.toggleSelected(isSomeSelected ? false : true);
         });
 
-        setInitialSelection((prev) => !prev);
         onGroupClick?.(e, rows, groups[index], table);
     };
 
