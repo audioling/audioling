@@ -36,7 +36,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const query = c.req.valid('query');
-            const { adapter, user } = c.var;
+            const { adapter, user, authToken } = c.var;
 
             const playlists = await service.playlist.list(adapter, {
                 folderId: query.folderId,
@@ -53,6 +53,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                         item,
                         adapter._getLibrary().id,
                         item.thumbHash,
+                        authToken,
                     ),
                 ),
                 meta: {
@@ -289,10 +290,11 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const params = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, user, authToken } = c.var;
 
             const playlist = await service.playlist.detail(adapter, {
                 id: params.id,
+                userId: user.id,
             });
 
             const response: PlaylistDetailResponse = {
@@ -300,6 +302,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                     playlist,
                     adapter._getLibrary().id,
                     playlist.thumbHash,
+                    authToken,
                 ),
                 meta: {},
             };
@@ -320,7 +323,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         async (c) => {
             const params = c.req.param();
             const query = c.req.valid('query');
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const playlist = await service.playlist.detailTrackList(adapter, {
                 id: params.id,
@@ -336,6 +339,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                         item,
                         adapter._getLibrary().id,
                         item.thumbHash,
+                        authToken,
                     ),
                 ),
                 meta: {

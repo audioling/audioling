@@ -8,12 +8,22 @@ const getIsPrevPage = (offset: number, limit: number) => {
     return Boolean(offset > 0 && offset > limit);
 };
 
-const getImageUrl = (libraryId: string, id: string | null, type: LibraryItemType) => {
-    return `/api/${libraryId}/images/${id}?type=${type}`;
+const getImageUrl = (
+    libraryId: string,
+    id: string | null,
+    type: LibraryItemType,
+    token: string,
+) => {
+    return `/api/${libraryId}/images/${id}?type=${type}${token ? `&token=${token}` : ''}`;
+};
+
+const getStreamUrl = (libraryId: string, id: string | null, token: string) => {
+    return `/api/${libraryId}/tracks/${id}/stream?token=${token}`;
 };
 
 export const controllerHelpers = {
     getImageUrl,
     getIsNextPage,
     getIsPrevPage,
+    getStreamUrl,
 };

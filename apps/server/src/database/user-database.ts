@@ -10,6 +10,10 @@ import type { AppDatabase, DatabaseModules } from '@/database/init-database.js';
 import { initJsonDatabase } from '@/modules/json-database/index.js';
 import { utils } from '@/utils/index.js';
 
+export enum DbUserTokenScope {
+    FULL_ACCESS = 'full_access',
+}
+
 export const userSchema = z.object({
     config: z.object({
         private: z.object({}),
@@ -32,12 +36,7 @@ export const userSchema = z.object({
     isAdmin: z.boolean(),
     isEnabled: z.boolean(),
     password: z.string(),
-    tokens: z
-        .object({
-            id: z.string(),
-            token: z.string(),
-        })
-        .array(),
+    tokens: z.record(z.string(), z.nativeEnum(DbUserTokenScope)),
     updatedAt: z.string(),
     username: z.string(),
 });
@@ -54,7 +53,10 @@ export type DbUserUpdate = Partial<DbUserInsert>;
 
 export type DbUserToken = UserDatabaseSchema['users'][number]['tokens'][number];
 
-export type DbUserTokenInsert = Omit<DbUserToken, 'createdAt' | 'updatedAt'>;
+export type DbUserTokenInsert = {
+    scope: DbUserTokenScope;
+    token: string;
+};
 
 export type DbUserTokenUpdate = Partial<DbUserTokenInsert>;
 
@@ -118,14 +120,13 @@ export function initUserDatabase(modules: DatabaseModules) {
             return [null, user];
         },
         findByIdOrThrow: (id: string): DbResult<DbUser> => {
-            const users = userDb.get('users');
-            const user = users?.[id];
+            const user = userDb.get(`users.${id}`);
 
             if (!user) {
                 return [{ message: 'User not found' }, null];
             }
 
-            return [null, user];
+            return [null, user as unknown as DbUser];
         },
         findByUsername: (username: string): DbResult<DbUser | undefined> => {
             const users = userDb.get('users');
@@ -364,6 +365,49 @@ export function initUserDatabase(modules: DatabaseModules) {
                 );
 
                 return [null, updated];
+            },
+        },
+        token: {
+            delete: (id: string, tokenId: string): DbResult<void> => {
+                const user = userDb.get(`users.${id}`) as unknown;
+
+                if (!user) {
+                    return [{ message: 'User not found' }, null];
+                }
+
+                delete (user as DbUser).tokens[tokenId];
+
+                userDb.set(`users.${id}`, user as DbUser);
+
+                return [null, undefined];
+            },
+            insert: (id: string, token: DbUserTokenInsert): DbResult<DbUserToken> => {
+                const user = userDb.get(`users.${id}`) as unknown;
+
+                if (!user) {
+                    return [{ message: 'User not found' }, null];
+                }
+
+                (user as DbUser).tokens[token.token] = token.scope;
+
+                userDb.set(`users.${id}`, user as DbUser);
+
+                return [null, token.token as DbUserTokenScope];
+            },
+            validate: (id: string, token: string, scope?: DbUserTokenScope): DbResult<boolean> => {
+                const user = userDb.get(`users.${id}`) as unknown;
+
+                if (!user) {
+                    return [{ message: 'User not found' }, null];
+                }
+
+                if (scope) {
+                    if ((user as DbUser).tokens[token] !== scope) {
+                        return [{ message: 'Invalid token scope' }, null];
+                    }
+                }
+
+                return [null, true];
             },
         },
         updateById: (id: string, value: DbUserUpdate): DbResult<DbUser> => {

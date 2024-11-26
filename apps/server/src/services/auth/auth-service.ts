@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { sign } from 'hono/jwt';
 import type { AppDatabase } from '@/database/init-database';
+import { DbUserTokenScope } from '@/database/user-database.js';
 import { writeLog } from '@/middlewares/logger-middleware.js';
 import type { ConfigModule } from '@/modules/config/index.js';
 import { apiError } from '@/modules/error-handler';
@@ -93,12 +94,18 @@ export const initAuthService = (modules: {
             const hashedPassword = await bcrypt.hash(args.password, salt);
 
             const [createdErr, created] = db.user.insert({
+                config: {
+                    private: {},
+                    public: {
+                        playlistFolders: [],
+                    },
+                },
                 displayName: null,
                 id: idFactory.generate(),
                 isAdmin: usersCount === 0,
                 isEnabled: true,
                 password: hashedPassword,
-                tokens: [],
+                tokens: {},
                 username: args.username,
             });
 
@@ -134,8 +141,9 @@ export const initAuthService = (modules: {
 
             const generatedToken = await initAuthService(modules).generateToken(authUser.id);
 
-            db.user.updateById(authUser.id, {
-                tokens: [...authUser.tokens, generatedToken],
+            db.user.token.insert(authUser.id, {
+                scope: DbUserTokenScope.FULL_ACCESS,
+                token: generatedToken.id,
             });
 
             writeLog.info(`User ${args.username} signed in`);
@@ -158,16 +166,10 @@ export const initAuthService = (modules: {
             }
 
             if (tokenId) {
-                db.user.updateById(userId, {
-                    tokens: authUser.tokens.filter((token) => token.id !== tokenId),
-                });
-
+                db.user.token.delete(userId, tokenId);
                 writeLog.info(`User ${authUser.username} signed out of session ${tokenId}`);
             } else {
-                db.user.updateById(userId, {
-                    tokens: [],
-                });
-
+                db.user.updateById(userId, { tokens: {} });
                 writeLog.info(`User ${authUser.username} signed out of all sessions`);
             }
         },

@@ -8,10 +8,16 @@ export const albumHelpers = {
         album: AdapterAlbum,
         libraryId: string,
         thumbHash: string | null,
+        token: string,
     ): AlbumEntry => {
         return {
             ...album,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, album.id, LibraryItemType.ALBUM),
+            imageUrl: controllerHelpers.getImageUrl(
+                libraryId,
+                album.id,
+                LibraryItemType.ALBUM,
+                token,
+            ),
             itemType: LibraryItemType.ALBUM,
             libraryId,
             thumbHash,

@@ -38,6 +38,17 @@ export const initTrackService = (modules: { db: AppDatabase }) => {
 
             return result;
         },
+
+        // ANCHOR - Get stream url
+        getStreamUrl: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+            const streamUrl = adapter._getStreamUrl({
+                id: args.id,
+                libraryId: adapter._getLibrary().id,
+            });
+
+            return streamUrl;
+        },
+
         // ANCHOR - List
         list: async (adapter: AdapterApi, args: FindManyServiceArgs<TrackListSortOptions>) => {
             const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
@@ -67,6 +78,7 @@ export const initTrackService = (modules: { db: AppDatabase }) => {
                 })),
             };
         },
+
         // ANCHOR - Unfavorite by id
         unfavoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
             const [err, result] = await adapter.setFavorite({

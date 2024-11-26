@@ -85,6 +85,22 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             );
         },
         _getLibrary: () => library,
+        _getStreamUrl: (args) => {
+            const { id } = args;
+
+            const credentialParams = token
+                ? `t=${token}&s=${saltOrPassword}`
+                : `p=${saltOrPassword}`;
+
+            return (
+                `${library.baseUrl}/rest/stream.view` +
+                `?id=${id}` +
+                `&${credentialParams}` +
+                `&u=${username}` +
+                '&v=1.16.1' +
+                `&c=${CONSTANTS.APP_NAME}`
+            );
+        },
         _getType: () => LibraryType.SUBSONIC,
         addToPlaylist: async (request, fetchOptions) => {
             const { query, body } = request;
@@ -1379,22 +1395,6 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             return [null, null];
-        },
-        stream: async (request, fetchOptions) => {
-            const { query } = request;
-            const result = await apiClient.stream.os['1'].get({
-                fetchOptions,
-                query: {
-                    id: query.id,
-                },
-            });
-
-            if (result.status !== 200) {
-                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'stream'));
-                return [{ code: result.status, message: result.body as string }, null];
-            }
-
-            return [null, result.body];
         },
         updatePlaylist: async (request, fetchOptions) => {
             const { body, query } = request;

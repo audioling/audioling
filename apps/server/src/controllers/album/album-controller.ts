@@ -36,7 +36,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const query = c.req.valid('query');
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const albums = await service.album.list(adapter, {
                 folderId: query.folderId,
@@ -49,7 +49,12 @@ export const initAlbumController = (modules: { service: AppService }) => {
 
             const response: AlbumListResponse = {
                 data: albums.items.map((item) =>
-                    albumHelpers.adapterToResponse(item, adapter._getLibrary().id, item.thumbHash),
+                    albumHelpers.adapterToResponse(
+                        item,
+                        adapter._getLibrary().id,
+                        item.thumbHash,
+                        authToken,
+                    ),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -105,7 +110,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const { id } = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const album = await service.album.detail(adapter, { id });
 
@@ -114,6 +119,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
                     album,
                     adapter._getLibrary().id,
                     album.thumbHash,
+                    authToken,
                 ),
                 meta: {},
             };
@@ -134,7 +140,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
         async (c) => {
             const query = c.req.valid('query');
             const { id } = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const tracks = await service.album.detailTrackList(adapter, {
                 id,
@@ -146,7 +152,12 @@ export const initAlbumController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, item.thumbHash),
+                    trackHelpers.adapterToResponse(
+                        item,
+                        adapter._getLibrary().id,
+                        item.thumbHash,
+                        authToken,
+                    ),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(

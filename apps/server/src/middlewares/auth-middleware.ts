@@ -1,11 +1,12 @@
 import { createMiddleware } from 'hono/factory';
 import { decode, verify } from 'hono/jwt';
 import type { AppDatabase } from '@/database/init-database.js';
-import type { DbUser } from '@/database/user-database.js';
+import { type DbUser } from '@/database/user-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { JWTPayload } from '@/services/auth/auth-service.js';
 
 export type AuthVariables = {
+    authToken: string;
     user: DbUser;
 };
 
@@ -31,12 +32,40 @@ export const authMiddleware = (tokenSecret: string, modules: { db: AppDatabase }
                 }
 
                 c.set('user', authUser);
+                c.set('authToken', token);
             }
         }
 
-        const isProtectedPath = c.req.path.includes('/api/') && !c.req.path.includes('/images/');
+        const isProtectedPath = c.req.path.includes('/api/');
 
         if (isProtectedPath) {
+            if (c.req.path.includes('/stream') || c.req.path.includes('/images/')) {
+                const queryToken = c.req.query('token');
+
+                if (!queryToken) {
+                    throw new apiError.unauthorized({ message: 'No token provided' });
+                }
+
+                const decodedPayload = decode(queryToken) as unknown as {
+                    payload: JWTPayload;
+                };
+
+                if (!decodedPayload) {
+                    throw new apiError.unauthorized({ message: 'Invalid token' });
+                }
+
+                const [, isValid] = db.user.token.validate(
+                    decodedPayload.payload.userId,
+                    queryToken,
+                );
+
+                if (!isValid) {
+                    throw new apiError.unauthorized({ message: 'Invalid token' });
+                }
+
+                return next();
+            }
+
             if (!token) {
                 throw new apiError.unauthorized({ message: 'No token provided' });
             }
@@ -53,7 +82,7 @@ export const authMiddleware = (tokenSecret: string, modules: { db: AppDatabase }
                 throw new apiError.internalServer({ message: 'Failed to validate user' });
             }
 
-            const userToken = authUser.tokens.find((token) => token.id === verifiedPayload.id);
+            const userToken = authUser.tokens[verifiedPayload.id];
 
             if (!userToken) {
                 throw new apiError.unauthorized({ message: 'Invalid token' });

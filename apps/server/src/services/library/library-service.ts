@@ -52,6 +52,7 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
                 id,
                 scanCredential: authResult.auth.credential,
                 scanUsername: authResult.auth.username,
+                tokens: {},
                 type: args.values.type,
             };
 

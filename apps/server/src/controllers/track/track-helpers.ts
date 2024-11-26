@@ -8,12 +8,19 @@ export const trackHelpers = {
         track: AdapterTrack,
         libraryId: string,
         thumbHash: string | null,
+        token: string,
     ): TrackEntry => {
         return {
             ...track,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, track.id, LibraryItemType.TRACK),
+            imageUrl: controllerHelpers.getImageUrl(
+                libraryId,
+                track.id,
+                LibraryItemType.TRACK,
+                token,
+            ),
             itemType: LibraryItemType.TRACK,
             libraryId,
+            streamUrl: controllerHelpers.getStreamUrl(libraryId, track.id, token),
             thumbHash,
         };
     },

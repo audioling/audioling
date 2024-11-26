@@ -34,7 +34,7 @@ export const initTrackController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const query = c.req.valid('query');
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const tracks = await service.track.list(adapter, {
                 folderId: query.folderId,
@@ -46,7 +46,12 @@ export const initTrackController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, item.thumbHash),
+                    trackHelpers.adapterToResponse(
+                        item,
+                        adapter._getLibrary().id,
+                        item.thumbHash,
+                        authToken,
+                    ),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -101,7 +106,7 @@ export const initTrackController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const params = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const track = await service.track.detail(adapter, {
                 id: params.id,
@@ -112,11 +117,43 @@ export const initTrackController = (modules: { service: AppService }) => {
                     track,
                     adapter._getLibrary().id,
                     track.thumbHash,
+                    authToken,
                 ),
                 meta: {},
             };
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /{id}/stream
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/{id}/stream',
+            summary: 'Get track stream by id',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/{id}/stream'].get,
+        }),
+        async (c) => {
+            const { id } = c.req.param();
+            const { adapter } = c.var;
+
+            const streamUrl = await service.track.getStreamUrl(adapter, { id });
+
+            const response = await fetch(streamUrl, {
+                headers: {
+                    ...(c.req.header('range') && {
+                        range: c.req.header('range'),
+                    }),
+                },
+            });
+
+            const headers = new Headers(response.headers);
+            return new Response(response.body, {
+                headers,
+                status: response.status,
+            });
         },
     );
 

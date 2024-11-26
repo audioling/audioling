@@ -14,6 +14,7 @@ export const playlistHelpers = {
         playlist: AdapterPlaylist,
         libraryId: string,
         thumbHash: string | null,
+        token: string,
     ): PlaylistEntry => {
         return {
             ...playlist,
@@ -21,6 +22,7 @@ export const playlistHelpers = {
                 libraryId,
                 playlist.id,
                 LibraryItemType.PLAYLIST,
+                token,
             ),
             itemType: LibraryItemType.PLAYLIST,
             libraryId,
@@ -31,12 +33,19 @@ export const playlistHelpers = {
         track: AdapterPlaylistTrack,
         libraryId: string,
         thumbHash: string | null,
+        token: string,
     ): PlaylistTrackEntry => {
         return {
             ...track,
-            imageUrl: controllerHelpers.getImageUrl(libraryId, track.id, LibraryItemType.TRACK),
+            imageUrl: controllerHelpers.getImageUrl(
+                libraryId,
+                track.id,
+                LibraryItemType.TRACK,
+                token,
+            ),
             itemType: LibraryItemType.TRACK,
             libraryId,
+            streamUrl: controllerHelpers.getStreamUrl(libraryId, track.id, token),
             thumbHash,
         };
     },

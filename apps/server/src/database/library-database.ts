@@ -8,6 +8,11 @@ import type { DatabaseModules } from '@/database/init-database.js';
 import { initJsonDatabase } from '@/modules/json-database/index.js';
 import { utils } from '../utils/index';
 
+export enum DbLibraryTokenScope {
+    IMAGES = 'images',
+    STREAM = 'stream',
+}
+
 export const librarySchema = z.object({
     baseUrl: z.string(),
     createdAt: z.string(),
@@ -22,6 +27,7 @@ export const librarySchema = z.object({
     id: z.string(),
     scanCredential: z.string().nullable(),
     scanUsername: z.string().nullable(),
+    tokens: z.record(z.string(), z.nativeEnum(DbLibraryTokenScope)),
     type: z.nativeEnum(LibraryType),
     updatedAt: z.string(),
 });
@@ -38,6 +44,15 @@ export type DbLibraryInsert = Omit<
 >;
 
 export type DbLibraryUpdate = Partial<DbLibraryInsert>;
+
+export type DbLibraryToken = LibraryDatabaseSchema['libraries'][number]['tokens'][number];
+
+export type DbLibraryTokenInsert = {
+    scope: DbLibraryTokenScope;
+    token: string;
+};
+
+export type DbLibraryTokenUpdate = Partial<DbLibraryTokenInsert>;
 
 export function initLibraryDatabase(modules: DatabaseModules) {
     const libraryDb = initJsonDatabase<LibraryDatabaseSchema>({
@@ -92,6 +107,7 @@ export function initLibraryDatabase(modules: DatabaseModules) {
             const inserted: DbLibrary = {
                 ...library,
                 createdAt: utils.date.now(),
+                tokens: {},
                 updatedAt: utils.date.now(),
             };
 
@@ -111,6 +127,53 @@ export function initLibraryDatabase(modules: DatabaseModules) {
             }
 
             return [null, lib];
+        },
+        token: {
+            delete: (id: string, tokenId: string): DbResult<void> => {
+                const library = libraryDb.get(`libraries.${id}`) as unknown;
+
+                if (!library) {
+                    return [{ message: 'Library not found' }, null];
+                }
+
+                delete (library as DbLibrary).tokens[tokenId];
+
+                libraryDb.set(`libraries.${id}`, library as DbLibrary);
+
+                return [null, undefined];
+            },
+            insert: (id: string, token: DbLibraryTokenInsert): DbResult<DbLibraryToken> => {
+                const library = libraryDb.get(`libraries.${id}`) as unknown;
+
+                if (!library) {
+                    return [{ message: 'Library not found' }, null];
+                }
+
+                (library as DbLibrary).tokens[token.token] = token.scope;
+
+                libraryDb.set(`libraries.${id}`, library as DbLibrary);
+
+                return [null, token.token as DbLibraryTokenScope];
+            },
+            validate: (
+                id: string,
+                token: string,
+                scope?: DbLibraryTokenScope,
+            ): DbResult<boolean> => {
+                const library = libraryDb.get(`libraries.${id}`) as unknown;
+
+                if (!library) {
+                    return [{ message: 'Library not found' }, null];
+                }
+
+                if (scope) {
+                    if ((library as DbLibrary).tokens[token] !== scope) {
+                        return [{ message: 'Invalid token scope' }, null];
+                    }
+                }
+
+                return [null, true];
+            },
         },
         updateById: (id: string, value: DbLibraryUpdate): DbResult<DbLibrary> => {
             const [err, existingLibrary] = initLibraryDatabase(modules).findByIdOrThrow(id);

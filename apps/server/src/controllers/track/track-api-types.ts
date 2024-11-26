@@ -42,6 +42,7 @@ export const trackAttributes = z.object({
     rgTrackGain: z.number().nullable(),
     rgTrackPeak: z.number().nullable(),
     sortName: z.string(),
+    streamUrl: z.string(),
     thumbHash: z.string().nullable(),
     trackNumber: z.number().nullable(),
     updatedDate: z.string().nullable(),

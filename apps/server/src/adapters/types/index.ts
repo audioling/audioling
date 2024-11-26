@@ -70,10 +70,6 @@ import type {
 } from '@/adapters/types/adapter-scrobble-types.js';
 import type { AdapterAuthenticationResponse } from '@/adapters/types/adapter-server-types.js';
 import type {
-    AdapterStreamRequest,
-    AdapterStreamResponse,
-} from '@/adapters/types/adapter-stream-types.js';
-import type {
     AdapterTrackDetailRequest,
     AdapterTrackDetailResponse,
     AdapterTrackListCountRequest,
@@ -107,6 +103,12 @@ export type AdapterApi = {
         type: LibraryItemType;
     }) => string;
     _getLibrary: () => DbLibrary;
+    _getStreamUrl: (args: {
+        bitRate?: number;
+        format?: string;
+        id: string;
+        libraryId: string;
+    }) => string;
     _getType: () => LibraryType;
     addToPlaylist: AdapterFn<AdapterAddToPlaylistRequest, AdapterAddToPlaylistResponse>;
     clearPlaylist: AdapterFn<AdapterClearPlaylistRequest, AdapterClearPlaylistResponse>;
@@ -162,7 +164,6 @@ export type AdapterApi = {
     scrobble: AdapterFn<AdapterScrobbleRequest, AdapterScrobbleResponse>;
     setFavorite: AdapterFn<AdapterSetFavoriteRequest, AdapterSetFavoriteResponse>;
     setRating: AdapterFn<AdapterSetRatingRequest, AdapterSetRatingResponse>;
-    stream: AdapterFn<AdapterStreamRequest, AdapterStreamResponse>;
     updatePlaylist: AdapterFn<AdapterUpdatePlaylistRequest, AdapterUpdatePlaylistResponse>;
 };
 

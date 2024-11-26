@@ -86,4 +86,19 @@ export const trackApiSchema = {
             security: [{ Bearer: [] }],
         },
     },
+    '/{id}/stream': {
+        get: {
+            request: {
+                params: z.object({ id: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Get track stream by id',
+                    schema: EmptyResponseSchema,
+                    status: 200,
+                },
+                [401, 403, 404, 500],
+            ),
+        },
+    },
 };
