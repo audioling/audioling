@@ -1,8 +1,11 @@
 @use '@/styles/base';
 
 .right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: base.$gap-md;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.right button {
+    padding: base.$gap-sm base.$gap-md;
 }

@@ -1,0 +1,32 @@
+@use '@/styles/base';
+
+.slider-container {
+    height: 100px;
+    padding: var(--base-gap-sm);
+}
+
+.track {
+    position: relative;
+    width: 5px;
+    height: 100%;
+    background-color: base.$font-secondary-color;
+    border-radius: 9999px;
+}
+
+.track-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: base.$primary-color;
+    border-radius: 9999px;
+}
+
+.handle {
+    position: absolute;
+    z-index: 1000;
+    align-self: center;
+    width: 1rem;
+    height: 0.5rem;
+    background-color: base.$font-color;
+    border-radius: 0.5rem;
+}

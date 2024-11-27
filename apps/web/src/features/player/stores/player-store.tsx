@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
 import type { GetApiLibraryIdAlbumsIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { createSelectors } from '@/lib/zustand.ts';
 import { shuffleInPlace } from '@/utils/shuffle.ts';
 
 export enum PlayerStatus {
@@ -78,11 +79,13 @@ interface Actions {
     addToQueueByUniqueId: (items: TrackItem[], uniqueId: string, edge: 'top' | 'bottom') => void;
     clearQueue: () => void;
     clearSelected: (items: PlayQueueItem[]) => void;
+    decreaseVolume: (value: number) => void;
     getQueue: (groupBy?: QueueGroupingProperty) => GroupedQueue;
     getQueueOrder: () => {
         groups: { count: number; name: string }[];
         items: PlayQueueItem[];
     };
+    increaseVolume: (value: number) => void;
     mediaNext: () => void;
     mediaPause: () => void;
     mediaPlay: () => void;
@@ -94,6 +97,7 @@ interface Actions {
     moveSelectedToBottom: (items: PlayQueueItem[]) => void;
     moveSelectedToNext: (items: PlayQueueItem[]) => void;
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
+    setVolume: (volume: number) => void;
     shuffle: () => void;
     shuffleSelected: (items: PlayQueueItem[]) => void;
 }
@@ -115,7 +119,7 @@ interface State {
 
 export interface PlayerState extends State, Actions {}
 
-export const usePlayerStore = create<PlayerState>()(
+export const usePlayerStoreBase = create<PlayerState>()(
     persist(
         subscribeWithSelector(
             immer((set, get) => ({
@@ -284,6 +288,11 @@ export const usePlayerStore = create<PlayerState>()(
                         );
                     });
                 },
+                decreaseVolume: (value: number) => {
+                    set((state) => {
+                        state.player.volume = Math.max(0, state.player.volume - value);
+                    });
+                },
                 getQueue: (groupBy?: QueueGroupingProperty) => {
                     const queue = get().getQueueOrder();
                     const queueType = getQueueType();
@@ -345,6 +354,11 @@ export const usePlayerStore = create<PlayerState>()(
                         groups: [{ count: defaultQueue.length, name: 'All' }],
                         items: defaultQueue,
                     };
+                },
+                increaseVolume: (value: number) => {
+                    set((state) => {
+                        state.player.volume = Math.min(100, state.player.volume + value);
+                    });
                 },
                 mediaNext: () => {
                     const currentIndex = get().player.index;
@@ -533,6 +547,12 @@ export const usePlayerStore = create<PlayerState>()(
                 queue: {
                     default: [],
                     priority: [],
+                    shuffled: [],
+                },
+                setVolume: (volume: number) => {
+                    set((state) => {
+                        state.player.volume = volume;
+                    });
                 },
                 shuffle: () => {
                     set((state) => {
@@ -558,23 +578,18 @@ export const usePlayerStore = create<PlayerState>()(
     ),
 );
 
-export const usePlayerState = () => {
-    return usePlayerStore(
-        useShallow((state) => ({
-            player: state.player,
-            queue: state.queue,
-        })),
-    );
-};
+export const usePlayerStore = createSelectors(usePlayerStoreBase);
 
 export const usePlayerActions = () => {
-    return usePlayerStore(
+    return usePlayerStoreBase(
         useShallow((state) => ({
             addToQueueByType: state.addToQueueByType,
             addToQueueByUniqueId: state.addToQueueByUniqueId,
             clearQueue: state.clearQueue,
             clearSelected: state.clearSelected,
+            decreaseVolume: state.decreaseVolume,
             getQueue: state.getQueue,
+            increaseVolume: state.increaseVolume,
             mediaNext: state.mediaNext,
             mediaPause: state.mediaPause,
             mediaPlay: state.mediaPlay,
@@ -586,6 +601,7 @@ export const usePlayerActions = () => {
             moveSelectedToBottom: state.moveSelectedToBottom,
             moveSelectedToNext: state.moveSelectedToNext,
             moveSelectedToTop: state.moveSelectedToTop,
+            setVolume: state.setVolume,
             shuffle: state.shuffle,
             shuffleSelected: state.shuffleSelected,
             // autoNext: state.actions.autoNext,
@@ -654,10 +670,10 @@ export async function addToQueueByFetch(
     }
 
     if (typeof type === 'string') {
-        usePlayerStore.getState().addToQueueByType(items, type);
+        usePlayerStoreBase.getState().addToQueueByType(items, type);
     } else {
         const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
-        usePlayerStore.getState().addToQueueByUniqueId(items, type.uniqueId, normalizedEdge);
+        usePlayerStoreBase.getState().addToQueueByUniqueId(items, type.uniqueId, normalizedEdge);
     }
 }
 
@@ -665,17 +681,17 @@ export async function addToQueueByData(type: AddToQueueType, data: TrackItem[]) 
     const items = data.map(toPlayQueueItem);
 
     if (typeof type === 'string') {
-        usePlayerStore.getState().addToQueueByType(items, type);
+        usePlayerStoreBase.getState().addToQueueByType(items, type);
     } else {
         const normalizedEdge = type.edge === 'top' ? 'top' : 'bottom';
-        usePlayerStore.getState().addToQueueByUniqueId(items, type.uniqueId, normalizedEdge);
+        usePlayerStoreBase.getState().addToQueueByUniqueId(items, type.uniqueId, normalizedEdge);
     }
 }
 
 export const subscribePlayerQueue = (
     onChange: (queue: QueueData, prevQueue: QueueData) => void,
 ) => {
-    return usePlayerStore.subscribe(
+    return usePlayerStoreBase.subscribe(
         (state) => state.queue,
         (queue, prevQueue) => {
             onChange(queue, prevQueue);
