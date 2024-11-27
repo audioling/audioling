@@ -60,6 +60,25 @@ const scaleY: Variants = {
     show: { height: 'auto', opacity: 1 },
 };
 
+const blurIn: Variants = {
+    hidden: { filter: 'blur(10px)' },
+    show: { filter: 'blur(0px)' },
+};
+
+const flipHorizontal: Variants = {
+    hidden: { x: '-100%' },
+    show: { x: 0 },
+};
+
+const flipVertical: Variants = {
+    hidden: { y: '-100%' },
+    show: { y: 0 },
+};
+
+const combine = (...variants: Variants[]) => ({
+    ...variants.reduce((acc, variant) => ({ ...acc, ...variant }), {}),
+});
+
 const stagger = (variants: Variants, delay?: number) => ({
     ...variants,
     show: {
@@ -71,11 +90,15 @@ const stagger = (variants: Variants, delay?: number) => ({
 });
 
 export const animationVariants = {
+    blurIn,
+    combine,
     fadeIn,
     fadeInDown,
     fadeInLeft,
     fadeInRight,
     fadeInUp,
+    flipHorizontal,
+    flipVertical,
     scaleY,
     slideInDown,
     slideInLeft,

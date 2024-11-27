@@ -1,0 +1,49 @@
+.root {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    user-select: none;
+}
+
+.root[data-orientation='vertical'] {
+    flex-direction: column;
+}
+
+.track {
+    position: relative;
+    flex-grow: 1;
+    height: 5px;
+    background-color: var(--global-font-secondary-color);
+    border-radius: 9999px;
+}
+
+.track[data-orientation='vertical'] {
+    width: 5px;
+}
+
+.range {
+    position: absolute;
+    height: 100%;
+    background-color: var(--global-primary-color);
+    border-radius: 9999px;
+}
+
+.range[data-orientation='vertical'] {
+    width: 100%;
+    height: auto;
+}
+
+.thumb {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--global-font-color);
+    border-radius: 10px;
+
+    &:focus {
+        outline: none;
+    }
+}
