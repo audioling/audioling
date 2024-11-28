@@ -3,19 +3,30 @@
 .left {
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-columns: 70px minmax(0, 1fr);
     gap: base.$gap-sm;
+    max-width: 30svw;
+    padding-right: base.$gap-md;
 }
 
 .left-column {
-    border: 1px solid rgb(255 255 255 / 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.left-column > span {
+    width: 65px;
+    height: 65px;
 }
 
 .image {
-    width: 100%;
-    height: 100%;
+    width: 65px;
+    height: 65px;
     object-fit: cover;
-    border: 1px solid rgb(255 255 255 / 50%);
+    border-radius: base.$border-radius-md;
 }
 
 .right-column {
