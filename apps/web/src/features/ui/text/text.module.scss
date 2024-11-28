@@ -1,45 +1,49 @@
 @use '@/styles/base';
 
 .size-xl {
-  font-size: base.$font-size-xl;
+    font-size: base.$font-size-xl;
 }
 
 .size-lg {
-  font-size: base.$font-size-lg;
+    font-size: base.$font-size-lg;
 }
 
 .size-md {
-  font-size: base.$font-size-md;
+    font-size: base.$font-size-md;
 }
 
 .size-sm {
-  font-size: base.$font-size-sm;
+    font-size: base.$font-size-sm;
 }
 
 .size-xs {
-  font-size: base.$font-size-xs;
+    font-size: base.$font-size-xs;
 }
 
 .weight-xl {
-  font-weight: base.$font-weight-xl;
+    font-weight: base.$font-weight-xl;
 }
 
 .weight-lg {
-  font-weight: base.$font-weight-lg;
+    font-weight: base.$font-weight-lg;
 }
 
 .weight-md {
-  font-weight: base.$font-weight-md;
+    font-weight: base.$font-weight-md;
 }
 
 .weight-sm {
-  font-weight: base.$font-weight-sm;
+    font-weight: base.$font-weight-sm;
 }
 
 .weight-xs {
-  font-weight: base.$font-weight-xs;
+    font-weight: base.$font-weight-xs;
 }
 
 .secondary {
-  color: base.$font-secondary-color;
+    color: base.$font-secondary-color;
+}
+
+.ellipsis {
+    @include base.text-ellipsis;
 }
