@@ -24,30 +24,8 @@ export enum PlayerRepeat {
 }
 
 export enum PlayerShuffle {
-    ALBUM = 'album',
     OFF = 'off',
     TRACK = 'track',
-}
-
-export interface PlayerData {
-    current: {
-        index: number;
-        nextIndex?: number;
-        player: 1 | 2;
-        previousIndex?: number;
-        shuffledIndex: number;
-        status: PlayerStatus;
-        track?: PlayQueueItem;
-    };
-    player1?: PlayQueueItem;
-    player2?: PlayQueueItem;
-    queue: {
-        current?: PlayQueueItem;
-        currentIndex: number;
-        length: number;
-        next?: PlayQueueItem;
-        previous?: PlayQueueItem;
-    };
 }
 
 export enum PlayType {
@@ -60,6 +38,7 @@ export enum PlayType {
 export interface QueueData {
     default: PlayQueueItem[];
     priority: PlayQueueItem[];
+    shuffled: string[];
 }
 
 export enum QueueType {
@@ -80,12 +59,14 @@ interface Actions {
     clearQueue: () => void;
     clearSelected: (items: PlayQueueItem[]) => void;
     decreaseVolume: (value: number) => void;
+    getCurrentTrack: () => PlayQueueItem | undefined;
     getQueue: (groupBy?: QueueGroupingProperty) => GroupedQueue;
     getQueueOrder: () => {
         groups: { count: number; name: string }[];
         items: PlayQueueItem[];
     };
     increaseVolume: (value: number) => void;
+    mediaAutoNext: () => PlayerData;
     mediaNext: () => void;
     mediaPause: () => void;
     mediaPlay: () => void;
@@ -117,6 +98,20 @@ interface State {
     queue: QueueData;
 }
 
+export interface PlayerData {
+    player: {
+        index: number;
+        muted: boolean;
+        playerNum: 1 | 2;
+        repeat: PlayerRepeat;
+        shuffle: PlayerShuffle;
+        speed: number;
+        status: PlayerStatus;
+        volume: number;
+    };
+    queue: QueueData;
+}
+
 export interface PlayerState extends State, Actions {}
 
 export const usePlayerStoreBase = create<PlayerState>()(
@@ -136,23 +131,55 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                         state.queue.default = [];
                                         state.player.index = 0;
                                         state.queue.default = newItems;
+
+                                        if (state.player.shuffle === PlayerShuffle.TRACK) {
+                                            state.queue.shuffled = shuffleInPlace(
+                                                newItems.map((item) => item._uniqueId),
+                                            );
+                                        }
                                     });
+
                                     break;
                                 }
                                 case PlayType.NEXT: {
                                     set((state) => {
                                         const currentIndex = state.player.index;
+
                                         state.queue.default = [
                                             ...state.queue.default.slice(0, currentIndex + 1),
                                             ...newItems,
                                             ...state.queue.default.slice(currentIndex + 1),
                                         ];
+
+                                        if (state.player.shuffle === PlayerShuffle.TRACK) {
+                                            state.queue.shuffled = [
+                                                ...state.queue.shuffled.slice(0, currentIndex),
+                                                state.queue.shuffled[currentIndex],
+                                                ...shuffleInPlace([
+                                                    ...state.queue.shuffled.slice(currentIndex + 1),
+                                                    ...newItems.map((item) => item._uniqueId),
+                                                ]),
+                                            ];
+                                        }
                                     });
                                     break;
                                 }
                                 case PlayType.LAST: {
                                     set((state) => {
+                                        const currentIndex = state.player.index;
+
                                         state.queue.default = [...state.queue.default, ...newItems];
+
+                                        if (state.player.shuffle === PlayerShuffle.TRACK) {
+                                            state.queue.shuffled = [
+                                                ...state.queue.shuffled.slice(0, currentIndex),
+                                                state.queue.shuffled[currentIndex],
+                                                ...shuffleInPlace([
+                                                    ...state.queue.shuffled.slice(currentIndex + 1),
+                                                    ...newItems.map((item) => item._uniqueId),
+                                                ]),
+                                            ];
+                                        }
                                     });
                                     break;
                                 }
@@ -177,6 +204,12 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                         ];
 
                                         state.player.index = 0;
+
+                                        if (state.player.shuffle === PlayerShuffle.TRACK) {
+                                            state.queue.shuffled = shuffleInPlace(
+                                                newItems.map((item) => item._uniqueId),
+                                            );
+                                        }
                                     });
                                     break;
                                 }
@@ -198,6 +231,15 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                                 ...newItems,
                                             ];
                                         }
+
+                                        state.queue.shuffled = [
+                                            ...state.queue.shuffled.slice(0, currentIndex),
+                                            state.queue.shuffled[currentIndex],
+                                            ...shuffleInPlace([
+                                                ...state.queue.shuffled.slice(currentIndex + 1),
+                                                ...newItems.map((item) => item._uniqueId),
+                                            ]),
+                                        ];
                                     });
                                     break;
                                 }
@@ -206,6 +248,11 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                         state.queue.priority = [
                                             ...state.queue.priority,
                                             ...newItems,
+                                        ];
+
+                                        state.queue.shuffled = [
+                                            ...state.queue.shuffled,
+                                            ...newItems.map((item) => item._uniqueId),
                                         ];
                                     });
                                     break;
@@ -227,11 +274,20 @@ export const usePlayerStoreBase = create<PlayerState>()(
 
                             const insertIndex = Math.max(0, edge === 'top' ? index : index + 1);
 
-                            state.queue.default = [
+                            // Recalculate the player index if we're inserting items above the current index
+                            if (insertIndex <= state.player.index) {
+                                state.player.index = state.player.index + newItems.length;
+                            }
+
+                            const newQueue = [
                                 ...state.queue.default.slice(0, insertIndex),
                                 ...newItems,
                                 ...state.queue.default.slice(insertIndex),
                             ];
+
+                            recalculatePlayerIndex(state, newQueue);
+
+                            state.queue.default = newQueue;
                         } else {
                             const priorityIndex = state.queue.priority.findIndex(
                                 (item) => item._uniqueId === uniqueId,
@@ -266,6 +322,19 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                     ];
                                 }
                             }
+
+                            if (state.player.shuffle === PlayerShuffle.TRACK) {
+                                const currentIndex = state.player.index;
+
+                                state.queue.shuffled = [
+                                    ...state.queue.shuffled.slice(0, currentIndex),
+                                    state.queue.shuffled[currentIndex],
+                                    ...shuffleInPlace([
+                                        ...state.queue.shuffled.slice(currentIndex + 1),
+                                        ...newItems.map((item) => item._uniqueId),
+                                    ]),
+                                ];
+                            }
                         }
                     });
                 },
@@ -292,6 +361,10 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     set((state) => {
                         state.player.volume = Math.max(0, state.player.volume - value);
                     });
+                },
+                getCurrentTrack: () => {
+                    const queue = get().getQueue();
+                    return queue.items[get().player.index];
                 },
                 getQueue: (groupBy?: QueueGroupingProperty) => {
                     const queue = get().getQueueOrder();
@@ -360,12 +433,52 @@ export const usePlayerStoreBase = create<PlayerState>()(
                         state.player.volume = Math.min(100, state.player.volume + value);
                     });
                 },
+                mediaAutoNext: () => {
+                    const currentIndex = get().player.index;
+                    const player = get().player;
+                    const repeat = player.repeat;
+                    const queue = get().getQueueOrder();
+
+                    const newPlayerNum = player.playerNum === 1 ? 2 : 1;
+                    let newIndex = Math.min(queue.items.length - 1, currentIndex + 1);
+                    let newStatus = PlayerStatus.PLAYING;
+
+                    if (repeat === PlayerRepeat.ONE) {
+                        newIndex = currentIndex;
+                    }
+
+                    if (newIndex === queue.items.length - 1) {
+                        newStatus = PlayerStatus.PAUSED;
+                    }
+
+                    set((state) => {
+                        state.player.index = newIndex;
+                        state.player.playerNum = newPlayerNum;
+                        state.player.timestamp = 0;
+                        state.player.status = newStatus;
+                    });
+
+                    return {
+                        player: {
+                            index: newIndex,
+                            muted: player.muted,
+                            playerNum: newPlayerNum,
+                            repeat: player.repeat,
+                            shuffle: player.shuffle,
+                            speed: player.speed,
+                            status: newStatus,
+                            volume: player.volume,
+                        },
+                        queue: get().queue,
+                    };
+                },
                 mediaNext: () => {
                     const currentIndex = get().player.index;
                     const queue = get().getQueueOrder();
 
                     set((state) => {
                         state.player.index = Math.min(queue.items.length - 1, currentIndex + 1);
+                        state.player.playerNum = 1;
                     });
                 },
                 mediaPause: () => {
@@ -422,17 +535,20 @@ export const usePlayerStoreBase = create<PlayerState>()(
                             );
 
                             // Get the new index based on the edge
-                            const newIndex = Math.max(0, edge === 'top' ? index : index + 1);
+                            const insertIndex = Math.max(0, edge === 'top' ? index : index + 1);
 
                             const itemsBefore = state.queue.default
-                                .slice(0, newIndex)
+                                .slice(0, insertIndex)
                                 .filter((item) => !uniqueIdMap.has(item._uniqueId));
 
                             const itemsAfter = state.queue.default
-                                .slice(newIndex)
+                                .slice(insertIndex)
                                 .filter((item) => !uniqueIdMap.has(item._uniqueId));
 
-                            state.queue.default = [...itemsBefore, ...items, ...itemsAfter];
+                            const newQueue = [...itemsBefore, ...items, ...itemsAfter];
+
+                            recalculatePlayerIndex(state, newQueue);
+                            state.queue.default = newQueue;
                         } else {
                             const priorityIndex = state.queue.priority.findIndex(
                                 (item) => item._uniqueId === uniqueId,
@@ -482,11 +598,15 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 moveSelectedToBottom: (items: PlayQueueItem[]) => {
                     set((state) => {
                         const uniqueIds = items.map((item) => item._uniqueId);
+
                         const filtered = state.queue.default.filter(
                             (item) => !uniqueIds.includes(item._uniqueId),
                         );
 
-                        state.queue.default = [...filtered, ...items];
+                        const newQueue = [...filtered, ...items];
+
+                        recalculatePlayerIndex(state, newQueue);
+                        state.queue.default = newQueue;
                     });
                 },
                 moveSelectedToNext: (items: PlayQueueItem[]) => {
@@ -501,23 +621,32 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                 (item) => !uniqueIds.includes(item._uniqueId),
                             );
 
-                            state.queue.default = [
+                            const newQueue = [
                                 ...filtered.slice(0, currentIndex + 1),
                                 ...items,
                                 ...filtered.slice(currentIndex + 1),
                             ];
+
+                            recalculatePlayerIndex(state, newQueue);
+                            state.queue.default = newQueue;
                         } else {
                             const currentIndex = state.player.index;
                             const isInPriority = currentIndex < state.queue.priority.length;
 
                             if (isInPriority) {
-                                state.queue.priority = [
+                                const newQueue = [
                                     ...state.queue.priority.slice(0, currentIndex + 1),
                                     ...items,
                                     ...state.queue.priority.slice(currentIndex + 1),
                                 ];
+
+                                recalculatePlayerIndex(state, newQueue);
+                                state.queue.priority = newQueue;
                             } else {
-                                state.queue.priority = [...state.queue.priority, ...items];
+                                const newQueue = [...state.queue.priority, ...items];
+
+                                recalculatePlayerIndex(state, newQueue);
+                                state.queue.priority = newQueue;
                             }
                         }
                     });
@@ -530,7 +659,11 @@ export const usePlayerStoreBase = create<PlayerState>()(
                             (item) => !uniqueIds.includes(item._uniqueId),
                         );
 
-                        state.queue.default = [...items, ...filtered];
+                        const newQueue = [...items, ...filtered];
+
+                        recalculatePlayerIndex(state, newQueue);
+
+                        state.queue.default = newQueue;
                     });
                 },
                 player: {
@@ -556,7 +689,8 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 },
                 shuffle: () => {
                     set((state) => {
-                        state.queue.default = shuffleInPlace(state.queue.default);
+                        const queue = state.queue.default;
+                        state.queue.shuffled = shuffleInPlace(queue.map((item) => item._uniqueId));
                     });
                 },
                 shuffleSelected: (items: PlayQueueItem[]) => {
@@ -619,10 +753,6 @@ export const usePlayerActions = () => {
             // previous: state.actions.previous,
         })),
     );
-};
-
-export const usePlayerStatus = () => {
-    return usePlayerStore(useShallow((state) => state.player.status));
 };
 
 // function shuffleArray<T>(array: T[]): T[] {
@@ -699,6 +829,29 @@ export const subscribePlayerQueue = (
     );
 };
 
+export const subscribeCurrentTrack = (
+    onChange: (track: TrackItem | undefined, prevTrack: TrackItem | undefined) => void,
+) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => {
+            const queue = state.getQueue();
+            const index = state.player.index;
+            return queue.items[index];
+        },
+        (track, prevTrack) => {
+            onChange(track, prevTrack);
+        },
+    );
+};
+
+export const useCurrentTrack = () => {
+    return usePlayerStoreBase((state) => {
+        const queue = state.getQueue();
+        const index = state.player.index;
+        return queue.items[index];
+    });
+};
+
 function toPlayQueueItem(item: TrackItem): PlayQueueItem {
     return {
         ...item,
@@ -710,4 +863,16 @@ function getQueueType() {
     // eslint-disable-next-line no-constant-condition
     const queueType: QueueType = 1 > 0 ? QueueType.DEFAULT : QueueType.PRIORITY; // TODO: Implement settings store useSettingsStore.getState().queueType
     return queueType;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function recalculatePlayerIndex(state: any, queue: PlayQueueItem[]) {
+    const currentTrack = state.getCurrentTrack() as PlayQueueItem | undefined;
+
+    if (!currentTrack) {
+        return;
+    }
+
+    const index = queue.findIndex((item) => item._uniqueId === currentTrack._uniqueId);
+    state.player.index = Math.max(0, index);
 }

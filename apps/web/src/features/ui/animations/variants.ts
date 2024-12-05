@@ -61,7 +61,7 @@ const scaleY: Variants = {
 };
 
 const blurIn: Variants = {
-    hidden: { filter: 'blur(10px)' },
+    hidden: { filter: 'blur(4px)' },
     show: { filter: 'blur(0px)' },
 };
 
