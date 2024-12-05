@@ -1,7 +1,7 @@
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
-import { createWithEqualityFn as create } from 'zustand/traditional';
 
 interface NavigationState {
     layout: {
@@ -59,7 +59,7 @@ export const useNavigationStore = create<NavigationState>()(
                     state.layout.right.open = !state.layout.right.open;
                 });
             },
-            toggleSection: (section) => (id) => {
+            toggleSection: (section) => (id: string) => {
                 set((state) => {
                     if (state.side[section as 'general' | 'playlists'][id]) {
                         state.side[section as 'general' | 'playlists'][id] = false;
@@ -84,16 +84,12 @@ export const usePlaylistsNavigationSections = () => {
     return useNavigationStore(useShallow((state) => state.side.playlists));
 };
 
-export const useToggleGeneralSection = () => {
-    return useNavigationStore(useShallow((state) => state.toggleSection('general')));
+export const useToggleSidebarSection = () => {
+    return useNavigationStore(useShallow((state) => state.toggleSection));
 };
 
-export const useTogglePlaylistsSection = () => {
-    return useNavigationStore(useShallow((state) => state.toggleSection('playlists')));
-};
-
-export const useSetPlaylistsSection = () => {
-    return useNavigationStore(useShallow((state) => state.setSection('playlists')));
+export const useSetSidebarSection = () => {
+    return useNavigationStore(useShallow((state) => state.setSection));
 };
 
 export const useLayout = () => {

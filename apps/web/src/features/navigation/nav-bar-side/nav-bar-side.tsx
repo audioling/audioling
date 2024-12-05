@@ -3,7 +3,7 @@ import { NavItemList } from '@/features/navigation/nav-bar-side/nav-item-list.ts
 import { SearchBar } from '@/features/navigation/nav-bar-side/search-bar.tsx';
 import {
     useGeneralNavigationSections,
-    useToggleGeneralSection,
+    useToggleSidebarSection,
 } from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
 import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
@@ -12,7 +12,8 @@ import styles from './nav-bar-side.module.scss';
 
 export function NavBarSide() {
     const generalSections = useGeneralNavigationSections();
-    const toggleGeneralSection = useToggleGeneralSection();
+    const toggleSection = useToggleSidebarSection();
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>
@@ -32,14 +33,14 @@ export function NavBarSide() {
                     <Accordion
                         label="Library"
                         opened={generalSections['library']}
-                        onOpenedChange={() => toggleGeneralSection('library')}
+                        onOpenedChange={() => toggleSection('general')('library')}
                     >
                         <NavItemList />
                     </Accordion>
                     <Accordion
                         label="Playlists"
                         opened={generalSections['playlists']}
-                        onOpenedChange={() => toggleGeneralSection('playlists')}
+                        onOpenedChange={() => toggleSection('general')('playlists')}
                     >
                         <NavBarPlaylistList />
                     </Accordion>

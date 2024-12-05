@@ -7,8 +7,8 @@ import type {
 import { NavBarPlaylistItem } from '@/features/navigation/nav-bar-side/nav-bar-playlist-item.tsx';
 import {
     usePlaylistsNavigationSections,
-    useSetPlaylistsSection,
-    useTogglePlaylistsSection,
+    useSetSidebarSection,
+    useToggleSidebarSection,
 } from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
@@ -30,8 +30,8 @@ interface NavBarPlaylistTreeProps {
 
 export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlaylistTreeProps) {
     const openedSections = usePlaylistsNavigationSections();
-    const toggleSection = useTogglePlaylistsSection();
-    const setSection = useSetPlaylistsSection();
+    const toggleSection = useToggleSidebarSection();
+    const setSection = useSetSidebarSection();
 
     const tree = useMemo(() => {
         const nodes = new Map<string | null, TreeNode[]>();
@@ -81,11 +81,11 @@ export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlay
     }, [folders, playlists]);
 
     const handleToggleFolder = (folderId: string) => {
-        toggleSection(folderId);
+        toggleSection('playlists')(folderId);
     };
 
     const handleSetFolder = (folderId: string, open?: boolean) => {
-        setSection(folderId, open);
+        setSection('playlists')(folderId, open);
     };
 
     return (
