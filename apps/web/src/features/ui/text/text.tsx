@@ -7,6 +7,7 @@ import styles from './text.module.scss';
 interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     as?: React.ElementType | any;
+    isCentered?: boolean;
     isEllipsis?: boolean;
     isSecondary?: boolean;
     size?: Sizes;
@@ -15,13 +16,24 @@ interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 export const Text = (props: TextProps) => {
-    const { as, children, isEllipsis, isSecondary, size, weight, className, ...htmlProps } = props;
+    const {
+        as,
+        children,
+        isCentered,
+        isEllipsis,
+        isSecondary,
+        size,
+        weight,
+        className,
+        ...htmlProps
+    } = props;
 
     const classNames = clsx({
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`weight-${weight || 'md'}`]]: true,
         [styles.secondary]: isSecondary,
         [styles.ellipsis]: isEllipsis,
+        [styles.centered]: isCentered,
     });
 
     return (

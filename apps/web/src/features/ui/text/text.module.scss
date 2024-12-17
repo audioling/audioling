@@ -47,3 +47,7 @@
 .ellipsis {
     @include base.text-ellipsis;
 }
+
+.centered {
+    text-align: center;
+}
