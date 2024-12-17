@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { usePostApiLibraryIdPlaylists } from '@/api/openapi-generated/playlists/playlists.ts';
 import { Stack } from '@/features/ui/stack/stack.tsx';
+import { TextArea } from '@/features/ui/text-area/text-area.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 
 interface CreatePlaylistFormProps {
@@ -16,6 +17,8 @@ export function CreatePlaylistForm({ formId, libraryId, onSuccess }: CreatePlayl
 
     const form = useForm({
         defaultValues: {
+            description: '',
+            isPublic: false,
             name: '',
         },
     });
@@ -46,8 +49,15 @@ export function CreatePlaylistForm({ formId, libraryId, onSuccess }: CreatePlayl
             <Stack>
                 <TextInput
                     data-autofocus
+                    required
                     label="Name"
+                    placeholder="Enter a name for the playlist"
                     {...form.register('name', { required: true })}
+                />
+                <TextArea
+                    label="Description"
+                    placeholder="A brief description for the playlist"
+                    {...form.register('description')}
                 />
             </Stack>
         </form>
