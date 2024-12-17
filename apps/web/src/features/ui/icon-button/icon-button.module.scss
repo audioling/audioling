@@ -12,11 +12,8 @@
 
 .root {
     cursor: pointer;
+    user-select: none;
     transition: all 0.15s ease-in-out;
-
-    &:active {
-        transform: scale(0.95);
-    }
 
     &:focus-visible {
         outline: none;
