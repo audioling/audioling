@@ -69,6 +69,7 @@ function Content(props: ContentProps) {
                         className={styles.content}
                         collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
                         side={side}
+                        sideOffset={6}
                     >
                         <motion.div
                             animate="show"
