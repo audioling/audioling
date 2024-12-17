@@ -150,6 +150,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'layout-content-padding': `${gap.sm} ${gap.md}`,
     'layout-divider-color': 'rgba(255, 255, 255, 0.2)',
     'layout-drag-handle-background-color': 'rgba(255, 255, 255, 0.1)',
+    'layout-header-background-color': 'rgb(3, 3, 3)',
     'layout-header-height': '40px',
     'layout-nav-bar-bottom-background-color': 'rgb(18, 18, 18)',
     'layout-nav-bar-bottom-border-bottom': '',
