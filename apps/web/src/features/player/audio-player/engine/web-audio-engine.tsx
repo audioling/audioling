@@ -28,6 +28,7 @@ interface WebAudioEngineProps {
     playerStatus: PlayerStatus;
     src1: string | undefined;
     src2: string | undefined;
+    volume: number;
 }
 
 // Credits: https://gist.github.com/novwhisky/8a1a0168b94f3b6abfaa?permalink_comment_id=1551393#gistcomment-1551393
@@ -51,19 +52,20 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
         playerStatus,
         src1,
         src2,
+        volume,
     } = props;
 
     const player1Ref = useRef<ReactPlayer | null>(null);
     const player2Ref = useRef<ReactPlayer | null>(null);
 
-    const [internalVolume, setInternalVolume] = useState(25 / 100 || 0);
+    const [internalVolume, setInternalVolume] = useState(volume / 100 || 0);
 
     useImperativeHandle<WebAudioEngineHandle, WebAudioEngineHandle>(playerRef, () => ({
         decreaseVolume(by: number) {
-            setInternalVolume(internalVolume - by);
+            setInternalVolume(Math.max(0, internalVolume - by / 100));
         },
         increaseVolume(by: number) {
-            setInternalVolume(internalVolume + by);
+            setInternalVolume(Math.min(1, internalVolume + by / 100));
         },
         pause() {
             player1Ref.current?.getInternalPlayer()?.pause();

@@ -130,8 +130,6 @@ export function AudiolingWebPlayer() {
                 }
             },
             onPlayerStatus: async (status) => {
-                console.log('status', status, volume);
-
                 if (status === PlayerStatus.PAUSED) {
                     fadeAndSetStatus(volume, 0, FADE_DURATION, PlayerStatus.PAUSED);
                 } else if (status === PlayerStatus.PLAYING) {
@@ -146,7 +144,7 @@ export function AudiolingWebPlayer() {
                 }
             },
         },
-        [volume],
+        [volume, player.playerNum],
     );
 
     const baseUrl = useAuthBaseUrl();
@@ -162,6 +160,7 @@ export function AudiolingWebPlayer() {
             playerStatus={localPlayerStatus}
             src1={player1StreamUrl}
             src2={player2StreamUrl}
+            volume={volume}
             onEndedPlayer1={handleOnEndedPlayer1}
             onEndedPlayer2={handleOnEndedPlayer2}
             onProgressPlayer1={onProgressPlayer1}
