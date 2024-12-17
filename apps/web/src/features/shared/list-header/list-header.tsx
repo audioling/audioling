@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { motion, useSpring, useTransform } from 'motion/react';
 import styles from './list-header.module.scss';
 
@@ -51,9 +51,14 @@ function ItemCount(props: ListHeaderItemCountProps) {
     const spring = useSpring(value, { damping: 15, mass: 0.8, stiffness: 75 });
     const display = useTransform(spring, (current) => Math.round(current).toLocaleString());
 
+    const [previousValue, setPreviousValue] = useState(value);
+
     useEffect(() => {
-        spring.set(value);
-    }, [spring, value]);
+        if (previousValue !== value && value !== 0) {
+            spring.set(value);
+            setPreviousValue(value);
+        }
+    }, [previousValue, spring, value]);
 
     return <motion.span className={styles.itemCount}>{display}</motion.span>;
 }
