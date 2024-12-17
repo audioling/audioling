@@ -290,7 +290,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const clientParams = {
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                     offset: query.offset,
                     size: query.limit,
                 },
@@ -342,7 +342,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const clientParams = {
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId?.length ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                 },
             };
 
@@ -597,7 +597,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 fetchOptions,
                 query: {
                     fromYear,
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                     offset,
                     size: query.limit,
                     toYear,
@@ -644,7 +644,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 const result = await apiClient.getAlbumList2.os['1'].get({
                     fetchOptions,
                     query: {
-                        musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                        musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                         offset: page * limit,
                         size: limit,
                         type: subsonicHelpers.sortByMap[query.sortBy] as AlbumSortType,
@@ -741,7 +741,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const result = await apiClient.getArtists.os['1'].get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                 },
             });
 
@@ -799,7 +799,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const result = await apiClient.getArtists.os['1'].get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                 },
             });
 
@@ -827,7 +827,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const result = await apiClient.getStarred2.os['1'].get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                 },
             });
 
@@ -856,7 +856,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const result = await apiClient.getStarred2.os['1'].get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                 },
             });
 
@@ -887,7 +887,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const result = await apiClient.getStarred2.os['1'].get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                 },
             });
 
@@ -992,7 +992,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             const items = (result.body.musicFolders?.musicFolder || []).map((folder) => ({
-                id: folder.id,
+                id: folder.id.toString(),
                 name: folder.name || '',
             }));
 
@@ -1002,7 +1002,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: result.body.musicFolders.musicFolder.length,
+                    totalRecordCount: (result.body.musicFolders?.musicFolder || []).length,
                 },
             ];
         },
@@ -1038,7 +1038,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const playlistResult = result.body.playlists.playlist;
+            const playlistResult = result.body.playlists.playlist || [];
 
             let playlists: AdapterPlaylist[] = playlistResult
                 .slice(query.offset, query.limit)
@@ -1093,7 +1093,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            return [null, result.body.playlists.playlist.length];
+            return [null, (result.body.playlists.playlist || []).length];
         },
         getPlaylistTrackList: async (request, fetchOptions) => {
             const { query } = request;
@@ -1192,7 +1192,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const result = await apiClient.search3.os['1'].get({
                 fetchOptions,
                 query: {
-                    musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                    musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                     query: query.searchTerm || '',
                     songCount: query.limit,
                     songOffset: query.offset,
@@ -1241,7 +1241,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 const result = await apiClient.search3.os['1'].get({
                     fetchOptions,
                     query: {
-                        musicFolderId: query.folderId ? query.folderId[0] : undefined,
+                        musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
                         query: '',
                         songCount: limit,
                         songOffset: page * limit,
