@@ -1,4 +1,5 @@
 import type { ColumnHelper } from '@tanstack/react-table';
+import clsx from 'clsx';
 import { Image } from '@/features/ui/image/image.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
@@ -9,6 +10,7 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
         cell: ({ row, context }) => {
             const item = row.original;
+            const isPlaying = row.id === context?.currentTrack?._uniqueId;
 
             if (typeof item === 'object' && item) {
                 if (
@@ -29,7 +31,9 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
                                 width={35}
                             />
                             <div className={styles.inner}>
-                                <Text>{item.name}</Text>
+                                <Text className={clsx({ [styles.playing]: isPlaying })}>
+                                    {item.name}
+                                </Text>
                                 {item.artists.length ? (
                                     <Text isSecondary>
                                         {item.artists.map((artist) => artist.name).join(', ')}

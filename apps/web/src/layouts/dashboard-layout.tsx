@@ -14,6 +14,7 @@ import {
     useNavigationStore,
     useSetLayout,
 } from '@/features/navigation/stores/navigation-store.ts';
+import { AudioPlayer } from '@/features/player/audio-player/audio-player.tsx';
 import { SidePlayQueue } from '@/features/player/now-playing/side-play-queue.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
@@ -31,6 +32,7 @@ export function DashboardLayout() {
 
     return (
         <>
+            <AudioPlayer />
             <CreatePlaylistModal.Root key="create-playlist-modal" />
             <CreatePlaylistFolderModal.Root key="create-playlist-folder-modal" />
             <PlayerController.Root key="player-controller" />

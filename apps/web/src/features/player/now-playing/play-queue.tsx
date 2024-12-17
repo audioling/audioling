@@ -5,7 +5,11 @@ import { useParams } from 'react-router-dom';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
-import { subscribePlayerQueue, usePlayerActions } from '@/features/player/stores/player-store.tsx';
+import {
+    subscribePlayerQueue,
+    useCurrentTrack,
+    usePlayerActions,
+} from '@/features/player/stores/player-store.tsx';
 import { ItemListColumn, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
@@ -46,8 +50,12 @@ export function PlayQueue() {
     }, [getQueue]);
 
     const [data, setData] = useState<Map<number, PlayQueueItem>>(new Map());
+    const currentTrack = useCurrentTrack();
 
-    const tableContext = useMemo(() => ({ baseUrl, libraryId }), [baseUrl, libraryId]);
+    const tableContext = useMemo(
+        () => ({ baseUrl, currentTrack, libraryId }),
+        [baseUrl, libraryId, currentTrack],
+    );
 
     const [columnOrder, setColumnOrder] = useState<ItemListColumnOrder>([
         ItemListColumn.ROW_INDEX,

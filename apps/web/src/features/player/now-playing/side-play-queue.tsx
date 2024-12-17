@@ -8,7 +8,11 @@ import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import type { QueueGroupingProperty } from '@/features/player/stores/player-store.tsx';
-import { subscribePlayerQueue, usePlayerActions } from '@/features/player/stores/player-store.tsx';
+import {
+    subscribePlayerQueue,
+    useCurrentTrack,
+    usePlayerActions,
+} from '@/features/player/stores/player-store.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -24,6 +28,7 @@ import styles from './side-play-queue.module.scss';
 
 interface SidePlayQueueTableItemContext {
     baseUrl: string;
+    currentTrack: PlayQueueItem | undefined;
     libraryId: string;
 }
 
@@ -62,11 +67,16 @@ export function SidePlayQueue() {
     const [data, setData] = useState<Map<number, PlayQueueItem>>(new Map());
     const [groups, setGroups] = useState<{ count: number; name: string }[]>([]);
 
-    const tableContext = useMemo(() => ({ baseUrl, libraryId }), [baseUrl, libraryId]);
+    const currentTrack = useCurrentTrack();
+
+    const tableContext = useMemo(
+        () => ({ baseUrl, currentTrack, libraryId }),
+        [baseUrl, currentTrack, libraryId],
+    );
 
     const [columnOrder, setColumnOrder] = useState<ItemListColumnOrder>([
+        ItemListColumn.ROW_INDEX,
         ItemListColumn.STANDALONE_COMBINED,
-        ItemListColumn.DURATION,
     ]);
 
     const { columns } = useItemTable<PlayQueueItem>(columnOrder, setColumnOrder);

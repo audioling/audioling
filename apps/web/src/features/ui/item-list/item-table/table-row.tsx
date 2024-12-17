@@ -18,6 +18,7 @@ import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
+import type { PlayQueueItem } from '@/api/api-types.ts';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
@@ -80,6 +81,7 @@ export function TableRow<
                 gridTemplateColumns: string;
             };
         };
+        currentTrack?: PlayQueueItem;
         libraryId: string;
     },
 >(props: TableRowProps<T & { _uniqueId?: string }, C>) {
@@ -236,6 +238,7 @@ export function TableRow<
                                 ...cell.getContext(),
                                 context: {
                                     baseUrl: context.baseUrl!,
+                                    currentTrack: context.currentTrack,
                                     libraryId: context.libraryId!,
                                 },
                             })}
