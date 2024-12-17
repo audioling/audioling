@@ -1,7 +1,8 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import { TrackListSortOptions } from '@repo/shared-types';
-import { useIsFetching } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
+import { useParams, useSearchParams } from 'react-router';
+import { getGetApiLibraryIdTracksCountQueryKey } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
 import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
@@ -19,6 +20,8 @@ import { useRefreshList } from '@/hooks/use-list.ts';
 
 export function TrackListHeader() {
     const { libraryId } = useParams() as { libraryId: string };
+    const [searchParams] = useSearchParams();
+    const queryClient = useQueryClient();
 
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
@@ -32,12 +35,22 @@ export function TrackListHeader() {
         setListId,
     });
 
+    const itemCountQueryKey = getGetApiLibraryIdTracksCountQueryKey(libraryId, {
+        searchTerm: searchParams.get('search') ?? undefined,
+        sortBy,
+        sortOrder,
+    });
+
+    const itemCount = queryClient.getQueryData<number | undefined>(itemCountQueryKey);
+    const isFetchingItemCount = useIsFetching({ queryKey: itemCountQueryKey });
+
     const isFetching = useIsFetching({ queryKey: [`/api/${libraryId}/tracks`] });
 
     return (
         <ListHeader>
             <ListHeader.Left>
                 <ListHeader.Title>Tracks</ListHeader.Title>
+                <ListHeader.ItemCount value={isFetchingItemCount ? 0 : (itemCount ?? 0)} />
             </ListHeader.Left>
             <ListHeader.Right>
                 <Group gap="xs">

@@ -1,7 +1,8 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import { AlbumListSortOptions } from '@repo/shared-types';
-import { useIsFetching } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
+import { useParams, useSearchParams } from 'react-router';
+import { getGetApiLibraryIdAlbumsCountQueryKey } from '@/api/openapi-generated/albums/albums.ts';
 import {
     useAlbumListActions,
     useAlbumListState,
@@ -19,6 +20,7 @@ import { useRefreshList } from '@/hooks/use-list.ts';
 
 export function AlbumListHeader() {
     const { libraryId } = useParams() as { libraryId: string };
+    const queryClient = useQueryClient();
 
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
@@ -32,12 +34,25 @@ export function AlbumListHeader() {
         setListId,
     });
 
+    const [searchParams] = useSearchParams();
+    const itemCountQueryKey = getGetApiLibraryIdAlbumsCountQueryKey(libraryId, {
+        searchTerm: searchParams.get('search') ?? undefined,
+        sortBy,
+        sortOrder,
+    });
+    const itemCount = queryClient.getQueryData<number | undefined>(itemCountQueryKey);
+
+    const isFetchingItemCount = useIsFetching({
+        queryKey: itemCountQueryKey,
+    });
+
     const isFetching = useIsFetching({ queryKey: [`/api/${libraryId}/albums`] });
 
     return (
         <ListHeader>
             <ListHeader.Left>
                 <ListHeader.Title>Albums</ListHeader.Title>
+                <ListHeader.ItemCount value={isFetchingItemCount ? 0 : (itemCount ?? 0)} />
             </ListHeader.Left>
             <ListHeader.Right>
                 <Group gap="xs">

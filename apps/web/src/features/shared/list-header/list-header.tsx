@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
+import { motion, useSpring, useTransform } from 'motion/react';
 import styles from './list-header.module.scss';
 
 interface ListHeaderProps {
@@ -41,6 +42,22 @@ function Title(props: ListHeaderTitleProps) {
     return <div className={styles.title}>{children}</div>;
 }
 
+interface ListHeaderItemCountProps {
+    value: number;
+}
+
+function ItemCount(props: ListHeaderItemCountProps) {
+    const { value } = props;
+    const spring = useSpring(value, { damping: 15, mass: 0.8, stiffness: 75 });
+    const display = useTransform(spring, (current) => Math.round(current).toLocaleString());
+
+    useEffect(() => {
+        spring.set(value);
+    }, [spring, value]);
+
+    return <motion.span className={styles.itemCount}>{display}</motion.span>;
+}
+
 interface ListHeaderFooterProps {
     children: ReactNode;
 }
@@ -55,3 +72,4 @@ ListHeader.Left = Left;
 ListHeader.Right = Right;
 ListHeader.Title = Title;
 ListHeader.Footer = Footer;
+ListHeader.ItemCount = ItemCount;
