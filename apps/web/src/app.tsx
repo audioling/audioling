@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
@@ -21,6 +21,19 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 function InnerApp() {
     const theme = 'defaultDark';
+
+    useEffect(() => {
+        const disableBrowserCtxMenu = (event: Event) => {
+            event.preventDefault();
+            return false;
+        };
+
+        document.addEventListener('contextmenu', disableBrowserCtxMenu);
+
+        return () => {
+            document.removeEventListener('contextmenu', disableBrowserCtxMenu);
+        };
+    }, []);
 
     useThemeVariables(theme);
 
