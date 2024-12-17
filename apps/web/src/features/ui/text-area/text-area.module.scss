@@ -1,0 +1,132 @@
+@use '@/styles/base';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-xs;
+    width: 100%;
+    height: 100%;
+
+    input::-ms-reveal,
+    input::-ms-clear {
+        display: none;
+    }
+}
+
+.wrapper {
+    position: relative;
+}
+
+.label {
+    padding-bottom: base.$gap-sm;
+    font-size: base.$font-size-md;
+    font-weight: base.$font-weight-md;
+}
+
+.input {
+    width: 100%;
+    padding: 0.5rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    color: var(--input-font-color);
+    background-color: var(--input-background-color);
+    border: var(--input-border);
+    transition: all 0.15s ease-in-out;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--input-hover-font-color);
+        background-color: var(--input-hover-background-color);
+    }
+
+    &::placeholder {
+        color: var(--input-placeholder-color);
+
+        &:hover {
+            color: var(--input-hover-placeholder-color);
+        }
+    }
+}
+
+.input.right-section {
+    padding-right: 2.5rem;
+}
+
+.section {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: base.$gap-xs;
+}
+
+.size-xs {
+    font-size: base.$font-size-sm;
+
+    input {
+        padding: base.$gap-xs;
+    }
+
+    &::placeholder {
+        font-size: base.$font-size-sm;
+    }
+}
+
+.size-sm {
+    font-size: base.$font-size-sm;
+
+    input {
+        padding: base.$gap-sm;
+    }
+
+    &::placeholder {
+        font-size: base.$font-size-sm;
+    }
+}
+
+.size-md {
+    font-size: base.$font-size-md;
+
+    &::placeholder {
+        font-size: base.$font-size-md;
+    }
+}
+
+.size-lg {
+    font-size: base.$font-size-lg;
+
+    &::placeholder {
+        font-size: base.$font-size-lg;
+    }
+}
+
+.size-xl {
+    font-size: base.$font-size-xl;
+
+    &::placeholder {
+        font-size: base.$font-size-xl;
+    }
+}
+
+.radius-xs {
+    border-radius: base.$border-radius-xs;
+}
+
+.radius-sm {
+    border-radius: base.$border-radius-sm;
+}
+
+.radius-md {
+    border-radius: base.$border-radius-md;
+}
+
+.radius-lg {
+    border-radius: base.$border-radius-lg;
+}
+
+.radius-xl {
+    border-radius: base.$border-radius-xl;
+}
