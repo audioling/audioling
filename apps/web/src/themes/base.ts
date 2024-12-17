@@ -220,7 +220,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'table-cell-border-color': primaryColor,
     'table-group-background-color': 'rgba(0, 0, 0, 0.8)',
     'table-group-font-color': 'rgb(230, 230, 230)',
-    'table-header-background-color': 'rgb(30, 30, 30)',
+    'table-header-background-color': 'rgb(22, 22, 22)',
     'table-header-font-color': 'rgb(230, 230, 230)',
     'table-row-background-color': 'transparent',
     'table-row-border-color': 'rgba(30, 30, 30, 0.5)',
