@@ -27,6 +27,24 @@
     border-radius: var(--modal-border-radius);
 }
 
+.modal-sm {
+    width: 30%;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.modal-md {
+    width: 50%;
+    min-width: 400px;
+    max-width: 500px;
+}
+
+.modal-lg {
+    width: 70%;
+    min-width: 500px;
+    max-width: 800px;
+}
+
 .title {
     font-size: var(--modal-title-font-size);
     font-weight: var(--modal-title-font-weight);

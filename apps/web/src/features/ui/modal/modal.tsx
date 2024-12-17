@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import clsx from 'clsx';
 import { motion } from 'motion/react';
+import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { useClickOutside } from '@/hooks/use-click-outside.ts';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
 import { useMergedRef } from '@/hooks/use-merged-ref.ts';
@@ -10,15 +12,22 @@ interface ModalProps {
     closeOnClickOutside?: boolean;
     isClosing: boolean;
     onClose: () => void;
+    size?: 'sm' | 'md' | 'lg';
     title: string;
 }
 
 export function Modal(props: ModalProps) {
-    const { children, closeOnClickOutside = false, isClosing, onClose, title } = props;
+    const { children, closeOnClickOutside = true, isClosing, onClose, size = 'md', title } = props;
 
     const ref = useClickOutside(closeOnClickOutside ? onClose : () => {});
     const focusTrapRef = useFocusTrap();
     const mergedRef = useMergedRef(ref, focusTrapRef);
+
+    const modalClassNames = clsx(styles.modal, {
+        [styles.modalSm]: size === 'sm',
+        [styles.modalMd]: size === 'md',
+        [styles.modalLg]: size === 'lg',
+    });
 
     return (
         <motion.div
@@ -26,7 +35,7 @@ export function Modal(props: ModalProps) {
             className={styles.overlay}
             exit="hidden"
             initial="hidden"
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            transition={{ duration: 0.3, ease: 'linear' }}
             variants={{
                 hidden: {},
                 show: { backdropFilter: 'blur(2px)' },
@@ -35,14 +44,11 @@ export function Modal(props: ModalProps) {
             <motion.div
                 ref={mergedRef}
                 animate={isClosing ? 'hidden' : 'show'}
-                className={styles.modal}
+                className={modalClassNames}
                 exit="hidden"
                 initial="hidden"
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                variants={{
-                    hidden: { opacity: 0, y: -200 },
-                    show: { opacity: 1, y: 0 },
-                }}
+                transition={{ duration: 0.3, ease: 'anticipate' }}
+                variants={animationVariants.zoomIn}
             >
                 <h1 className={styles.title}>{title}</h1>
                 <div className={styles.content}>{children}</div>
