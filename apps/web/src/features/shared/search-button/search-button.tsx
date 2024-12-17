@@ -50,8 +50,8 @@ export function SearchButton() {
             {isOpen && (
                 <motion.div
                     animate={{ width: 'auto' }}
-                    exit={{ width: '1rem' }}
-                    initial={{ width: '1rem' }}
+                    exit={{ width: '0' }}
+                    initial={{ width: '3rem' }}
                     transition={{ duration: 0.3 }}
                 >
                     <TextInput
@@ -71,14 +71,12 @@ export function SearchButton() {
                 </motion.div>
             )}
             {!isOpen && (
-                <motion.div>
-                    <IconButtonWithTooltip
-                        icon="search"
-                        size="lg"
-                        tooltipProps={{ label: 'Search', openDelay: 500, position: 'bottom' }}
-                        onClick={() => handleClick(true)}
-                    />
-                </motion.div>
+                <IconButtonWithTooltip
+                    icon="search"
+                    size="lg"
+                    tooltipProps={{ label: 'Search', openDelay: 500, position: 'bottom' }}
+                    onClick={() => handleClick(true)}
+                />
             )}
         </>
     );
