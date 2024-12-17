@@ -18,7 +18,7 @@ export function PlayerBarCenter() {
                 <MediaStepForwardButton />
                 <MediaNextButton />
             </div>
-            <PlayerProgress currentTime={0} duration={100} onSeek={() => {}} />
+            <PlayerProgress />
         </div>
     );
 }

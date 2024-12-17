@@ -71,6 +71,7 @@ interface Actions {
     mediaPause: () => void;
     mediaPlay: () => void;
     mediaPrevious: () => void;
+    mediaSeekToTimestamp: (timestamp: number) => void;
     mediaStepBackward: () => void;
     mediaStepForward: () => void;
     mediaTogglePlayPause: () => void;
@@ -78,6 +79,7 @@ interface Actions {
     moveSelectedToBottom: (items: PlayQueueItem[]) => void;
     moveSelectedToNext: (items: PlayQueueItem[]) => void;
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
+    setProgress: (timestamp: number) => void;
     setVolume: (volume: number) => void;
     shuffle: () => void;
     shuffleSelected: (items: PlayQueueItem[]) => void;
@@ -89,6 +91,7 @@ interface State {
         muted: boolean;
         playerNum: 1 | 2;
         repeat: PlayerRepeat;
+        seekToTimestamp: number;
         shuffle: PlayerShuffle;
         speed: number;
         status: PlayerStatus;
@@ -99,6 +102,8 @@ interface State {
 }
 
 export interface PlayerData {
+    currentTrack: PlayQueueItem | undefined;
+    nextTrack: PlayQueueItem | undefined;
     player: {
         index: number;
         muted: boolean;
@@ -109,6 +114,8 @@ export interface PlayerData {
         status: PlayerStatus;
         volume: number;
     };
+    player1: PlayQueueItem | undefined;
+    player2: PlayQueueItem | undefined;
     queue: QueueData;
 }
 
@@ -130,6 +137,8 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                     set((state) => {
                                         state.queue.default = [];
                                         state.player.index = 0;
+                                        state.player.status = PlayerStatus.PLAYING;
+                                        state.player.playerNum = 1;
                                         state.queue.default = newItems;
 
                                         if (state.player.shuffle === PlayerShuffle.TRACK) {
@@ -191,6 +200,8 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                 case PlayType.NOW: {
                                     set((state) => {
                                         state.queue.default = [];
+                                        state.player.status = PlayerStatus.PLAYING;
+                                        state.player.playerNum = 1;
 
                                         // Add the first item to the top of the priority queue and the rest to the bottom of the default queue
                                         state.queue.priority = [
@@ -459,6 +470,8 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     });
 
                     return {
+                        currentTrack: queue.items[newIndex],
+                        nextTrack: queue.items[newIndex + 1],
                         player: {
                             index: newIndex,
                             muted: player.muted,
@@ -469,6 +482,10 @@ export const usePlayerStoreBase = create<PlayerState>()(
                             status: newStatus,
                             volume: player.volume,
                         },
+                        player1:
+                            newPlayerNum === 1 ? queue.items[newIndex] : queue.items[newIndex + 1],
+                        player2:
+                            newPlayerNum === 2 ? queue.items[newIndex] : queue.items[newIndex + 1],
                         queue: get().queue,
                     };
                 },
@@ -497,6 +514,11 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     set((state) => {
                         // Only decrement if we're not at the start
                         state.player.index = Math.max(0, currentIndex - 1);
+                    });
+                },
+                mediaSeekToTimestamp: (timestamp: number) => {
+                    set((state) => {
+                        state.player.seekToTimestamp = timestamp;
                     });
                 },
                 mediaStepBackward: () => {
@@ -671,6 +693,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     muted: false,
                     playerNum: 1,
                     repeat: PlayerRepeat.OFF,
+                    seekToTimestamp: 0,
                     shuffle: PlayerShuffle.OFF,
                     speed: 1,
                     status: PlayerStatus.PAUSED,
@@ -681,6 +704,11 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     default: [],
                     priority: [],
                     shuffled: [],
+                },
+                setProgress: (timestamp: number) => {
+                    set((state) => {
+                        state.player.timestamp = timestamp;
+                    });
                 },
                 setVolume: (volume: number) => {
                     set((state) => {
@@ -724,10 +752,12 @@ export const usePlayerActions = () => {
             decreaseVolume: state.decreaseVolume,
             getQueue: state.getQueue,
             increaseVolume: state.increaseVolume,
+            mediaAutoNext: state.mediaAutoNext,
             mediaNext: state.mediaNext,
             mediaPause: state.mediaPause,
             mediaPlay: state.mediaPlay,
             mediaPrevious: state.mediaPrevious,
+            mediaSeekToTimestamp: state.mediaSeekToTimestamp,
             mediaStepBackward: state.mediaStepBackward,
             mediaStepForward: state.mediaStepForward,
             mediaTogglePlayPause: state.mediaTogglePlayPause,
@@ -735,6 +765,7 @@ export const usePlayerActions = () => {
             moveSelectedToBottom: state.moveSelectedToBottom,
             moveSelectedToNext: state.moveSelectedToNext,
             moveSelectedToTop: state.moveSelectedToTop,
+            setProgress: state.setProgress,
             setVolume: state.setVolume,
             shuffle: state.shuffle,
             shuffleSelected: state.shuffleSelected,
@@ -830,7 +861,7 @@ export const subscribePlayerQueue = (
 };
 
 export const subscribeCurrentTrack = (
-    onChange: (track: TrackItem | undefined, prevTrack: TrackItem | undefined) => void,
+    onChange: (track: PlayQueueItem | undefined, prevTrack: PlayQueueItem | undefined) => void,
 ) => {
     return usePlayerStoreBase.subscribe(
         (state) => {
@@ -844,12 +875,98 @@ export const subscribeCurrentTrack = (
     );
 };
 
+export const subscribePlayerProgress = (
+    onChange: (timestamp: number, prevTimestamp: number) => void,
+) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => state.player.timestamp,
+        (timestamp, prevTimestamp) => {
+            onChange(timestamp, prevTimestamp);
+        },
+    );
+};
+
+export const subscribePlayerVolume = (onChange: (volume: number, prevVolume: number) => void) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => state.player.volume,
+        (volume, prevVolume) => {
+            onChange(volume, prevVolume);
+        },
+    );
+};
+
+export const subscribePlayerStatus = (
+    onChange: (status: PlayerStatus, prevStatus: PlayerStatus) => void,
+) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => state.player.status,
+        (status, prevStatus) => {
+            onChange(status, prevStatus);
+        },
+    );
+};
+
+export const subscribePlayerSeekToTimestamp = (
+    onChange: (timestamp: number, prevTimestamp: number) => void,
+) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => state.player.seekToTimestamp,
+        (timestamp, prevTimestamp) => {
+            onChange(timestamp, prevTimestamp);
+        },
+    );
+};
+
+export const usePlayerProperties = () => {
+    return usePlayerStoreBase(
+        useShallow((state) => ({
+            isMuted: state.player.muted,
+            player: state.player.playerNum,
+            status: state.player.status,
+            volume: state.player.volume,
+        })),
+    );
+};
+
 export const useCurrentTrack = () => {
     return usePlayerStoreBase((state) => {
         const queue = state.getQueue();
         const index = state.player.index;
         return queue.items[index];
     });
+};
+
+export const usePlayerProgress = () => {
+    return usePlayerStoreBase((state) => state.player.timestamp);
+};
+
+export const usePlayerDuration = () => {
+    return usePlayerStoreBase((state) => {
+        const queue = state.getQueue();
+        const index = state.player.index;
+        const currentTrack = queue.items[index];
+        return currentTrack?.duration;
+    });
+};
+
+export const usePlayerData = (): PlayerData => {
+    return usePlayerStoreBase(
+        useShallow((state) => {
+            const queue = state.getQueue();
+            const index = state.player.index;
+            const currentTrack = queue.items[index];
+            const nextTrack = queue.items[index + 1];
+
+            return {
+                currentTrack,
+                nextTrack,
+                player: state.player,
+                player1: state.player.playerNum === 1 ? currentTrack : nextTrack,
+                player2: state.player.playerNum === 2 ? currentTrack : nextTrack,
+                queue: state.queue,
+            };
+        }),
+    );
 };
 
 function toPlayQueueItem(item: TrackItem): PlayQueueItem {

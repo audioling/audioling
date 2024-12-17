@@ -33,8 +33,11 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         clearSelected,
         shuffle,
         shuffleSelected,
+        setVolume,
+        increaseVolume,
+        decreaseVolume,
+        mediaSeekToTimestamp,
     } = usePlayerActions();
-    usePlayerActions();
 
     const isExecuted = useRef<boolean>(false);
 
@@ -98,6 +101,12 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
                 break;
             }
 
+            case 'mediaSeekToTimestamp': {
+                const command = cmd as MediaSeekToTimestamp;
+                mediaSeekToTimestamp(command.mediaSeekToTimestamp.timestamp);
+                break;
+            }
+
             case 'mediaStepBackward': {
                 mediaStepBackward();
                 break;
@@ -110,6 +119,24 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
 
             case 'mediaTogglePlayPause': {
                 mediaTogglePlayPause();
+                break;
+            }
+
+            case 'setVolume': {
+                const command = cmd as SetVolume;
+                setVolume(command.setVolume.volume);
+                break;
+            }
+
+            case 'increaseVolume': {
+                const command = cmd as IncreaseVolume;
+                increaseVolume(command.increaseVolume.amount);
+                break;
+            }
+
+            case 'decreaseVolume': {
+                const command = cmd as DecreaseVolume;
+                decreaseVolume(command.decreaseVolume.amount);
                 break;
             }
 
@@ -173,6 +200,10 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         shuffle,
         shuffleSelected,
         moveSelectedTo,
+        setVolume,
+        increaseVolume,
+        decreaseVolume,
+        mediaSeekToTimestamp,
     ]);
 
     return null;
@@ -189,13 +220,35 @@ export type PlayerCommand =
     | MediaPrevious
     | MediaStepBackward
     | MediaStepForward
+    | MediaSeekToTimestamp
     | MediaTogglePlayPause
     | MoveSelectedTo
     | MoveSelectedToTop
     | MoveSelectedToBottom
     | MoveSelectedToNext
     | Shuffle
-    | ShuffleSelected;
+    | ShuffleSelected
+    | SetVolume
+    | IncreaseVolume
+    | DecreaseVolume;
+
+type SetVolume = {
+    setVolume: {
+        volume: number;
+    };
+};
+
+type IncreaseVolume = {
+    increaseVolume: {
+        amount: number;
+    };
+};
+
+type DecreaseVolume = {
+    decreaseVolume: {
+        amount: number;
+    };
+};
 
 type AddToQueueByFetch = {
     addToQueueByFetch: {
@@ -238,6 +291,12 @@ type MediaStepForward = {
 
 type MediaTogglePlayPause = {
     mediaTogglePlayPause: null;
+};
+
+type MediaSeekToTimestamp = {
+    mediaSeekToTimestamp: {
+        timestamp: number;
+    };
 };
 
 type ClearQueue = {
