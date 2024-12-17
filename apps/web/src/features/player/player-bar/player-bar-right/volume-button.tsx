@@ -11,9 +11,9 @@ export function VolumeButton() {
 
     const handleScroll = (e: WheelEvent) => {
         if (e.deltaY > 0) {
-            decreaseVolume(1);
+            decreaseVolume(5);
         } else {
-            increaseVolume(1);
+            increaseVolume(5);
         }
     };
 
