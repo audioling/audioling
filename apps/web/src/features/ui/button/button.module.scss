@@ -1,6 +1,7 @@
 @use '@/styles/base';
 
 .root {
+    cursor: pointer;
     transition: all 0.15s ease-in-out;
 
     &:active {
@@ -88,6 +89,10 @@
 
 .transparent-variant {
     @include base.button-transparent-variant;
+}
+
+.outline-variant {
+    @include base.button-outline-variant;
 }
 
 .label {

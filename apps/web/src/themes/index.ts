@@ -86,6 +86,12 @@ export type AppThemeConfiguration = {
         'button-filled-hover-background-color': CSSProperties['backgroundColor'];
         'button-filled-hover-border': CSSProperties['border'];
         'button-filled-hover-font-color': CSSProperties['color'];
+        'button-outline-background-color': CSSProperties['backgroundColor'];
+        'button-outline-border': CSSProperties['border'];
+        'button-outline-font-color': CSSProperties['color'];
+        'button-outline-hover-background-color': CSSProperties['backgroundColor'];
+        'button-outline-hover-border': CSSProperties['border'];
+        'button-outline-hover-font-color': CSSProperties['color'];
         'button-primary-background-color': CSSProperties['backgroundColor'];
         'button-primary-border': CSSProperties['border'];
         'button-primary-font-color': CSSProperties['color'];

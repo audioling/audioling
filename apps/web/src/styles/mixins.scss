@@ -104,6 +104,19 @@
     }
 }
 
+@mixin button-outline-variant() {
+    color: var(--button-outline-font-color);
+    background-color: var(--button-outline-background-color);
+    border: var(--button-outline-border);
+
+    &:hover,
+    &:focus-visible {
+        color: var(--button-outline-hover-font-color);
+        background-color: var(--button-outline-hover-background-color);
+        border: var(--button-outline-hover-border);
+    }
+}
+
 @mixin text-ellipsis() {
     overflow: hidden;
     text-overflow: ellipsis;

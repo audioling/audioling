@@ -18,7 +18,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     rightIconProps?: Partial<React.ComponentProps<typeof Icon>>;
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     uppercase?: boolean;
-    variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle' | 'transparent';
+    variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle' | 'transparent' | 'outline';
 }
 
 export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement>) => {
@@ -46,6 +46,7 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
         [styles.primaryVariant]: variant === 'primary',
         [styles.subtleVariant]: variant === 'subtle',
         [styles.transparentVariant]: variant === 'transparent',
+        [styles.outlineVariant]: variant === 'outline',
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${radius || 'md'}`]]: true,
         [styles.uppercase]: uppercase,
