@@ -1,5 +1,5 @@
 import { Code } from '@mantine/core';
-import { useRouteError } from 'react-router-dom';
+import { useRouteError } from 'react-router';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Group } from '@/features/ui/group/group.tsx';

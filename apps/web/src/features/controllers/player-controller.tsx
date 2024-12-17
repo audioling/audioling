@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { LibraryItemType } from '@repo/shared-types';
 import { createCallable } from 'react-call';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import {
     addToQueueByData,

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { Row, Table } from '@tanstack/react-table';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';

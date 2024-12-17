@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { motion } from 'motion/react';
-import { generatePath, NavLink, useLocation, useParams } from 'react-router-dom';
+import { generatePath, NavLink, useLocation, useParams } from 'react-router';
 import { Icon } from '@/features/ui/icon/icon.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 import styles from './nav-bar-bottom.module.scss';

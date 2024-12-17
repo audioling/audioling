@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import type { Ping } from '@/api/api-types.ts';
 import { CONSTANTS } from '@/constants.ts';
 import { AuthenticateServer } from '@/features/authentication/sign-in/authenticate-server.tsx';

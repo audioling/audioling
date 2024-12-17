@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router';
 import { GlobalErrorBoundary } from '@/layouts/global-error-boundary.tsx';
 import { authRoutes } from '@/routes/auth-routes.tsx';
 import { dashboardRoutes } from '@/routes/dashboard/dashboard-routes.tsx';

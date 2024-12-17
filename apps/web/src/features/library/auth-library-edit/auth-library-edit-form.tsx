@@ -1,7 +1,7 @@
 import { type FormEvent, useRef } from 'react';
 import type { LibraryType } from '@repo/shared-types';
 import { useForm } from 'react-hook-form';
-import { generatePath, useNavigate, useParams } from 'react-router-dom';
+import { generatePath, useNavigate, useParams } from 'react-router';
 import type { Library } from '@/api/api-types.ts';
 import { usePostApiLibrariesIdAuth } from '@/api/openapi-generated/libraries/libraries.ts';
 import {

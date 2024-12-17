@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router';
 import { useGetApiLibraryIdAlbumsCountSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { InfiniteAlbumGrid } from '@/features/albums/list/infinite-album-grid.tsx';
 import { InfiniteAlbumTable } from '@/features/albums/list/infinite-album-table.tsx';

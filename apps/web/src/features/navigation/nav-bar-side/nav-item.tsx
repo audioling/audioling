@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { Group } from '@/features/ui/group/group.tsx';
 import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
 import { Text } from '@/features/ui/text/text.tsx';

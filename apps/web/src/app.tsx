@@ -2,7 +2,7 @@ import React from 'react';
 import { MantineProvider } from '@mantine/core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router';
 import { queryClient } from '@/lib/react-query.ts';
 import { appRouter } from '@/routes/app-router.tsx';
 import 'overlayscrollbars/overlayscrollbars.css';
@@ -26,7 +26,7 @@ function InnerApp() {
 
     return (
         <MantineProvider classNamesPrefix="al" defaultColorScheme="dark" theme={baseMantineTheme}>
-            <RouterProvider future={{ v7_startTransition: true }} router={appRouter} />
+            <RouterProvider router={appRouter} />
         </MantineProvider>
     );
 }

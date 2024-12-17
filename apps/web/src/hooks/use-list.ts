@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import type { ListSortOrder } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import type {
     ItemListDisplayType,
     ItemListPaginationState,

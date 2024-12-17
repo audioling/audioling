@@ -1,6 +1,6 @@
 import { Box as MantineBox } from '@mantine/core';
 import { clsx } from 'clsx';
-import type { NavLinkProps } from 'react-router-dom';
+import type { NavLinkProps } from 'react-router';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './text.module.scss';
 

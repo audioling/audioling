@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import type { Ping } from '@/api/api-types.ts';
 import { RegistrationForm } from '@/features/authentication/registration/registration-form.tsx';
 import { Center } from '@/features/ui/center/center.tsx';

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router';
 import { useSelectedLibraryId } from '@/features/authentication/stores/auth-store.ts';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 

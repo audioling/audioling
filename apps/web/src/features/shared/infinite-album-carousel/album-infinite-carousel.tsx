@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo } from 'react';
 import type { AlbumListSortOptions } from '@repo/shared-types';
 import { LibraryItemType, type ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { generatePath, useParams } from 'react-router-dom';
+import { generatePath, useParams } from 'react-router';
 import { apiInstance } from '@/api/api-instance.ts';
 import type {
     GetApiLibraryIdAlbums200,

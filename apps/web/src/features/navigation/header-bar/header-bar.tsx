@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { FileMenu } from '@/features/navigation/header-bar/file-menu.tsx';
 import { RightPanelButton } from '@/features/navigation/header-bar/right-panel-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';

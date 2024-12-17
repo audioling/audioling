@@ -1,4 +1,4 @@
-import { Navigate, Outlet, type RouteObject } from 'react-router-dom';
+import { Navigate, Outlet, type RouteObject } from 'react-router';
 import { RegistrationRoute } from '@/features/authentication/registration/registration-route.tsx';
 import { SignInRoute } from '@/features/authentication/sign-in/sign-in-route.tsx';
 import { useAuthUser } from '@/features/authentication/stores/auth-store.ts';

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';

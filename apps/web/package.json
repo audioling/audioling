@@ -52,7 +52,7 @@
         "react-icons": "^5.4.0",
         "react-lazy-load-image-component": "^1.6.3",
         "react-player": "3.0.0-canary.4",
-        "react-router-dom": "^7.0.2",
+        "react-router": "^7.0.2",
         "react-virtuoso": "^4.12.3",
         "zod": "^3.24.1",
         "zustand": "^5.0.2"

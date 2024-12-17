@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { createCallable } from 'react-call';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { prefetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
 import type { GetApiLibraryIdAlbumsIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 

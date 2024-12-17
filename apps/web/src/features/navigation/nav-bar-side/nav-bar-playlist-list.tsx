@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { ListSortOrder, PlaylistListSortOptions } from '@repo/shared-types';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import {
     useGetApiLibraryIdPlaylistsFoldersSuspense,
     useGetApiLibraryIdPlaylistsSuspense,

@@ -2,7 +2,7 @@ import type { FormEvent } from 'react';
 import { LibraryListSortOptions, LibraryType, ListSortOrder } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { generatePath, useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router';
 import {
     getGetApiLibrariesQueryKey,
     usePostApiLibraries,

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { LibraryAddForm } from '@/features/library/library-add/library-add-form.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Group } from '@/features/ui/group/group.tsx';

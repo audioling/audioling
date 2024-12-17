@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import clsx from 'clsx';
-import { generatePath, NavLink } from 'react-router-dom';
+import { generatePath, NavLink } from 'react-router';
 import { Text } from '@/features/ui/text/text.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 import type { DragData } from '@/utils/drag-drop.ts';

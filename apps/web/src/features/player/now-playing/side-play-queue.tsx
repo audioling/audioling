@@ -2,7 +2,7 @@ import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { Row, Table } from '@tanstack/react-table';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';

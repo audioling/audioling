@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { ListSortOrder, PlaylistListSortOptions } from '@repo/shared-types';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useGetApiLibraryIdPlaylistsSuspense } from '@/api/openapi-generated/playlists/playlists.ts';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 

@@ -6,7 +6,7 @@ import {
     ListSortOrder,
     TrackListSortOptions,
 } from '@repo/shared-types';
-import { generatePath } from 'react-router-dom';
+import { generatePath } from 'react-router';
 import { useGetApiLibraryIdAlbumArtistsCountSuspense } from '@/api/openapi-generated/album-artists/album-artists.ts';
 import { useGetApiLibraryIdAlbumsCountSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { useGetApiLibraryIdGenresCountSuspense } from '@/api/openapi-generated/genres/genres.ts';

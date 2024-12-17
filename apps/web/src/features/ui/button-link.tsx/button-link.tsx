@@ -1,5 +1,5 @@
-import type { LinkProps } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import type { LinkProps } from 'react-router';
+import { Link } from 'react-router';
 import type { ButtonProps } from '@/features/ui/button/button.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
 

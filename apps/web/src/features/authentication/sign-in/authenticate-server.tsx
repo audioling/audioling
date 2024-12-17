@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { motion } from 'motion/react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import type { Ping } from '@/api/api-types.ts';
 import { usePostAuthSignIn } from '@/api/openapi-generated/authentication/authentication.ts';
 import type { AuthenticationFormValues } from '@/features/authentication/sign-in/authentication-form.tsx';

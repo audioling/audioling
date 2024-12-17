@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { LibraryListSortOptions, ListSortOrder } from '@repo/shared-types';
-import { generatePath, useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router';
 import { useGetApiLibrariesSuspense } from '@/api/openapi-generated/libraries/libraries.ts';
 import { useAuthLibraries } from '@/features/authentication/stores/auth-store.ts';
 import type { LibraryItemLibrary } from '@/features/library/library-selection/library-item.tsx';

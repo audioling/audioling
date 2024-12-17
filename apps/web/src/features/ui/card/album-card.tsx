@@ -9,7 +9,7 @@ import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import type { PlayType } from '@/features/player/stores/player-store.tsx';
 import { CardControls } from '@/features/ui/card/card-controls.tsx';

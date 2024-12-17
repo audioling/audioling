@@ -1,4 +1,4 @@
-import { type RouteObject } from 'react-router-dom';
+import { type RouteObject } from 'react-router';
 import { AlbumListRoute } from '@/features/albums/list/album-list-route.tsx';
 import { HomeRoute } from '@/features/dashboard/home/home-route.tsx';
 import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-library-edit-route.tsx';

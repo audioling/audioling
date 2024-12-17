@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import type { PanInfo } from 'motion/react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';

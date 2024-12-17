@@ -1,7 +1,7 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import { AlbumListSortOptions } from '@repo/shared-types';
 import { useIsFetching } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import {
     useAlbumListActions,
     useAlbumListState,

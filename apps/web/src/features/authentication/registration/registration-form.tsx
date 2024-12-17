@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { usePostAuthRegister } from '@/api/openapi-generated/authentication/authentication.ts';
 import { Alert } from '@/features/ui/alert/alert.tsx';
 import { Button } from '@/features/ui/button/button.tsx';

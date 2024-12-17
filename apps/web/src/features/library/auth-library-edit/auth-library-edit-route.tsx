@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useGetApiLibrariesIdSuspense } from '@/api/openapi-generated/libraries/libraries.ts';
 import { AuthLibraryEditForm } from '@/features/library/auth-library-edit/auth-library-edit-form.tsx';
 import { Center } from '@/features/ui/center/center.tsx';

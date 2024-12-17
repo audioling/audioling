@@ -1,7 +1,7 @@
 import type { LibraryFeatures } from '@repo/shared-types';
 import { TrackListSortOptions } from '@repo/shared-types';
 import { useIsFetching } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
 import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';

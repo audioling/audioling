@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { useDebouncedState } from '@/hooks/use-debounced-state.ts';

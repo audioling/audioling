@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import type { LinkProps } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import type { LinkProps } from 'react-router';
+import { Link } from 'react-router';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { Icon } from '@/features/ui/icon/icon.tsx';
 import { Paper } from '@/features/ui/paper/paper.tsx';

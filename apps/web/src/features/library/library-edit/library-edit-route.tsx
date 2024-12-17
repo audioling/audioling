@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { useGetApiLibrariesIdSuspense } from '@/api/openapi-generated/libraries/libraries.ts';
 import { LibraryEditForm } from '@/features/library/library-edit/library-edit-form.tsx';
 import { Center } from '@/features/ui/center/center.tsx';

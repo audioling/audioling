@@ -1,4 +1,4 @@
-import { generatePath, useParams } from 'react-router-dom';
+import { generatePath, useParams } from 'react-router';
 import { NavItem } from '@/features/navigation/nav-bar-side/nav-item.tsx';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
