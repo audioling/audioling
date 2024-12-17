@@ -18,7 +18,9 @@
 }
 
 .label {
-    font-size: base.$font-size-sm;
+    padding-bottom: base.$gap-sm;
+    font-size: base.$font-size-md;
+    font-weight: base.$font-weight-md;
 }
 
 .input {
@@ -46,6 +48,10 @@
     }
 }
 
+.input.left-section {
+    padding-left: 2.5rem;
+}
+
 .input.right-section {
     padding-right: 2.5rem;
 }
@@ -53,12 +59,23 @@
 .section {
     position: absolute;
     top: 0;
-    right: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
     padding: base.$gap-xs;
+}
+
+.section[data-position='left'] {
+    left: 0;
+}
+
+.section[data-position='right'] {
+    right: 0;
+}
+
+.required {
+    color: var(--global-danger-color);
 }
 
 .size-xs {

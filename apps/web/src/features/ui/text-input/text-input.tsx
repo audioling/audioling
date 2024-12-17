@@ -40,6 +40,7 @@ export const TextInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputEl
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${radius || 'md'}`]]: true,
         [styles.rightSection]: !!rightSection,
+        [styles.leftSection]: !!leftSection,
     });
 
     const textInputClassNames: MantineTextInputProps['classNames'] = {
