@@ -11,6 +11,7 @@ export function rowIndexColumn<T>(columnHelper: ColumnHelper<T>) {
 
             return (
                 <Text
+                    isCentered
                     isSecondary
                     className={clsx(styles.cell, {
                         [styles.playing]: isPlaying,

@@ -1,5 +1,6 @@
-import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
+import { Button } from '@/features/ui/button/button.tsx';
 import { Menu } from '@/features/ui/menu/menu.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
 
 interface ListSortByButtonProps<T> {
     onSortChanged: (sortBy: T) => void;
@@ -11,11 +12,9 @@ export function ListSortByButton<T>({ sort, onSortChanged, options }: ListSortBy
     return (
         <Menu align="start" side="bottom">
             <Menu.Target>
-                <IconButtonWithTooltip
-                    icon="sort"
-                    size="lg"
-                    tooltipProps={{ label: 'Sort by', position: 'bottom' }}
-                />
+                <Button leftIcon="sort" size="lg" variant="outline">
+                    <Text>{options.find((option) => option.value === sort)?.label}</Text>
+                </Button>
             </Menu.Target>
             <Menu.Content>
                 {options.map((option) => (

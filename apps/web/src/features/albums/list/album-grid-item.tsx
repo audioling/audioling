@@ -6,6 +6,7 @@ import type { AlbumItem, TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsIdTracksSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import type { PlayType } from '@/features/player/stores/player-store.tsx';
+import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
@@ -103,11 +104,15 @@ function ExpandedAlbumGridItemContent({
 
     return (
         <motion.div
+            animate="show"
             className={styles.expanded}
+            exit="hidden"
+            initial="hidden"
             style={{
                 backgroundColor: color?.rgb,
                 color: color.isDark ? 'white' : 'black',
             }}
+            variants={animationVariants.slideInDown}
         >
             <div className={styles.content}>
                 <div className={styles.header}>

@@ -15,6 +15,7 @@ export function SortOrderButton({ order, onOrderChanged }: SortOrderButtonProps)
                 label: order === ListSortOrder.ASC ? 'Ascending' : 'Descending',
                 position: 'bottom',
             }}
+            variant="outline"
             onClick={() =>
                 onOrderChanged(order === ListSortOrder.ASC ? ListSortOrder.DESC : ListSortOrder.ASC)
             }

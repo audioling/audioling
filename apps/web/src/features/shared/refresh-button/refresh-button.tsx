@@ -14,6 +14,7 @@ export function RefreshButton({ isDisabled, isLoading, onRefresh }: RefreshButto
             isLoading={isLoading}
             size="lg"
             tooltipProps={{ label: 'Refresh', position: 'bottom' }}
+            variant="outline"
             onClick={onRefresh}
         />
     );
