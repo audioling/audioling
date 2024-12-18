@@ -3,6 +3,7 @@
 .container {
     position: relative;
     display: flex;
+    gap: var(--base-gap-sm);
     align-items: center;
     width: 50vw;
     max-width: 400px;

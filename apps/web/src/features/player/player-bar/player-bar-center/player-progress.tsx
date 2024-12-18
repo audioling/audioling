@@ -6,6 +6,8 @@ import {
     usePlayerProgress,
 } from '@/features/player/stores/player-store.tsx';
 import { Slider } from '@/features/ui/slider/slider.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
+import { formatDuration } from '@/utils/format-duration.ts';
 import styles from './player-progress.module.scss';
 
 export function PlayerProgress() {
@@ -43,6 +45,7 @@ export function PlayerProgress() {
 
     return (
         <div className={styles.container}>
+            <Text size="sm">{formatDuration(value)}</Text>
             <Slider
                 defaultValue={[0]}
                 max={duration}
@@ -53,6 +56,7 @@ export function PlayerProgress() {
                 onChange={onChange}
                 onChangeEnd={onChangeEnd}
             />
+            <Text size="sm">{formatDuration(duration)}</Text>
         </div>
     );
 }
