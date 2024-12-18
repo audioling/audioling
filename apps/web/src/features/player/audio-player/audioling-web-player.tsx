@@ -26,7 +26,6 @@ export function AudiolingWebPlayer() {
     const { mediaAutoNext, setProgress } = usePlayerActions();
     const transitionType = usePlayerStore.use.player().transitionType;
 
-    console.log('transitionType', transitionType);
     const volume = usePlayerStore.use.player().volume;
 
     const [localPlayerStatus, setLocalPlayerStatus] = useState<PlayerStatus>(player.status);
@@ -290,7 +289,6 @@ function crossfadeHandler(args: {
 
     if (!isTransitioning) {
         if (currentTime > duration - crossfadeDuration) {
-            console.log('started transition', player);
             nextPlayer.setVolume(0);
             nextPlayer.ref?.getInternalPlayer().play();
             return setIsTransitioning(player);
