@@ -28,6 +28,12 @@ const trackRoutes: RouteObject[] = [
         path: 'tracks',
     },
 ];
+const playlistRoutes: RouteObject[] = [
+    {
+        element: <PlaylistListRoute />,
+        path: 'playlists',
+    },
+];
 
 export const dashboardRoutes: RouteObject[] = [
     {
@@ -38,6 +44,7 @@ export const dashboardRoutes: RouteObject[] = [
                         children: [
                             ...albumRoutes,
                             ...trackRoutes,
+                            ...playlistRoutes,
                             {
                                 element: <HomeRoute />,
                                 index: true,

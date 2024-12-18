@@ -133,6 +133,17 @@ export function SidePlayQueue() {
                         },
                     });
                     break;
+                case DragTarget.PLAYLIST:
+                    PlayerController.call({
+                        cmd: {
+                            addToQueueByFetch: {
+                                id: data.id,
+                                itemType: LibraryItemType.PLAYLIST,
+                                type: { edge, uniqueId },
+                            },
+                        },
+                    });
+                    break;
             }
         }
     };
