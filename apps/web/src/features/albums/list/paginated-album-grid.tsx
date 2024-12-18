@@ -52,7 +52,7 @@ function PaginatedAlbumGridContent(props: PaginatedAlbumGridProps) {
     });
 
     return (
-        <ListWrapper id="album-list-content" listKey={props.listKey}>
+        <ListWrapper id="album-list-content">
             <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
                 GridComponent={MemoizedAlbumGridItem}
                 context={{ baseUrl, libraryId }}

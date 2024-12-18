@@ -13,6 +13,7 @@ import {
     useAlbumListState,
 } from '@/features/albums/stores/album-list-store.ts';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
+import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
@@ -82,8 +83,6 @@ export function InfiniteAlbumTable({
                         queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, paramsWithPagination),
                         staleTime: 30 * 1000,
                     });
-
-                    console.log(currentOffset, currentOffset + data.length);
 
                     setData((prevData) => {
                         const newData = [...prevData];
@@ -164,21 +163,23 @@ export function InfiniteAlbumTable({
     const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
 
     return (
-        <ItemTable<AlbumItem, AlbumTableItemContext>
-            columnOrder={columnOrder}
-            columns={columns}
-            context={{ baseUrl, libraryId }}
-            data={data}
-            enableHeader={true}
-            enableMultiRowSelection={true}
-            itemCount={itemCount}
-            itemType={LibraryItemType.ALBUM}
-            rowsKey={listKey}
-            onChangeColumnOrder={setColumnOrder}
-            onRangeChanged={throttledOnRangeChanged}
-            onRowClick={onRowClick}
-            onRowDrag={onRowDrag}
-            onRowDragData={onRowDragData}
-        />
+        <ListWrapper id="album-list-content">
+            <ItemTable<AlbumItem, AlbumTableItemContext>
+                columnOrder={columnOrder}
+                columns={columns}
+                context={{ baseUrl, libraryId }}
+                data={data}
+                enableHeader={true}
+                enableMultiRowSelection={true}
+                itemCount={itemCount}
+                itemType={LibraryItemType.ALBUM}
+                rowsKey={listKey}
+                onChangeColumnOrder={setColumnOrder}
+                onRangeChanged={throttledOnRangeChanged}
+                onRowClick={onRowClick}
+                onRowDrag={onRowDrag}
+                onRowDragData={onRowDragData}
+            />
+        </ListWrapper>
     );
 }

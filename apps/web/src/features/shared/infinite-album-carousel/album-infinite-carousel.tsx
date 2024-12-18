@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react';
 import type { AlbumListSortOptions } from '@repo/shared-types';
-import { LibraryItemType, type ListSortOrder } from '@repo/shared-types';
+import { type ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { generatePath, useParams } from 'react-router';
 import { apiInstance } from '@/api/api-instance.ts';
@@ -8,9 +8,8 @@ import type {
     GetApiLibraryIdAlbums200,
     GetApiLibraryIdAlbumsParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { AlbumCard } from '@/features/albums/components/album-card.tsx';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
-import { PlayerController } from '@/features/controllers/player-controller.tsx';
-import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { GridCarousel } from '@/features/ui/grid-carousel/grid-carousel.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 
@@ -36,20 +35,6 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     content: (
                         <MemoizedAlbumCard
                             componentState="loaded"
-                            controls={{
-                                onMore: () => {},
-                                onPlay: (id, playType) => {
-                                    PlayerController.call({
-                                        cmd: {
-                                            addToQueueByFetch: {
-                                                id: [id],
-                                                itemType: LibraryItemType.ALBUM,
-                                                type: playType,
-                                            },
-                                        },
-                                    });
-                                },
-                            }}
                             id={album.id}
                             image={`${baseUrl}${album.imageUrl}&size=400`}
                             libraryId={libraryId}

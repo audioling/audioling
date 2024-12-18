@@ -1,13 +1,11 @@
 import { memo } from 'react';
-import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import type { AlbumItem, TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsIdTracksSuspense } from '@/api/openapi-generated/albums/albums.ts';
-import { PlayerController } from '@/features/controllers/player-controller.tsx';
-import type { PlayType } from '@/features/player/stores/player-store.tsx';
+import { AlbumCard } from '@/features/albums/components/album-card.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { AlbumCard } from '@/features/ui/card/album-card.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
@@ -35,22 +33,10 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
         );
     }
 
-    const handlePlay = (id: string, playType: PlayType) => {
-        PlayerController.call({
-            cmd: {
-                addToQueueByFetch: { id: [id], itemType: LibraryItemType.ALBUM, type: playType },
-            },
-        });
-    };
-
     if (data) {
         return (
             <AlbumCard
                 componentState="loaded"
-                controls={{
-                    onMore: () => {},
-                    onPlay: handlePlay,
-                }}
                 id={data.id}
                 image={`${context.baseUrl}${data.imageUrl}&size=400`}
                 libraryId={context.libraryId}
@@ -64,10 +50,6 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
     return (
         <AlbumCard
             componentState="loading"
-            controls={{
-                onMore: () => {},
-                onPlay: () => {},
-            }}
             id={index.toString()}
             image=""
             libraryId={context.libraryId}

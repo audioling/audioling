@@ -8,6 +8,7 @@ import {
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import type { AlbumGridItemContext } from '@/features/albums/list/album-grid-item.tsx';
 import { MemoizedAlbumGridItem } from '@/features/albums/list/album-grid-item.tsx';
+import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
@@ -81,12 +82,14 @@ export function InfiniteAlbumGrid({
     );
 
     return (
-        <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
-            GridComponent={MemoizedAlbumGridItem}
-            context={{ baseUrl, libraryId }}
-            data={data}
-            itemCount={itemCount}
-            onRangeChanged={handleRangeChanged}
-        />
+        <ListWrapper id="album-list-content">
+            <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
+                GridComponent={MemoizedAlbumGridItem}
+                context={{ baseUrl, libraryId }}
+                data={data}
+                itemCount={itemCount}
+                onRangeChanged={handleRangeChanged}
+            />
+        </ListWrapper>
     );
 }

@@ -4,25 +4,26 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
-import { Skeleton } from '@mantine/core';
-import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router';
-import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import type { PlayType } from '@/features/player/stores/player-store.tsx';
 import { CardControls } from '@/features/ui/card/card-controls.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { Image } from '@/features/ui/image/image.tsx';
+import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
-import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
-import styles from './album-card.module.scss';
+import type { DragData } from '@/utils/drag-drop.ts';
+import styles from './card.module.scss';
 
-interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
     componentState: 'loading' | 'loaded' | 'scrolling';
     controls: {
-        onMore: (id: string) => void;
+        onDragInitialData?: (id: string) => DragData;
+        onDragStart?: (id: string) => void;
+        onDrop?: (id: string) => void;
+        onMore?: (id: string) => void;
         onPlay: (id: string, playType: PlayType) => void;
     };
     id: string;
@@ -39,17 +40,17 @@ interface AlbumCardProps extends HTMLAttributes<HTMLDivElement> {
     };
 }
 
-export function AlbumCard(props: AlbumCardProps) {
+export function Card(props: CardProps) {
     const {
+        componentState,
+        controls,
         id,
         image,
         libraryId,
-        componentState,
         metadata,
-        metadataLines = 1,
+        metadataLines,
         titledata,
         className,
-        controls,
         ...htmlProps
     } = props;
 
@@ -66,31 +67,11 @@ export function AlbumCard(props: AlbumCardProps) {
             draggable({
                 element: ref.current,
                 getInitialData: () => {
-                    return dndUtils.generateDragData(
-                        {
-                            id: [id],
-                            operation: [DragOperation.ADD],
-                            type: DragTarget.ALBUM,
-                        },
-                        {
-                            image,
-                            title: titledata.text,
-                        },
-                    );
+                    return controls.onDragInitialData?.(id) ?? {};
                 },
                 onDragStart: async () => {
                     setIsDragging(true);
-                    PrefetchController.call({
-                        cmd: {
-                            tracksByAlbumId: {
-                                id: [id],
-                                params: {
-                                    sortBy: TrackListSortOptions.ID,
-                                    sortOrder: ListSortOrder.ASC,
-                                },
-                            },
-                        },
-                    });
+                    return controls.onDragStart?.(id);
                 },
                 onDrop: () => setIsDragging(false),
                 onGenerateDragPreview: (data) => {
@@ -105,7 +86,7 @@ export function AlbumCard(props: AlbumCardProps) {
                 },
             }),
         );
-    }, [id, image, libraryId, queryClient, titledata.text]);
+    }, [controls, id, image, libraryId, queryClient, titledata.text]);
 
     switch (componentState) {
         default: {

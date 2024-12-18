@@ -6,7 +6,7 @@ import styles from './card-controls.module.scss';
 
 interface CardControlsProps {
     id: string;
-    onMore: (id: string) => void;
+    onMore?: (id: string) => void;
     onPlay: (id: string, playType: PlayType) => void;
 }
 
@@ -19,19 +19,21 @@ export function CardControls(props: CardControlsProps) {
             variants={animationVariants.fadeIn}
         >
             <div className={styles.top}></div>
-            <div className={styles.center}>
-                <IconButton
-                    iconFill
-                    icon="mediaPlay"
-                    radius="xl"
-                    size="lg"
-                    variant="filled"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        props.onPlay(props.id, PlayType.NOW);
-                    }}
-                />
-            </div>
+            {Boolean(props.onPlay) && (
+                <div className={styles.center}>
+                    <IconButton
+                        iconFill
+                        icon="mediaPlay"
+                        radius="xl"
+                        size="lg"
+                        variant="filled"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            props.onPlay?.(props.id, PlayType.NOW);
+                        }}
+                    />
+                </div>
+            )}
             <div className={styles.bottom}>
                 <div className={styles.bottomLeft}>
                     <IconButtonWithTooltip
@@ -57,18 +59,20 @@ export function CardControls(props: CardControlsProps) {
                         }}
                     />
                 </div>
-                <div>
-                    <IconButton
-                        icon="ellipsisHorizontal"
-                        radius="lg"
-                        size="md"
-                        variant="transparent"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            props.onMore(props.id);
-                        }}
-                    />
-                </div>
+                {Boolean(props.onMore) && (
+                    <div>
+                        <IconButton
+                            icon="ellipsisHorizontal"
+                            radius="lg"
+                            size="md"
+                            variant="transparent"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                props.onMore?.(props.id);
+                            }}
+                        />
+                    </div>
+                )}
             </div>
         </motion.div>
     );
