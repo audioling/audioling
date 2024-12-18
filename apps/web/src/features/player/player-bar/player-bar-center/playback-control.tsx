@@ -111,3 +111,27 @@ export function MediaStepForwardButton() {
         />
     );
 }
+
+export function MediaShuffleButton() {
+    return (
+        <IconButtonWithTooltip
+            iconFill
+            className={clsx(styles.secondary)}
+            icon="mediaShuffle"
+            size="lg"
+            tooltipProps={{ label: 'Shuffle', openDelay: 500, position: 'top' }}
+        />
+    );
+}
+
+export function MediaRepeatButton() {
+    return (
+        <IconButtonWithTooltip
+            iconFill
+            className={clsx(styles.secondary)}
+            icon="mediaRepeat"
+            size="lg"
+            tooltipProps={{ label: 'Repeat', openDelay: 500, position: 'top' }}
+        />
+    );
+}
