@@ -264,9 +264,7 @@ export function ItemTable<
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
                         itemContent={(index, _data, context) => {
-                            const hasIndex = data[index] !== undefined;
-
-                            if (hasIndex) {
+                            if (data[index] !== undefined) {
                                 return (
                                     <TableRow
                                         context={context}

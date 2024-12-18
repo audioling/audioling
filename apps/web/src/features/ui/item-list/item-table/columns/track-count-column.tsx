@@ -4,16 +4,16 @@ import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './column.module.scss';
 
-export function playCountColumn<T>(columnHelper: ColumnHelper<T>) {
+export function trackCountColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
         cell: ({ row }) => {
             const item = row.original;
 
             if (typeof item === 'object' && item) {
-                if ('playCount' in item && typeof item.playCount === 'number') {
+                if ('trackCount' in item && typeof item.trackCount === 'number') {
                     return (
                         <Text isCentered isSecondary className={styles.cell}>
-                            {item.playCount}
+                            {item.trackCount}
                         </Text>
                     );
                 }
@@ -21,8 +21,8 @@ export function playCountColumn<T>(columnHelper: ColumnHelper<T>) {
 
             return <Skeleton height={20} width={50} />;
         },
-        header: 'Plays',
-        id: 'playCount',
-        size: itemListHelpers.table.numberToColumnSize(50, 'px'),
+        header: 'Tracks',
+        id: 'trackCount',
+        size: itemListHelpers.table.numberToColumnSize(100, 'px'),
     });
 }

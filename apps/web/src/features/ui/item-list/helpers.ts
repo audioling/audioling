@@ -1,6 +1,7 @@
 import type { ColumnHelper, Row } from '@tanstack/react-table';
 import { actionsColumn } from '@/features/ui/item-list/item-table/columns/actions-column.tsx';
 import { albumColumn } from '@/features/ui/item-list/item-table/columns/album-column.tsx';
+import { albumCountColumn } from '@/features/ui/item-list/item-table/columns/album-count-column.tsx';
 import { artistsColumn } from '@/features/ui/item-list/item-table/columns/artists-column.tsx';
 import { dateAddedColumn } from '@/features/ui/item-list/item-table/columns/date-added-column.tsx';
 import { durationColumn } from '@/features/ui/item-list/item-table/columns/duration-column.tsx';
@@ -14,11 +15,13 @@ import { ratingColumn } from '@/features/ui/item-list/item-table/columns/rating-
 import { releaseDateColumn } from '@/features/ui/item-list/item-table/columns/release-date-column.tsx';
 import { rowIndexColumn } from '@/features/ui/item-list/item-table/columns/row-index-column.tsx';
 import { standaloneCombinedColumn } from '@/features/ui/item-list/item-table/columns/standalone-combined-column.tsx';
+import { trackCountColumn } from '@/features/ui/item-list/item-table/columns/track-count-column.tsx';
 import { yearColumn } from '@/features/ui/item-list/item-table/columns/year-column.tsx';
 
 export enum ItemListColumn {
     ACTIONS = 'actions',
     ALBUM = 'album',
+    ALBUM_COUNT = 'albumCount',
     ARTISTS = 'artists',
     DATE_ADDED = 'dateAdded',
     DURATION = 'duration',
@@ -32,6 +35,7 @@ export enum ItemListColumn {
     RELEASE_DATE = 'releaseDate',
     ROW_INDEX = 'rowIndex',
     STANDALONE_COMBINED = 'combined',
+    TRACK_COUNT = 'trackCount',
     YEAR = 'year',
 }
 
@@ -50,6 +54,8 @@ const columnMap = {
     [ItemListColumn.IMAGE]: imageColumn,
     [ItemListColumn.LAST_PLAYED]: lastPlayedColumn,
     [ItemListColumn.PLAY_COUNT]: playCountColumn,
+    [ItemListColumn.ALBUM_COUNT]: albumCountColumn,
+    [ItemListColumn.TRACK_COUNT]: trackCountColumn,
     [ItemListColumn.RATING]: ratingColumn,
     [ItemListColumn.RELEASE_DATE]: releaseDateColumn,
     [ItemListColumn.YEAR]: yearColumn,
