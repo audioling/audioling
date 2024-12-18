@@ -13,7 +13,6 @@ import {
     useCurrentTrack,
     usePlayerActions,
 } from '@/features/player/stores/player-store.tsx';
-import { Button } from '@/features/ui/button/button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { ItemListColumn, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
@@ -23,6 +22,7 @@ import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
 import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Menu } from '@/features/ui/menu/menu.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
 import { DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './side-play-queue.module.scss';
 
@@ -167,10 +167,8 @@ export function SidePlayQueue() {
 
     return (
         <div className={styles.container}>
-            <Group className={styles.header} gap="sm" justify="between">
-                <Button size="md" variant="default">
-                    Queue
-                </Button>
+            <Group align="center" className={styles.header} gap="sm" justify="between">
+                <Text>Queue</Text>
                 <QueueControls
                     groupBy={groupBy}
                     table={itemTableRef.current?.getTable() ?? undefined}
@@ -309,7 +307,7 @@ export function QueueControls({
     );
 
     return (
-        <Group gap="sm" justify="center" p="sm">
+        <Group gap="sm" justify="center">
             <Menu>
                 <Menu.Target>
                     <IconButton icon="ellipsisHorizontal" size="sm" />

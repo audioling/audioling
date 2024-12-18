@@ -8,4 +8,6 @@
 
 .header {
     @include base.bottom-shadow;
+
+    padding: var(--base-gap-sm) var(--base-gap-xs);
 }
