@@ -26,33 +26,33 @@ const fadeInRight: Variants = {
 };
 
 const zoomIn: Variants = {
-    hidden: { opacity: 0, scale: 0.5 },
-    show: { opacity: 1, scale: 1 },
+    hidden: { scale: 0.5 },
+    show: { scale: 1 },
 };
 
 const zoomOut: Variants = {
-    hidden: { opacity: 1, scale: 1 },
-    show: { opacity: 0, scale: 0.5 },
+    hidden: { scale: 1 },
+    show: { scale: 0.5 },
 };
 
 const slideInUp: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 },
+    hidden: { y: 10 },
+    show: { y: 0 },
 };
 
 const slideInDown: Variants = {
-    hidden: { opacity: 0, y: -10 },
-    show: { opacity: 1, y: 0 },
+    hidden: { y: -10 },
+    show: { y: 0 },
 };
 
 const slideInLeft: Variants = {
-    hidden: { opacity: 0, x: 10 },
-    show: { opacity: 1, x: 0 },
+    hidden: { x: 10 },
+    show: { x: 0 },
 };
 
 const slideInRight: Variants = {
-    hidden: { opacity: 0, x: -10 },
-    show: { opacity: 1, x: 0 },
+    hidden: { x: 10 },
+    show: { x: 0 },
 };
 
 const scaleY: Variants = {
