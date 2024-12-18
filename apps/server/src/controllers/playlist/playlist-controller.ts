@@ -8,6 +8,7 @@ import type {
     PlaylistListResponse,
 } from '@/controllers/playlist/playlist-api-types.js';
 import { playlistHelpers } from '@/controllers/playlist/playlist-helpers.js';
+import type { CountResponse } from '@/controllers/shared-api-types.js';
 import type { initTrackController } from '@/controllers/track/track-controller.js';
 import type { AdapterVariables } from '@/middlewares/adapter-middleware.js';
 import type { AuthVariables } from '@/middlewares/auth-middleware.js';
@@ -66,6 +67,34 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                     totalRecordCount: playlists.totalRecordCount,
                 },
             };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /count
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/count',
+            summary: 'Get playlists count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/count'].get,
+        }),
+        async (c) => {
+            const query = c.req.valid('query');
+            const { adapter, user } = c.var;
+
+            const count = await service.playlist.list(adapter, {
+                folderId: query.folderId,
+                limit: 1,
+                offset: 0,
+                sortBy: query.sortBy,
+                sortOrder: query.sortOrder,
+                userId: user.id,
+            });
+
+            const response: CountResponse = count.totalRecordCount || 0;
 
             return c.json(response, 200);
         },

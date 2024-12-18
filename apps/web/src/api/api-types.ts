@@ -3,6 +3,7 @@ import type {
     GetApiLibraryIdAlbumArtists200DataItem,
     GetApiLibraryIdAlbums200DataItem,
     GetApiLibraryIdGenres200DataItem,
+    GetApiLibraryIdPlaylists200DataItem,
     GetApiLibraryIdTracks200DataItem,
     GetApiUsers200DataItem,
     GetPing200,
@@ -24,6 +25,8 @@ export interface AlbumArtistItem extends GetApiLibraryIdAlbumArtists200DataItem 
 export interface ArtistItem extends GetApiLibraryIdAlbumArtists200DataItem {}
 
 export interface GenreItem extends GetApiLibraryIdGenres200DataItem {}
+
+export interface PlaylistItem extends GetApiLibraryIdPlaylists200DataItem {}
 
 export interface TrackItem extends GetApiLibraryIdTracks200DataItem {}
 

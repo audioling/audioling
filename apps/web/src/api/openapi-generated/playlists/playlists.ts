@@ -31,6 +31,11 @@ import type {
     GetApiLibraryIdPlaylists403,
     GetApiLibraryIdPlaylists422,
     GetApiLibraryIdPlaylists500,
+    GetApiLibraryIdPlaylistsCount401,
+    GetApiLibraryIdPlaylistsCount403,
+    GetApiLibraryIdPlaylistsCount422,
+    GetApiLibraryIdPlaylistsCount500,
+    GetApiLibraryIdPlaylistsCountParams,
     GetApiLibraryIdPlaylistsFolders200,
     GetApiLibraryIdPlaylistsFolders401,
     GetApiLibraryIdPlaylistsFolders403,
@@ -375,6 +380,183 @@ export const usePostApiLibraryIdPlaylists = <
 
     return useMutation(mutationOptions);
 };
+/**
+ * @summary Get playlists count
+ */
+export const getApiLibraryIdPlaylistsCount = (
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<number>(
+        { url: `/api/${libraryId}/playlists/count`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdPlaylistsCountQueryKey = (
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+) => {
+    return [`/api/${libraryId}/playlists/count`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiLibraryIdPlaylistsCountSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsCount401
+        | GetApiLibraryIdPlaylistsCount403
+        | GetApiLibraryIdPlaylistsCount422
+        | GetApiLibraryIdPlaylistsCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdPlaylistsCountQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>> = ({
+        signal,
+    }) => getApiLibraryIdPlaylistsCount(libraryId, params, requestOptions, signal);
+
+    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetApiLibraryIdPlaylistsCountSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>
+>;
+export type GetApiLibraryIdPlaylistsCountSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdPlaylistsCount401
+    | GetApiLibraryIdPlaylistsCount403
+    | GetApiLibraryIdPlaylistsCount422
+    | GetApiLibraryIdPlaylistsCount500
+>;
+
+export function useGetApiLibraryIdPlaylistsCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsCount401
+        | GetApiLibraryIdPlaylistsCount403
+        | GetApiLibraryIdPlaylistsCount422
+        | GetApiLibraryIdPlaylistsCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetApiLibraryIdPlaylistsCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsCount401
+        | GetApiLibraryIdPlaylistsCount403
+        | GetApiLibraryIdPlaylistsCount422
+        | GetApiLibraryIdPlaylistsCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetApiLibraryIdPlaylistsCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsCount401
+        | GetApiLibraryIdPlaylistsCount403
+        | GetApiLibraryIdPlaylistsCount422
+        | GetApiLibraryIdPlaylistsCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+/**
+ * @summary Get playlists count
+ */
+
+export function useGetApiLibraryIdPlaylistsCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdPlaylistsCount401
+        | GetApiLibraryIdPlaylistsCount403
+        | GetApiLibraryIdPlaylistsCount422
+        | GetApiLibraryIdPlaylistsCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdPlaylistsCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdPlaylistsCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getGetApiLibraryIdPlaylistsCountSuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
 /**
  * @summary Get all playlist folders
  */

@@ -15,6 +15,7 @@ import {
     updatePlaylistRequestSchema,
 } from '@/controllers/playlist/playlist-api-types.js';
 import {
+    CountResponseSchema,
     EmptyBodySchema,
     EmptyResponseSchema,
     schemaResponse,
@@ -50,6 +51,19 @@ export const playlistApiSchema = {
                     schema: playlistDetailResponseSchema,
                     status: 201,
                 },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/count': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: playlistListRequestSchema.omit({ limit: true, offset: true }),
+            },
+            responses: schemaResponse(
+                { description: 'Get playlists count', schema: CountResponseSchema, status: 200 },
                 [401, 403, 422, 500],
             ),
             security: [{ Bearer: [] }],
