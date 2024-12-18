@@ -45,7 +45,9 @@ export function PlayerProgress() {
 
     return (
         <div className={styles.container}>
-            <Text size="sm">{formatDuration(value)}</Text>
+            {Boolean(duration) && (
+                <Text size="sm">{formatDuration(Math.min(value, duration))}</Text>
+            )}
             <Slider
                 defaultValue={[0]}
                 max={duration}
@@ -56,7 +58,7 @@ export function PlayerProgress() {
                 onChange={onChange}
                 onChangeEnd={onChangeEnd}
             />
-            <Text size="sm">{formatDuration(duration)}</Text>
+            {Boolean(duration) && <Text size="sm">{formatDuration(duration)}</Text>}
         </div>
     );
 }
