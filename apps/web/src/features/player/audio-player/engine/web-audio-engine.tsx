@@ -12,8 +12,14 @@ export interface OnProgressProps {
 }
 
 export interface WebAudioEngineHandle extends AudioPlayer {
-    player1(): ReactPlayer | null;
-    player2(): ReactPlayer | null;
+    player1(): {
+        ref: ReactPlayer | null;
+        setVolume: (volume: number) => void;
+    };
+    player2(): {
+        ref: ReactPlayer | null;
+        setVolume: (volume: number) => void;
+    };
 }
 
 interface WebAudioEngineProps {
@@ -58,14 +64,17 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
     const player1Ref = useRef<ReactPlayer | null>(null);
     const player2Ref = useRef<ReactPlayer | null>(null);
 
-    const [internalVolume, setInternalVolume] = useState(volume / 100 || 0);
+    const [internalVolume1, setInternalVolume1] = useState(volume / 100 || 0);
+    const [internalVolume2, setInternalVolume2] = useState(volume / 100 || 0);
 
     useImperativeHandle<WebAudioEngineHandle, WebAudioEngineHandle>(playerRef, () => ({
         decreaseVolume(by: number) {
-            setInternalVolume(Math.max(0, internalVolume - by / 100));
+            setInternalVolume1(Math.max(0, internalVolume1 - by / 100));
+            setInternalVolume2(Math.max(0, internalVolume2 - by / 100));
         },
         increaseVolume(by: number) {
-            setInternalVolume(Math.min(1, internalVolume + by / 100));
+            setInternalVolume1(Math.min(1, internalVolume1 + by / 100));
+            setInternalVolume2(Math.min(1, internalVolume2 + by / 100));
         },
         pause() {
             player1Ref.current?.getInternalPlayer()?.pause();
@@ -79,10 +88,16 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
             }
         },
         player1() {
-            return player1Ref?.current;
+            return {
+                ref: player1Ref?.current,
+                setVolume: (volume: number) => setInternalVolume1(volume / 100 || 0),
+            };
         },
         player2() {
-            return player2Ref?.current;
+            return {
+                ref: player2Ref?.current,
+                setVolume: (volume: number) => setInternalVolume2(volume / 100 || 0),
+            };
         },
         seekTo(seekTo: number) {
             playerNum === 1
@@ -90,44 +105,55 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
                 : player2Ref.current?.seekTo(seekTo);
         },
         setVolume(volume: number) {
-            setInternalVolume(volume / 100 || 0);
+            setInternalVolume1(volume / 100 || 0);
+            setInternalVolume2(volume / 100 || 0);
+        },
+        setVolume1(volume: number) {
+            setInternalVolume1(volume / 100 || 0);
+        },
+        setVolume2(volume: number) {
+            setInternalVolume2(volume / 100 || 0);
         },
     }));
 
     return (
         <>
-            <ReactPlayer
-                ref={player1Ref}
-                config={{
-                    file: { attributes: { crossOrigin: 'anonymous' }, forceAudio: true },
-                }}
-                controls={false}
-                height={0}
-                muted={isMuted}
-                playing={playerNum === 1 && playerStatus === PlayerStatus.PLAYING}
-                progressInterval={isTransitioning ? 10 : 250}
-                url={src1 || EMPTY_SOURCE}
-                volume={convertToLogVolume(internalVolume)}
-                width={0}
-                onEnded={src1 ? () => onEndedPlayer1() : undefined}
-                onProgress={onProgressPlayer1}
-            />
-            <ReactPlayer
-                ref={player2Ref}
-                config={{
-                    file: { attributes: { crossOrigin: 'anonymous' }, forceAudio: true },
-                }}
-                controls={false}
-                height={0}
-                muted={isMuted}
-                playing={playerNum === 2 && playerStatus === PlayerStatus.PLAYING}
-                progressInterval={isTransitioning ? 10 : 250}
-                url={src2 || EMPTY_SOURCE}
-                volume={convertToLogVolume(internalVolume)}
-                width={0}
-                onEnded={src2 ? () => onEndedPlayer2() : undefined}
-                onProgress={onProgressPlayer2}
-            />
+            {Boolean(src1) && (
+                <ReactPlayer
+                    ref={player1Ref}
+                    config={{
+                        file: { attributes: { crossOrigin: 'anonymous' }, forceAudio: true },
+                    }}
+                    controls={false}
+                    height={0}
+                    muted={isMuted}
+                    playing={playerNum === 1 && playerStatus === PlayerStatus.PLAYING}
+                    progressInterval={isTransitioning ? 10 : 250}
+                    url={src1 || EMPTY_SOURCE}
+                    volume={convertToLogVolume(internalVolume1)}
+                    width={0}
+                    onEnded={src1 ? () => onEndedPlayer1() : undefined}
+                    onProgress={onProgressPlayer1}
+                />
+            )}
+            {Boolean(src2) && (
+                <ReactPlayer
+                    ref={player2Ref}
+                    config={{
+                        file: { attributes: { crossOrigin: 'anonymous' }, forceAudio: true },
+                    }}
+                    controls={false}
+                    height={0}
+                    muted={isMuted}
+                    playing={playerNum === 2 && playerStatus === PlayerStatus.PLAYING}
+                    progressInterval={isTransitioning ? 10 : 250}
+                    url={src2 || EMPTY_SOURCE}
+                    volume={convertToLogVolume(internalVolume2)}
+                    width={0}
+                    onEnded={src2 ? () => onEndedPlayer2() : undefined}
+                    onProgress={onProgressPlayer2}
+                />
+            )}
         </>
     );
 };

@@ -1,5 +1,6 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import type { QueryClient } from '@tanstack/react-query';
+import deepMerge from 'deepmerge';
 import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
@@ -21,6 +22,11 @@ export enum PlayerRepeat {
     ALL = 'all',
     OFF = 'off',
     ONE = 'one',
+}
+
+export enum PlayerTransition {
+    CROSSFADE = 'crossfade',
+    GAPLESS = 'gapless',
 }
 
 export enum PlayerShuffle {
@@ -81,8 +87,12 @@ interface Actions {
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
     setProgress: (timestamp: number) => void;
     setVolume: (volume: number) => void;
+    // setRepeat: (repeat: PlayerRepeat) => void;
+    // setShuffle: (shuffle: PlayerShuffle) => void;
     shuffle: () => void;
     shuffleSelected: (items: PlayQueueItem[]) => void;
+    // toggleRepeat: () => void;
+    // toggleShuffle: () => void;
 }
 
 interface State {
@@ -96,6 +106,7 @@ interface State {
         speed: number;
         status: PlayerStatus;
         timestamp: number;
+        transitionType: PlayerTransition;
         volume: number;
     };
     queue: QueueData;
@@ -112,6 +123,7 @@ export interface PlayerData {
         shuffle: PlayerShuffle;
         speed: number;
         status: PlayerStatus;
+        transitionType: PlayerTransition;
         volume: number;
     };
     player1: PlayQueueItem | undefined;
@@ -480,6 +492,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                             shuffle: player.shuffle,
                             speed: player.speed,
                             status: newStatus,
+                            transitionType: player.transitionType,
                             volume: player.volume,
                         },
                         player1:
@@ -698,6 +711,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     speed: 1,
                     status: PlayerStatus.PAUSED,
                     timestamp: 0,
+                    transitionType: PlayerTransition.GAPLESS,
                     volume: 1,
                 },
                 queue: {
@@ -736,7 +750,14 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 },
             })),
         ),
-        { name: 'player-store', version: 1 },
+        {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            merge: (persistedState: any, currentState: any) => {
+                return deepMerge(currentState, persistedState);
+            },
+            name: 'player-store',
+            version: 1,
+        },
     ),
 );
 
