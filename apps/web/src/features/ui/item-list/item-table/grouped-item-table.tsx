@@ -112,11 +112,8 @@ export const GroupedItemTable = <
 
     const tableData = useMemo(() => {
         setExpanded(true);
-
-        return Array.from({ length: itemCount }, (_, index) => data.get(index)).filter(
-            (item): item is T => item !== undefined,
-        );
-    }, [data, itemCount]);
+        return data;
+    }, [data]);
 
     const table = useReactTable({
         columns,
@@ -220,7 +217,7 @@ export const GroupedItemTable = <
                                         itemType={itemType}
                                         rowId={
                                             getRowId && rowIdProperty
-                                                ? (data.get(index)?.[
+                                                ? (data[index]?.[
                                                       rowIdProperty as keyof T
                                                   ] as string)
                                                 : index.toString()

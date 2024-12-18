@@ -31,10 +31,10 @@ export function PlayQueue() {
         const setQueue = () => {
             const queue = getQueue();
 
-            setData(() => {
-                const newData = new Map();
+            setData((prevData) => {
+                const newData = [...prevData];
                 queue.items.forEach((item, index) => {
-                    newData.set(index, item);
+                    newData[index] = item;
                 });
                 return newData;
             });
@@ -49,7 +49,7 @@ export function PlayQueue() {
         return () => unsub();
     }, [getQueue]);
 
-    const [data, setData] = useState<Map<number, PlayQueueItem>>(new Map());
+    const [data, setData] = useState<PlayQueueItem[]>([]);
     const currentTrack = useCurrentTrack();
 
     const tableContext = useMemo(
@@ -115,7 +115,7 @@ export function PlayQueue() {
             columns={columns}
             context={tableContext}
             data={data}
-            itemCount={data.size}
+            itemCount={data.length}
             itemType={LibraryItemType.TRACK}
             onChangeColumnOrder={setColumnOrder}
             onRowDrop={onRowDrop}

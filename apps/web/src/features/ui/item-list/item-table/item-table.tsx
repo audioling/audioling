@@ -52,7 +52,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     columnOrder: ItemListColumn[];
     columns: DisplayColumnDef<T | undefined>[];
     context: C;
-    data: Map<number, T>;
+    data: (T | undefined)[];
     enableHeader?: boolean;
     enableMultiRowSelection?: boolean;
     enableRowSelection?: boolean;
@@ -90,6 +90,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
     rowIdProperty?: string;
+    rowsKey?: string;
 }
 
 export function ItemTable<
@@ -123,6 +124,7 @@ export function ItemTable<
         onScroll,
         onStartReached,
         rowIdProperty,
+        rowsKey,
     } = props;
 
     const tableId = useId();
@@ -162,18 +164,15 @@ export function ItemTable<
         }
 
         return () => osInstance()?.destroy();
-    }, [scroller, initialize, osInstance]);
+    }, [scroller, initialize, osInstance, rowsKey]);
 
     const [selection, setSelection] = useState<RowSelectionState>({});
     const [expanded, setExpanded] = useState<ExpandedState>(true);
 
     const tableData = useMemo(() => {
         setExpanded(true);
-
-        return Array.from({ length: itemCount }, (_, index) => data.get(index)).filter(
-            (item): item is T => item !== undefined,
-        );
-    }, [data, itemCount]);
+        return data;
+    }, [data]);
 
     const table = useReactTable({
         columns,
@@ -181,7 +180,7 @@ export function ItemTable<
         enableMultiRowSelection,
         enableRowSelection,
         getCoreRowModel: getCoreRowModel(),
-        getRowId: getRowId || undefined,
+        getRowId: getRowId || ((_row, index) => index.toString()),
         getSortedRowModel: getSortedRowModel(),
         onExpandedChange: setExpanded,
         onRowSelectionChange: setSelection,
@@ -265,37 +264,35 @@ export function ItemTable<
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
                         itemContent={(index, _data, context) => {
-                            if (index < itemCount) {
-                                if (data.get(index)) {
-                                    return (
-                                        <TableRow
-                                            context={context}
-                                            enableExpanded={false}
-                                            index={index}
-                                            itemType={itemType}
-                                            rowId={
-                                                getRowId && rowIdProperty
-                                                    ? (data.get(index)?.[
-                                                          rowIdProperty as keyof T
-                                                      ] as string)
-                                                    : index.toString()
-                                            }
-                                            table={table}
-                                            tableId={tableId}
-                                            onRowClick={onRowClick}
-                                            onRowContextMenu={onRowContextMenu}
-                                            onRowDoubleClick={onRowDoubleClick}
-                                            onRowDrag={onRowDrag}
-                                            onRowDragData={onRowDragData}
-                                            onRowDrop={onRowDrop}
-                                        />
-                                    );
-                                }
+                            const hasIndex = data[index] !== undefined;
 
-                                return <LoaderRow />;
+                            if (hasIndex) {
+                                return (
+                                    <TableRow
+                                        context={context}
+                                        enableExpanded={false}
+                                        index={index}
+                                        itemType={itemType}
+                                        rowId={
+                                            getRowId && rowIdProperty
+                                                ? (data[index]?.[
+                                                      rowIdProperty as keyof T
+                                                  ] as string)
+                                                : index.toString()
+                                        }
+                                        table={table}
+                                        tableId={tableId}
+                                        onRowClick={onRowClick}
+                                        onRowContextMenu={onRowContextMenu}
+                                        onRowDoubleClick={onRowDoubleClick}
+                                        onRowDrag={onRowDrag}
+                                        onRowDragData={onRowDragData}
+                                        onRowDrop={onRowDrop}
+                                    />
+                                );
                             }
 
-                            return null;
+                            return <LoaderRow />;
                         }}
                         rangeChanged={onRangeChanged}
                         scrollerRef={setScroller}

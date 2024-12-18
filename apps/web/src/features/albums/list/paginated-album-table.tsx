@@ -1,8 +1,12 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
 import type { Row, Table } from '@tanstack/react-table';
 import type { AlbumItem } from '@/api/api-types.ts';
-import { useGetApiLibraryIdAlbumsSuspense } from '@/api/openapi-generated/albums/albums.ts';
+import {
+    getApiLibraryIdAlbums,
+    getGetApiLibraryIdAlbumsQueryKey,
+} from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import type { AlbumGridItemContext } from '@/features/albums/list/album-grid-item.tsx';
 import {
@@ -16,7 +20,6 @@ import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/u
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
-import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination } from '@/hooks/use-list.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
@@ -38,9 +41,7 @@ export function PaginatedAlbumTable(props: PaginatedAlbumTableProps) {
 
     return (
         <Stack h="100%">
-            <Suspense fallback={<EmptyPlaceholder />}>
-                <PaginatedAlbumTableContent {...props} />
-            </Suspense>
+            <PaginatedAlbumTableContent {...props} />
             <Pagination
                 currentPage={pagination.currentPage}
                 itemCount={itemCount}
@@ -54,19 +55,31 @@ export function PaginatedAlbumTable(props: PaginatedAlbumTableProps) {
 
 function PaginatedAlbumTableContent(props: PaginatedAlbumTableProps) {
     const { baseUrl, libraryId, params, pagination } = props;
+    const queryClient = useQueryClient();
 
-    const { data: fetchedData } = useGetApiLibraryIdAlbumsSuspense(libraryId, {
-        ...params,
-        limit: pagination.itemsPerPage.toString(),
-        offset: ((pagination.currentPage - 1) * pagination.itemsPerPage).toString(),
-    });
-
-    const [data, setData] = useState<Map<number, AlbumItem>>(new Map());
+    const [data, setData] = useState<(AlbumItem | undefined)[]>(
+        Array(pagination.itemsPerPage).fill(undefined),
+    );
 
     useEffect(() => {
-        const newData = new Map(fetchedData.data.map((album, index) => [index, album]));
-        setData(newData);
-    }, [fetchedData.data]);
+        const fetchData = async () => {
+            const paramsWithPagination = {
+                ...params,
+                limit: pagination.itemsPerPage.toString(),
+                offset: ((pagination.currentPage - 1) * pagination.itemsPerPage).toString(),
+            };
+
+            const data = await queryClient.fetchQuery({
+                queryFn: () => getApiLibraryIdAlbums(libraryId, paramsWithPagination),
+                queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, paramsWithPagination),
+                staleTime: 30 * 1000,
+            });
+
+            setData(data.data);
+        };
+
+        fetchData();
+    }, [pagination.currentPage, pagination.itemsPerPage, params, queryClient, libraryId]);
 
     const { onRowClick } = useMultiRowSelection<AlbumItem>();
 
@@ -128,7 +141,7 @@ function PaginatedAlbumTableContent(props: PaginatedAlbumTableProps) {
     const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="album-list-content" listKey={props.listKey}>
+        <ListWrapper id="album-list-content">
             <ItemTable<AlbumItem, AlbumGridItemContext>
                 columnOrder={columnOrder}
                 columns={columns}
@@ -136,8 +149,9 @@ function PaginatedAlbumTableContent(props: PaginatedAlbumTableProps) {
                 data={data}
                 enableHeader={true}
                 enableMultiRowSelection={true}
-                itemCount={fetchedData.data.length || pagination.itemsPerPage}
+                itemCount={data.length || pagination.itemsPerPage}
                 itemType={LibraryItemType.ALBUM}
+                rowsKey={props.listKey}
                 onChangeColumnOrder={setColumnOrder}
                 onRowClick={onRowClick}
                 onRowDrag={onRowDrag}

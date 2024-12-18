@@ -97,6 +97,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                     baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
+                    listKey={listKey}
                     pagination={pagination}
                     params={{ sortBy, sortOrder }}
                 />

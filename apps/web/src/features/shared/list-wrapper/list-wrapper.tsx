@@ -6,15 +6,13 @@ import styles from './list-wrapper.module.scss';
 interface ListWrapperProps {
     children: ReactNode;
     id: string;
-    listKey: string;
 }
 
 export function ListWrapper(props: ListWrapperProps) {
-    const { children, id, listKey, ...rest } = props;
+    const { children, id, ...rest } = props;
 
     return (
         <motion.div
-            key={listKey}
             animate="show"
             className={styles.container}
             id={id}

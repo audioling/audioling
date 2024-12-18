@@ -30,6 +30,7 @@ interface InfiniteTrackTableProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    listKey: string;
     pagination: ItemListPaginationState;
     params: GetApiLibraryIdTracksParams;
 }
@@ -38,11 +39,12 @@ export function InfiniteTrackTable({
     baseUrl,
     itemCount,
     libraryId,
-    params,
+    listKey,
     pagination,
+    params,
 }: InfiniteTrackTableProps) {
     const queryClient = useQueryClient();
-    const [data, setData] = useState<Map<number, TrackItem>>(new Map());
+    const [data, setData] = useState<(TrackItem | undefined)[]>(Array(itemCount).fill(undefined));
 
     const loadedPages = useRef<Record<number, boolean>>({});
 
@@ -81,9 +83,9 @@ export function InfiniteTrackTable({
                     });
 
                     setData((prevData) => {
-                        const newData = new Map(prevData);
+                        const newData = [...prevData];
                         data.forEach((item, index) => {
-                            newData.set(currentOffset + index, item);
+                            newData[currentOffset + index] = item;
                         });
                         return newData;
                     });
@@ -129,6 +131,11 @@ export function InfiniteTrackTable({
         },
         [],
     );
+
+    useEffect(() => {
+        setData(Array(itemCount).fill(undefined));
+        loadedPages.current = {};
+    }, [itemCount, listKey]);
 
     const { columnOrder } = useTrackListState();
     const { setColumnOrder } = useTrackListActions();

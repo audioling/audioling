@@ -1,9 +1,13 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
 import type { Row, Table } from '@tanstack/react-table';
 import type { TrackItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { useGetApiLibraryIdTracksSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
+import {
+    getApiLibraryIdTracks,
+    getGetApiLibraryIdTracksQueryKey,
+} from '@/api/openapi-generated/tracks/tracks.ts';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { TrackTableItemContext } from '@/features/tracks/list/infinite-track-table.tsx';
@@ -16,7 +20,6 @@ import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/u
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
-import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination } from '@/hooks/use-list.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
@@ -38,9 +41,7 @@ export function PaginatedTrackTable(props: PaginatedTrackTableProps) {
 
     return (
         <Stack h="100%">
-            <Suspense fallback={<EmptyPlaceholder />}>
-                <PaginatedTrackTableContent {...props} />
-            </Suspense>
+            <PaginatedTrackTableContent {...props} />
             <Pagination
                 currentPage={pagination.currentPage}
                 itemCount={itemCount}
@@ -54,19 +55,31 @@ export function PaginatedTrackTable(props: PaginatedTrackTableProps) {
 
 function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
     const { baseUrl, libraryId, params, pagination } = props;
+    const queryClient = useQueryClient();
 
-    const { data: fetchedData } = useGetApiLibraryIdTracksSuspense(libraryId, {
-        ...params,
-        limit: pagination.itemsPerPage.toString(),
-        offset: ((pagination.currentPage - 1) * pagination.itemsPerPage).toString(),
-    });
-
-    const [data, setData] = useState<Map<number, TrackItem>>(new Map());
+    const [data, setData] = useState<(TrackItem | undefined)[]>(
+        Array(pagination.itemsPerPage).fill(undefined),
+    );
 
     useEffect(() => {
-        const newData = new Map(fetchedData.data.map((track, index) => [index, track]));
-        setData(newData);
-    }, [fetchedData.data]);
+        const fetchData = async () => {
+            const paramsWithPagination = {
+                ...params,
+                limit: pagination.itemsPerPage.toString(),
+                offset: ((pagination.currentPage - 1) * pagination.itemsPerPage).toString(),
+            };
+
+            const data = await queryClient.fetchQuery({
+                queryFn: () => getApiLibraryIdTracks(libraryId, paramsWithPagination),
+                queryKey: getGetApiLibraryIdTracksQueryKey(libraryId, paramsWithPagination),
+                staleTime: 30 * 1000,
+            });
+
+            setData(data.data);
+        };
+
+        fetchData();
+    }, [pagination.currentPage, pagination.itemsPerPage, params, queryClient, libraryId]);
 
     const { onRowClick } = useMultiRowSelection<TrackItem>();
 
@@ -128,7 +141,7 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
     const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="track-list-content" listKey={props.listKey}>
+        <ListWrapper id="track-list-content">
             <ItemTable<TrackItem, TrackTableItemContext>
                 columnOrder={columnOrder}
                 columns={columns}
@@ -136,8 +149,9 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
                 data={data}
                 enableHeader={true}
                 enableMultiRowSelection={true}
-                itemCount={fetchedData.data.length || pagination.itemsPerPage}
+                itemCount={data.length || pagination.itemsPerPage}
                 itemType={LibraryItemType.ALBUM}
+                rowsKey={props.listKey}
                 onChangeColumnOrder={setColumnOrder}
                 onRowClick={onRowClick}
                 onRowDrag={onRowDrag}

@@ -50,7 +50,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
         case ItemListPaginationType.PAGINATED:
             return (
                 <PaginatedTrackTable
-                    key={listKey}
                     baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
@@ -63,10 +62,10 @@ function ListComponent({ itemCount }: { itemCount: number }) {
         case ItemListPaginationType.INFINITE:
             return (
                 <InfiniteTrackTable
-                    key={listKey}
                     baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
+                    listKey={listKey}
                     pagination={pagination}
                     params={{ sortBy, sortOrder }}
                 />

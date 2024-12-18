@@ -44,10 +44,10 @@ export function SidePlayQueue() {
         const setQueue = () => {
             const queue = getQueue(groupBy) || { groups: [], items: [] };
 
-            setData(() => {
-                const newData = new Map();
+            setData((prevData) => {
+                const newData = [...prevData];
                 queue.items.forEach((item, index) => {
-                    newData.set(index, item);
+                    newData[index] = item;
                 });
                 return newData;
             });
@@ -64,7 +64,7 @@ export function SidePlayQueue() {
         return () => unsub();
     }, [getQueue, groupBy]);
 
-    const [data, setData] = useState<Map<number, PlayQueueItem>>(new Map());
+    const [data, setData] = useState<PlayQueueItem[]>([]);
     const [groups, setGroups] = useState<{ count: number; name: string }[]>([]);
 
     const currentTrack = useCurrentTrack();
@@ -186,7 +186,7 @@ export function SidePlayQueue() {
                     enableRowSelection={true}
                     getRowId={getRowId}
                     groups={groups}
-                    itemCount={data.size}
+                    itemCount={data.length}
                     itemTableRef={itemTableRef}
                     itemType={LibraryItemType.TRACK}
                     rowIdProperty="_uniqueId"

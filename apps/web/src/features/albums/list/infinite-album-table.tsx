@@ -31,6 +31,7 @@ interface InfiniteAlbumTableProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    listKey: string;
     pagination: ItemListPaginationState;
     params: GetApiLibraryIdAlbumsParams;
 }
@@ -39,11 +40,12 @@ export function InfiniteAlbumTable({
     baseUrl,
     itemCount,
     libraryId,
+    listKey,
     params,
     pagination,
 }: InfiniteAlbumTableProps) {
     const queryClient = useQueryClient();
-    const [data, setData] = useState<Map<number, AlbumItem>>(new Map());
+    const [data, setData] = useState<(AlbumItem | undefined)[]>(Array(itemCount).fill(undefined));
 
     const loadedPages = useRef<Record<number, boolean>>({});
 
@@ -81,10 +83,12 @@ export function InfiniteAlbumTable({
                         staleTime: 30 * 1000,
                     });
 
+                    console.log(currentOffset, currentOffset + data.length);
+
                     setData((prevData) => {
-                        const newData = new Map(prevData);
+                        const newData = [...prevData];
                         data.forEach((item, index) => {
-                            newData.set(currentOffset + index, item);
+                            newData[currentOffset + index] = item;
                         });
                         return newData;
                     });
@@ -149,6 +153,11 @@ export function InfiniteAlbumTable({
         });
     }, []);
 
+    useEffect(() => {
+        setData(Array(itemCount).fill(undefined));
+        loadedPages.current = {};
+    }, [itemCount, listKey]);
+
     const { columnOrder } = useAlbumListState();
     const { setColumnOrder } = useAlbumListActions();
 
@@ -164,6 +173,7 @@ export function InfiniteAlbumTable({
             enableMultiRowSelection={true}
             itemCount={itemCount}
             itemType={LibraryItemType.ALBUM}
+            rowsKey={listKey}
             onChangeColumnOrder={setColumnOrder}
             onRangeChanged={throttledOnRangeChanged}
             onRowClick={onRowClick}
