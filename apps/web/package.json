@@ -55,6 +55,7 @@
         "react-player": "3.0.0-canary.4",
         "react-router": "^7.0.2",
         "react-virtuoso": "^4.12.3",
+        "safe-stable-stringify": "^2.5.0",
         "zod": "^3.24.1",
         "zustand": "^5.0.2"
     },
