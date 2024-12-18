@@ -80,8 +80,6 @@ export function InfiniteGenreTable({
                         staleTime: 30 * 1000,
                     });
 
-                    console.log(currentOffset, currentOffset + data.length);
-
                     setData((prevData) => {
                         const newData = [...prevData];
                         data.forEach((item, index) => {
