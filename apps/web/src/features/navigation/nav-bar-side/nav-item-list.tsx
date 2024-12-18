@@ -23,11 +23,11 @@ function getNavItems(libraryId: string): {
     to: string;
 }[] {
     return [
-        {
-            icon: 'queue',
-            label: 'Queue',
-            to: generatePath(APP_ROUTE.DASHBOARD_NOW_PLAYING, { libraryId }),
-        },
+        // {
+        //     icon: 'queue',
+        //     label: 'Queue',
+        //     to: generatePath(APP_ROUTE.DASHBOARD_NOW_PLAYING, { libraryId }),
+        // },
         {
             icon: 'home',
             label: 'Home',
