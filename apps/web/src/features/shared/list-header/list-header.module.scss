@@ -38,7 +38,8 @@
 
 .item-count {
     font-size: base.$title-font-size-sm;
-    font-weight: base.$font-weight-sm;
+    font-weight: base.$font-weight-md;
+    color: base.$font-secondary-color;
     user-select: none;
 }
 

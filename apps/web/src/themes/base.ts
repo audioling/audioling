@@ -186,7 +186,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'menu-border': '1px solid transparent',
     'menu-border-radius': radius.md,
     'menu-box-shadow': '0 2px 4px rgb(0 0 0 / 20%)',
-    'menu-divider-border-top': '1px solid rgb(60, 60, 60)',
+    'menu-divider-border-top': '1px solid rgba(60, 60, 60, 0.5)',
     'menu-divider-margin': 0,
     'menu-item-background-color': 'transparent',
     'menu-item-font-color': 'rgb(230, 230, 230)',
