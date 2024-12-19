@@ -379,6 +379,10 @@ export const usePlayerStoreBase = create<PlayerState>()(
                         state.queue.priority = state.queue.priority.filter(
                             (item) => !uniqueIds.includes(item._uniqueId),
                         );
+
+                        const newQueue = [...state.queue.priority, ...state.queue.default];
+
+                        recalculatePlayerIndex(state, newQueue);
                     });
                 },
                 decreaseVolume: (value: number) => {
