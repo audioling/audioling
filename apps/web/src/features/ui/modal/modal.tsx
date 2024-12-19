@@ -48,7 +48,10 @@ export function Modal(props: ModalProps) {
                 exit="hidden"
                 initial="hidden"
                 transition={{ duration: 0.3, ease: 'anticipate' }}
-                variants={animationVariants.zoomIn}
+                variants={animationVariants.combine(
+                    animationVariants.fadeIn,
+                    animationVariants.zoomIn,
+                )}
             >
                 <h1 className={styles.title}>{title}</h1>
                 <div className={styles.content}>{children}</div>
