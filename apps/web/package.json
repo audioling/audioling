@@ -79,7 +79,7 @@
         "stylelint-config-standard": "^36.0.1",
         "stylelint-config-standard-scss": "^14.0.0",
         "typescript": "^5.7.2",
-        "vite": "^6.0.3",
+        "vite": "^5.4.11",
         "vite-plugin-eslint2": "^5.0.3",
         "vite-plugin-tauri": "^3.3.0"
     },
