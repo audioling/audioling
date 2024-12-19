@@ -6,8 +6,9 @@ import type {
     ItemListDisplayType,
     ItemListPaginationState,
 } from '@/features/ui/item-list/types.ts';
-import { ItemListPaginationType } from '@/features/ui/item-list/types.ts';
+import type { ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import { randomString } from '@/utils/random-string.ts';
+import { safeStringify } from '@/utils/stringify.ts';
 
 interface UseListInitializeProps {
     setListId: (key: string, listId: string) => void;
@@ -45,11 +46,18 @@ export function useListKey<TSortOptions>({
 }: UseListKeyProps<TSortOptions>) {
     const location = useLocation();
 
-    if (paginationType === ItemListPaginationType.PAGINATED) {
-        return `${sortBy}-${sortOrder}-${paginationType}-${pagination?.currentPage}-${folderId?.join(',')}-${listId[location.pathname]}`;
-    }
+    const key = safeStringify({
+        displayType,
+        folderId,
+        listId,
+        location: listId[location.pathname],
+        pagination,
+        paginationType,
+        sortBy,
+        sortOrder,
+    });
 
-    return `${sortBy}-${sortOrder}-${displayType}-${listId[location.pathname]}`;
+    return key;
 }
 
 interface UseRefreshListProps {

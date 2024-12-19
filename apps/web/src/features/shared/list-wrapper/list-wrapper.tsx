@@ -9,7 +9,7 @@ interface ListWrapperProps {
 }
 
 export function ListWrapper(props: ListWrapperProps) {
-    const { children, listKey, ...rest } = props;
+    const { children, listKey } = props;
 
     return (
         <motion.div
@@ -21,7 +21,6 @@ export function ListWrapper(props: ListWrapperProps) {
             initial="hidden"
             transition={{ duration: 0.3 }}
             variants={animationVariants.fadeIn}
-            {...rest}
         >
             {children}
         </motion.div>
