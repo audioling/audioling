@@ -75,10 +75,10 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             case ItemListPaginationType.INFINITE:
                 return (
                     <InfiniteAlbumGrid
-                        key={listKey}
                         baseUrl={baseUrl}
                         itemCount={itemCount}
                         libraryId={libraryId}
+                        listKey={listKey}
                         pagination={pagination}
                         params={params}
                     />

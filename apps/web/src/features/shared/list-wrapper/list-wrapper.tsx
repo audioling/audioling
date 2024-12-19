@@ -5,19 +5,21 @@ import styles from './list-wrapper.module.scss';
 
 interface ListWrapperProps {
     children: ReactNode;
-    id: string;
+    listKey?: string;
 }
 
 export function ListWrapper(props: ListWrapperProps) {
-    const { children, id, ...rest } = props;
+    const { children, listKey, ...rest } = props;
 
     return (
         <motion.div
+            key={listKey}
             animate="show"
             className={styles.container}
-            id={id}
+            exit="hidden"
+            id={listKey}
             initial="hidden"
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
             variants={animationVariants.fadeIn}
             {...rest}
         >

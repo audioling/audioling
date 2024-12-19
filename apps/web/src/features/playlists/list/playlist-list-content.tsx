@@ -66,10 +66,10 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             case ItemListPaginationType.INFINITE:
                 return (
                     <InfinitePlaylistGrid
-                        key={listKey}
                         baseUrl={baseUrl}
                         itemCount={itemCount}
                         libraryId={libraryId}
+                        listKey={listKey}
                         pagination={pagination}
                         params={{
                             searchTerm: searchParams.get('search') ?? undefined,

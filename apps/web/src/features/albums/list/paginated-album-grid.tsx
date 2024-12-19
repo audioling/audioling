@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { AnimatePresence } from 'motion/react';
 import type { AlbumItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
@@ -23,13 +24,17 @@ interface PaginatedAlbumGridProps {
 }
 
 export function PaginatedAlbumGrid(props: PaginatedAlbumGridProps) {
-    const { itemCount, pagination, setPagination } = props;
+    const { itemCount, listKey, pagination, setPagination } = props;
     const paginationProps = useListPagination({ pagination, setPagination });
 
     return (
         <Stack h="100%">
             <Suspense fallback={<EmptyPlaceholder />}>
-                <PaginatedAlbumGridContent {...props} />
+                <AnimatePresence mode="wait">
+                    <ListWrapper key={listKey}>
+                        <PaginatedAlbumGridContent {...props} />
+                    </ListWrapper>
+                </AnimatePresence>
             </Suspense>
             <Pagination
                 currentPage={pagination.currentPage}
@@ -52,13 +57,11 @@ function PaginatedAlbumGridContent(props: PaginatedAlbumGridProps) {
     });
 
     return (
-        <ListWrapper id="album-list-content">
-            <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
-                GridComponent={MemoizedAlbumGridItem}
-                context={{ baseUrl, libraryId }}
-                data={fetchedData.data}
-                itemCount={itemCount}
-            />
-        </ListWrapper>
+        <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
+            GridComponent={MemoizedAlbumGridItem}
+            context={{ baseUrl, libraryId }}
+            data={fetchedData.data}
+            itemCount={itemCount}
+        />
     );
 }

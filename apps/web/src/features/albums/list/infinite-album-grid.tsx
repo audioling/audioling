@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence } from 'motion/react';
 import type { AlbumItem } from '@/api/api-types.ts';
 import {
     getApiLibraryIdAlbums,
@@ -17,11 +18,24 @@ interface InfiniteAlbumGridProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    listKey: string;
     pagination: ItemListPaginationState;
     params: GetApiLibraryIdAlbumsParams;
 }
 
-export function InfiniteAlbumGrid({
+export function InfiniteAlbumGrid(props: InfiniteAlbumGridProps) {
+    const { listKey } = props;
+
+    return (
+        <AnimatePresence mode="wait">
+            <ListWrapper key={listKey}>
+                <InfiniteAlbumGridContent {...props} />
+            </ListWrapper>
+        </AnimatePresence>
+    );
+}
+
+export function InfiniteAlbumGridContent({
     baseUrl,
     itemCount,
     libraryId,
@@ -82,14 +96,12 @@ export function InfiniteAlbumGrid({
     );
 
     return (
-        <ListWrapper id="album-list-content">
-            <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
-                GridComponent={MemoizedAlbumGridItem}
-                context={{ baseUrl, libraryId }}
-                data={data}
-                itemCount={itemCount}
-                onRangeChanged={handleRangeChanged}
-            />
-        </ListWrapper>
+        <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
+            GridComponent={MemoizedAlbumGridItem}
+            context={{ baseUrl, libraryId }}
+            data={data}
+            itemCount={itemCount}
+            onRangeChanged={handleRangeChanged}
+        />
     );
 }

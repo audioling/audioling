@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { AnimatePresence } from 'motion/react';
 import type { PlaylistItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { useGetApiLibraryIdPlaylistsSuspense } from '@/api/openapi-generated/playlists/playlists.ts';
@@ -23,13 +24,17 @@ interface PaginatedPlaylistGridProps {
 }
 
 export function PaginatedPlaylistGrid(props: PaginatedPlaylistGridProps) {
-    const { itemCount, pagination, setPagination } = props;
+    const { itemCount, listKey, pagination, setPagination } = props;
     const paginationProps = useListPagination({ pagination, setPagination });
 
     return (
         <Stack h="100%">
             <Suspense fallback={<EmptyPlaceholder />}>
-                <PaginatedPlaylistGridContent {...props} />
+                <AnimatePresence mode="wait">
+                    <ListWrapper key={listKey}>
+                        <PaginatedPlaylistGridContent {...props} />
+                    </ListWrapper>
+                </AnimatePresence>
             </Suspense>
             <Pagination
                 currentPage={pagination.currentPage}
@@ -52,13 +57,11 @@ function PaginatedPlaylistGridContent(props: PaginatedPlaylistGridProps) {
     });
 
     return (
-        <ListWrapper id="playlist-list-content">
-            <InfiniteItemGrid<PlaylistItem, PlaylistGridItemContext>
-                GridComponent={MemoizedPlaylistGridItem}
-                context={{ baseUrl, libraryId }}
-                data={fetchedData.data}
-                itemCount={itemCount}
-            />
-        </ListWrapper>
+        <InfiniteItemGrid<PlaylistItem, PlaylistGridItemContext>
+            GridComponent={MemoizedPlaylistGridItem}
+            context={{ baseUrl, libraryId }}
+            data={fetchedData.data}
+            itemCount={itemCount}
+        />
     );
 }

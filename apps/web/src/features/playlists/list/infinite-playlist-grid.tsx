@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence } from 'motion/react';
 import type { PlaylistItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import {
@@ -19,11 +20,24 @@ interface InfinitePlaylistGridProps {
     baseUrl: string;
     itemCount: number;
     libraryId: string;
+    listKey: string;
     pagination: ItemListPaginationState;
     params: GetApiLibraryIdPlaylistsParams;
 }
 
-export function InfinitePlaylistGrid({
+export function InfinitePlaylistGrid(props: InfinitePlaylistGridProps) {
+    const { listKey } = props;
+
+    return (
+        <AnimatePresence mode="wait">
+            <ListWrapper key={listKey}>
+                <InfinitePlaylistGridContent {...props} />
+            </ListWrapper>
+        </AnimatePresence>
+    );
+}
+
+export function InfinitePlaylistGridContent({
     baseUrl,
     itemCount,
     libraryId,
@@ -87,14 +101,12 @@ export function InfinitePlaylistGrid({
     );
 
     return (
-        <ListWrapper id="playlist-list-content">
-            <InfiniteItemGrid<PlaylistItem, PlaylistGridItemContext>
-                GridComponent={MemoizedPlaylistGridItem}
-                context={{ baseUrl, libraryId }}
-                data={data}
-                itemCount={itemCount}
-                onRangeChanged={handleRangeChanged}
-            />
-        </ListWrapper>
+        <InfiniteItemGrid<PlaylistItem, PlaylistGridItemContext>
+            GridComponent={MemoizedPlaylistGridItem}
+            context={{ baseUrl, libraryId }}
+            data={data}
+            itemCount={itemCount}
+            onRangeChanged={handleRangeChanged}
+        />
     );
 }
