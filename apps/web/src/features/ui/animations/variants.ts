@@ -1,3 +1,4 @@
+import deepmerge from 'deepmerge';
 import type { Variants } from 'motion/react';
 
 const fadeIn: Variants = {
@@ -75,9 +76,10 @@ const flipVertical: Variants = {
     show: { y: 0 },
 };
 
-const combine = (...variants: Variants[]) => ({
-    ...variants.reduce((acc, variant) => ({ ...acc, ...variant }), {}),
-});
+const combine = (...variants: Variants[]) => {
+    const merged = deepmerge.all(variants);
+    return merged as Variants;
+};
 
 const stagger = (variants: Variants, delay?: number) => ({
     ...variants,
