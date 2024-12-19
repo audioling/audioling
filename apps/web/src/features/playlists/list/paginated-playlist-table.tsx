@@ -141,7 +141,7 @@ function PaginatedPlaylistTableContent(props: PaginatedPlaylistTableProps) {
     const { columns } = useItemTable<PlaylistItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="playlist-list-content">
+        <ListWrapper>
             <ItemTable<PlaylistItem, PlaylistTableItemContext>
                 columnOrder={columnOrder}
                 columns={columns}

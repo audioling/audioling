@@ -138,7 +138,7 @@ function PaginatedGenreTableContent(props: PaginatedGenreTableProps) {
     const { columns } = useItemTable<GenreItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="genre-list-content">
+        <ListWrapper>
             <ItemTable<GenreItem, AlbumGridItemContext>
                 columnOrder={columnOrder}
                 columns={columns}

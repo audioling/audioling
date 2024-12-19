@@ -29,7 +29,7 @@ export const GlobalErrorBoundary = () => {
                 >
                     <pre>{JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}</pre>
                 </Code>
-                <Group grow>
+                <Group grow gap="sm">
                     <Button variant="filled" onClick={() => window.history.back()}>
                         Go back
                     </Button>

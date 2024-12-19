@@ -60,7 +60,18 @@
 
 .image-container {
     position: relative;
+    display: flex;
     grid-area: image;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.background-image {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

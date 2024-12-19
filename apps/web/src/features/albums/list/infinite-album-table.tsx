@@ -160,7 +160,7 @@ export function InfiniteAlbumTable({
     const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="album-list-content">
+        <ListWrapper>
             <ItemTable<AlbumItem, AlbumTableItemContext>
                 columnOrder={columnOrder}
                 columns={columns}

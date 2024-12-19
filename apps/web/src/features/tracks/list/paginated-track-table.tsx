@@ -138,7 +138,7 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
     const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="track-list-content">
+        <ListWrapper>
             <ItemTable<TrackItem, TrackTableItemContext>
                 columnOrder={columnOrder}
                 columns={columns}

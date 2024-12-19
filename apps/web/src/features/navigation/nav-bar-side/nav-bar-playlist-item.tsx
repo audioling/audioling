@@ -51,7 +51,9 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                 playlistId: playlistId,
             })}
         >
-            <Text size="md">{name}</Text>
+            <Text isEllipsis size="md">
+                {name}
+            </Text>
         </NavLink>
     );
 }

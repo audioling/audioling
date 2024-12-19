@@ -118,13 +118,15 @@ function ExpandedAlbumGridItemContent({
                     </div>
                 </ScrollArea>
             </div>
-            <div
-                className={styles.imageContainer}
-                style={{
-                    ['--bg-color' as string]: color?.rgb,
-                    backgroundImage: `url(${imageUrl})`,
-                }}
-            />
+            <div className={styles.imageContainer}>
+                <div
+                    className={styles.backgroundImage}
+                    style={{
+                        ['--bg-color' as string]: color?.rgb,
+                        backgroundImage: `url(${imageUrl})`,
+                    }}
+                />
+            </div>
         </motion.div>
     );
 }

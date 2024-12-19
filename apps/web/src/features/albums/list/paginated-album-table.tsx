@@ -9,6 +9,7 @@ import {
 } from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import type { AlbumGridItemContext } from '@/features/albums/list/album-grid-item.tsx';
+import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -20,7 +21,6 @@ import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination } from '@/hooks/use-list.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
-import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
 
 interface PaginatedAlbumTableProps {
     baseUrl: string;
@@ -138,7 +138,7 @@ function PaginatedAlbumTableContent(props: PaginatedAlbumTableProps) {
     const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper id="album-list-content">
+        <ListWrapper>
             <ItemTable<AlbumItem, AlbumGridItemContext>
                 columnOrder={columnOrder}
                 columns={columns}
