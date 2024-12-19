@@ -94,6 +94,8 @@
 
 .label {
     font-weight: base.$font-weight-md;
+
+    @include base.text-ellipsis;
 }
 
 .inner {
