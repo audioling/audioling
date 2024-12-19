@@ -4,10 +4,7 @@ import { InfiniteAlbumGrid } from '@/features/albums/list/infinite-album-grid.ts
 import { InfiniteAlbumTable } from '@/features/albums/list/infinite-album-table.tsx';
 import { PaginatedAlbumGrid } from '@/features/albums/list/paginated-album-grid.tsx';
 import { PaginatedAlbumTable } from '@/features/albums/list/paginated-album-table.tsx';
-import {
-    useAlbumListActions,
-    useAlbumListState,
-} from '@/features/albums/stores/album-list-store.ts';
+import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import { useListKey } from '@/hooks/use-list.ts';
@@ -15,8 +12,12 @@ import { useListKey } from '@/hooks/use-list.ts';
 export function AlbumListContent() {
     const { libraryId } = useParams() as { libraryId: string };
     const [searchParams] = useSearchParams();
-    const { sortBy, sortOrder } = useAlbumListState();
+
+    const folderId = useAlbumListStore.use.folderId();
+    const sortBy = useAlbumListStore.use.sortBy();
+    const sortOrder = useAlbumListStore.use.sortOrder();
     const { data: itemCount } = useGetApiLibraryIdAlbumsCountSuspense(libraryId, {
+        folderId,
         searchTerm: searchParams.get('search') ?? undefined,
         sortBy,
         sortOrder,
@@ -28,19 +29,34 @@ export function AlbumListContent() {
 function ListComponent({ itemCount }: { itemCount: number }) {
     const { libraryId } = useParams() as { libraryId: string };
     const [searchParams] = useSearchParams();
-    const { listId, sortBy, sortOrder, pagination, displayType, paginationType } =
-        useAlbumListState();
-    const { setPagination } = useAlbumListActions();
+
+    const listId = useAlbumListStore.use.listId();
+    const sortBy = useAlbumListStore.use.sortBy();
+    const folderId = useAlbumListStore.use.folderId();
+    const sortOrder = useAlbumListStore.use.sortOrder();
+    const pagination = useAlbumListStore.use.pagination();
+    const displayType = useAlbumListStore.use.displayType();
+    const paginationType = useAlbumListStore.use.paginationType();
+    const setPagination = useAlbumListStore.use.setPagination();
+
     const baseUrl = useAuthBaseUrl();
 
     const listKey = useListKey({
         displayType,
+        folderId,
         listId,
         pagination,
         paginationType,
         sortBy,
         sortOrder,
     });
+
+    const params = {
+        folderId,
+        searchTerm: searchParams.get('search') ?? undefined,
+        sortBy,
+        sortOrder,
+    };
 
     if (displayType === ItemListDisplayType.GRID) {
         switch (paginationType) {
@@ -52,11 +68,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                         libraryId={libraryId}
                         listKey={listKey}
                         pagination={pagination}
-                        params={{
-                            searchTerm: searchParams.get('search') ?? undefined,
-                            sortBy,
-                            sortOrder,
-                        }}
+                        params={params}
                         setPagination={setPagination}
                     />
                 );
@@ -68,11 +80,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                         itemCount={itemCount}
                         libraryId={libraryId}
                         pagination={pagination}
-                        params={{
-                            searchTerm: searchParams.get('search') ?? undefined,
-                            sortBy,
-                            sortOrder,
-                        }}
+                        params={params}
                     />
                 );
         }
@@ -87,7 +95,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                     libraryId={libraryId}
                     listKey={listKey}
                     pagination={pagination}
-                    params={{ sortBy, sortOrder }}
+                    params={params}
                     setPagination={setPagination}
                 />
             );
@@ -99,7 +107,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                     libraryId={libraryId}
                     listKey={listKey}
                     pagination={pagination}
-                    params={{ sortBy, sortOrder }}
+                    params={params}
                 />
             );
     }

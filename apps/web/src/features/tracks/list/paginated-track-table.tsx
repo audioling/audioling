@@ -11,10 +11,7 @@ import {
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { TrackTableItemContext } from '@/features/tracks/list/infinite-track-table.tsx';
-import {
-    useTrackListActions,
-    useTrackListState,
-} from '@/features/tracks/store/track-list-store.ts';
+import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
@@ -136,8 +133,8 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
         });
     }, []);
 
-    const { columnOrder } = useTrackListState();
-    const { setColumnOrder } = useTrackListActions();
+    const columnOrder = useTrackListStore.use.columnOrder();
+    const setColumnOrder = useTrackListStore.use.setColumnOrder();
     const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
 
     return (

@@ -3,14 +3,14 @@ import { ListSortOrder } from '@repo/shared-types';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { useShallow } from 'zustand/react/shallow';
 import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
+import { createSelectors } from '@/lib/zustand.ts';
 import type { ListStore } from '@/store/list-store.ts';
 
 type TrackListStore = ListStore<TrackListSortOptions>;
 
-export const useTrackListStore = create<TrackListStore>()(
+export const useTrackListStoreBase = create<TrackListStore>()(
     persist(
         subscribeWithSelector(
             immer((set) => ({
@@ -22,6 +22,7 @@ export const useTrackListStore = create<TrackListStore>()(
                     ItemListColumn.ACTIONS,
                 ],
                 displayType: ItemListDisplayType.TABLE,
+                folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
                 pagination: {
@@ -40,6 +41,11 @@ export const useTrackListStore = create<TrackListStore>()(
                         state.pagination.currentPage = 1;
                     });
                 },
+                setFolderId: (folderId) => {
+                    set((state) => {
+                        state.folderId = folderId;
+                    });
+                },
                 setInitialScrollIndex: (initialScrollIndex) => {
                     set((state) => {
                         state.initialScrollIndex = initialScrollIndex;
@@ -56,6 +62,7 @@ export const useTrackListStore = create<TrackListStore>()(
                         state.pagination = pagination;
                     });
                 },
+
                 setPaginationType: (paginationType) => {
                     set((state) => {
                         state.paginationType = paginationType;
@@ -81,32 +88,4 @@ export const useTrackListStore = create<TrackListStore>()(
     ),
 );
 
-export const useTrackListState = () => {
-    return useTrackListStore(
-        useShallow((state) => ({
-            columnOrder: state.columnOrder,
-            displayType: state.displayType,
-            initialScrollIndex: state.initialScrollIndex,
-            listId: state.listId,
-            pagination: state.pagination,
-            paginationType: state.paginationType,
-            sortBy: state.sortBy,
-            sortOrder: state.sortOrder,
-        })),
-    );
-};
-
-export const useTrackListActions = () => {
-    return useTrackListStore(
-        useShallow((state) => ({
-            setColumnOrder: state.setColumnOrder,
-            setDisplayType: state.setDisplayType,
-            setInitialScrollIndex: state.setInitialScrollIndex,
-            setListId: state.setListId,
-            setPagination: state.setPagination,
-            setPaginationType: state.setPaginationType,
-            setSortBy: state.setSortBy,
-            setSortOrder: state.setSortOrder,
-        })),
-    );
-};
+export const useTrackListStore = createSelectors(useTrackListStoreBase);

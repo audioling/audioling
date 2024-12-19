@@ -16,6 +16,7 @@ export const usePlaylistListStoreBase = create<PlaylistListStore>()(
             immer((set) => ({
                 columnOrder: [ItemListColumn.IMAGE, ItemListColumn.NAME, ItemListColumn.ACTIONS],
                 displayType: ItemListDisplayType.GRID,
+                folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
                 pagination: {
@@ -32,6 +33,11 @@ export const usePlaylistListStoreBase = create<PlaylistListStore>()(
                     set((state) => {
                         state.displayType = displayType;
                         state.pagination.currentPage = 1;
+                    });
+                },
+                setFolderId: (folderId) => {
+                    set((state) => {
+                        state.folderId = folderId;
                     });
                 },
                 setInitialScrollIndex: (initialScrollIndex) => {

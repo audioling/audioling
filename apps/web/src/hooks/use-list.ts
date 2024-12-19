@@ -26,6 +26,7 @@ export function useListInitialize({ setListId }: UseListInitializeProps) {
 
 interface UseListKeyProps<TSortOptions> {
     displayType: ItemListDisplayType;
+    folderId?: string[];
     listId: Record<string, string>;
     pagination?: ItemListPaginationState;
     paginationType?: ItemListPaginationType;
@@ -35,6 +36,7 @@ interface UseListKeyProps<TSortOptions> {
 
 export function useListKey<TSortOptions>({
     displayType,
+    folderId,
     listId,
     pagination,
     paginationType,
@@ -44,7 +46,7 @@ export function useListKey<TSortOptions>({
     const location = useLocation();
 
     if (paginationType === ItemListPaginationType.PAGINATED) {
-        return `${sortBy}-${sortOrder}-${paginationType}-${pagination?.currentPage}-${listId[location.pathname]}`;
+        return `${sortBy}-${sortOrder}-${paginationType}-${pagination?.currentPage}-${folderId?.join(',')}-${listId[location.pathname]}`;
     }
 
     return `${sortBy}-${sortOrder}-${displayType}-${listId[location.pathname]}`;

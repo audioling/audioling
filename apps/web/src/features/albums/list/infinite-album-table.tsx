@@ -8,10 +8,7 @@ import {
     getGetApiLibraryIdAlbumsQueryKey,
 } from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import {
-    useAlbumListActions,
-    useAlbumListState,
-} from '@/features/albums/stores/album-list-store.ts';
+import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
@@ -157,8 +154,8 @@ export function InfiniteAlbumTable({
         loadedPages.current = {};
     }, [itemCount, listKey]);
 
-    const { columnOrder } = useAlbumListState();
-    const { setColumnOrder } = useAlbumListActions();
+    const columnOrder = useAlbumListStore.use.columnOrder();
+    const setColumnOrder = useAlbumListStore.use.setColumnOrder();
 
     const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
 

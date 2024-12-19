@@ -5,15 +5,13 @@ import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdTracksCountQueryKey } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
 import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
+import { ListFolderFilterButton } from '@/features/shared/list-folder-filter-button/list-folder-filter-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { ListPaginationTypeButton } from '@/features/shared/list-pagination-type-button/list-pagination-type-button.tsx';
 import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
 import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
-import {
-    useTrackListActions,
-    useTrackListState,
-} from '@/features/tracks/store/track-list-store.ts';
+import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { useRefreshList } from '@/hooks/use-list.ts';
@@ -26,9 +24,18 @@ export function TrackListHeader() {
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
 
-    const { sortBy, sortOrder, displayType, paginationType } = useTrackListState();
-    const { setSortBy, setSortOrder, setDisplayType, setListId, setPaginationType } =
-        useTrackListActions();
+    const setListId = useTrackListStore.use.setListId();
+    const folderId = useTrackListStore.use.folderId();
+    const sortBy = useTrackListStore.use.sortBy();
+    const sortOrder = useTrackListStore.use.sortOrder();
+    const displayType = useTrackListStore.use.displayType();
+    const paginationType = useTrackListStore.use.paginationType();
+
+    const setFolderId = useTrackListStore.use.setFolderId();
+    const setSortBy = useTrackListStore.use.setSortBy();
+    const setSortOrder = useTrackListStore.use.setSortOrder();
+    const setDisplayType = useTrackListStore.use.setDisplayType();
+    const setPaginationType = useTrackListStore.use.setPaginationType();
 
     const handleRefresh = useRefreshList({
         queryKey: [`/api/${libraryId}/albums`],
@@ -65,6 +72,7 @@ export function TrackListHeader() {
                             sort={sortBy}
                             onSortChanged={setSortBy}
                         />
+                        <ListFolderFilterButton folderId={folderId} onFolderChanged={setFolderId} />
                         <SortOrderButton order={sortOrder} onOrderChanged={setSortOrder} />
                         <RefreshButton isLoading={Boolean(isFetching)} onRefresh={handleRefresh} />
                     </Group>

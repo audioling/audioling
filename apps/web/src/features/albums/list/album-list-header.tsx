@@ -3,12 +3,10 @@ import { AlbumListSortOptions } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdAlbumsCountQueryKey } from '@/api/openapi-generated/albums/albums.ts';
-import {
-    useAlbumListActions,
-    useAlbumListState,
-} from '@/features/albums/stores/album-list-store.ts';
+import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
 import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
+import { ListFolderFilterButton } from '@/features/shared/list-folder-filter-button/list-folder-filter-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { ListPaginationTypeButton } from '@/features/shared/list-pagination-type-button/list-pagination-type-button.tsx';
 import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
@@ -25,9 +23,18 @@ export function AlbumListHeader() {
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
 
-    const { sortBy, sortOrder, displayType, paginationType } = useAlbumListState();
-    const { setSortBy, setSortOrder, setDisplayType, setListId, setPaginationType } =
-        useAlbumListActions();
+    const sortBy = useAlbumListStore.use.sortBy();
+    const sortOrder = useAlbumListStore.use.sortOrder();
+    const displayType = useAlbumListStore.use.displayType();
+    const paginationType = useAlbumListStore.use.paginationType();
+    const folderId = useAlbumListStore.use.folderId();
+
+    const setSortBy = useAlbumListStore.use.setSortBy();
+    const setSortOrder = useAlbumListStore.use.setSortOrder();
+    const setDisplayType = useAlbumListStore.use.setDisplayType();
+    const setPaginationType = useAlbumListStore.use.setPaginationType();
+    const setFolderId = useAlbumListStore.use.setFolderId();
+    const setListId = useAlbumListStore.use.setListId();
 
     const handleRefresh = useRefreshList({
         queryKey: [`/api/${libraryId}/albums`],
@@ -36,10 +43,12 @@ export function AlbumListHeader() {
 
     const [searchParams] = useSearchParams();
     const itemCountQueryKey = getGetApiLibraryIdAlbumsCountQueryKey(libraryId, {
+        folderId,
         searchTerm: searchParams.get('search') ?? undefined,
         sortBy,
         sortOrder,
     });
+
     const itemCount = queryClient.getQueryData<number | undefined>(itemCountQueryKey);
 
     const isFetchingItemCount = useIsFetching({
@@ -67,6 +76,7 @@ export function AlbumListHeader() {
                             sort={sortBy}
                             onSortChanged={setSortBy}
                         />
+                        <ListFolderFilterButton folderId={folderId} onFolderChanged={setFolderId} />
                         <SortOrderButton order={sortOrder} onOrderChanged={setSortOrder} />
                         <RefreshButton isLoading={Boolean(isFetching)} onRefresh={handleRefresh} />
                     </Group>

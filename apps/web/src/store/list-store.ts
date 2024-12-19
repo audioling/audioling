@@ -9,12 +9,14 @@ import type {
 export type ListStore<TSortBy> = {
     columnOrder: ItemListColumnOrder;
     displayType: ItemListDisplayType;
+    folderId: string[];
     initialScrollIndex: number;
     listId: Record<string, string>;
     pagination: ItemListPaginationState;
     paginationType: ItemListPaginationType;
     setColumnOrder: (columnOrder: ItemListColumnOrder) => void;
     setDisplayType: (displayType: ItemListDisplayType) => void;
+    setFolderId: (folderId: string[]) => void;
     setInitialScrollIndex: (initialScrollIndex: number) => void;
     setListId: (key: string, id: string) => void;
     setPagination: (pagination: ItemListPaginationState) => void;

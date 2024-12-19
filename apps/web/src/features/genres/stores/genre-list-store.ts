@@ -21,6 +21,7 @@ export const useGenreListStoreBase = create<GenreListStore>()(
                     ItemListColumn.ACTIONS,
                 ],
                 displayType: ItemListDisplayType.GRID,
+                folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
                 pagination: {
@@ -37,6 +38,11 @@ export const useGenreListStoreBase = create<GenreListStore>()(
                     set((state) => {
                         state.displayType = displayType;
                         state.pagination.currentPage = 1;
+                    });
+                },
+                setFolderId: (folderId) => {
+                    set((state) => {
+                        state.folderId = folderId;
                     });
                 },
                 setInitialScrollIndex: (initialScrollIndex) => {

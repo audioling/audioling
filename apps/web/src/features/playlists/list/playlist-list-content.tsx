@@ -1,15 +1,13 @@
 import { useParams, useSearchParams } from 'react-router';
 import { useGetApiLibraryIdPlaylistsCountSuspense } from '@/api/openapi-generated/playlists/playlists.ts';
-import { InfiniteAlbumTable } from '@/features/albums/list/infinite-album-table.tsx';
-import { PaginatedAlbumTable } from '@/features/albums/list/paginated-album-table.tsx';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { InfinitePlaylistGrid } from '@/features/playlists/list/infinite-playlist-grid.tsx';
 import { InfinitePlaylistTable } from '@/features/playlists/list/infinite-playlist-table.tsx';
 import { PaginatedPlaylistGrid } from '@/features/playlists/list/paginated-playlist-grid.tsx';
+import { PaginatedPlaylistTable } from '@/features/playlists/list/paginated-playlist-table.tsx';
 import { usePlaylistListStore } from '@/features/playlists/stores/playlist-list-store.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import { useListKey } from '@/hooks/use-list.ts';
-import { PaginatedPlaylistTable } from '@/features/playlists/list/paginated-playlist-table.tsx';
 
 export function PlaylistListContent() {
     const { libraryId } = useParams() as { libraryId: string };

@@ -8,10 +8,7 @@ import {
     getApiLibraryIdTracks,
     getGetApiLibraryIdTracksQueryKey,
 } from '@/api/openapi-generated/tracks/tracks.ts';
-import {
-    useTrackListActions,
-    useTrackListState,
-} from '@/features/tracks/store/track-list-store.ts';
+import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
@@ -137,8 +134,8 @@ export function InfiniteTrackTable({
         loadedPages.current = {};
     }, [itemCount, listKey]);
 
-    const { columnOrder } = useTrackListState();
-    const { setColumnOrder } = useTrackListActions();
+    const columnOrder = useTrackListStore.use.columnOrder();
+    const setColumnOrder = useTrackListStore.use.setColumnOrder();
 
     const { columns } = useItemTable<TrackItem>(columnOrder, setColumnOrder);
 

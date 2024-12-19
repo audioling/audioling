@@ -4,13 +4,13 @@ import { ComponentErrorBoundary } from '@/features/shared/error-boundary/compone
 import { PageContainer } from '@/features/shared/page-container/page-container.tsx';
 import { TrackListContent } from '@/features/tracks/list/track-list-content.tsx';
 import { TrackListHeader } from '@/features/tracks/list/track-list-header.tsx';
-import { useTrackListActions } from '@/features/tracks/store/track-list-store.ts';
+import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { useDelayedRender } from '@/hooks/use-delayed-render.ts';
 import { useListInitialize } from '@/hooks/use-list.ts';
 
 export function TrackListRoute() {
-    const { setListId } = useTrackListActions();
+    const setListId = useTrackListStore.use.setListId();
     useListInitialize({ setListId });
 
     const { show } = useDelayedRender(300);
