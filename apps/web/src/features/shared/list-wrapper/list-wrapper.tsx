@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { motion } from 'motion/react';
+import { type ReactNode } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import styles from './list-wrapper.module.scss';
 
@@ -12,17 +12,17 @@ export function ListWrapper(props: ListWrapperProps) {
     const { children, listKey } = props;
 
     return (
-        <motion.div
-            key={listKey}
-            animate="show"
-            className={styles.container}
-            exit="hidden"
-            id={listKey}
-            initial="hidden"
-            transition={{ duration: 0.3 }}
-            variants={animationVariants.fadeIn}
-        >
-            {children}
-        </motion.div>
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={listKey}
+                animate="show"
+                className={styles.container}
+                initial="hidden"
+                transition={{ duration: 0.3 }}
+                variants={animationVariants.blurIn}
+            >
+                {children}
+            </motion.div>
+        </AnimatePresence>
     );
 }

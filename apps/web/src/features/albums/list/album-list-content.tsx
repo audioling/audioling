@@ -41,22 +41,20 @@ function ListComponent({ itemCount }: { itemCount: number }) {
 
     const baseUrl = useAuthBaseUrl();
 
-    const listKey = useListKey({
-        displayType,
-        folderId,
-        listId,
-        pagination,
-        paginationType,
-        sortBy,
-        sortOrder,
-    });
-
     const params = {
         folderId,
         searchTerm: searchParams.get('search') ?? undefined,
         sortBy,
         sortOrder,
     };
+
+    const listKey = useListKey({
+        displayType,
+        listId,
+        pagination,
+        paginationType,
+        params,
+    });
 
     if (displayType === ItemListDisplayType.GRID) {
         switch (paginationType) {

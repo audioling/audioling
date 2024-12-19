@@ -36,13 +36,18 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     const setPagination = usePlaylistListStore.use.setPagination();
     const baseUrl = useAuthBaseUrl();
 
+    const params = {
+        searchTerm: searchParams.get('search') ?? undefined,
+        sortBy,
+        sortOrder,
+    };
+
     const listKey = useListKey({
         displayType,
         listId,
         pagination,
         paginationType,
-        sortBy,
-        sortOrder,
+        params,
     });
 
     if (displayType === ItemListDisplayType.GRID) {
@@ -55,11 +60,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                         libraryId={libraryId}
                         listKey={listKey}
                         pagination={pagination}
-                        params={{
-                            searchTerm: searchParams.get('search') ?? undefined,
-                            sortBy,
-                            sortOrder,
-                        }}
+                        params={params}
                         setPagination={setPagination}
                     />
                 );
@@ -71,11 +72,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                         libraryId={libraryId}
                         listKey={listKey}
                         pagination={pagination}
-                        params={{
-                            searchTerm: searchParams.get('search') ?? undefined,
-                            sortBy,
-                            sortOrder,
-                        }}
+                        params={params}
                     />
                 );
         }
@@ -90,7 +87,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                     libraryId={libraryId}
                     listKey={listKey}
                     pagination={pagination}
-                    params={{ sortBy, sortOrder }}
+                    params={params}
                     setPagination={setPagination}
                 />
             );
@@ -102,7 +99,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                     libraryId={libraryId}
                     listKey={listKey}
                     pagination={pagination}
-                    params={{ sortBy, sortOrder }}
+                    params={params}
                 />
             );
     }

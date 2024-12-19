@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence } from 'motion/react';
 import type { PlaylistItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import {
@@ -29,11 +28,9 @@ export function InfinitePlaylistGrid(props: InfinitePlaylistGridProps) {
     const { listKey } = props;
 
     return (
-        <AnimatePresence mode="wait">
-            <ListWrapper key={listKey}>
-                <InfinitePlaylistGridContent {...props} />
-            </ListWrapper>
-        </AnimatePresence>
+        <ListWrapper listKey={listKey}>
+            <InfinitePlaylistGridContent {...props} />
+        </ListWrapper>
     );
 }
 

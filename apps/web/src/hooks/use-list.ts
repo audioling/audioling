@@ -1,12 +1,7 @@
 import { useCallback, useEffect } from 'react';
-import type { ListSortOrder } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router';
-import type {
-    ItemListDisplayType,
-    ItemListPaginationState,
-} from '@/features/ui/item-list/types.ts';
-import type { ItemListPaginationType } from '@/features/ui/item-list/types.ts';
+import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { randomString } from '@/utils/random-string.ts';
 import { safeStringify } from '@/utils/stringify.ts';
 
@@ -25,36 +20,12 @@ export function useListInitialize({ setListId }: UseListInitializeProps) {
     return id;
 }
 
-interface UseListKeyProps<TSortOptions> {
-    displayType: ItemListDisplayType;
-    folderId?: string[];
-    listId: Record<string, string>;
-    pagination?: ItemListPaginationState;
-    paginationType?: ItemListPaginationType;
-    sortBy: TSortOptions;
-    sortOrder: ListSortOrder;
-}
-
-export function useListKey<TSortOptions>({
-    displayType,
-    folderId,
-    listId,
-    pagination,
-    paginationType,
-    sortBy,
-    sortOrder,
-}: UseListKeyProps<TSortOptions>) {
+export function useListKey(args: Record<string, unknown>) {
     const location = useLocation();
 
     const key = safeStringify({
-        displayType,
-        folderId,
-        listId,
-        location: listId[location.pathname],
-        pagination,
-        paginationType,
-        sortBy,
-        sortOrder,
+        ...args,
+        location: location.pathname,
     });
 
     return key;

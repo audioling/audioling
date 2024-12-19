@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence } from 'motion/react';
 import type { AlbumItem } from '@/api/api-types.ts';
 import {
     getApiLibraryIdAlbums,
@@ -27,11 +26,9 @@ export function InfiniteAlbumGrid(props: InfiniteAlbumGridProps) {
     const { listKey } = props;
 
     return (
-        <AnimatePresence mode="wait">
-            <ListWrapper key={listKey}>
-                <InfiniteAlbumGridContent {...props} />
-            </ListWrapper>
-        </AnimatePresence>
+        <ListWrapper listKey={listKey}>
+            <InfiniteAlbumGridContent {...props} />
+        </ListWrapper>
     );
 }
 

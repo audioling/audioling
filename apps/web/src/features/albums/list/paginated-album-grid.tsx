@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { AnimatePresence } from 'motion/react';
 import type { AlbumItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
@@ -30,11 +29,9 @@ export function PaginatedAlbumGrid(props: PaginatedAlbumGridProps) {
     return (
         <Stack h="100%">
             <Suspense fallback={<EmptyPlaceholder />}>
-                <AnimatePresence mode="wait">
-                    <ListWrapper key={listKey}>
-                        <PaginatedAlbumGridContent {...props} />
-                    </ListWrapper>
-                </AnimatePresence>
+                <ListWrapper listKey={listKey}>
+                    <PaginatedAlbumGridContent {...props} />
+                </ListWrapper>
             </Suspense>
             <Pagination
                 currentPage={pagination.currentPage}

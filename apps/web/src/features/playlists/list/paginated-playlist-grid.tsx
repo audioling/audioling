@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { AnimatePresence } from 'motion/react';
 import type { PlaylistItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { useGetApiLibraryIdPlaylistsSuspense } from '@/api/openapi-generated/playlists/playlists.ts';
@@ -30,11 +29,9 @@ export function PaginatedPlaylistGrid(props: PaginatedPlaylistGridProps) {
     return (
         <Stack h="100%">
             <Suspense fallback={<EmptyPlaceholder />}>
-                <AnimatePresence mode="wait">
-                    <ListWrapper key={listKey}>
-                        <PaginatedPlaylistGridContent {...props} />
-                    </ListWrapper>
-                </AnimatePresence>
+                <ListWrapper listKey={listKey}>
+                    <PaginatedPlaylistGridContent {...props} />
+                </ListWrapper>
             </Suspense>
             <Pagination
                 currentPage={pagination.currentPage}
