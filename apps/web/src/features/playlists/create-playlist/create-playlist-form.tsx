@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { usePostApiLibraryIdPlaylists } from '@/api/openapi-generated/playlists/playlists.ts';
@@ -9,11 +10,17 @@ interface CreatePlaylistFormProps {
     formId: string;
     libraryId: string;
     onSuccess: () => void;
+    setIsLoading: (isLoading: boolean) => void;
 }
 
-export function CreatePlaylistForm({ formId, libraryId, onSuccess }: CreatePlaylistFormProps) {
+export function CreatePlaylistForm({
+    formId,
+    libraryId,
+    onSuccess,
+    setIsLoading,
+}: CreatePlaylistFormProps) {
     const queryClient = useQueryClient();
-    const { mutate: createPlaylist } = usePostApiLibraryIdPlaylists();
+    const { mutate: createPlaylist, isPending } = usePostApiLibraryIdPlaylists();
 
     const form = useForm({
         defaultValues: {
@@ -22,6 +29,10 @@ export function CreatePlaylistForm({ formId, libraryId, onSuccess }: CreatePlayl
             name: '',
         },
     });
+
+    useEffect(() => {
+        setIsLoading(isPending);
+    }, [isPending, setIsLoading]);
 
     const handleSubmit = form.handleSubmit((data) => {
         if (!libraryId) {
@@ -50,11 +61,13 @@ export function CreatePlaylistForm({ formId, libraryId, onSuccess }: CreatePlayl
                 <TextInput
                     data-autofocus
                     required
+                    disabled={isPending}
                     label="Name"
                     placeholder="Enter a name for the playlist"
                     {...form.register('name', { required: true })}
                 />
                 <TextArea
+                    disabled={isPending}
                     label="Description"
                     placeholder="A brief description for the playlist"
                     {...form.register('description')}

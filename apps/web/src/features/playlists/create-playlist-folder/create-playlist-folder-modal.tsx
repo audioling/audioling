@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { createCallable } from 'react-call';
 import { CreatePlaylistFolderForm } from '@/features/playlists/create-playlist-folder/create-playlist-folder-form.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
@@ -13,6 +13,8 @@ export const CreatePlaylistFolderModal = createCallable<CreatePlaylistFolderModa
     ({ call, libraryId }) => {
         const formId = useId();
 
+        const [isLoading, setIsLoading] = useState(false);
+
         return (
             <Modal
                 isClosing={call.ended}
@@ -23,6 +25,7 @@ export const CreatePlaylistFolderModal = createCallable<CreatePlaylistFolderModa
                     <CreatePlaylistFolderForm
                         formId={formId}
                         libraryId={libraryId}
+                        setIsLoading={setIsLoading}
                         onSuccess={() => call.end(true)}
                     />
                     <Modal.ButtonGroup>
@@ -34,7 +37,7 @@ export const CreatePlaylistFolderModal = createCallable<CreatePlaylistFolderModa
                         >
                             Cancel
                         </Button>
-                        <Button form={formId} type="submit" variant="filled">
+                        <Button form={formId} isLoading={isLoading} type="submit" variant="filled">
                             Create
                         </Button>
                     </Modal.ButtonGroup>

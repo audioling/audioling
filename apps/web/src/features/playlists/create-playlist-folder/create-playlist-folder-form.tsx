@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ListSortOrder, PlaylistFolderListSortOptions } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -13,20 +14,26 @@ interface CreatePlaylistFolderFormProps {
     formId: string;
     libraryId: string;
     onSuccess: () => void;
+    setIsLoading: (isLoading: boolean) => void;
 }
 
 export function CreatePlaylistFolderForm({
     formId,
     libraryId,
     onSuccess,
+    setIsLoading,
 }: CreatePlaylistFolderFormProps) {
     const queryClient = useQueryClient();
-    const { mutate: createPlaylistFolder } = usePostApiLibraryIdPlaylistsFolders();
+    const { mutate: createPlaylistFolder, isPending } = usePostApiLibraryIdPlaylistsFolders();
 
     const { data: playlistsFolders } = useGetApiLibraryIdPlaylistsFoldersSuspense(libraryId, {
         sortBy: PlaylistFolderListSortOptions.NAME,
         sortOrder: ListSortOrder.ASC,
     });
+
+    useEffect(() => {
+        setIsLoading(isPending);
+    }, [isPending, setIsLoading]);
 
     const parentOptions = playlistsFolders.data.map((folder) => ({
         label: folder.name,
@@ -41,6 +48,7 @@ export function CreatePlaylistFolderForm({
     });
 
     const handleSubmit = form.handleSubmit((data) => {
+        setIsLoading(true);
         createPlaylistFolder(
             {
                 data: {
@@ -69,11 +77,13 @@ export function CreatePlaylistFolderForm({
             <Stack>
                 <TextInput
                     data-autofocus
+                    disabled={isPending}
                     label="Name"
                     {...form.register('name', { required: true })}
                 />
                 <Select
                     data={parentOptions}
+                    disabled={isPending}
                     label="Parent"
                     {...form.register('parentId')}
                     onChange={(e) => form.setValue('parentId', e === null ? '' : e)}
