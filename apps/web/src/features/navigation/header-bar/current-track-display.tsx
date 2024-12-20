@@ -8,6 +8,10 @@ import styles from './current-track-display.module.scss';
 export function CurrentTrackDisplay() {
     const { track: currentTrack, index, length } = useCurrentTrack();
 
+    const title = getTitle(index, length, currentTrack);
+
+    document.title = title;
+
     return (
         <AnimatePresence mode="wait">
             <motion.div
@@ -19,7 +23,7 @@ export function CurrentTrackDisplay() {
                 variants={animationVariants.blurIn}
             >
                 <Text isEllipsis isNoSelect size="md">
-                    {getTitle(index, length, currentTrack)}
+                    {title}
                 </Text>
             </motion.div>
         </AnimatePresence>
