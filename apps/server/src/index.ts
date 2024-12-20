@@ -23,6 +23,13 @@ const imageModule = initImageModule();
 
 const db = initDatabase({ idFactory });
 
+export const imageWorker =
+    Bun.env.NODE_ENV === 'development'
+        ? new Worker(new URL('./image-worker.ts', import.meta.url), {
+              type: 'module',
+          })
+        : new Worker('./image-worker.ts');
+
 initApplication({
     config,
     modules: {

@@ -1,9 +1,10 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 import type { LibraryItemType } from '@repo/shared-types';
 import type { AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database';
+import { imageWorker } from '@/index.js';
 import type { ImageModule } from '@/modules/image/index.js';
 
 // SECTION - Image Service
@@ -17,34 +18,31 @@ export const initImageService = (modules: { db: AppDatabase; imageModule: ImageM
             args: { id: string; libraryId: string; size?: number; type: LibraryItemType },
             cache: boolean = true,
         ) => {
-            const size = args.size || 300;
-
             const imagePath = path.join(
                 CONSTANTS.CACHE_DIR(args.libraryId),
-                size.toString(),
+                (args.size || 300).toString(),
                 args.id,
             );
 
             if (cache) {
-                const isImageCached = await isCached(imagePath);
-
-                if (isImageCached) {
+                if (fs.existsSync(imagePath)) {
                     const { buffer } = await imageModule.getBufferFromPath(imagePath);
                     return buffer;
                 }
             }
 
-            const url = adapter._getCoverArtUrl(args);
-            const { buffer } = await imageModule.getBufferFromUrl(url);
-            // const thumbHash = await imageModule.generateThumbHash(arrayBuffer);
-            // db.thumbhash.insert(args.libraryId, args.id, thumbHash);
-            const avifBuffer = await imageModule.convertToAvif(buffer);
+            const { buffer } = await imageModule.getBufferFromUrl(adapter._getCoverArtUrl(args));
+            // const avifBuffer = await imageModule.convertToAvif(buffer);
 
-            if (cache) {
-                await cacheImage(imagePath, avifBuffer);
-            }
+            // Cache image in the worker
+            imageWorker.postMessage({
+                payload: { buffer: buffer, imagePath, shouldCache: cache },
+                type: 'processImage',
+            });
 
-            return avifBuffer;
+            // cacheImage(imagePath, buffer);
+
+            return buffer;
         },
         // ANCHOR - Get Thumbhash
         getThumbHash: async (args: { id: string; libraryId: string; type: LibraryItemType }) => {
@@ -61,16 +59,16 @@ export const initImageService = (modules: { db: AppDatabase; imageModule: ImageM
 
 export type ImageService = ReturnType<typeof initImageService>;
 
-async function isCached(imagePath: string) {
-    return fs.exists(imagePath);
-}
+// async function isCached(imagePath: string) {
+//     return fs.exists(imagePath);
+// }
 
-async function cacheImage(imagePath: string, buffer: Buffer) {
-    // Check if image directory exists, if not create it
-    const imageDir = path.dirname(imagePath);
-    if (!(await fs.exists(imageDir))) {
-        await fs.mkdir(imageDir, { recursive: true });
-    }
+// async function cacheImage(imagePath: string, buffer: Buffer) {
+//     // Check if image directory exists, if not create it
+//     const imageDir = path.dirname(imagePath);
+//     if (!fs.existsSync(imageDir)) {
+//         fs.mkdirSync(imageDir, { recursive: true });
+//     }
 
-    await fs.writeFile(imagePath, buffer);
-}
+//     fs.writeFileSync(imagePath, buffer);
+// }
