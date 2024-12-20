@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import {
     subscribePlayerProgress,
     usePlayerDuration,
-    usePlayerProgress,
 } from '@/features/player/stores/player-store.tsx';
 import { Slider } from '@/features/ui/slider/slider.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -11,7 +10,6 @@ import { formatDuration } from '@/utils/format-duration.ts';
 import styles from './player-progress.module.scss';
 
 export function PlayerProgress() {
-    const currentTime = usePlayerProgress();
     const duration = usePlayerDuration();
 
     const [value, setValue] = useState(0);
@@ -25,14 +23,14 @@ export function PlayerProgress() {
         });
 
         return () => unsubscribe();
-    }, [currentTime, isDragging]);
+    }, [isDragging]);
 
-    const onChange = (value: number[]) => {
+    const onChange = useCallback((value: number[]) => {
         setIsDragging(true);
         setValue(value[0]);
-    };
+    }, []);
 
-    const onChangeEnd = (value: number[]) => {
+    const onChangeEnd = useCallback((value: number[]) => {
         setIsDragging(false);
         PlayerController.call({
             cmd: {
@@ -41,7 +39,7 @@ export function PlayerProgress() {
                 },
             },
         });
-    };
+    }, []);
 
     return (
         <div className={styles.container}>
