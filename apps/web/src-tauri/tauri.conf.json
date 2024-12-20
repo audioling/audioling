@@ -10,16 +10,20 @@
         "frontendDist": "../dist"
     },
     "app": {
+        "withGlobalTauri": true,
         "windows": [
             {
                 "title": "audioling",
-                "width": 800,
+                "width": 1440,
                 "resizable": true,
-                "height": 600,
+                "height": 900,
                 "minWidth": 360,
                 "minHeight": 720,
                 "fullscreen": false,
-                "dragDropEnabled": false
+                "dragDropEnabled": false,
+                "hiddenTitle": false,
+                "titleBarStyle": "Visible",
+                "decorations": true
             }
         ],
         "security": {
