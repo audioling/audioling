@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import { CurrentTrackDisplay } from '@/features/navigation/header-bar/current-track-display.tsx';
 import { FileMenu } from '@/features/navigation/header-bar/file-menu.tsx';
 import { RightPanelButton } from '@/features/navigation/header-bar/right-panel-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
@@ -25,7 +26,9 @@ export function HeaderBar() {
                     <IconButton icon="arrowRightS" variant="default" onClick={handleGoForward} />
                 </Group>
             </div>
-            <div className={styles.center} id="header-bar-center"></div>
+            <div className={styles.center} id="header-bar-center">
+                <CurrentTrackDisplay />
+            </div>
             <div className={styles.right} id="header-bar-right">
                 <Group gap="xs" wrap="nowrap">
                     <RightPanelButton />
