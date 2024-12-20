@@ -11,11 +11,7 @@ export type PlaylistGridItemContext = {
 export function PlaylistGridItem(
     props: InfiniteGridItemProps<PlaylistItem, PlaylistGridItemContext>,
 ) {
-    const { context, data, index, isExpanded } = props;
-
-    if (isExpanded && data) {
-        return null;
-    }
+    const { context, data, index } = props;
 
     if (data) {
         return (
@@ -25,7 +21,6 @@ export function PlaylistGridItem(
                 image={`${context.baseUrl}${data.imageUrl}&size=300`}
                 libraryId={context.libraryId}
                 metadata={[]}
-                // metadata={[{ path: '/', text: data.artists[0]?.name }]}
                 metadataLines={1}
                 titledata={{ path: '/', text: data.name }}
             />

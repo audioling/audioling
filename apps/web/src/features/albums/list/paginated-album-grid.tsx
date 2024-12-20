@@ -55,6 +55,7 @@ function PaginatedAlbumGridContent(props: PaginatedAlbumGridProps) {
 
     return (
         <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
+            enableExpanded
             GridComponent={MemoizedAlbumGridItem}
             context={{ baseUrl, libraryId }}
             data={fetchedData.data}

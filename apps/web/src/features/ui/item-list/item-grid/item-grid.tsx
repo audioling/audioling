@@ -42,10 +42,11 @@ const GridItemComponent = forwardRef<
         className?: string;
         context?: Record<string, unknown>;
         'data-index': number;
+        enableExpanded?: boolean;
         style?: CSSProperties;
     }
 >((props, ref) => {
-    const { children, 'data-index': index } = props;
+    const { children, 'data-index': index, enableExpanded } = props;
 
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -70,6 +71,10 @@ const GridItemComponent = forwardRef<
     }, [index]);
 
     const handleClick = () => {
+        if (!enableExpanded) {
+            return;
+        }
+
         if (isExpanded) {
             document.documentElement.style.removeProperty('--opened-item-index');
         } else {
@@ -132,6 +137,7 @@ interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: strin
     GridComponent: React.ComponentType<InfiniteGridItemProps<T, C>>;
     context: C;
     data: (T | undefined)[];
+    enableExpanded?: boolean;
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
@@ -147,6 +153,7 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
     const {
         context,
         data,
+        enableExpanded = false,
         GridComponent,
         itemCount = 0,
         initialScrollIndex,
@@ -195,7 +202,9 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
         >
             <VirtuosoGrid
                 components={{
-                    Item: GridItemComponent,
+                    Item: (props) => (
+                        <GridItemComponent {...props} enableExpanded={enableExpanded} />
+                    ),
                     List: GridListComponent,
                 }}
                 data={data}

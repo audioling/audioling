@@ -94,6 +94,7 @@ export function InfiniteAlbumGridContent({
 
     return (
         <InfiniteItemGrid<AlbumItem, AlbumGridItemContext>
+            enableExpanded
             GridComponent={MemoizedAlbumGridItem}
             context={{ baseUrl, libraryId }}
             data={data}
