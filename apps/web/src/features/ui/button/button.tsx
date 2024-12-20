@@ -50,12 +50,18 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${radius || 'md'}`]]: true,
         [styles.uppercase]: uppercase,
+        [styles.loading]: isLoading,
     });
 
     const innerClassNames = clsx({
         [styles.inner]: true,
         [styles[`justify-${justify || 'center'}`]]: true,
         [styles.justifyBetweenIcons]: justify === 'between' && leftIcon && rightIcon,
+    });
+
+    const labelClassNames = clsx({
+        [styles.innerLabel]: true,
+        [styles.loading]: isLoading,
     });
 
     const buttonClassNames = {
@@ -77,7 +83,12 @@ export const Button = forwardRef((props: ButtonProps, ref: Ref<HTMLButtonElement
             rightSection={rightIcon && <Icon icon={rightIcon} {...rightIconProps} />}
             {...htmlProps}
         >
-            {children}
+            {isLoading && (
+                <div className={styles.spinner}>
+                    <Icon icon="spinner" />
+                </div>
+            )}
+            <span className={labelClassNames}>{children}</span>
         </MantineButton>
     );
 });
