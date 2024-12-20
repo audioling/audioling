@@ -9,6 +9,7 @@ interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
     as?: React.ElementType | any;
     isCentered?: boolean;
     isEllipsis?: boolean;
+    isNoSelect?: boolean;
     isSecondary?: boolean;
     size?: Sizes;
     to?: NavLinkProps['to'];
@@ -21,6 +22,7 @@ export const Text = (props: TextProps) => {
         children,
         isCentered,
         isEllipsis,
+        isNoSelect,
         isSecondary,
         size,
         weight,
@@ -34,6 +36,7 @@ export const Text = (props: TextProps) => {
         [styles.secondary]: isSecondary,
         [styles.ellipsis]: isEllipsis,
         [styles.centered]: isCentered,
+        [styles.noSelect]: isNoSelect,
     });
 
     return (
