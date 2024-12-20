@@ -8,7 +8,7 @@ import styles from './player-bar-left.module.scss';
 
 export function PlayerBarLeft() {
     const shouldReduceMotion = useReducedMotion();
-    const currentTrack = useCurrentTrack();
+    const { track: currentTrack } = useCurrentTrack();
     const baseUrl = useAuthBaseUrl();
 
     return (

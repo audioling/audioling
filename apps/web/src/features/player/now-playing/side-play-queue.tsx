@@ -67,11 +67,11 @@ export function SidePlayQueue() {
     const [data, setData] = useState<PlayQueueItem[]>([]);
     const [groups, setGroups] = useState<{ count: number; name: string }[]>([]);
 
-    const currentTrack = useCurrentTrack();
+    const { track } = useCurrentTrack();
 
     const tableContext = useMemo(
-        () => ({ baseUrl, currentTrack, libraryId }),
-        [baseUrl, currentTrack, libraryId],
+        () => ({ baseUrl, currentTrack: track, libraryId }),
+        [baseUrl, track, libraryId],
     );
 
     const [columnOrder, setColumnOrder] = useState<ItemListColumnOrder>([

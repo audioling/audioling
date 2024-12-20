@@ -50,11 +50,11 @@ export function PlayQueue() {
     }, [getQueue]);
 
     const [data, setData] = useState<PlayQueueItem[]>([]);
-    const currentTrack = useCurrentTrack();
+    const { track } = useCurrentTrack();
 
     const tableContext = useMemo(
-        () => ({ baseUrl, currentTrack, libraryId }),
-        [baseUrl, libraryId, currentTrack],
+        () => ({ baseUrl, currentTrack: track, libraryId }),
+        [baseUrl, libraryId, track],
     );
 
     const [columnOrder, setColumnOrder] = useState<ItemListColumnOrder>([

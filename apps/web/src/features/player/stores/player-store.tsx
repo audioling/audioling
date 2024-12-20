@@ -965,11 +965,13 @@ export const usePlayerProperties = () => {
 };
 
 export const useCurrentTrack = () => {
-    return usePlayerStoreBase((state) => {
-        const queue = state.getQueue();
-        const index = state.player.index;
-        return queue.items[index];
-    });
+    return usePlayerStoreBase(
+        useShallow((state) => {
+            const queue = state.getQueue();
+            const index = state.player.index;
+            return { index, length: queue.items.length, track: queue.items[index] };
+        }),
+    );
 };
 
 export const usePlayerProgress = () => {
