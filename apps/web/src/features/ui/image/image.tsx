@@ -13,6 +13,7 @@ export function Image(props: ImageProps) {
 
     return (
         <LazyLoadImage
+            loading="eager"
             {...imgProps}
             effect={visibleByDefault ? undefined : 'opacity'}
             visibleByDefault={visibleByDefault}
