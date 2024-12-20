@@ -22,7 +22,7 @@ export function PlaylistGridItem(
             <PlaylistCard
                 componentState="loaded"
                 id={data.id}
-                image={`${context.baseUrl}${data.imageUrl}&size=400`}
+                image={`${context.baseUrl}${data.imageUrl}&size=300`}
                 libraryId={context.libraryId}
                 metadata={[]}
                 // metadata={[{ path: '/', text: data.artists[0]?.name }]}

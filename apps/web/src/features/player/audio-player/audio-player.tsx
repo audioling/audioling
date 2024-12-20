@@ -76,5 +76,5 @@ export function getStreamUrl(url: string, baseUrl: string) {
 }
 
 export function getImageUrl(url: string, baseUrl: string) {
-    return `${baseUrl}${url}&size=400`;
+    return `${baseUrl}${url}&size=300`;
 }

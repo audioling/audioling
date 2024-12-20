@@ -38,7 +38,7 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
             <AlbumCard
                 componentState="loaded"
                 id={data.id}
-                image={`${context.baseUrl}${data.imageUrl}&size=400`}
+                image={`${context.baseUrl}${data.imageUrl}&size=300`}
                 libraryId={context.libraryId}
                 metadata={[{ path: '/', text: data.artists[0]?.name }]}
                 metadataLines={1}
@@ -76,7 +76,7 @@ function ExpandedAlbumGridItemContent({
         sortOrder: ListSortOrder.ASC,
     });
 
-    const imageUrl = `${context.baseUrl}${data.imageUrl}&size=400`;
+    const imageUrl = `${context.baseUrl}${data.imageUrl}&size=300`;
 
     const color = useImageColor(imageUrl);
 
