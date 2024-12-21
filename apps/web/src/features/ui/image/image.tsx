@@ -1,49 +1,35 @@
 import type { ImgHTMLAttributes } from 'react';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import clsx from 'clsx';
+import { Img } from 'react-image';
+import TrackImage from '@/assets/placeholders/track.png';
+import { Center } from '@/features/ui/center/center.tsx';
+import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './image.module.scss';
-import 'react-lazy-load-image-component/src/effects/opacity.css';
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
     thumbHash?: string;
-    visibleByDefault?: boolean;
 }
 
 export function Image(props: ImageProps) {
-    const { visibleByDefault, ...imgProps } = props;
+    const { src } = props;
 
+    if (src) {
+        return (
+            <Img
+                className={clsx(styles.image, props.className)}
+                loader={<ImageLoader />}
+                src={[src, TrackImage]}
+            />
+        );
+    }
+
+    return null;
+}
+
+function ImageLoader() {
     return (
-        <LazyLoadImage
-            loading="eager"
-            {...imgProps}
-            effect={visibleByDefault ? undefined : 'opacity'}
-            visibleByDefault={visibleByDefault}
-            wrapperClassName={styles.wrapper}
-        />
+        <Center>
+            <Skeleton className={styles.loader} />
+        </Center>
     );
-
-    // const placeholderSrc = thumbHash ? imageUtils.thumbHashToDataURL(thumbHash) : undefined;
-
-    // return (
-    //     <div style={{ position: 'relative' }}>
-    //         {placeholderSrc && (
-    //             <img
-    //                 alt=""
-    //                 src={placeholderSrc}
-    //                 style={{
-    //                     height: '100%',
-    //                     left: 0,
-    //                     position: 'absolute',
-    //                     top: 0,
-    //                     width: '100%',
-    //                     zIndex: -1,
-    //                 }}
-    //             />
-    //         )}
-    //         <LazyLoadImage
-    //             {...imgProps}
-    //             effect="opacity"
-    //             wrapperProps={{ style: { transitionDelay: '1s', transitionDuration: '0.5s' } }}
-    //         />
-    //     </div>
-    // );
 }

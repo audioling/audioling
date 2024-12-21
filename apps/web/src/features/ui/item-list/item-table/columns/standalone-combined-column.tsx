@@ -24,7 +24,6 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
                     return (
                         <div className={styles.standaloneCombined}>
                             <Image
-                                visibleByDefault
                                 className={styles.image}
                                 height={35}
                                 src={`${context.baseUrl}${item.imageUrl}&size=100`}

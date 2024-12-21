@@ -14,7 +14,6 @@ export function imageColumn<T>(columnHelper: ColumnHelper<T>) {
                     return (
                         <div className={styles.cell}>
                             <Image
-                                visibleByDefault
                                 className={styles.image}
                                 src={`${context.baseUrl}${item.imageUrl}&size=100`}
                             />
