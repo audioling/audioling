@@ -196,6 +196,10 @@ export type AppThemeConfiguration = {
         'scroll-bar-track-background-color': CSSProperties['backgroundColor'];
         'scroll-bar-track-border-radius': CSSProperties['borderRadius'];
         'scroll-bar-track-hover-background-color': CSSProperties['backgroundColor'];
+        'skeleton-animation-duration': CSSProperties['animationDuration'];
+        'skeleton-background-color': CSSProperties['backgroundColor'];
+        'skeleton-border-radius': CSSProperties['borderRadius'];
+        'skeleton-highlight-color': CSSProperties['color'];
         'table-border-color': CSSProperties['borderColor'];
         'table-cell-border-color': CSSProperties['borderColor'];
         'table-group-background-color': CSSProperties['backgroundColor'];
