@@ -2,7 +2,6 @@ import type { ImgHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import { Img } from 'react-image';
 import TrackImage from '@/assets/placeholders/track.png';
-import { Center } from '@/features/ui/center/center.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './image.module.scss';
 
@@ -18,6 +17,7 @@ export function Image(props: ImageProps) {
             <Img
                 className={clsx(styles.image, props.className)}
                 loader={<ImageLoader />}
+                loading="eager"
                 src={[src, TrackImage]}
             />
         );
@@ -28,8 +28,8 @@ export function Image(props: ImageProps) {
 
 function ImageLoader() {
     return (
-        <Center>
-            <Skeleton className={styles.loader} />
-        </Center>
+        <div className={styles.loader}>
+            <Skeleton height="100%" width="100%" />
+        </div>
     );
 }
