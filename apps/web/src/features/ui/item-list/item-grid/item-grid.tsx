@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode, SyntheticEvent } from 'react';
+import type { CSSProperties, ReactNode, RefObject, SyntheticEvent } from 'react';
 import React, {
     Children,
     cloneElement,
@@ -6,12 +6,14 @@ import React, {
     isValidElement,
     Suspense,
     useEffect,
+    useImperativeHandle,
     useRef,
     useState,
 } from 'react';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
+import type { GridIndexLocation, VirtuosoGridHandle } from 'react-virtuoso';
 import { VirtuosoGrid } from 'react-virtuoso';
 import styles from './item-grid.module.scss';
 
@@ -44,9 +46,10 @@ const GridItemComponent = forwardRef<
         'data-index': number;
         enableExpanded?: boolean;
         style?: CSSProperties;
+        virtuosoRef?: RefObject<VirtuosoGridHandle>;
     }
 >((props, ref) => {
-    const { children, 'data-index': index, enableExpanded } = props;
+    const { children, 'data-index': index, enableExpanded, virtuosoRef } = props;
 
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -79,6 +82,12 @@ const GridItemComponent = forwardRef<
             document.documentElement.style.removeProperty('--opened-item-index');
         } else {
             document.documentElement.style.setProperty('--opened-item-index', index.toString());
+
+            virtuosoRef?.current?.scrollToIndex({
+                align: 'start',
+                behavior: 'smooth',
+                index,
+            });
         }
     };
 
@@ -145,6 +154,7 @@ interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: strin
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
+    virtuosoRef?: RefObject<VirtuosoGridHandle>;
 }
 
 export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: string }>(
@@ -162,6 +172,7 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
         onRangeChanged,
         onScroll,
         onStartReached,
+        virtuosoRef,
     } = props;
     const rootRef = useRef(null);
 
@@ -194,6 +205,20 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
         return () => osInstance()?.destroy();
     }, [scroller, initialize, osInstance]);
 
+    const ref = useRef<VirtuosoGridHandle | null>(null);
+
+    useImperativeHandle(virtuosoRef, () => ({
+        scrollBy: (location: ScrollToOptions) => {
+            ref?.current?.scrollBy(location);
+        },
+        scrollTo: (location: ScrollToOptions) => {
+            ref?.current?.scrollTo(location);
+        },
+        scrollToIndex: (location: GridIndexLocation) => {
+            ref?.current?.scrollToIndex(location);
+        },
+    }));
+
     return (
         <div
             ref={rootRef}
@@ -201,15 +226,20 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
             data-overlayscrollbars-initialize=""
         >
             <VirtuosoGrid
+                ref={ref}
                 components={{
                     Item: (props) => (
-                        <GridItemComponent {...props} enableExpanded={enableExpanded} />
+                        <GridItemComponent
+                            {...props}
+                            enableExpanded={enableExpanded}
+                            virtuosoRef={ref}
+                        />
                     ),
                     List: GridListComponent,
                 }}
                 data={data}
                 endReached={onEndReached}
-                increaseViewportBy={600}
+                increaseViewportBy={200}
                 initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={(index, data) => (
