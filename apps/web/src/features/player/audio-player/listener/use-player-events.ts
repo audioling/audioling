@@ -5,8 +5,8 @@ import type { PlayerStatus, QueueData } from '@/features/player/stores/player-st
 
 export interface PlayerEvents {
     onCurrentTrackChange?: (
-        track: PlayQueueItem | undefined,
-        prevTrack: PlayQueueItem | undefined,
+        track: { index: number; track: PlayQueueItem | undefined },
+        prevTrack: { index: number; track: PlayQueueItem | undefined },
     ) => void;
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;

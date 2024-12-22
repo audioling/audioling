@@ -87,7 +87,8 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
             }
 
             case 'mediaPlay': {
-                mediaPlay();
+                const command = cmd as MediaPlay;
+                mediaPlay(command.mediaPlay?.id);
                 break;
             }
 
@@ -270,7 +271,9 @@ type MediaPause = {
 };
 
 type MediaPlay = {
-    mediaPlay: null;
+    mediaPlay: null | {
+        id: string;
+    };
 };
 
 type MediaNext = {

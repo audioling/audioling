@@ -76,7 +76,7 @@ interface Actions {
     mediaAutoNext: () => PlayerData;
     mediaNext: () => void;
     mediaPause: () => void;
-    mediaPlay: () => void;
+    mediaPlay: (id?: string) => void;
     mediaPrevious: () => void;
     mediaSeekToTimestamp: (timestamp: number) => void;
     mediaStepBackward: () => void;
@@ -521,8 +521,14 @@ export const usePlayerStoreBase = create<PlayerState>()(
                         state.player.status = PlayerStatus.PAUSED;
                     });
                 },
-                mediaPlay: () => {
+                mediaPlay: (id?: string) => {
                     set((state) => {
+                        if (id) {
+                            state.player.index = state.queue.default.findIndex(
+                                (item) => item._uniqueId === id,
+                            );
+                        }
+
                         state.player.status = PlayerStatus.PLAYING;
                     });
                 },
@@ -897,16 +903,22 @@ export const subscribePlayerQueue = (
 };
 
 export const subscribeCurrentTrack = (
-    onChange: (track: PlayQueueItem | undefined, prevTrack: PlayQueueItem | undefined) => void,
+    onChange: (
+        track: { index: number; track: PlayQueueItem | undefined },
+        prevTrack: { index: number; track: PlayQueueItem | undefined },
+    ) => void,
 ) => {
     return usePlayerStoreBase.subscribe(
         (state) => {
             const queue = state.getQueue();
             const index = state.player.index;
-            return queue.items[index];
+            return { index, track: queue.items[index] };
         },
         (track, prevTrack) => {
             onChange(track, prevTrack);
+        },
+        {
+            equalityFn: (a, b) => a.track._uniqueId === b.track._uniqueId,
         },
     );
 };

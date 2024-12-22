@@ -11,8 +11,8 @@ import {
 
 export interface PlayerEventsCallbacks {
     onCurrentTrackChange?: (
-        track: PlayQueueItem | undefined,
-        prevTrack: PlayQueueItem | undefined,
+        track: { index: number; track: PlayQueueItem | undefined },
+        prevTrack: { index: number; track: PlayQueueItem | undefined },
     ) => void;
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;
