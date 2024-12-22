@@ -3,12 +3,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { Row, Table } from '@tanstack/react-table';
 import { useParams } from 'react-router';
+import { initSimpleImg } from 'react-simple-img';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import type { QueueGroupingProperty } from '@/features/player/stores/player-store.tsx';
 import {
+    subscribeCurrentTrack,
     subscribePlayerQueue,
     useCurrentTrack,
     usePlayerActions,
@@ -16,11 +18,13 @@ import {
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { ItemListColumn, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
-import type { GroupedItemTableHandle } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
 import { GroupedItemTable } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
-import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
+import type {
+    ItemTableHandle,
+    ItemTableRowDrop,
+} from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Menu } from '@/features/ui/menu/menu.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import { DragOperation, DragTarget } from '@/utils/drag-drop.ts';
@@ -32,12 +36,15 @@ interface SidePlayQueueTableItemContext {
     libraryId: string;
 }
 
+initSimpleImg({ threshold: 0.05 }, true);
+
 export function SidePlayQueue() {
     const baseUrl = useAuthBaseUrl();
     const { libraryId } = useParams() as { libraryId: string };
 
-    const { getQueue } = usePlayerActions();
+    const itemTableRef = useRef<ItemTableHandle<PlayQueueItem> | undefined>(undefined);
 
+    const { getQueue } = usePlayerActions();
     const [groupBy, setGroupBy] = useState<QueueGroupingProperty | undefined>(undefined);
 
     useEffect(() => {
@@ -59,9 +66,23 @@ export function SidePlayQueue() {
             setQueue();
         });
 
+        const unsubCurrentTrack = subscribeCurrentTrack((e) => {
+            if (e.index !== -1) {
+                itemTableRef.current?.scrollToIndex({
+                    align: 'start',
+                    behavior: 'smooth',
+                    index: e.index,
+                    offset: -50,
+                });
+            }
+        });
+
         setQueue();
 
-        return () => unsub();
+        return () => {
+            unsub();
+            unsubCurrentTrack();
+        };
     }, [getQueue, groupBy]);
 
     const [data, setData] = useState<PlayQueueItem[]>([]);
@@ -150,6 +171,24 @@ export function SidePlayQueue() {
 
     const { onRowClick } = useMultiRowSelection<PlayQueueItem>();
 
+    const onRowDoubleClick = useCallback(
+        (_e: MouseEvent<HTMLDivElement>, row: Row<PlayQueueItem | undefined>) => {
+            if (!row || !row.original) {
+                return;
+            }
+
+            itemTableRef.current?.scrollToIndex({
+                align: 'start',
+                behavior: 'smooth',
+                index: row.index,
+                offset: -50,
+            });
+
+            PlayerController.call({ cmd: { mediaPlay: { id: row.original?._uniqueId } } });
+        },
+        [],
+    );
+
     const onRowContextMenu = (
         e: MouseEvent<HTMLDivElement>,
         row: Row<PlayQueueItem | undefined>,
@@ -174,8 +213,6 @@ export function SidePlayQueue() {
         return row?._uniqueId ?? index.toString();
     }, []);
 
-    const itemTableRef = useRef<GroupedItemTableHandle<PlayQueueItem> | undefined>(undefined);
-
     return (
         <div className={styles.container}>
             <Group align="center" className={styles.header} gap="sm" justify="between">
@@ -198,12 +235,13 @@ export function SidePlayQueue() {
                     getRowId={getRowId}
                     groups={groups}
                     itemCount={data.length}
-                    itemTableRef={itemTableRef}
                     itemType={LibraryItemType.TRACK}
                     rowIdProperty="_uniqueId"
+                    virtuosoRef={itemTableRef}
                     onChangeColumnOrder={setColumnOrder}
                     onRowClick={onRowClick}
                     onRowContextMenu={onRowContextMenu}
+                    onRowDoubleClick={onRowDoubleClick}
                     onRowDrop={onRowDrop}
                 />
             </div>
