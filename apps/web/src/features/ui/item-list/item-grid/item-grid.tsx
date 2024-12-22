@@ -154,7 +154,7 @@ interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: strin
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
-    virtuosoRef?: RefObject<VirtuosoGridHandle>;
+    virtuosoRef?: RefObject<VirtuosoGridHandle | undefined>;
 }
 
 export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: string }>(

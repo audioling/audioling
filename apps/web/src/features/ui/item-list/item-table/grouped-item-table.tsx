@@ -5,7 +5,12 @@ import type { ExpandedState, Row, Table } from '@tanstack/react-table';
 import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
-import type { GroupedVirtuosoHandle } from 'react-virtuoso';
+import type {
+    FlatIndexLocationWithAlign,
+    FlatScrollIntoViewLocation,
+    GroupedVirtuosoHandle,
+    StateCallback,
+} from 'react-virtuoso';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
@@ -18,7 +23,6 @@ import styles from './item-table.module.scss';
 interface GroupedItemTableProps<T, C extends { baseUrl: string; libraryId: string }>
     extends ItemTableProps<T, C> {
     groups: ItemTableGroup[];
-    itemTableRef?: MutableRefObject<GroupedVirtuosoHandle | undefined>;
     onGroupClick?: (
         e: MouseEvent<HTMLDivElement>,
         items: Row<T | undefined>[],
@@ -28,10 +32,6 @@ interface GroupedItemTableProps<T, C extends { baseUrl: string; libraryId: strin
 }
 
 export type ItemTableGroup = { count: number; name: string };
-
-export type GroupedItemTableHandle<T> = GroupedVirtuosoHandle & {
-    getTable: () => Table<T | undefined>;
-};
 
 export const GroupedItemTable = <
     T extends { _uniqueId: string; id: string },
@@ -66,11 +66,12 @@ export const GroupedItemTable = <
         onScroll,
         onStartReached,
         rowIdProperty,
-        itemTableRef,
+        virtuosoRef,
     } = props;
 
     const tableId = useId();
 
+    const ref = useRef<GroupedVirtuosoHandle | null>(null);
     const rowsRef = useRef(null);
 
     const [scroller, setScroller] = useState<HTMLElement | Window | null>(null);
@@ -155,19 +156,27 @@ export const GroupedItemTable = <
 
     const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
 
-    useImperativeHandle<
-        GroupedVirtuosoHandle | undefined,
-        (GroupedVirtuosoHandle & { getTable: () => Table<T | undefined> }) | undefined
-    >(itemTableRef, () => {
-        if (itemTableRef && 'current' in itemTableRef && itemTableRef.current) {
-            return {
-                ...itemTableRef.current,
-                getTable: () => table,
-            };
-        }
-
-        return undefined;
-    });
+    useImperativeHandle(virtuosoRef, () => ({
+        autoscrollToBottom: () => {
+            ref?.current?.autoscrollToBottom();
+        },
+        getState: (stateCb: StateCallback) => {
+            ref?.current?.getState(stateCb);
+        },
+        getTable: () => table,
+        scrollBy: (location: ScrollToOptions) => {
+            ref?.current?.scrollBy(location);
+        },
+        scrollIntoView: (location: FlatScrollIntoViewLocation) => {
+            ref?.current?.scrollIntoView(location);
+        },
+        scrollTo: (location: ScrollToOptions) => {
+            ref?.current?.scrollTo(location);
+        },
+        scrollToIndex: (location: number | FlatIndexLocationWithAlign) => {
+            ref?.current?.scrollToIndex(location);
+        },
+    }));
 
     return (
         <div
@@ -192,7 +201,7 @@ export const GroupedItemTable = <
             <ComponentErrorBoundary>
                 <div ref={rowsRef} className={styles.rows} data-overlayscrollbars-initialize="">
                     <GroupedVirtuoso
-                        ref={itemTableRef as MutableRefObject<GroupedVirtuosoHandle>}
+                        ref={ref as MutableRefObject<GroupedVirtuosoHandle>}
                         components={{
                             Header: HeaderComponent
                                 ? (props) => <HeaderComponent {...props} />
