@@ -12,10 +12,10 @@ interface SkeletonProps {
     count?: number;
     direction?: 'ltr' | 'rtl';
     enableAnimation?: boolean;
-    height?: string;
+    height?: string | number;
     inline?: boolean;
     style?: CSSProperties;
-    width?: string;
+    width?: string | number;
 }
 
 export function Skeleton(props: SkeletonProps) {
