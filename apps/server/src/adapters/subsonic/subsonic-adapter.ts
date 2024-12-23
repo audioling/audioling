@@ -43,7 +43,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
     const baseApiClientOptions = {
         baseUrl: library.baseUrl,
-        clientName: adapterHelpers.getAppId(library),
+        clientName: CONSTANTS.APP_NAME,
         username: username,
     };
 
