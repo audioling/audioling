@@ -1,11 +1,5 @@
 {
-    "cssVariables.lookupFiles": [
-        "**/*.css",
-        "**/*.scss",
-        "**/*.sass",
-        "**/*.less",
-        "node_modules/@mantine/core/styles.css"
-    ],
+    "cssVariables.lookupFiles": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less"],
     "files.associations": {
         "*.css": "postcss"
     },
@@ -13,11 +7,7 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "js",
     "typescript.tsserver.experimental.enableProjectDiagnostics": false,
-    "typescript.preferences.autoImportFileExcludePatterns": [
-        "@mantine/core",
-        "@mantine/hooks",
-        "@radix-ui/*"
-    ],
+    "typescript.preferences.autoImportFileExcludePatterns": ["@radix-ui/*"],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit",
         "source.fixAll.stylelint": "explicit",

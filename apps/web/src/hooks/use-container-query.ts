@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useResizeObserver } from '@mantine/hooks';
+import { useResizeObserver } from '@/hooks/use-element-size.ts';
 import type { Breakpoints } from '@/types.ts';
 
 export function useContainerBreakpoints() {

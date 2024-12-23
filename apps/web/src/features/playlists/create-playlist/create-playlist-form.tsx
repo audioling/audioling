@@ -25,6 +25,7 @@ export function CreatePlaylistForm({
     const form = useForm({
         defaultValues: {
             description: '',
+            folderId: '',
             isPublic: false,
             name: '',
         },

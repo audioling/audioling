@@ -1,72 +1,88 @@
-import type { Ref } from 'react';
+import type { HTMLInputAutoCompleteAttribute, ReactNode, Ref } from 'react';
 import { forwardRef } from 'react';
-import type { TextInputProps as MantineTextInputProps } from '@mantine/core';
-import { TextInput as MantineTextInput } from '@mantine/core';
 import { clsx } from 'clsx';
+import type { AppIcon, IconProps } from '@/features/ui/icon/icon.tsx';
+import { Icon } from '@/features/ui/icon/icon.tsx';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './text-input.module.scss';
 
 export interface TextInputProps extends Omit<React.ComponentPropsWithoutRef<'input'>, 'size'> {
-    children?: React.ReactNode;
+    autoComplete?: HTMLInputAutoCompleteAttribute;
     description?: string;
     label?: string;
-    leftSection?: React.ReactNode;
+    leftIcon?: keyof typeof AppIcon;
+    leftIconProps?: Omit<IconProps, 'icon'>;
     placeholder?: string;
     radius?: Sizes;
-    rightSection?: React.ReactNode;
+    rightIcon?: keyof typeof AppIcon;
+    rightIconProps?: Omit<IconProps, 'icon'>;
+    rightSection?: ReactNode;
     size?: Sizes;
+    spellCheck?: boolean;
 }
 
 export const TextInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputElement>) => {
     const {
-        children,
+        autoComplete = 'off',
         description,
         label,
-        leftSection,
+        leftIcon,
+        leftIconProps,
         placeholder,
-        radius,
+        radius = 'md',
+        rightIcon,
+        rightIconProps,
         rightSection,
-        size,
+        size = 'md',
+        spellCheck = false,
         ...htmlProps
     } = props;
 
     const rootClassNames = clsx({
         [styles.root]: true,
-        [styles[`size-${size || 'md'}`]]: true,
+        [styles[`size-${size}`]]: true,
     });
 
     const inputClassNames = clsx({
         [styles.input]: true,
-        [styles[`size-${size || 'md'}`]]: true,
-        [styles[`radius-${radius || 'md'}`]]: true,
-        [styles.rightSection]: !!rightSection,
-        [styles.leftSection]: !!leftSection,
+        [styles[`size-${size}`]]: true,
+        [styles[`radius-${radius}`]]: true,
+        [styles.leftSection]: !!leftIcon,
+        [styles.rightSection]: !!rightIcon,
     });
 
-    const textInputClassNames: MantineTextInputProps['classNames'] = {
-        description: styles.description,
-        input: inputClassNames,
-        label: styles.label,
-        required: styles.required,
-        root: rootClassNames,
-        section: styles.section,
-        wrapper: styles.wrapper,
-    };
-
     return (
-        <MantineTextInput
-            ref={ref}
-            unstyled
-            classNames={textInputClassNames}
-            description={description}
-            label={label}
-            leftSection={leftSection}
-            placeholder={placeholder}
-            rightSection={rightSection}
-            {...htmlProps}
-        >
-            {children}
-        </MantineTextInput>
+        <div ref={ref} className={rootClassNames}>
+            {label && <label className={styles.label}>{label}</label>}
+            {description && <p className={styles.description}>{description}</p>}
+            <div className={styles.inputWrapper}>
+                <input
+                    autoComplete={autoComplete}
+                    placeholder={placeholder}
+                    spellCheck={spellCheck}
+                    type="text"
+                    {...htmlProps}
+                    className={clsx(inputClassNames, htmlProps.className)}
+                />
+                {leftIcon && (
+                    <Icon
+                        className={clsx(styles.section, styles.leftIcon)}
+                        icon={leftIcon}
+                        {...leftIconProps}
+                    />
+                )}
+                {rightIcon && (
+                    <Icon
+                        className={clsx(styles.section, styles.rightIcon)}
+                        icon={rightIcon}
+                        {...rightIconProps}
+                    />
+                )}
+                {rightSection && (
+                    <div className={clsx(styles.section, styles.rightIcon)}>{rightSection}</div>
+                )}
+            </div>
+        </div>
     );
 });
 

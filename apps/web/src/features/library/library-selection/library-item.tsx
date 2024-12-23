@@ -33,7 +33,7 @@ export const LibraryItem = forwardRef(
             <div className={libraryItemClassNames}>
                 <MotionButton
                     ref={ref}
-                    justify="between"
+                    justify="start"
                     leftIcon={library.isLocked ? 'lock' : 'check'}
                     leftIconProps={{
                         state: library.isLocked ? 'error' : 'success',

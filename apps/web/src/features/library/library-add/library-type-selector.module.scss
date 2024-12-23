@@ -1,7 +1,15 @@
 @use '@/styles/base';
 
 .root {
+    display: flex;
+    gap: var(--space-xs);
+    padding: var(--space-xs);
     background-color: var(--input-background-color);
+    border-radius: var(--input-radius);
+}
+
+.root * {
+    flex-grow: 1;
 }
 
 .indicator {

@@ -1,7 +1,8 @@
 @use '@/styles/base';
 
 .root {
-    border-color: var(--layout-divider-color);
+    height: var(--layout-divider-height);
+    background-color: var(--layout-divider-color);
 }
 
 .top-xs {

@@ -253,7 +253,7 @@ export function TableRow<
 export function LoaderRow() {
     return (
         <div className={styles.loaderRow}>
-            <Skeleton h="20px" w="100%" />
+            <Skeleton />
         </div>
     );
 }

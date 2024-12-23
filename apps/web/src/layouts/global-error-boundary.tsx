@@ -1,7 +1,7 @@
-import { Code } from '@mantine/core';
 import { useRouteError } from 'react-router';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
+import { ErrorBlock } from '@/features/ui/error-block/error-block.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -18,17 +18,7 @@ export const GlobalErrorBoundary = () => {
                     An error occurred
                 </Title>
                 <Text>Please reload the page.</Text>
-                <Code
-                    block
-                    styles={{
-                        root: {
-                            background: 'var(--paper-background-color)',
-                            color: 'var(--global-font-color)',
-                        },
-                    }}
-                >
-                    <pre>{JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}</pre>
-                </Code>
+                <ErrorBlock error={error} />
                 <Group grow gap="sm">
                     <Button variant="filled" onClick={() => window.history.back()}>
                         Go back

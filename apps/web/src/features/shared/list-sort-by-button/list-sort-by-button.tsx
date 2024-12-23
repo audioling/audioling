@@ -12,7 +12,7 @@ export function ListSortByButton<T>({ sort, onSortChanged, options }: ListSortBy
     return (
         <Menu align="start" side="bottom">
             <Menu.Target>
-                <Button leftIcon="sort" size="lg" variant="outline">
+                <Button isCompact leftIcon="sort" size="lg" variant="outline">
                     <Text>{options.find((option) => option.value === sort)?.label}</Text>
                 </Button>
             </Menu.Target>

@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
-import styles from './search-bar.module.scss';
 
 export function SearchBar() {
     const [searchQuery, setSearchQuery] = useState('');
 
     return (
-        <div className={styles.searchBar}>
+        <div>
             <TextInput
-                leftSection={<IconButton icon="search" size="sm" />}
+                leftIcon="search"
                 placeholder="Search"
-                size="xs"
+                size="sm"
                 spellCheck={false}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

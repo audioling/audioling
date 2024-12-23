@@ -1,6 +1,7 @@
 @use '@/styles/base';
 
 .content {
+    z-index: 10000;
     padding: var(--menu-padding);
     background-color: var(--menu-background-color);
     border: var(--menu-border);

@@ -1,8 +1,9 @@
-import { SegmentedControl } from '@mantine/core';
 import { LibraryType } from '@repo/shared-types';
 // import JellyfinIcon from '@/assets/logos/jellyfin.png';
 // import NavidromeIcon from '@/assets/logos/navidrome.png';
+import clsx from 'clsx';
 import SubsonicIcon from '@/assets/logos/opensubsonic.png';
+import { Button } from '@/features/ui/button/button.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './library-type-selector.module.scss';
@@ -38,15 +39,19 @@ interface LibraryTypeSelectorProps {
     value: LibraryType;
 }
 
-export const LibraryTypeSelector = ({ disabled, onChange, value }: LibraryTypeSelectorProps) => {
+export const LibraryTypeSelector = ({ onChange, value }: LibraryTypeSelectorProps) => {
     return (
-        <SegmentedControl
-            classNames={{ indicator: styles.indicator, root: styles.root }}
-            data={LIBRARY_SELECTIONS}
-            disabled={disabled}
-            value={value}
-            onChange={(value) => onChange(value as LibraryType)}
-        />
+        <div className={styles.root}>
+            {LIBRARY_SELECTIONS.map(({ label, value: selectionValue }) => (
+                <Button
+                    key={selectionValue}
+                    className={clsx({ [styles.indicator]: selectionValue === value })}
+                    onClick={() => onChange(selectionValue)}
+                >
+                    {label}
+                </Button>
+            ))}
+        </div>
     );
 };
 

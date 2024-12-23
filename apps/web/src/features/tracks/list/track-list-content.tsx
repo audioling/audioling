@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
@@ -12,7 +12,9 @@ export function TrackListContent() {
     const sortBy = useTrackListStore.use.sortBy();
     const sortOrder = useTrackListStore.use.sortOrder();
 
+    const [searchParams] = useSearchParams();
     const { data: itemCount } = useGetApiLibraryIdTracksCountSuspense(libraryId, {
+        searchTerm: searchParams.get('search') ?? undefined,
         sortBy,
         sortOrder,
     });
@@ -22,7 +24,7 @@ export function TrackListContent() {
 
 function ListComponent({ itemCount }: { itemCount: number }) {
     const { libraryId } = useParams() as { libraryId: string };
-
+    const [searchParams] = useSearchParams();
     const listId = useTrackListStore.use.listId();
     const folderId = useTrackListStore.use.folderId();
     const sortBy = useTrackListStore.use.sortBy();
@@ -46,6 +48,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
 
     const params = {
         folderId,
+        searchTerm: searchParams.get('search') ?? undefined,
         sortBy,
         sortOrder,
     };

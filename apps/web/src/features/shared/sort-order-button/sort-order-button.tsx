@@ -9,6 +9,7 @@ interface SortOrderButtonProps {
 export function SortOrderButton({ order, onOrderChanged }: SortOrderButtonProps) {
     return (
         <IconButtonWithTooltip
+            isCompact
             icon={order === ListSortOrder.ASC ? 'sortAsc' : 'sortDesc'}
             size="lg"
             tooltipProps={{

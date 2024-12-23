@@ -5,8 +5,7 @@ import { axiosInstance } from '@/api/api-instance.ts';
 import type { Ping } from '@/api/api-types.ts';
 import { animationProps } from '@/features/ui/animations/props.ts';
 import { Button } from '@/features/ui/button/button.tsx';
-import { Grid } from '@/features/ui/grid/grid.tsx';
-import { Icon } from '@/features/ui/icon/icon.tsx';
+import { Group } from '@/features/ui/group/group.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
@@ -88,23 +87,19 @@ export const ValidateServer = (props: ValidateServerProps) => {
                     <Title order={1} size="md" weight="lg">
                         Connect
                     </Title>
-                    <Grid>
-                        <Grid.Col span={10}>
-                            <TextInput
-                                data-autofocus
-                                placeholder="http://localhost:4544"
-                                size="md"
-                                value={props.value}
-                                onChange={(e) => props.onChange(e.currentTarget.value)}
-                            />
-                        </Grid.Col>
-                        <Grid.Col span={2}>
-                            <Icon
-                                icon={validationState === 'valid' ? 'check' : 'x'}
-                                state={validationState === 'valid' ? 'success' : 'error'}
-                            />
-                        </Grid.Col>
-                    </Grid>
+                    <Group>
+                        <TextInput
+                            data-autofocus
+                            placeholder="http://localhost:4544"
+                            rightIcon={validationState === 'valid' ? 'check' : 'x'}
+                            rightIconProps={{
+                                state: validationState === 'valid' ? 'success' : 'error',
+                            }}
+                            size="md"
+                            value={props.value}
+                            onChange={(e) => props.onChange(e.currentTarget.value)}
+                        />
+                    </Group>
                     <Button
                         isDisabled={validationState !== 'valid' || props.value === ''}
                         type="submit"

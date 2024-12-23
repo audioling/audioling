@@ -36,7 +36,7 @@ export function ListFolderFilterButton({ folderId, onFolderChanged }: ListFolder
     return (
         <Menu align="start" side="bottom">
             <Menu.Target>
-                <Button leftIcon="folder" size="lg" variant="outline">
+                <Button isCompact leftIcon="folder" size="lg" variant="outline">
                     <Text>{label || 'All'}</Text>
                 </Button>
             </Menu.Target>

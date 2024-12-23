@@ -17,6 +17,7 @@ import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/u
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
+import { Paper } from '@/features/ui/paper/paper.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination } from '@/hooks/use-list.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
@@ -39,13 +40,16 @@ export function PaginatedTrackTable(props: PaginatedTrackTableProps) {
     return (
         <Stack h="100%">
             <PaginatedTrackTableContent {...props} />
-            <Pagination
-                currentPage={pagination.currentPage}
-                itemCount={itemCount}
-                itemsPerPage={pagination.itemsPerPage}
-                justify="end"
-                {...paginationProps}
-            />
+            <Paper>
+                <Pagination
+                    currentPage={pagination.currentPage}
+                    itemCount={itemCount}
+                    itemsPerPage={pagination.itemsPerPage}
+                    justify="end"
+                    variant="outline"
+                    {...paginationProps}
+                />
+            </Paper>
         </Stack>
     );
 }

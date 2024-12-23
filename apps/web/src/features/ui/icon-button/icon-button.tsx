@@ -1,7 +1,5 @@
 import type { Ref } from 'react';
 import { forwardRef } from 'react';
-import type { ActionIconProps as MantineActionIconProps } from '@mantine/core';
-import { ActionIcon as MantineActionIcon } from '@mantine/core';
 import { clsx } from 'clsx';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
@@ -14,6 +12,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
     icon: keyof typeof AppIcon;
     iconFill?: boolean;
     iconProps?: React.ComponentProps<typeof Icon>;
+    isCompact?: boolean;
     isDisabled?: boolean;
     isLoading?: boolean;
     radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -22,8 +21,18 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButtonElement>) => {
-    const { isLoading, isDisabled, size, variant, iconProps, radius, iconFill, ...htmlProps } =
-        props;
+    const {
+        className,
+        isCompact,
+        isDisabled,
+        isLoading,
+        size,
+        variant,
+        iconProps,
+        radius,
+        iconFill,
+        ...htmlProps
+    } = props;
 
     const rootClassNames = clsx({
         [styles.root]: true,
@@ -37,21 +46,15 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
         [styles.outlineVariant]: variant === 'outline',
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`radius-${radius || 'md'}`]]: true,
+        [styles.compact]: isCompact,
         [styles.loading]: isLoading,
     });
 
-    const buttonClassNames: MantineActionIconProps['classNames'] = {
-        loader: styles.loader,
-        root: rootClassNames,
-    };
-
     return (
-        <MantineActionIcon
+        <button
             ref={ref}
-            unstyled
-            classNames={buttonClassNames}
+            className={clsx(rootClassNames, className)}
             disabled={isDisabled}
-            loading={isLoading}
             {...htmlProps}
         >
             <Icon
@@ -60,7 +63,7 @@ export const IconButton = forwardRef((props: IconButtonProps, ref: Ref<HTMLButto
                 size={size}
                 {...iconProps}
             />
-        </MantineActionIcon>
+        </button>
     );
 });
 

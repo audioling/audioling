@@ -20,9 +20,17 @@
     font-size: base.$font-size-sm;
 }
 
+.size-xs.compact {
+    padding: 0.125rem;
+}
+
 .size-sm {
     padding: 0.25rem 0.5rem;
     font-size: base.$font-size-sm;
+}
+
+.size-sm.compact {
+    padding: 0.25rem;
 }
 
 .size-md {
@@ -30,14 +38,26 @@
     font-size: base.$font-size-sm;
 }
 
+.size-md.compact {
+    padding: 0.375rem;
+}
+
 .size-lg {
     padding: 0.5rem 1rem;
     font-size: base.$font-size-md;
 }
 
+.size-lg.compact {
+    padding: 0.5rem;
+}
+
 .size-xl {
-    padding: 0.75rem 1.25rem;
+    padding: 0.5rem 1rem;
     font-size: base.$font-size-md;
+}
+
+.size-xl.compact {
+    padding: 0.5rem;
 }
 
 .radius-xs {
@@ -89,11 +109,7 @@
 }
 
 .label {
-    font-weight: base.$font-weight-md;
-}
-
-.loader {
-    display: none;
+    // font-weight: base.$font-weight-md;
 }
 
 .loading {

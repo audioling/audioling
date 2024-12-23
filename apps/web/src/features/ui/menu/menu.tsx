@@ -53,34 +53,57 @@ export function Menu(props: MenuProps) {
 
 interface ContentProps {
     children: ReactNode;
+    isInPortal?: boolean;
 }
 
 function Content(props: ContentProps) {
-    const { children } = props;
+    const { children, isInPortal = true } = props;
     const { align, open, side } = useContext(MenuContext) as MenuContext;
 
     return (
         <AnimatePresence>
             {open && (
-                <DropdownMenu.Portal forceMount>
-                    <DropdownMenu.Content
-                        asChild
-                        align={align}
-                        className={styles.content}
-                        collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
-                        side={side}
-                        sideOffset={6}
-                    >
-                        <motion.div
-                            animate="show"
-                            exit="hidden"
-                            initial="hidden"
-                            variants={animationVariants.fadeIn}
+                <>
+                    {isInPortal ? (
+                        <DropdownMenu.Portal forceMount>
+                            <DropdownMenu.Content
+                                asChild
+                                align={align}
+                                className={styles.content}
+                                collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
+                                side={side}
+                                sideOffset={6}
+                            >
+                                <motion.div
+                                    animate="show"
+                                    exit="hidden"
+                                    initial="hidden"
+                                    variants={animationVariants.fadeIn}
+                                >
+                                    {children}
+                                </motion.div>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Portal>
+                    ) : (
+                        <DropdownMenu.Content
+                            asChild
+                            align={align}
+                            className={styles.content}
+                            collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
+                            side={side}
+                            sideOffset={6}
                         >
-                            {children}
-                        </motion.div>
-                    </DropdownMenu.Content>
-                </DropdownMenu.Portal>
+                            <motion.div
+                                animate="show"
+                                exit="hidden"
+                                initial="hidden"
+                                variants={animationVariants.fadeIn}
+                            >
+                                {children}
+                            </motion.div>
+                        </DropdownMenu.Content>
+                    )}
+                </>
             )}
         </AnimatePresence>
     );

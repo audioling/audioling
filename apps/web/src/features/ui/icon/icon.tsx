@@ -149,16 +149,16 @@ export const AppIcon = {
     x: MdClose,
 } as const;
 
-interface IconProps {
+export interface IconProps {
     className?: string;
     fill?: boolean;
     icon: keyof typeof AppIcon;
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
-    state?: 'success' | 'error' | 'info' | 'warn';
+    state?: 'success' | 'error' | 'info' | 'warn' | 'secondary';
 }
 
 export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {
-    const { className, fill, size, icon } = props;
+    const { className, fill, size, icon, ...htmlProps } = props;
 
     const classNames = clsx(className, {
         [styles.icon]: true,
@@ -171,7 +171,7 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {
     const IconComponent = AppIcon[icon];
 
     return (
-        <span ref={ref} className={classNames}>
+        <span ref={ref} className={classNames} {...htmlProps}>
             <IconComponent />
         </span>
     );

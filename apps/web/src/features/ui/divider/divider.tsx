@@ -1,10 +1,10 @@
-import type { DividerProps as MantineDividerProps } from '@mantine/core';
-import { Divider as MantineDivider } from '@mantine/core';
+import * as Separator from '@radix-ui/react-separator';
 import clsx from 'clsx';
 import type { Sizes } from '@/themes/index.ts';
 import styles from './divider.module.scss';
 
 interface DividerProps extends React.ComponentPropsWithoutRef<'div'> {
+    decorative?: boolean;
     label?: string;
     labelPosition?: 'left' | 'right' | 'center';
     mb?: Sizes;
@@ -15,7 +15,7 @@ interface DividerProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 export const Divider = (props: DividerProps) => {
-    const { label, labelPosition, mb, mt, mx, my, orientation, ...htmlProps } = props;
+    const { decorative, mb, mt, mx, my, orientation, ...htmlProps } = props;
 
     const rootClassNames = clsx({
         [styles.root]: true,
@@ -36,15 +36,12 @@ export const Divider = (props: DividerProps) => {
         [styles.xXl]: mx === 'xl',
     });
 
-    const classNames: MantineDividerProps['classNames'] = {
-        root: rootClassNames,
-    };
-
     return (
-        <MantineDivider
-            classNames={classNames}
-            label={label}
-            labelPosition={labelPosition}
+        <Separator.Root
+            className={rootClassNames}
+            decorative={decorative}
+            // label={label}
+            // labelPosition={labelPosition}
             orientation={orientation}
             {...htmlProps}
         />

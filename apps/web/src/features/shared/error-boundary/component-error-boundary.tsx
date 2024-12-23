@@ -1,7 +1,7 @@
-import { Code } from '@mantine/core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
+import { ErrorBlock } from '@/features/ui/error-block/error-block.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
@@ -46,17 +46,7 @@ function fallbackRender({
                 <Title order={1} size="lg">
                     An error occurred
                 </Title>
-                <Code
-                    block
-                    styles={{
-                        root: {
-                            background: 'var(--paper-background-color)',
-                            color: 'var(--global-font-color)',
-                        },
-                    }}
-                >
-                    <pre>{JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}</pre>
-                </Code>
+                <ErrorBlock error={error} />
                 <Group grow>
                     <Button variant="filled" onClick={handleReload}>
                         Reload

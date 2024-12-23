@@ -8,6 +8,7 @@ import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
+import { Paper } from '@/features/ui/paper/paper.tsx';
 import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination } from '@/hooks/use-list.ts';
@@ -33,13 +34,16 @@ export function PaginatedAlbumGrid(props: PaginatedAlbumGridProps) {
                     <PaginatedAlbumGridContent {...props} />
                 </ListWrapper>
             </Suspense>
-            <Pagination
-                currentPage={pagination.currentPage}
-                itemCount={itemCount}
-                itemsPerPage={pagination.itemsPerPage}
-                justify="end"
-                {...paginationProps}
-            />
+            <Paper>
+                <Pagination
+                    currentPage={pagination.currentPage}
+                    itemCount={itemCount}
+                    itemsPerPage={pagination.itemsPerPage}
+                    justify="end"
+                    variant="outline"
+                    {...paginationProps}
+                />
+            </Paper>
         </Stack>
     );
 }

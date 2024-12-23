@@ -117,6 +117,19 @@
     }
 }
 
+@mixin button-input-variant() {
+    color: var(--input-font-color);
+    background-color: var(--input-background-color);
+    border: var(--input-border);
+
+    &:hover,
+    &:focus-visible {
+        color: var(--input-hover-font-color);
+        background-color: var(--input-hover-background-color);
+        border: var(--input-hover-border);
+    }
+}
+
 @mixin text-ellipsis() {
     overflow: hidden;
     text-overflow: ellipsis;

@@ -1,13 +1,8 @@
-import type { PaginationProps as MantinePaginationProps } from '@mantine/core';
-import { Pagination as MantinePagination } from '@mantine/core';
 import clsx from 'clsx';
-import {
-    LuChevronFirst,
-    LuChevronLast,
-    LuChevronLeft,
-    LuChevronRight,
-    LuMinus,
-} from 'react-icons/lu';
+import { Fragment } from 'react/jsx-runtime';
+import { LuMinus } from 'react-icons/lu';
+import { MotionButton } from '@/features/ui/button/button.tsx';
+import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { useContainerBreakpoints } from '@/hooks/use-container-query.ts';
 import type { Sizes } from '@/themes/index.ts';
 import type { Breakpoints } from '@/types.ts';
@@ -28,7 +23,7 @@ interface PaginationProps {
     pageSiblings?: number;
     radius?: Sizes;
     size?: Sizes;
-    variant?: 'filled' | 'default' | 'primary' | 'subtle';
+    variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle' | 'transparent' | 'outline';
 }
 
 export function Pagination(props: PaginationProps) {
@@ -45,8 +40,8 @@ export function Pagination(props: PaginationProps) {
         size = 'md',
         variant = 'default',
         radius = 'md',
-        hasControls,
-        hasEdges,
+        hasControls = true,
+        hasEdges = false,
         pageSiblings,
     } = props;
 
@@ -57,32 +52,6 @@ export function Pagination(props: PaginationProps) {
         [styles[`justify-${justify}`]]: justify,
     });
 
-    const controlClassNames = clsx({
-        [styles.control]: true,
-        [styles.filledVariant]: variant === 'filled',
-        [styles.defaultVariant]: variant === undefined || variant === 'default',
-        [styles.primaryVariant]: variant === 'primary',
-        [styles.subtleVariant]: variant === 'subtle',
-        [styles[`size-${size}`]]: true,
-        [styles[`radius-${radius}`]]: true,
-    });
-
-    const dotsClassNames = clsx({
-        [styles.dots]: true,
-        [styles.filledVariant]: variant === 'filled',
-        [styles.defaultVariant]: variant === undefined || variant === 'default',
-        [styles.primaryVariant]: variant === 'primary',
-        [styles.subtleVariant]: variant === 'subtle',
-        [styles[`size-${size}`]]: true,
-        [styles[`radius-${radius}`]]: true,
-    });
-
-    const classNames: MantinePaginationProps['classNames'] = {
-        control: controlClassNames,
-        dots: dotsClassNames,
-        root: rootClassNames,
-    };
-
     const { ref, breakpoints } = useContainerBreakpoints();
 
     const paginationProps = getResponsePaginationProps(breakpoints, {
@@ -92,25 +61,147 @@ export function Pagination(props: PaginationProps) {
     });
 
     return (
-        <MantinePagination
-            ref={ref}
-            unstyled
-            classNames={classNames}
-            dotsIcon={DotComponent}
-            firstIcon={LuChevronFirst}
-            lastIcon={LuChevronLast}
-            nextIcon={LuChevronRight}
-            previousIcon={LuChevronLeft}
-            total={pageCount}
-            value={currentPage}
-            variant={variant}
-            onChange={onPageChange}
-            onFirstPage={onFirstPage}
-            onLastPage={onLastPage}
-            onNextPage={onNextPage}
-            onPreviousPage={onPreviousPage}
-            {...paginationProps}
-        />
+        <div ref={ref} className={rootClassNames}>
+            {hasEdges && (
+                <IconButton
+                    aria-label="First page"
+                    className={styles.iconControl}
+                    disabled={currentPage === 1}
+                    icon="arrowLeftToLine"
+                    radius={radius}
+                    size={size}
+                    variant={variant}
+                    onClick={onFirstPage}
+                />
+            )}
+
+            {hasControls && (
+                <IconButton
+                    aria-label="Previous page"
+                    className={styles.iconControl}
+                    disabled={currentPage === 1}
+                    icon="arrowLeftS"
+                    radius={radius}
+                    size={size}
+                    variant={variant}
+                    onClick={onPreviousPage}
+                />
+            )}
+
+            {Array.from({ length: pageCount }, (_, i) => i + 1)
+                .filter((page) => {
+                    const siblings = paginationProps.siblings;
+                    const isFirstPage = page === 1;
+                    const isCurrentPage = page === currentPage;
+                    const isRightSibling = page > currentPage && page <= currentPage + siblings;
+                    const isLeftSibling =
+                        page < currentPage && page >= Math.max(2, currentPage - siblings);
+
+                    return isFirstPage || isCurrentPage || isRightSibling || isLeftSibling;
+                })
+                .map((page, index, array) => {
+                    if (array[array.length - 1] !== pageCount && page === array[array.length - 1]) {
+                        return (
+                            <Fragment key={`last-section-${page}`}>
+                                <MotionButton
+                                    key={page}
+                                    radius={radius}
+                                    size={size}
+                                    variant={page === currentPage ? 'primary' : variant}
+                                    onClick={() => onPageChange(page)}
+                                >
+                                    {page}
+                                </MotionButton>
+                                <IconButton
+                                    key={`dots-end`}
+                                    disabled
+                                    className={styles.iconControl}
+                                    icon="ellipsisHorizontal"
+                                    radius={radius}
+                                    size={size}
+                                    variant={variant}
+                                >
+                                    <DotComponent />
+                                </IconButton>
+                                <MotionButton
+                                    key={pageCount}
+                                    radius={radius}
+                                    size={size}
+                                    variant={pageCount === currentPage ? 'primary' : variant}
+                                    onClick={() => onPageChange(pageCount)}
+                                >
+                                    {pageCount}
+                                </MotionButton>
+                            </Fragment>
+                        );
+                    }
+
+                    if (index > 0 && array[index - 1] !== page - 1) {
+                        return (
+                            <Fragment key={`dots-${page}`}>
+                                <IconButton
+                                    key={`dots-${page}`}
+                                    disabled
+                                    className={styles.iconControl}
+                                    icon="ellipsisHorizontal"
+                                    radius={radius}
+                                    size={size}
+                                    variant={variant}
+                                >
+                                    <DotComponent />
+                                </IconButton>
+                                <MotionButton
+                                    key={page}
+                                    radius={radius}
+                                    size={size}
+                                    variant={page === currentPage ? 'primary' : variant}
+                                    onClick={() => onPageChange(page)}
+                                >
+                                    {page}
+                                </MotionButton>
+                            </Fragment>
+                        );
+                    }
+
+                    return (
+                        <MotionButton
+                            key={page}
+                            radius={radius}
+                            size={size}
+                            variant={page === currentPage ? 'primary' : variant}
+                            onClick={() => onPageChange(page)}
+                        >
+                            {page}
+                        </MotionButton>
+                    );
+                })}
+
+            {hasControls && (
+                <IconButton
+                    aria-label="Next page"
+                    className={styles.iconControl}
+                    disabled={currentPage === pageCount}
+                    icon="arrowRightS"
+                    radius={radius}
+                    size={size}
+                    variant={variant}
+                    onClick={onNextPage}
+                />
+            )}
+
+            {hasEdges && (
+                <IconButton
+                    aria-label="Last page"
+                    className={styles.iconControl}
+                    disabled={currentPage === pageCount}
+                    icon="arrowRightToLine"
+                    radius={radius}
+                    size={size}
+                    variant={variant}
+                    onClick={onLastPage}
+                />
+            )}
+        </div>
     );
 }
 

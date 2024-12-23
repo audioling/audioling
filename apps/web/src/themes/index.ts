@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react';
-import type { MantineTheme } from '@mantine/core';
 import { defaultDarkTheme } from '@/themes/default-dark.ts';
 
 export type Sizes = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -118,6 +117,7 @@ export type AppThemeConfiguration = {
         'input-border': CSSProperties['border'];
         'input-font-color': CSSProperties['color'];
         'input-hover-background-color': CSSProperties['backgroundColor'];
+        'input-hover-border': CSSProperties['border'];
         'input-hover-font-color': CSSProperties['color'];
         'input-hover-placeholder-color': CSSProperties['color'];
         'input-indicator-background-color': CSSProperties['backgroundColor'];
@@ -129,6 +129,7 @@ export type AppThemeConfiguration = {
         'layout-content-background-color': CSSProperties['backgroundColor'];
         'layout-content-padding': CSSProperties['padding'];
         'layout-divider-color': CSSProperties['borderColor'];
+        'layout-divider-height': CSSProperties['height'];
         'layout-drag-handle-background-color': CSSProperties['backgroundColor'];
         'layout-header-background-color': CSSProperties['backgroundColor'];
         'layout-header-height': CSSProperties['height'];
@@ -177,6 +178,7 @@ export type AppThemeConfiguration = {
         'menu-item-padding': CSSProperties['padding'];
         'menu-padding': CSSProperties['padding'];
         'modal-background-color': CSSProperties['backgroundColor'];
+        'modal-border': CSSProperties['border'];
         'modal-border-radius': CSSProperties['borderRadius'];
         'modal-font-color': CSSProperties['color'];
         'modal-font-size': CSSProperties['fontSize'];
@@ -231,8 +233,4 @@ export type AppThemeConfiguration = {
 
 export const themes: { [key: string]: AppThemeConfiguration } = {
     defaultDark: defaultDarkTheme,
-};
-
-export const baseMantineTheme: Partial<MantineTheme> = {
-    focusRing: 'never',
 };

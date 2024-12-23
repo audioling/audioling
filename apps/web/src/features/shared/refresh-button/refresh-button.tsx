@@ -9,6 +9,7 @@ interface RefreshButtonProps {
 export function RefreshButton({ isDisabled, isLoading, onRefresh }: RefreshButtonProps) {
     return (
         <IconButtonWithTooltip
+            isCompact
             disabled={isDisabled}
             icon="refresh"
             isLoading={isLoading}

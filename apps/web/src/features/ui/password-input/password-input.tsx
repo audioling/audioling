@@ -5,8 +5,7 @@ import type { TextInputProps } from '@/features/ui/text-input/text-input.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 
 export const PasswordInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputElement>) => {
-    const { children, description, label, leftSection, placeholder, radius, size, ...htmlProps } =
-        props;
+    const { children, description, label, placeholder, radius, size, ...htmlProps } = props;
 
     const [visible, setVisible] = useState(false);
 
@@ -15,7 +14,6 @@ export const PasswordInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInp
             ref={ref}
             description={description}
             label={label}
-            leftSection={leftSection}
             placeholder={placeholder}
             radius={radius}
             rightSection={

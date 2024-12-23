@@ -12,7 +12,7 @@ import {
 } from '@/features/authentication/stores/auth-store.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
-import { Grid } from '@/features/ui/grid/grid.tsx';
+import { Group } from '@/features/ui/group/group.tsx';
 import { PasswordInput } from '@/features/ui/password-input/password-input.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
@@ -130,25 +130,21 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
                     placeholder={serverLibrary.baseUrl}
                     {...form.register('overrideBaseUrl')}
                 />
-                <Grid grow gutter="xs">
-                    <Grid.Col grow span={4}>
-                        <Button
-                            variant="default"
-                            onClick={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE)}
-                        >
-                            Save
-                        </Button>
-                    </Grid.Col>
-                    <Grid.Col grow span={8}>
-                        <Button
-                            disabled={!form.formState.isValid || form.formState.isSubmitting}
-                            type="submit"
-                            variant="filled"
-                        >
-                            Save and connect
-                        </Button>
-                    </Grid.Col>
-                </Grid>
+                <Group grow>
+                    <Button
+                        variant="default"
+                        onClick={(e) => handleFormSubmit(e, SUBMIT_FLAG.SAVE)}
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        disabled={!form.formState.isValid || form.formState.isSubmitting}
+                        type="submit"
+                        variant="filled"
+                    >
+                        Save and connect
+                    </Button>
+                </Group>
                 <Divider />
                 <Button
                     disabled={!isConnected}

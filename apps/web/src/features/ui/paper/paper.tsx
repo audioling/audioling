@@ -9,7 +9,7 @@ interface PaperProps extends React.ComponentPropsWithoutRef<'div'> {
 export const Paper = forwardRef<HTMLDivElement, PaperProps>((props, ref) => {
     const { children, ...htmlProps } = props;
     return (
-        <div ref={ref} className={clsx(styles.paper, htmlProps.className)}>
+        <div ref={ref} {...htmlProps} className={clsx(styles.paper, htmlProps.className)}>
             {children}
         </div>
     );

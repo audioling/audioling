@@ -75,6 +75,12 @@
     }
 }
 
+.color-secondary {
+    svg {
+        color: base.$font-secondary-color !important;
+    }
+}
+
 .icon-fill {
     svg {
         fill: currentcolor;

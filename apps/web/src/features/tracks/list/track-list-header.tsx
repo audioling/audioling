@@ -10,10 +10,10 @@ import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { ListPaginationTypeButton } from '@/features/shared/list-pagination-type-button/list-pagination-type-button.tsx';
 import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
 import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
+import { SearchButton } from '@/features/shared/search-button/search-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { Group } from '@/features/ui/group/group.tsx';
-import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { useRefreshList } from '@/hooks/use-list.ts';
 
 export function TrackListHeader() {
@@ -61,7 +61,7 @@ export function TrackListHeader() {
             </ListHeader.Left>
             <ListHeader.Right>
                 <Group gap="xs">
-                    <IconButton icon="search" size="lg" />
+                    <SearchButton />
                 </Group>
             </ListHeader.Right>
             <ListHeader.Footer>

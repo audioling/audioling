@@ -1,7 +1,10 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
+import { Divider } from '@/features/ui/divider/divider.tsx';
+import { Group } from '@/features/ui/group/group.tsx';
+import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { useClickOutside } from '@/hooks/use-click-outside.ts';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
 import { useMergedRef } from '@/hooks/use-merged-ref.ts';
@@ -17,7 +20,7 @@ interface ModalProps {
 }
 
 export function Modal(props: ModalProps) {
-    const { children, closeOnClickOutside = true, isClosing, onClose, size = 'md', title } = props;
+    const { children, closeOnClickOutside = false, isClosing, onClose, size = 'md', title } = props;
 
     const ref = useClickOutside(closeOnClickOutside ? onClose : () => {});
     const focusTrapRef = useFocusTrap();
@@ -28,6 +31,18 @@ export function Modal(props: ModalProps) {
         [styles.modalMd]: size === 'md',
         [styles.modalLg]: size === 'lg',
     });
+
+    useEffect(() => {
+        const handleEscapeKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        window.addEventListener('keydown', handleEscapeKey);
+
+        return () => window.removeEventListener('keydown', handleEscapeKey);
+    }, [isClosing, onClose]);
 
     return (
         <motion.div
@@ -53,7 +68,11 @@ export function Modal(props: ModalProps) {
                     animationVariants.zoomIn,
                 )}
             >
-                <h1 className={styles.title}>{title}</h1>
+                <Group justify="between">
+                    <h1 className={styles.title}>{title}</h1>
+                    <IconButton icon="x" variant="subtle" onClick={onClose} />
+                </Group>
+                <Divider orientation="horizontal" />
                 <div className={styles.content}>{children}</div>
             </motion.div>
         </motion.div>

@@ -1,9 +1,11 @@
 @use '@/styles/base';
 
 .root {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: base.$gap-xs;
+    justify-content: center;
     width: 100%;
     height: 100%;
 
@@ -18,17 +20,29 @@
 }
 
 .label {
-    padding-bottom: base.$gap-sm;
     font-size: base.$font-size-md;
     font-weight: base.$font-weight-md;
+    user-select: none;
+}
+
+.description {
+    font-size: base.$font-size-sm;
+    font-weight: base.$font-weight-sm;
+    color: base.$font-secondary-color;
+    user-select: none;
+}
+
+.required {
+    color: var(--global-danger-color);
 }
 
 .input {
     width: 100%;
-    padding: 0.5rem;
-    font-weight: 400;
-    line-height: 1.25rem;
+    padding: var(--base-gap-sm);
+    font-weight: var(--base-font-weight-md);
+    line-height: normal;
     color: var(--input-font-color);
+    text-align: left;
     background-color: var(--input-background-color);
     border: var(--input-border);
     transition: all 0.15s ease-in-out;
@@ -37,10 +51,12 @@
     &:focus-visible {
         color: var(--input-hover-font-color);
         background-color: var(--input-hover-background-color);
+        border: var(--input-hover-border);
     }
 
     &::placeholder {
         color: var(--input-placeholder-color);
+        user-select: none;
 
         &:hover {
             color: var(--input-hover-placeholder-color);
@@ -48,12 +64,34 @@
     }
 }
 
+.left-icon {
+    left: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.right-icon {
+    right: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
 .input.left-section {
-    padding-left: 2.5rem;
+    padding-left: 2rem;
 }
 
 .input.right-section {
-    padding-right: 2.5rem;
+    padding-right: 2rem;
+}
+
+.right-section button {
+    width: 100%;
+    height: 100%;
 }
 
 .section {
@@ -62,6 +100,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 2rem;
     height: 100%;
     padding: base.$gap-xs;
 }
@@ -74,15 +113,11 @@
     right: 0;
 }
 
-.required {
-    color: var(--global-danger-color);
-}
-
 .size-xs {
     font-size: base.$font-size-sm;
 
     input {
-        padding: base.$gap-xs;
+        height: 1.75rem;
     }
 
     &::placeholder {
@@ -94,7 +129,7 @@
     font-size: base.$font-size-sm;
 
     input {
-        padding: base.$gap-sm;
+        height: 2rem;
     }
 
     &::placeholder {
@@ -105,6 +140,10 @@
 .size-md {
     font-size: base.$font-size-md;
 
+    input {
+        height: 2.5rem;
+    }
+
     &::placeholder {
         font-size: base.$font-size-md;
     }
@@ -113,6 +152,10 @@
 .size-lg {
     font-size: base.$font-size-lg;
 
+    input {
+        height: 3rem;
+    }
+
     &::placeholder {
         font-size: base.$font-size-lg;
     }
@@ -120,6 +163,10 @@
 
 .size-xl {
     font-size: base.$font-size-xl;
+
+    input {
+        height: 3.5rem;
+    }
 
     &::placeholder {
         font-size: base.$font-size-xl;
