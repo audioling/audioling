@@ -97,6 +97,7 @@ export function SidePlayQueue() {
 
     const [columnOrder, setColumnOrder] = useState<ItemListColumnOrder>([
         ItemListColumn.ROW_INDEX,
+        ItemListColumn.IMAGE,
         ItemListColumn.STANDALONE_COMBINED,
     ]);
 
