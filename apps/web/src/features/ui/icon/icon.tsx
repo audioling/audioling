@@ -72,6 +72,7 @@ import {
     LuVolumeX,
 } from 'react-icons/lu';
 import { MdClose, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
+import { SoundBars } from '@/features/ui/icon/sound-bars.tsx';
 import styles from './icon.module.scss';
 
 export const AppIcon = {
@@ -134,6 +135,7 @@ export const AppIcon = {
     sort: LuArrowUpDown,
     sortAsc: LuArrowUpNarrowWide,
     sortDesc: LuArrowDownWideNarrow,
+    soundBars: SoundBars,
     spinner: LuLoader,
     square: LuSquare,
     star: LuStar,
