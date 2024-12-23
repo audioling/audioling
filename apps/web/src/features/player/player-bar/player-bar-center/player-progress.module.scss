@@ -5,7 +5,8 @@
     display: flex;
     gap: var(--base-gap-sm);
     align-items: center;
-    width: 50vw;
-    max-width: 400px;
+    width: 40vw;
+    min-width: 300px;
+    max-width: 800px;
     height: 16px;
 }
