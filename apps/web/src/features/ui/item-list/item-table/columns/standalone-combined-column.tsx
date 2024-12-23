@@ -1,6 +1,5 @@
 import type { ColumnHelper } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { Image } from '@/features/ui/image/image.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -23,12 +22,6 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
                 ) {
                     return (
                         <div className={styles.standaloneCombined}>
-                            <Image
-                                className={styles.image}
-                                height={35}
-                                src={`${context.baseUrl}${item.imageUrl}&size=100`}
-                                width={35}
-                            />
                             <div className={styles.inner}>
                                 <Text className={clsx({ [styles.playing]: isPlaying })}>
                                     {item.name}

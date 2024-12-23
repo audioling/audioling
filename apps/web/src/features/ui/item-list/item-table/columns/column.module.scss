@@ -4,7 +4,7 @@
     display: block;
     align-content: center;
     height: 100%;
-    padding-right: base.$gap-md;
+    padding: 0 base.$gap-sm;
     font-size: base.$font-size-md;
 
     @include base.text-ellipsis;
@@ -21,7 +21,7 @@
 
 .standalone-combined {
     display: grid;
-    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: base.$gap-sm;
     align-items: center;
     width: 100%;
