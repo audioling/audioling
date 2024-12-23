@@ -9,11 +9,7 @@ import { PrefetchController } from '@/features/controllers/prefetch-controller.t
 import { HeaderBar } from '@/features/navigation/header-bar/header-bar.tsx';
 import { NavBarBottom } from '@/features/navigation/nav-bar-bottom/nav-bar-bottom.tsx';
 import { NavBarSide } from '@/features/navigation/nav-bar-side/nav-bar-side.tsx';
-import {
-    useLayout,
-    useNavigationStore,
-    useSetLayout,
-} from '@/features/navigation/stores/navigation-store.ts';
+import { useNavigationStore } from '@/features/navigation/stores/navigation-store.ts';
 import { AudioPlayer } from '@/features/player/audio-player/audio-player.tsx';
 import { SidePlayQueue } from '@/features/player/now-playing/side-play-queue.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
@@ -56,14 +52,12 @@ export function DashboardLayout() {
 }
 
 function DesktopLayout() {
-    const layout = useLayout();
-    const setLayout = useSetLayout();
+    const layout = useNavigationStore.use.layout();
+    const setLayout = useNavigationStore.use.setLayout();
     const [isDraggingLeft, setIsDraggingLeft] = useState(false);
     const [isDraggingRight, setIsDraggingRight] = useState(false);
 
     useEffect(() => {
-        const layout = useNavigationStore.getState().layout;
-
         // Set the initial width of the nav bar and right content
         document.documentElement.style.setProperty(
             '--layout-nav-bar-width',
@@ -74,7 +68,7 @@ function DesktopLayout() {
             '--layout-right-content-width',
             `${layout.right.size}px`,
         );
-    }, []);
+    }, [layout.left.size, layout.right.size]);
 
     const handleDragLeft = (_event: unknown, info: PanInfo) => {
         const style = getComputedStyle(document.documentElement);

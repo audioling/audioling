@@ -5,11 +5,7 @@ import type {
     GetApiLibraryIdPlaylistsFolders200DataItem,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { NavBarPlaylistItem } from '@/features/navigation/nav-bar-side/nav-bar-playlist-item.tsx';
-import {
-    usePlaylistsNavigationSections,
-    useSetSidebarSection,
-    useToggleSidebarSection,
-} from '@/features/navigation/stores/navigation-store.ts';
+import { useNavigationStore } from '@/features/navigation/stores/navigation-store.ts';
 import { Accordion } from '@/features/ui/accordion/accordion.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragTarget } from '@/utils/drag-drop.ts';
@@ -29,9 +25,9 @@ interface NavBarPlaylistTreeProps {
 }
 
 export function NavBarPlaylistTree({ folders, libraryId, playlists }: NavBarPlaylistTreeProps) {
-    const openedSections = usePlaylistsNavigationSections();
-    const toggleSection = useToggleSidebarSection();
-    const setSection = useSetSidebarSection();
+    const openedSections = useNavigationStore.use.side().playlists;
+    const toggleSection = useNavigationStore.use.toggleSection();
+    const setSection = useNavigationStore.use.setSection();
 
     const tree = useMemo(() => {
         const nodes = new Map<string | null, TreeNode[]>();
