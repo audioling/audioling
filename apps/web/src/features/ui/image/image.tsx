@@ -16,19 +16,19 @@ export function Image(props: ImageProps) {
         return (
             <Img
                 className={clsx(styles.image, props.className)}
-                loader={<ImageLoader />}
+                loader={<ImageLoader className={props.className} />}
                 loading="eager"
                 src={[src, TrackImage]}
             />
         );
     }
 
-    return null;
+    return <ImageLoader />;
 }
 
-function ImageLoader() {
+function ImageLoader(props: { className?: string }) {
     return (
-        <div className={styles.loader}>
+        <div className={clsx(styles.loader, props.className)}>
             <Skeleton height="100%" width="100%" />
         </div>
     );
