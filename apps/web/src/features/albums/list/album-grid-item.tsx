@@ -47,17 +47,7 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
         );
     }
 
-    return (
-        <AlbumCard
-            componentState="loading"
-            id={index.toString()}
-            image=""
-            libraryId={context.libraryId}
-            metadata={[]}
-            metadataLines={1}
-            titledata={{ path: '/', text: '' }}
-        />
-    );
+    return <AlbumCard componentState="loading" id={index.toString()} metadataLines={1} />;
 }
 
 export const MemoizedAlbumGridItem = memo(AlbumGridItem);

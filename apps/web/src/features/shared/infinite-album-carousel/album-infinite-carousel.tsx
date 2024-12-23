@@ -2,6 +2,7 @@ import { memo, useCallback, useMemo } from 'react';
 import type { AlbumListSortOptions } from '@repo/shared-types';
 import { type ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { nanoid } from 'nanoid';
 import { generatePath, useParams } from 'react-router';
 import { apiInstance } from '@/api/api-instance.ts';
 import type {
@@ -30,8 +31,8 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
 
     const cards = useMemo(
         () =>
-            albums.pages.flatMap((page) =>
-                page.data.map((album) => ({
+            albums.pages.flatMap((page) => {
+                const loadedCards = page.data.map((album) => ({
                     content: (
                         <MemoizedAlbumCard
                             componentState="loaded"
@@ -58,8 +59,25 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                         />
                     ),
                     id: album.id,
-                })),
-            ),
+                }));
+
+                if (page.data.length === 20) {
+                    return loadedCards;
+                }
+
+                return [
+                    ...loadedCards,
+                    ...Array.from({ length: 20 - page.data.length }).map(() => {
+                        const id = nanoid();
+                        return {
+                            content: (
+                                <MemoizedAlbumCard componentState={'loading'} metadataLines={1} />
+                            ),
+                            id,
+                        };
+                    }),
+                ];
+            }),
         [albums.pages, baseUrl, libraryId],
     );
 

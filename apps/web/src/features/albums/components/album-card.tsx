@@ -1,40 +1,47 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
-import { Card, type CardProps } from '@/features/ui/card/card.tsx';
+import type { BaseCardProps, LoadedCardProps, LoadingCardProps } from '@/features/ui/card/card.tsx';
+import { Card } from '@/features/ui/card/card.tsx';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 
-interface AlbumCardProps extends Omit<CardProps, 'controls'> {}
+type BaseAlbumCardProps = BaseCardProps & {
+    className?: string;
+};
+
+type LoadingAlbumCardProps = LoadingCardProps & BaseAlbumCardProps;
+
+type LoadedAlbumCardProps = Omit<LoadedCardProps, 'controls'> & BaseAlbumCardProps;
+
+type AlbumCardProps = LoadingAlbumCardProps | LoadedAlbumCardProps;
 
 export function AlbumCard(props: AlbumCardProps) {
-    const {
-        id,
-        image,
-        libraryId,
-        componentState,
-        metadata,
-        metadataLines = 1,
-        titledata,
-        className,
-        ...htmlProps
-    } = props;
+    if (props.componentState !== 'loaded') {
+        return (
+            <Card
+                className={props.className}
+                componentState={props.componentState}
+                metadataLines={props.metadataLines ?? 1}
+            />
+        );
+    }
 
-    const controls: CardProps['controls'] = {
+    const controls: LoadedCardProps['controls'] = {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
                 {
-                    id: [id],
+                    id: [props.id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.ALBUM,
                 },
-                { image, title: titledata.text },
+                { image: props.image, title: props.titledata.text },
             );
         },
         onDragStart: () => {
             PrefetchController.call({
                 cmd: {
                     tracksByAlbumId: {
-                        id: [id],
+                        id: [props.id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,
@@ -58,16 +65,15 @@ export function AlbumCard(props: AlbumCardProps) {
 
     return (
         <Card
-            className={className}
-            componentState={componentState}
+            className={props.className}
+            componentState={props.componentState}
             controls={controls}
-            id={id}
-            image={image}
-            libraryId={libraryId}
-            metadata={metadata}
-            metadataLines={metadataLines}
-            titledata={titledata}
-            {...htmlProps}
+            id={props.id}
+            image={props.image}
+            libraryId={props.libraryId}
+            metadata={props.metadata}
+            metadataLines={props.metadataLines ?? 1}
+            titledata={props.titledata}
         />
     );
 }

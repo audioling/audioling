@@ -1,12 +1,31 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
-import { Card, type CardProps } from '@/features/ui/card/card.tsx';
+import type { BaseCardProps, LoadedCardProps, LoadingCardProps } from '@/features/ui/card/card.tsx';
+import { Card } from '@/features/ui/card/card.tsx';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 
-interface PlaylistCardProps extends Omit<CardProps, 'controls'> {}
+type BasePlaylistCardProps = BaseCardProps & {
+    className?: string;
+};
+
+type LoadingPlaylistCardProps = LoadingCardProps & BasePlaylistCardProps;
+
+type LoadedPlaylistCardProps = Omit<LoadedCardProps, 'controls'> & BasePlaylistCardProps;
+
+type PlaylistCardProps = LoadingPlaylistCardProps | LoadedPlaylistCardProps;
 
 export function PlaylistCard(props: PlaylistCardProps) {
+    if (props.componentState !== 'loaded') {
+        return (
+            <Card
+                className={props.className}
+                componentState={props.componentState}
+                metadataLines={props.metadataLines ?? 1}
+            />
+        );
+    }
+
     const {
         id,
         image,
@@ -19,7 +38,7 @@ export function PlaylistCard(props: PlaylistCardProps) {
         ...htmlProps
     } = props;
 
-    const controls: CardProps['controls'] = {
+    const controls: LoadedCardProps['controls'] = {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
                 {

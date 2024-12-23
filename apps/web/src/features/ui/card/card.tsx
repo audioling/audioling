@@ -4,7 +4,6 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
-import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router';
@@ -17,8 +16,16 @@ import { Text } from '@/features/ui/text/text.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './card.module.scss';
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-    componentState: 'loading' | 'loaded' | 'scrolling';
+export type BaseCardProps = HTMLAttributes<HTMLDivElement> & {
+    metadataLines: number;
+};
+
+export type LoadingCardProps = BaseCardProps & {
+    componentState: 'loading' | 'scrolling';
+};
+
+export type LoadedCardProps = BaseCardProps & {
+    componentState: 'loaded';
     controls: {
         onDragInitialData?: (id: string) => DragData;
         onDragStart?: (id: string) => void;
@@ -33,60 +40,55 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
         path: string;
         text: string;
     }[];
-    metadataLines: number;
     titledata: {
         path: string;
         text: string;
     };
-}
+};
+
+export type CardProps = LoadingCardProps | LoadedCardProps;
 
 export function Card(props: CardProps) {
-    const {
-        componentState,
-        controls,
-        id,
-        image,
-        libraryId,
-        metadata,
-        metadataLines,
-        titledata,
-        className,
-        ...htmlProps
-    } = props;
+    const { componentState, metadataLines, className, ...htmlProps } = props;
 
-    const queryClient = useQueryClient();
     const ref = useRef<HTMLDivElement>(null);
-
     const [isDragging, setIsDragging] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
 
-    useEffect(() => {
-        if (!ref.current) return;
+    // Only access these props if we're in loaded state
+    const loadedProps = componentState === 'loaded' ? props : null;
 
-        return combine(
-            draggable({
-                element: ref.current,
-                getInitialData: () => {
-                    return controls.onDragInitialData?.(id) ?? {};
-                },
-                onDragStart: async () => {
-                    setIsDragging(true);
-                    return controls.onDragStart?.(id);
-                },
-                onDrop: () => setIsDragging(false),
-                onGenerateDragPreview: (data) => {
-                    disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
-                    setCustomNativeDragPreview({
-                        nativeSetDragImage: data.nativeSetDragImage,
-                        render: ({ container }) => {
-                            const root = createRoot(container);
-                            root.render(<DragPreview itemCount={1} />);
-                        },
-                    });
-                },
-            }),
-        );
-    }, [controls, id, image, libraryId, queryClient, titledata.text]);
+    useEffect(() => {
+        if (!ref.current || componentState !== 'loaded') return;
+
+        if (componentState === 'loaded' && loadedProps?.controls && loadedProps?.id) {
+            return combine(
+                draggable({
+                    element: ref.current,
+                    getInitialData: () => {
+                        return loadedProps.controls.onDragInitialData?.(loadedProps.id) ?? {};
+                    },
+                    onDragStart: async () => {
+                        setIsDragging(true);
+                        return loadedProps.controls.onDragStart?.(loadedProps.id);
+                    },
+                    onDrop: () => setIsDragging(false),
+                    onGenerateDragPreview: (data) => {
+                        disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
+                        setCustomNativeDragPreview({
+                            nativeSetDragImage: data.nativeSetDragImage,
+                            render: ({ container }) => {
+                                const root = createRoot(container);
+                                root.render(<DragPreview itemCount={1} />);
+                            },
+                        });
+                    },
+                }),
+            );
+        }
+
+        return;
+    }, [componentState, loadedProps?.controls, loadedProps?.id]);
 
     switch (componentState) {
         default: {
@@ -99,16 +101,18 @@ export function Card(props: CardProps) {
                     {...htmlProps}
                 >
                     <div className={styles.imageContainer}>
-                        <Skeleton className={styles.image} />
+                        <Skeleton height="100%" width="100%" />
                     </div>
                     <div className={styles.descriptionContainer}>
-                        <Text className={styles.description}>&nbsp;</Text>
+                        <Text className={styles.description}>
+                            <Skeleton height="100%" width="100%" />
+                        </Text>
                         {Array.from({ length: metadataLines }).map((_, metadataIndex) => (
                             <Text
-                                key={`${id}-metadata-${metadataIndex}`}
+                                key={`${loadedProps?.id}-metadata-${metadataIndex}`}
                                 className={styles.description}
                             >
-                                &nbsp;
+                                <Skeleton height="100%" width="100%" />
                             </Text>
                         ))}
                     </div>
@@ -116,6 +120,8 @@ export function Card(props: CardProps) {
             );
         }
         case 'loaded': {
+            if (!loadedProps) return null;
+
             return (
                 <div
                     ref={ref}
@@ -129,20 +135,20 @@ export function Card(props: CardProps) {
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
                     >
-                        <Image className={styles.image} src={image} />
+                        <Image className={styles.image} src={loadedProps.image} />
                         {isHovering && (
                             <CardControls
-                                id={id}
-                                onMore={controls.onMore}
-                                onPlay={controls.onPlay}
+                                id={loadedProps.id}
+                                onMore={loadedProps.controls.onMore}
+                                onPlay={loadedProps.controls.onPlay}
                             />
                         )}
                     </div>
                     <div className={styles.descriptionContainer}>
-                        <NavLink className={styles.description} to={titledata.path}>
-                            {titledata.text}
+                        <NavLink className={styles.description} to={loadedProps.titledata.path}>
+                            {loadedProps.titledata.text}
                         </NavLink>
-                        {metadata.map(({ path, text }, index) => (
+                        {loadedProps.metadata.map(({ path, text }, index) => (
                             <NavLink
                                 key={index}
                                 className={clsx(styles.description, styles.secondary)}

@@ -11,7 +11,7 @@ export type PlaylistGridItemContext = {
 export function PlaylistGridItem(
     props: InfiniteGridItemProps<PlaylistItem, PlaylistGridItemContext>,
 ) {
-    const { context, data, index } = props;
+    const { context, data } = props;
 
     if (data) {
         return (
@@ -27,17 +27,7 @@ export function PlaylistGridItem(
         );
     }
 
-    return (
-        <PlaylistCard
-            componentState="loading"
-            id={index.toString()}
-            image=""
-            libraryId={context.libraryId}
-            metadata={[]}
-            metadataLines={1}
-            titledata={{ path: '/', text: '' }}
-        />
-    );
+    return <PlaylistCard componentState="loading" metadataLines={1} />;
 }
 
 export const MemoizedPlaylistGridItem = memo(PlaylistGridItem);
