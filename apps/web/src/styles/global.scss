@@ -20,6 +20,8 @@ body {
 
 body {
     line-height: 1.2;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -41,6 +43,18 @@ body {
     -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
     text-size-adjust: none;
     outline: none;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+button,
+select {
+    text-transform: none;
 }
 
 ::-webkit-scrollbar {
