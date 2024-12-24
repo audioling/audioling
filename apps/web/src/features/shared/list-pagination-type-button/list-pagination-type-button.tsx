@@ -13,6 +13,7 @@ export function ListPaginationTypeButton({
     if (paginationType === ItemListPaginationType.INFINITE) {
         return (
             <IconButtonWithTooltip
+                isCompact
                 icon="listPaginated"
                 size="lg"
                 tooltipProps={{ label: 'Paginated', position: 'bottom' }}
@@ -23,6 +24,7 @@ export function ListPaginationTypeButton({
 
     return (
         <IconButtonWithTooltip
+            isCompact
             icon="listInfinite"
             size="lg"
             tooltipProps={{ label: 'Infinite', position: 'bottom' }}

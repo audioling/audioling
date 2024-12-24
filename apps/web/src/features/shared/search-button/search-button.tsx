@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router';
 import { IconButton, IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { useDebouncedState } from '@/hooks/use-debounced-state.ts';
+import styles from './search-button.module.scss';
 
 export function SearchButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -52,10 +53,11 @@ export function SearchButton() {
                     animate={{ width: 'auto' }}
                     exit={{ width: '0' }}
                     initial={{ width: '3rem' }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                 >
                     <TextInput
                         ref={inputRef}
+                        className={styles.searchButton}
                         defaultValue={searchValue}
                         rightSection={
                             <IconButton
@@ -72,6 +74,8 @@ export function SearchButton() {
             )}
             {!isOpen && (
                 <IconButtonWithTooltip
+                    isCompact
+                    className={styles.searchButton}
                     icon="search"
                     size="lg"
                     tooltipProps={{ label: 'Search', openDelay: 500, position: 'bottom' }}

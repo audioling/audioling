@@ -13,6 +13,7 @@ export function ListDisplayTypeButton({
     if (displayType === ItemListDisplayType.TABLE) {
         return (
             <IconButtonWithTooltip
+                isCompact
                 icon="layoutGrid"
                 size="lg"
                 tooltipProps={{
@@ -26,6 +27,7 @@ export function ListDisplayTypeButton({
 
     return (
         <IconButtonWithTooltip
+            isCompact
             icon="layoutTable"
             size="lg"
             tooltipProps={{
