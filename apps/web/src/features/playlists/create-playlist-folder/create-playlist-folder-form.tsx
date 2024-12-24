@@ -6,7 +6,7 @@ import {
     useGetApiLibraryIdPlaylistsFoldersSuspense,
     usePostApiLibraryIdPlaylistsFolders,
 } from '@/api/openapi-generated/playlists/playlists.ts';
-import { Select } from '@/features/ui/select/select.tsx';
+import { SelectInput } from '@/features/ui/select-input/select-input.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 
@@ -81,11 +81,12 @@ export function CreatePlaylistFolderForm({
                     label="Name"
                     {...form.register('name', { required: true })}
                 />
-                <Select
+                <SelectInput
                     data={parentOptions}
                     disabled={isPending}
                     label="Parent"
                     {...form.register('parentId')}
+                    value={form.getValues('parentId')}
                     onChange={(e) => form.setValue('parentId', e === null ? '' : e)}
                 />
             </Stack>
