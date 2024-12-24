@@ -52,11 +52,12 @@ export const TextInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputEl
     });
 
     return (
-        <div ref={ref} className={rootClassNames}>
+        <div className={rootClassNames}>
             {label && <label className={styles.label}>{label}</label>}
             {description && <p className={styles.description}>{description}</p>}
             <div className={styles.inputWrapper}>
                 <input
+                    ref={ref}
                     autoComplete={autoComplete}
                     placeholder={placeholder}
                     spellCheck={spellCheck}
@@ -79,7 +80,7 @@ export const TextInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInputEl
                     />
                 )}
                 {rightSection && (
-                    <div className={clsx(styles.section, styles.rightIcon)}>{rightSection}</div>
+                    <div className={clsx(styles.section, styles.rightSection)}>{rightSection}</div>
                 )}
             </div>
         </div>

@@ -76,6 +76,16 @@
     user-select: none;
 }
 
+.right-section {
+    right: 0;
+}
+
+.right-section button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
 .input-wrapper {
     position: relative;
     width: 100%;
@@ -87,11 +97,6 @@
 
 .input.right-section {
     padding-right: 2rem;
-}
-
-.right-section button {
-    width: 100%;
-    height: 100%;
 }
 
 .section {
