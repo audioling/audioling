@@ -19,5 +19,11 @@ interface SkeletonProps {
 }
 
 export function Skeleton(props: SkeletonProps) {
-    return <RSkeleton {...props} className={clsx(styles.skeleton, props.className)} />;
+    return (
+        <RSkeleton
+            {...props}
+            className={clsx(styles.skeleton, props.className)}
+            containerClassName={styles.skeletonContainer}
+        />
+    );
 }
