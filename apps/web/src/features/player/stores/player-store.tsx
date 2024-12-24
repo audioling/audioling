@@ -723,7 +723,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     status: PlayerStatus.PAUSED,
                     timestamp: 0,
                     transitionType: PlayerTransition.GAPLESS,
-                    volume: 1,
+                    volume: 30,
                 },
                 queue: {
                     default: [],
