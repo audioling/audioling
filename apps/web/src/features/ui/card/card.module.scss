@@ -12,6 +12,15 @@
     }
 }
 
+.base-image-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: base.$border-radius-md;
+}
+
 .image-container {
     position: relative;
     display: flex;

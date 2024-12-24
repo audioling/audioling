@@ -93,14 +93,8 @@ export function Card(props: CardProps) {
     switch (componentState) {
         default: {
             return (
-                <div
-                    ref={ref}
-                    className={clsx(styles.card, className, {
-                        [styles.dragging]: isDragging,
-                    })}
-                    {...htmlProps}
-                >
-                    <div className={styles.imageContainer}>
+                <div ref={ref} className={clsx(styles.card, className)} {...htmlProps}>
+                    <div className={styles.baseImageContainer}>
                         <Skeleton height="100%" width="100%" />
                     </div>
                     <div className={styles.descriptionContainer}>
