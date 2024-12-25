@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 interface SoundBarsProps {
     bpm?: number;
     className?: string;
+    isPlaying?: boolean;
 }
 
-export const SoundBars = ({ className = '', bpm = 120 }: SoundBarsProps) => {
+export const SoundBars = ({ className = '', bpm = 120, isPlaying = true }: SoundBarsProps) => {
     const beatDuration = (60 * 2) / bpm;
 
     const bars = [
@@ -20,18 +21,31 @@ export const SoundBars = ({ className = '', bpm = 120 }: SoundBarsProps) => {
             {bars.map(({ x, maxHeight, delay, durationMultiplier }) => (
                 <motion.rect
                     key={x}
-                    animate={{
-                        height: [4, maxHeight, 4],
-                        y: [20, 24 - maxHeight, 20],
-                    }}
+                    animate={
+                        isPlaying
+                            ? {
+                                  height: [4, maxHeight, 4],
+                                  y: [20, 24 - maxHeight, 20],
+                              }
+                            : {
+                                  height: 4,
+                                  y: 20,
+                              }
+                    }
                     initial={{ height: 4, y: 20 }}
                     rx="2"
-                    transition={{
-                        delay: delay * beatDuration,
-                        duration: beatDuration * durationMultiplier,
-                        ease: 'easeInOut',
-                        repeat: Infinity,
-                    }}
+                    transition={
+                        isPlaying
+                            ? {
+                                  delay: delay * beatDuration,
+                                  duration: beatDuration * durationMultiplier,
+                                  ease: 'easeInOut',
+                                  repeat: Infinity,
+                              }
+                            : {
+                                  duration: 0.2,
+                              }
+                    }
                     width="4"
                     x={x}
                 />
