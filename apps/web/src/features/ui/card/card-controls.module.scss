@@ -14,6 +14,8 @@
 }
 
 .top {
+    display: flex;
+    justify-content: space-between;
 }
 
 .center {
@@ -32,4 +34,14 @@
 .bottom-left {
     display: flex;
     gap: base.$gap-sm;
+}
+
+.bottom-right {
+    display: flex;
+    gap: base.$gap-sm;
+}
+
+.play-button {
+    padding: 1rem;
+    border-radius: 50%;
 }

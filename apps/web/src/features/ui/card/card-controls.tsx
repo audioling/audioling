@@ -18,11 +18,27 @@ export function CardControls(props: CardControlsProps) {
             initial="hidden"
             variants={animationVariants.fadeIn}
         >
-            <div className={styles.top}></div>
+            <div className={styles.top}>
+                <div className={styles.topLeft}></div>
+                <div className={styles.topRight}>
+                    <IconButtonWithTooltip
+                        isCompact
+                        icon="favorite"
+                        size="lg"
+                        tooltipProps={{ label: 'Add to favorites', openDelay: 500 }}
+                        variant="transparent"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            props.onPlay(props.id, PlayType.LAST);
+                        }}
+                    />
+                </div>
+            </div>
             {Boolean(props.onPlay) && (
                 <div className={styles.center}>
                     <IconButton
                         iconFill
+                        className={styles.playButton}
                         icon="mediaPlay"
                         radius="xl"
                         size="lg"
@@ -37,8 +53,8 @@ export function CardControls(props: CardControlsProps) {
             <div className={styles.bottom}>
                 <div className={styles.bottomLeft}>
                     <IconButtonWithTooltip
+                        isCompact
                         icon="arrowRightS"
-                        radius="lg"
                         size="md"
                         tooltipProps={{ label: 'Play Next', openDelay: 500 }}
                         variant="filled"
@@ -48,8 +64,8 @@ export function CardControls(props: CardControlsProps) {
                         }}
                     />
                     <IconButtonWithTooltip
+                        isCompact
                         icon="arrowRightLast"
-                        radius="lg"
                         size="md"
                         tooltipProps={{ label: 'Play Last', openDelay: 500 }}
                         variant="filled"
@@ -59,20 +75,20 @@ export function CardControls(props: CardControlsProps) {
                         }}
                     />
                 </div>
-                {Boolean(props.onMore) && (
-                    <div>
+                <div className={styles.bottomRight}>
+                    {Boolean(props.onMore) && (
                         <IconButton
+                            isCompact
                             icon="ellipsisHorizontal"
-                            radius="lg"
-                            size="md"
+                            size="lg"
                             variant="transparent"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 props.onMore?.(props.id);
                             }}
                         />
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </motion.div>
     );
