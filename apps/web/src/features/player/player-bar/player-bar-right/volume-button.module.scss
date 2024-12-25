@@ -1,8 +1,14 @@
 @use '@/styles/base';
 
-.slider-container {
+.vertical-slider-container {
     height: 100px;
     padding: var(--base-gap-sm);
+}
+
+.horizontal-slider-container {
+    display: flex;
+    align-items: center;
+    width: 5rem;
 }
 
 .track {

@@ -25,6 +25,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         mediaStepBackward,
         mediaStepForward,
         mediaTogglePlayPause,
+        mediaToggleMute,
         moveSelectedTo,
         moveSelectedToTop,
         moveSelectedToBottom,
@@ -123,6 +124,11 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
                 break;
             }
 
+            case 'mediaToggleMute': {
+                mediaToggleMute();
+                break;
+            }
+
             case 'setVolume': {
                 const command = cmd as SetVolume;
                 setVolume(command.setVolume.volume);
@@ -205,6 +211,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         increaseVolume,
         decreaseVolume,
         mediaSeekToTimestamp,
+        mediaToggleMute,
     ]);
 
     return null;
@@ -223,6 +230,7 @@ export type PlayerCommand =
     | MediaStepForward
     | MediaSeekToTimestamp
     | MediaTogglePlayPause
+    | MediaToggleMute
     | MoveSelectedTo
     | MoveSelectedToTop
     | MoveSelectedToBottom
@@ -300,6 +308,10 @@ type MediaSeekToTimestamp = {
     mediaSeekToTimestamp: {
         timestamp: number;
     };
+};
+
+type MediaToggleMute = {
+    mediaToggleMute: null;
 };
 
 type ClearQueue = {

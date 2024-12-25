@@ -180,7 +180,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'layout-player-bar-border-right': '1px solid transparent',
     'layout-player-bar-border-top': '1px solid transparent',
     'layout-player-bar-height': '85px',
-    'layout-player-bar-padding': gap.xs,
+    'layout-player-bar-padding': gap.sm,
     'layout-side-nav-bar-background-color': 'rgb(29, 29, 29)',
     'layout-side-nav-bar-font-color': 'rgb(255, 255, 255)',
     'layout-side-nav-bar-font-hover-color': 'rgb(255, 255, 255)',

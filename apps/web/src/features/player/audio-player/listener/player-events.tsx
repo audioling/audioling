@@ -2,6 +2,7 @@ import type { PlayQueueItem } from '@/api/api-types.ts';
 import type { PlayerStatus, QueueData } from '@/features/player/stores/player-store.tsx';
 import {
     subscribeCurrentTrack,
+    subscribePlayerMute,
     subscribePlayerProgress,
     subscribePlayerQueue,
     subscribePlayerSeekToTimestamp,
@@ -14,6 +15,7 @@ export interface PlayerEventsCallbacks {
         track: { index: number; track: PlayQueueItem | undefined },
         prevTrack: { index: number; track: PlayQueueItem | undefined },
     ) => void;
+    onPlayerMute?: (muted: boolean, prevMuted: boolean) => void;
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;
     onPlayerSeek?: (timestamp: number, prevTimestamp: number) => void;
@@ -61,6 +63,12 @@ export function createPlayerEvents(callbacks: PlayerEventsCallbacks): PlayerEven
     // Subscribe to volume changes
     if (callbacks.onPlayerVolume) {
         const unsubscribe = subscribePlayerVolume(callbacks.onPlayerVolume);
+        unsubscribers.push(unsubscribe);
+    }
+
+    // Subscribe to mute changes
+    if (callbacks.onPlayerMute) {
+        const unsubscribe = subscribePlayerMute(callbacks.onPlayerMute);
         unsubscribers.push(unsubscribe);
     }
 

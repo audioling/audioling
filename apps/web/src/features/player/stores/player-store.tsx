@@ -81,6 +81,7 @@ interface Actions {
     mediaSeekToTimestamp: (timestamp: number) => void;
     mediaStepBackward: () => void;
     mediaStepForward: () => void;
+    mediaToggleMute: () => void;
     mediaTogglePlayPause: () => void;
     moveSelectedTo: (items: PlayQueueItem[], uniqueId: string, edge: 'top' | 'bottom') => void;
     moveSelectedToBottom: (items: PlayQueueItem[]) => void;
@@ -555,6 +556,11 @@ export const usePlayerStoreBase = create<PlayerState>()(
                         state.mediaNext();
                     });
                 },
+                mediaToggleMute: () => {
+                    set((state) => {
+                        state.player.muted = !state.player.muted;
+                    });
+                },
                 mediaTogglePlayPause: () => {
                     set((state) => {
                         if (state.player.status === PlayerStatus.PLAYING) {
@@ -792,6 +798,7 @@ export const usePlayerActions = () => {
             mediaSeekToTimestamp: state.mediaSeekToTimestamp,
             mediaStepBackward: state.mediaStepBackward,
             mediaStepForward: state.mediaStepForward,
+            mediaToggleMute: state.mediaToggleMute,
             mediaTogglePlayPause: state.mediaTogglePlayPause,
             moveSelectedTo: state.moveSelectedTo,
             moveSelectedToBottom: state.moveSelectedToBottom,
@@ -801,19 +808,6 @@ export const usePlayerActions = () => {
             setVolume: state.setVolume,
             shuffle: state.shuffle,
             shuffleSelected: state.shuffleSelected,
-            // autoNext: state.actions.autoNext,
-            // checkIsFirstTrack: state.actions.checkIsFirstTrack,
-            // checkIsLastTrack: state.actions.checkIsLastTrack,
-            // clearQueue: state.actions.clearQueue,
-            // getPlayerData: state.actions.getPlayerData,
-            // getQueueData: state.actions.getQueueData,
-            // incrementPlayCount: state.actions.incrementPlayCount,
-            // next: state.actions.next,
-            // pause: state.actions.pause,
-            // play: state.actions.play,
-            // player1: state.actions.player1,
-            // player2: state.actions.player2,
-            // previous: state.actions.previous,
         })),
     );
 };
@@ -961,6 +955,15 @@ export const subscribePlayerSeekToTimestamp = (
         (state) => state.player.seekToTimestamp,
         (timestamp, prevTimestamp) => {
             onChange(timestamp, prevTimestamp);
+        },
+    );
+};
+
+export const subscribePlayerMute = (onChange: (muted: boolean, prevMuted: boolean) => void) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => state.player.muted,
+        (muted, prevMuted) => {
+            onChange(muted, prevMuted);
         },
     );
 };

@@ -6,8 +6,8 @@ import styles from './player-bar-right.module.scss';
 export function PlayerBarRight() {
     return (
         <div className={styles.right}>
-            <SettingsButton />
             <FavoriteButton />
+            <SettingsButton />
             <VolumeButton />
         </div>
     );

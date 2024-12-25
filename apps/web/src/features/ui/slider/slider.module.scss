@@ -3,13 +3,14 @@
     display: flex;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: min-content;
     touch-action: none;
     user-select: none;
 }
 
 .root[data-orientation='vertical'] {
     flex-direction: column;
+    height: 100%;
 }
 
 .track {

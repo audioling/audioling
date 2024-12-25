@@ -2,10 +2,7 @@
 
 .right {
     display: flex;
+    gap: base.$gap-sm;
     align-items: center;
     justify-content: flex-end;
-}
-
-.right button {
-    padding: base.$gap-sm base.$gap-md;
 }

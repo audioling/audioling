@@ -8,6 +8,7 @@ export interface PlayerEvents {
         track: { index: number; track: PlayQueueItem | undefined },
         prevTrack: { index: number; track: PlayQueueItem | undefined },
     ) => void;
+    onPlayerMute?: (muted: boolean, prevMuted: boolean) => void;
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;
     onPlayerSeek?: (timestamp: number, prevTimestamp: number) => void;
