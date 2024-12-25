@@ -47,6 +47,8 @@
 }
 
 .title {
+    display: flex;
+    align-items: center;
     font-size: var(--modal-title-font-size);
     font-weight: var(--modal-title-font-weight);
     user-select: none;
