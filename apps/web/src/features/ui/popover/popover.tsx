@@ -15,6 +15,7 @@ import styles from './popover.module.scss';
 
 interface PopoverContext {
     align: 'start' | 'center' | 'end';
+    disabled?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
     side: 'top' | 'right' | 'bottom' | 'left';
@@ -66,18 +67,18 @@ export function Popover(props: PopoverProps) {
     const context: PopoverContext = useMemo(
         () => ({
             align,
+            disabled,
             open,
             setOpen,
             side,
         }),
-        [align, open, side],
+        [align, disabled, open, side],
     );
 
     return (
         <RadixPopover.Root
             closeOnClickOutside={closeOnClickOutside}
             closeOnEscape={closeOnEscape}
-            disabled={disabled}
             position={position}
             trapFocus={trapFocus}
             width={width}
@@ -96,10 +97,10 @@ interface TargetProps {
 
 function Target(props: TargetProps) {
     const { children } = props;
-    const { setOpen } = useContext(PopoverContext) as PopoverContext;
+    const { disabled, setOpen } = useContext(PopoverContext) as PopoverContext;
 
     return (
-        <RadixPopover.Trigger asChild onClick={() => setOpen((prev) => !prev)}>
+        <RadixPopover.Trigger asChild disabled={disabled} onClick={() => setOpen((prev) => !prev)}>
             {children}
         </RadixPopover.Trigger>
     );
