@@ -25,6 +25,7 @@ type Actions = {
     setSelectedLibrary: (id: string | null) => void;
     signIn: (user: AuthUser, baseUrl: string) => void;
     signOut: () => void;
+    signOutLibrary: () => void;
 };
 
 export type AuthSlice = State & Actions;
@@ -59,6 +60,7 @@ export const useAuthStore = create<State & Actions>()(
                                 };
                             }
 
+                            state.selectedLibraryId = id;
                             state.libraries[id].credential =
                                 values.credential || state.libraries[id].credential || null;
                             state.libraries[id].overrideBaseUrl =
@@ -84,6 +86,12 @@ export const useAuthStore = create<State & Actions>()(
                         set((state) => {
                             state.user = null;
                             state.baseUrl = null;
+                            state.selectedLibraryId = null;
+                        });
+                    },
+                    signOutLibrary: () => {
+                        set((state) => {
+                            state.selectedLibraryId = null;
                         });
                     },
                     user: null,
@@ -105,6 +113,10 @@ export const useAuthSignIn = () => {
 
 export const useAuthSignOut = () => {
     return useAuthStore((state) => state.signOut);
+};
+
+export const useLibrarySignOut = () => {
+    return useAuthStore((state) => state.signOutLibrary);
 };
 
 export const useAuthUser = () => {

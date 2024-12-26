@@ -9,6 +9,7 @@ import {
     useAuthStore,
     useInvalidateAuthLibrary,
     useSetAuthLibrary,
+    useSetSelectedLibrary,
 } from '@/features/authentication/stores/auth-store.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
@@ -33,6 +34,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
     const library = useAuthLibrary(libraryId);
     const isConnected = Boolean(library?.username && library?.credential);
     const setAuthLibrary = useSetAuthLibrary();
+    const setSelectedLibrary = useSetSelectedLibrary();
     const invalidateAuthLibrary = useInvalidateAuthLibrary();
 
     const { mutate: auth } = usePostApiLibrariesIdAuth();
@@ -55,6 +57,7 @@ export const AuthLibraryEditForm = (props: { library: Library }) => {
             const isConnected = Boolean(library?.username && library?.credential);
 
             if (isConnected && submitFlag.current === SUBMIT_FLAG.SAVE_AND_CONNECT) {
+                setSelectedLibrary(libraryId);
                 navigate(generatePath(APP_ROUTE.DASHBOARD_HOME, { libraryId }));
             } else if (submitFlag.current === SUBMIT_FLAG.SAVE) {
                 navigate(generatePath(APP_ROUTE.DASHBOARD_LIBRARY_SELECT));

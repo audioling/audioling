@@ -70,7 +70,7 @@ function Content(props: ContentProps) {
                                 asChild
                                 align={align}
                                 className={styles.content}
-                                collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
+                                collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
                                 side={side}
                                 sideOffset={6}
                             >
@@ -89,7 +89,7 @@ function Content(props: ContentProps) {
                             asChild
                             align={align}
                             className={styles.content}
-                            collisionPadding={{ bottom: 10, left: 10, right: 10, top: 10 }}
+                            collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
                             side={side}
                             sideOffset={6}
                         >

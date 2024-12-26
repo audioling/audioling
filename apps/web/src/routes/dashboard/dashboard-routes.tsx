@@ -52,30 +52,35 @@ export const dashboardRoutes: RouteObject[] = [
                 children: [
                     {
                         children: [
-                            ...albumRoutes,
-                            ...trackRoutes,
-                            ...genreRoutes,
-                            ...playlistRoutes,
                             {
-                                element: <HomeRoute />,
-                                index: true,
-                                path: 'home',
-                            },
-                            {
-                                element: <NowPlayingRoute />,
-                                path: 'now-playing',
-                            },
-                            {
-                                element: <div>Hello, from library</div>,
-                                path: 'library',
-                            },
-                            {
-                                element: <div>Hello, from search</div>,
-                                path: 'search',
-                            },
-                            {
-                                element: <div>Hello, from 404</div>,
-                                path: '*',
+                                children: [
+                                    ...albumRoutes,
+                                    ...trackRoutes,
+                                    ...genreRoutes,
+                                    ...playlistRoutes,
+                                    {
+                                        element: <HomeRoute />,
+                                        index: true,
+                                        path: 'home',
+                                    },
+                                    {
+                                        element: <NowPlayingRoute />,
+                                        path: 'now-playing',
+                                    },
+                                    {
+                                        element: <div>Hello, from library</div>,
+                                        path: 'library',
+                                    },
+                                    {
+                                        element: <div>Hello, from search</div>,
+                                        path: 'search',
+                                    },
+                                    {
+                                        element: <div>Hello, from 404</div>,
+                                        path: '*',
+                                    },
+                                ],
+                                element: <LibraryIdSelectedLayout />,
                             },
                         ],
                         element: <DashboardLayout />,
@@ -96,10 +101,6 @@ export const dashboardRoutes: RouteObject[] = [
                     {
                         element: <LibraryEditRoute />,
                         path: 'library/:libraryId/edit',
-                    },
-                    {
-                        element: <LibraryIdSelectedLayout />,
-                        index: true,
                     },
                 ],
                 path: 'dashboard',
