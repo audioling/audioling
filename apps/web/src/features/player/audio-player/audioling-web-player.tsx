@@ -198,7 +198,7 @@ export function AudiolingWebPlayer() {
                 playerRef.current?.setVolume(volume);
             },
         },
-        [volume, player.playerNum],
+        [volume, player.playerNum, isTransitioning],
     );
 
     const baseUrl = useAuthBaseUrl();
