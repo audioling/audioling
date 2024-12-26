@@ -6,6 +6,7 @@ import {
     subscribePlayerProgress,
     subscribePlayerQueue,
     subscribePlayerSeekToTimestamp,
+    subscribePlayerSpeed,
     subscribePlayerStatus,
     subscribePlayerVolume,
 } from '@/features/player/stores/player-store.tsx';
@@ -19,6 +20,7 @@ export interface PlayerEventsCallbacks {
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;
     onPlayerSeek?: (timestamp: number, prevTimestamp: number) => void;
+    onPlayerSpeed?: (speed: number, prevSpeed: number) => void;
     onPlayerStatus?: (status: PlayerStatus, prevStatus: PlayerStatus) => void;
     onPlayerVolume?: (volume: number, prevVolume: number) => void;
 }
@@ -69,6 +71,12 @@ export function createPlayerEvents(callbacks: PlayerEventsCallbacks): PlayerEven
     // Subscribe to mute changes
     if (callbacks.onPlayerMute) {
         const unsubscribe = subscribePlayerMute(callbacks.onPlayerMute);
+        unsubscribers.push(unsubscribe);
+    }
+
+    // Subscribe to speed changes
+    if (callbacks.onPlayerSpeed) {
+        const unsubscribe = subscribePlayerSpeed(callbacks.onPlayerSpeed);
         unsubscribers.push(unsubscribe);
     }
 

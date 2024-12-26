@@ -32,6 +32,7 @@ interface WebAudioEngineProps {
     playerNum: number;
     playerRef: RefObject<WebAudioEngineHandle>;
     playerStatus: PlayerStatus;
+    speed?: number;
     src1: string | undefined;
     src2: string | undefined;
     volume: number;
@@ -56,6 +57,7 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
         playerNum,
         playerRef,
         playerStatus,
+        speed,
         src1,
         src2,
         volume,
@@ -127,6 +129,7 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
                     controls={false}
                     height={0}
                     muted={isMuted}
+                    playbackRate={speed || 1}
                     playing={playerNum === 1 && playerStatus === PlayerStatus.PLAYING}
                     progressInterval={isTransitioning ? 10 : 250}
                     url={src1 || EMPTY_SOURCE}
@@ -145,6 +148,7 @@ export const WebAudioEngine = (props: WebAudioEngineProps) => {
                     controls={false}
                     height={0}
                     muted={isMuted}
+                    playbackRate={speed || 1}
                     playing={playerNum === 2 && playerStatus === PlayerStatus.PLAYING}
                     progressInterval={isTransitioning ? 10 : 250}
                     url={src2 || EMPTY_SOURCE}

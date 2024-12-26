@@ -14,6 +14,7 @@ import {
     PlayerTransition,
     usePlayerActions,
     usePlayerData,
+    usePlayerProperties,
     usePlayerStore,
 } from '@/features/player/stores/player-store.tsx';
 
@@ -24,7 +25,7 @@ export function AudiolingWebPlayer() {
     const playerRef = useRef<WebAudioEngineHandle>(null);
     const { player1, player2, player } = usePlayerData();
     const { mediaAutoNext, setProgress } = usePlayerActions();
-    const transitionType = usePlayerStore.use.player().transitionType;
+    const { transitionType, crossfadeDuration, speed } = usePlayerProperties();
 
     const volume = usePlayerStore.use.player().volume;
 
@@ -92,7 +93,7 @@ export function AudiolingWebPlayer() {
                     break;
                 case PlayerTransition.CROSSFADE:
                     crossfadeHandler({
-                        crossfadeDuration: 5,
+                        crossfadeDuration: crossfadeDuration,
                         currentPlayer: playerRef.current.player1(),
                         currentPlayerNum: player.playerNum,
                         currentTime: e.playedSeconds,
@@ -106,7 +107,7 @@ export function AudiolingWebPlayer() {
                     break;
             }
         },
-        [isTransitioning, player.playerNum, setProgress, transitionType, volume],
+        [crossfadeDuration, isTransitioning, player.playerNum, setProgress, transitionType, volume],
     );
 
     const onProgressPlayer2 = useCallback(
@@ -211,6 +212,7 @@ export function AudiolingWebPlayer() {
             playerNum={player.playerNum}
             playerRef={playerRef}
             playerStatus={localPlayerStatus}
+            speed={speed}
             src1={player1StreamUrl}
             src2={player2StreamUrl}
             volume={volume}

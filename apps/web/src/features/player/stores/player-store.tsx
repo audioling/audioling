@@ -87,7 +87,10 @@ interface Actions {
     moveSelectedToBottom: (items: PlayQueueItem[]) => void;
     moveSelectedToNext: (items: PlayQueueItem[]) => void;
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
+    setCrossfadeDuration: (duration: number) => void;
     setProgress: (timestamp: number) => void;
+    setSpeed: (speed: number) => void;
+    setTransitionType: (transitionType: PlayerTransition) => void;
     setVolume: (volume: number) => void;
     // setRepeat: (repeat: PlayerRepeat) => void;
     // setShuffle: (shuffle: PlayerShuffle) => void;
@@ -99,6 +102,7 @@ interface Actions {
 
 interface State {
     player: {
+        crossfadeDuration: number;
         index: number;
         muted: boolean;
         playerNum: 1 | 2;
@@ -719,6 +723,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     });
                 },
                 player: {
+                    crossfadeDuration: 5,
                     index: -1,
                     muted: false,
                     playerNum: 1,
@@ -736,9 +741,26 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     priority: [],
                     shuffled: [],
                 },
+                setCrossfadeDuration: (duration: number) => {
+                    set((state) => {
+                        const normalizedDuration = Math.max(0, Math.min(10, duration));
+                        state.player.crossfadeDuration = normalizedDuration;
+                    });
+                },
                 setProgress: (timestamp: number) => {
                     set((state) => {
                         state.player.timestamp = timestamp;
+                    });
+                },
+                setSpeed: (speed: number) => {
+                    set((state) => {
+                        const normalizedSpeed = Math.max(0.5, Math.min(2, speed));
+                        state.player.speed = normalizedSpeed;
+                    });
+                },
+                setTransitionType: (transitionType: PlayerTransition) => {
+                    set((state) => {
+                        state.player.transitionType = transitionType;
                     });
                 },
                 setVolume: (volume: number) => {
@@ -805,6 +827,8 @@ export const usePlayerActions = () => {
             moveSelectedToNext: state.moveSelectedToNext,
             moveSelectedToTop: state.moveSelectedToTop,
             setProgress: state.setProgress,
+            setSpeed: state.setSpeed,
+            setTransitionType: state.setTransitionType,
             setVolume: state.setVolume,
             shuffle: state.shuffle,
             shuffleSelected: state.shuffleSelected,
@@ -968,12 +992,26 @@ export const subscribePlayerMute = (onChange: (muted: boolean, prevMuted: boolea
     );
 };
 
+export const subscribePlayerSpeed = (onChange: (speed: number, prevSpeed: number) => void) => {
+    return usePlayerStoreBase.subscribe(
+        (state) => state.player.speed,
+        (speed, prevSpeed) => {
+            onChange(speed, prevSpeed);
+        },
+    );
+};
+
 export const usePlayerProperties = () => {
     return usePlayerStoreBase(
         useShallow((state) => ({
+            crossfadeDuration: state.player.crossfadeDuration,
             isMuted: state.player.muted,
-            player: state.player.playerNum,
+            playerNum: state.player.playerNum,
+            repeat: state.player.repeat,
+            shuffle: state.player.shuffle,
+            speed: state.player.speed,
             status: state.player.status,
+            transitionType: state.player.transitionType,
             volume: state.player.volume,
         })),
     );
