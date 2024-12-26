@@ -135,7 +135,7 @@ export function AudiolingWebPlayer() {
                     break;
                 case PlayerTransition.CROSSFADE:
                     crossfadeHandler({
-                        crossfadeDuration: 5,
+                        crossfadeDuration: crossfadeDuration,
                         currentPlayer: playerRef.current.player2(),
                         currentPlayerNum: player.playerNum,
                         currentTime: e.playedSeconds,
@@ -149,7 +149,7 @@ export function AudiolingWebPlayer() {
                     break;
             }
         },
-        [isTransitioning, player.playerNum, setProgress, transitionType, volume],
+        [crossfadeDuration, isTransitioning, player.playerNum, setProgress, transitionType, volume],
     );
 
     const handleOnEndedPlayer1 = useCallback(() => {
