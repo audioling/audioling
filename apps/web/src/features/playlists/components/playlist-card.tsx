@@ -29,7 +29,6 @@ export function PlaylistCard(props: PlaylistCardProps) {
     const {
         id,
         image,
-        libraryId,
         componentState,
         metadata,
         metadataLines = 1,
@@ -82,7 +81,6 @@ export function PlaylistCard(props: PlaylistCardProps) {
             controls={controls}
             id={id}
             image={image}
-            libraryId={libraryId}
             metadata={metadata}
             metadataLines={metadataLines}
             titledata={titledata}

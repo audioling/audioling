@@ -35,7 +35,6 @@ export type LoadedCardProps = BaseCardProps & {
     };
     id: string;
     image: string;
-    libraryId: string;
     metadata: {
         path: string;
         text: string;

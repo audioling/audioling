@@ -19,7 +19,6 @@ export function PlaylistGridItem(
                 componentState="loaded"
                 id={data.id}
                 image={`${context.baseUrl}${data.imageUrl}&size=300`}
-                libraryId={context.libraryId}
                 metadata={[]}
                 metadataLines={1}
                 titledata={{ path: '/', text: data.name }}

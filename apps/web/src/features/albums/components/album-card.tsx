@@ -70,7 +70,6 @@ export function AlbumCard(props: AlbumCardProps) {
             controls={controls}
             id={props.id}
             image={props.image}
-            libraryId={props.libraryId}
             metadata={props.metadata}
             metadataLines={props.metadataLines ?? 1}
             titledata={props.titledata}
