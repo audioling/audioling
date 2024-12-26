@@ -11,7 +11,6 @@ import { PlaylistListRoute } from '@/features/playlists/list/playlist-list-route
 import { TrackListRoute } from '@/features/tracks/list/track-list-route.tsx';
 import { AuthProtectedLayout } from '@/layouts/auth-protected-layout.tsx';
 import { DashboardLayout } from '@/layouts/dashboard-layout.tsx';
-import { LibraryIdSelectedLayout } from '@/layouts/library-id-selected-layout.tsx';
 
 const albumRoutes: RouteObject[] = [
     {
@@ -52,35 +51,30 @@ export const dashboardRoutes: RouteObject[] = [
                 children: [
                     {
                         children: [
+                            ...albumRoutes,
+                            ...trackRoutes,
+                            ...genreRoutes,
+                            ...playlistRoutes,
                             {
-                                children: [
-                                    ...albumRoutes,
-                                    ...trackRoutes,
-                                    ...genreRoutes,
-                                    ...playlistRoutes,
-                                    {
-                                        element: <HomeRoute />,
-                                        index: true,
-                                        path: 'home',
-                                    },
-                                    {
-                                        element: <NowPlayingRoute />,
-                                        path: 'now-playing',
-                                    },
-                                    {
-                                        element: <div>Hello, from library</div>,
-                                        path: 'library',
-                                    },
-                                    {
-                                        element: <div>Hello, from search</div>,
-                                        path: 'search',
-                                    },
-                                    {
-                                        element: <div>Hello, from 404</div>,
-                                        path: '*',
-                                    },
-                                ],
-                                element: <LibraryIdSelectedLayout />,
+                                element: <HomeRoute />,
+                                index: true,
+                                path: 'home',
+                            },
+                            {
+                                element: <NowPlayingRoute />,
+                                path: 'now-playing',
+                            },
+                            {
+                                element: <div>Hello, from library</div>,
+                                path: 'library',
+                            },
+                            {
+                                element: <div>Hello, from search</div>,
+                                path: 'search',
+                            },
+                            {
+                                element: <div>Hello, from 404</div>,
+                                path: '*',
                             },
                         ],
                         element: <DashboardLayout />,

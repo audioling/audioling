@@ -2,7 +2,8 @@ import { Suspense, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import type { PanInfo } from 'motion/react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Outlet } from 'react-router';
+import { Navigate, Outlet } from 'react-router';
+import { useSelectedLibraryId } from '@/features/authentication/stores/auth-store.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
@@ -17,10 +18,17 @@ import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create
 import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
+import { APP_ROUTE } from '@/routes/app-routes.ts';
 import styles from './dashboard-layout.module.scss';
 
 export function DashboardLayout() {
     const isLargerThanSm = useIsLargerThanSm();
+
+    const selectedLibraryId = useSelectedLibraryId();
+
+    if (selectedLibraryId === null) {
+        return <Navigate to={APP_ROUTE.DASHBOARD_LIBRARY_SELECT} />;
+    }
 
     if (isLargerThanSm === undefined) {
         return null;
