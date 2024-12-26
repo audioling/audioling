@@ -27,6 +27,8 @@ interface SelectInputProps {
 export const SelectInput = forwardRef((props: SelectInputProps, ref: Ref<HTMLInputElement>) => {
     const { data, description, label, onChange, radius, required, size, value } = props;
 
+    const inputValue = data.find((item) => item.value === value)?.label;
+
     return (
         <Select value={value} onChange={onChange}>
             <Select.Target>
@@ -39,7 +41,7 @@ export const SelectInput = forwardRef((props: SelectInputProps, ref: Ref<HTMLInp
                     rightIcon="arrowDownS"
                     rightIconProps={{ state: 'secondary' }}
                     size={size}
-                    value={value}
+                    value={inputValue}
                 />
             </Select.Target>
             <Select.Portal>

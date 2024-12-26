@@ -67,8 +67,6 @@ interface ItemProps {
 function Item(props: ItemProps) {
     const { children, disabled, isSelected, leftIcon, rightIcon, value } = props;
 
-    console.log('value :>> ', value);
-
     return (
         <RSelect.Item
             className={clsx(styles.item, {
