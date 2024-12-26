@@ -252,8 +252,8 @@ export function TableRow<
 
 export function LoaderRow() {
     return (
-        <div className={styles.loaderRow}>
-            <Skeleton />
+        <div className={styles.rowContainer}>
+            <Skeleton height="var(--table-row-config-comfortable-height)" width="100%" />
         </div>
     );
 }
