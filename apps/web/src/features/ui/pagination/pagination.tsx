@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import clsx from 'clsx';
 import { Fragment } from 'react/jsx-runtime';
-import { LuMinus } from 'react-icons/lu';
 import { MotionButton } from '@/features/ui/button/button.tsx';
+import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
+import { NumberInput } from '@/features/ui/number-input/number-input.tsx';
+import { Popover } from '@/features/ui/popover/popover.tsx';
 import { useContainerBreakpoints } from '@/hooks/use-container-query.ts';
 import type { Sizes } from '@/themes/index.ts';
 import type { Breakpoints } from '@/types.ts';
@@ -112,17 +115,14 @@ export function Pagination(props: PaginationProps) {
                                 >
                                     {page}
                                 </MotionButton>
-                                <IconButton
-                                    key={`dots-end`}
-                                    disabled
-                                    className={styles.iconControl}
-                                    icon="ellipsisHorizontal"
+                                <GoToPageButton
+                                    currentPage={currentPage}
+                                    pageCount={pageCount}
                                     radius={radius}
                                     size={size}
                                     variant={variant}
-                                >
-                                    <DotComponent />
-                                </IconButton>
+                                    onPageChange={onPageChange}
+                                />
                                 <MotionButton
                                     key={pageCount}
                                     radius={radius}
@@ -139,17 +139,14 @@ export function Pagination(props: PaginationProps) {
                     if (index > 0 && array[index - 1] !== page - 1) {
                         return (
                             <Fragment key={`dots-${page}`}>
-                                <IconButton
-                                    key={`dots-${page}`}
-                                    disabled
-                                    className={styles.iconControl}
-                                    icon="ellipsisHorizontal"
+                                <GoToPageButton
+                                    currentPage={currentPage}
+                                    pageCount={pageCount}
                                     radius={radius}
                                     size={size}
                                     variant={variant}
-                                >
-                                    <DotComponent />
-                                </IconButton>
+                                    onPageChange={onPageChange}
+                                />
                                 <MotionButton
                                     key={page}
                                     radius={radius}
@@ -205,10 +202,6 @@ export function Pagination(props: PaginationProps) {
     );
 }
 
-function DotComponent() {
-    return <LuMinus />;
-}
-
 function getResponsePaginationProps(
     breakpoints: Breakpoints,
     defaults: { siblings?: number; withControls?: boolean; withEdges?: boolean },
@@ -218,4 +211,55 @@ function getResponsePaginationProps(
             defaults.siblings ||
             (!breakpoints.isLargerThanSm ? 0 : !breakpoints.isLargerThanMd ? 1 : 2),
     };
+}
+
+function GoToPageButton(props: {
+    currentPage: number;
+    onPageChange: (page: number) => void;
+    pageCount: number;
+    radius: Sizes;
+    size: Sizes;
+    variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle' | 'transparent' | 'outline';
+}) {
+    const { radius, size, variant, onPageChange, currentPage, pageCount } = props;
+
+    const [goToPage, setGoToPage] = useState(currentPage);
+
+    return (
+        <Popover align="center" side="top">
+            <Popover.Target>
+                <IconButton
+                    className={styles.iconControl}
+                    icon="ellipsisHorizontal"
+                    radius={radius}
+                    size={size}
+                    variant={variant}
+                />
+            </Popover.Target>
+            <Popover.Content>
+                <form>
+                    <Group gap="sm" p="sm">
+                        <NumberInput
+                            max={pageCount}
+                            min={1}
+                            style={{ width: '100px' }}
+                            value={goToPage}
+                            onChange={(e) => setGoToPage(e)}
+                        />
+                        <IconButton
+                            icon="arrowRight"
+                            type="submit"
+                            variant="outline"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (goToPage) {
+                                    onPageChange(goToPage);
+                                }
+                            }}
+                        />
+                    </Group>
+                </form>
+            </Popover.Content>
+        </Popover>
+    );
 }
