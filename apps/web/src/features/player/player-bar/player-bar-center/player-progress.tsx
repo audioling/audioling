@@ -52,6 +52,7 @@ export function PlayerProgress() {
                 min={0}
                 orientation="horizontal"
                 step={1}
+                tooltip={false}
                 value={[value]}
                 onChange={onChange}
                 onChangeEnd={onChangeEnd}

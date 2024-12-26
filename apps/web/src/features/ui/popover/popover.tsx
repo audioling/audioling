@@ -122,8 +122,9 @@ function Content(props: ContentProps) {
                         asChild
                         align={align}
                         className={styles.content}
+                        collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
                         side={side}
-                        sideOffset={10}
+                        sideOffset={6}
                     >
                         <motion.div
                             animate="show"
@@ -142,3 +143,4 @@ function Content(props: ContentProps) {
 
 Popover.Target = Target;
 Popover.Dropdown = Content;
+Popover.Content = Content;

@@ -7,7 +7,7 @@ export function RightPanelButton() {
 
     return (
         <IconButton
-            icon={rightPanelOpen ? 'panelRightClose' : 'panelRightOpen'}
+            icon={rightPanelOpen ? 'arrowRightToLine' : 'arrowLeftToLine'}
             variant="default"
             onClick={toggleRightPanel}
         />
