@@ -6,6 +6,7 @@
         'left right'
         'footer footer';
     gap: base.$gap-sm;
+    width: 100%;
     padding: base.$gap-xs base.$gap-xs base.$gap-md base.$gap-xs;
 }
 
