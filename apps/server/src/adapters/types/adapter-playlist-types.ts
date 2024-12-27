@@ -47,7 +47,7 @@ type AdapterAddToPlaylistQuery = {
 type AdapterAddToPlaylistBody = {
     entry: {
         id: string;
-        type: 'album' | 'song';
+        type: 'album' | 'track';
     }[];
 };
 

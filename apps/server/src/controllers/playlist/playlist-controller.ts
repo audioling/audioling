@@ -386,6 +386,52 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         },
     );
 
+    // ANCHOR - POST /{id}/tracks/add
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/{id}/tracks/add',
+            summary: 'Add tracks to playlist',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/{id}/tracks/add'].post,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const body = c.req.valid('json');
+            const { adapter } = c.var;
+
+            await service.playlist.addTracks(adapter, {
+                playlistId: params.id,
+                trackIds: body.trackIds,
+            });
+
+            return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - POST /{id}/tracks/remove
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/{id}/tracks/remove',
+            summary: 'Remove tracks from playlist',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/{id}/tracks/remove'].post,
+        }),
+        async (c) => {
+            const params = c.req.param();
+            const body = c.req.valid('json');
+            const { adapter } = c.var;
+
+            await service.playlist.removeTracks(adapter, {
+                playlistId: params.id,
+                trackIds: body.trackIds,
+            });
+
+            return c.json(null, 204);
+        },
+    );
+
     // ANCHOR - PUT /{id}
     controller.openapi(
         createRoute({

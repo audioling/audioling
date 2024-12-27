@@ -133,3 +133,16 @@ export const playlistFolderListRequestSchema = z.object({
 });
 
 export type PlaylistFolderListRequest = z.infer<typeof playlistFolderListRequestSchema>;
+
+export const addTracksToPlaylistRequestSchema = z.object({
+    skipDuplicates: z.boolean().optional(),
+    trackIds: z.string().array(),
+});
+
+export type AddTracksToPlaylistRequest = z.infer<typeof addTracksToPlaylistRequestSchema>;
+
+export const removeTracksFromPlaylistRequestSchema = z.object({
+    trackIds: z.string().array(),
+});
+
+export type RemoveTracksFromPlaylistRequest = z.infer<typeof removeTracksFromPlaylistRequestSchema>;

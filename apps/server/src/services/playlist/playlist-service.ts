@@ -38,6 +38,7 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
 
             return result;
         },
+
         // ANCHOR - Add Folder
         addFolder: async (args: { name: string; parentId: string | null; userId: string }) => {
             const folder: DbUserPlaylistFolderInsert = {
@@ -67,6 +68,50 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
                 args.folderId,
                 args.playlistIds,
             );
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return null;
+        },
+
+        // ANCHOR - Add Tracks to Playlist
+        addTracks: async (
+            adapter: AdapterApi,
+            args: {
+                playlistId: string;
+                skipDuplicates?: boolean;
+                trackIds: string[];
+            },
+        ) => {
+            let trackIds = args.trackIds;
+
+            if (args.skipDuplicates) {
+                const [err, result] = await adapter.getPlaylistTrackList({
+                    query: {
+                        id: args.playlistId,
+                        limit: 1000000,
+                        offset: 0,
+                        sortBy: TrackListSortOptions.NAME,
+                        sortOrder: ListSortOrder.ASC,
+                    },
+                });
+
+                if (err) {
+                    throw new apiError.internalServer({ message: err.message });
+                }
+
+                const existingTrackIds = result.items.map((item) => item.id);
+                trackIds = args.trackIds.filter((id) => !existingTrackIds.includes(id));
+            }
+
+            const [err] = await adapter.addToPlaylist({
+                body: {
+                    entry: trackIds.map((id) => ({ id, type: 'track' })),
+                },
+                query: { id: args.playlistId },
+            });
 
             if (err) {
                 throw new apiError.internalServer({ message: err.message });
@@ -245,6 +290,28 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
                 args.folderId,
                 args.playlistIds,
             );
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return null;
+        },
+
+        // ANCHOR - Remove Tracks from Playlist
+        removeTracks: async (
+            adapter: AdapterApi,
+            args: {
+                playlistId: string;
+                trackIds: string[];
+            },
+        ) => {
+            const [err] = await adapter.removeFromPlaylist({
+                body: {
+                    entry: args.trackIds,
+                },
+                query: { id: args.playlistId },
+            });
 
             if (err) {
                 throw new apiError.internalServer({ message: err.message });

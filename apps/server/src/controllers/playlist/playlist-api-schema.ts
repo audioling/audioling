@@ -1,6 +1,7 @@
 import { z } from '@hono/zod-openapi';
 import {
     addPlaylistToFolderRequestSchema,
+    addTracksToPlaylistRequestSchema,
     createPlaylistFolderRequestSchema,
     createPlaylistRequestSchema,
     playlistDetailResponseSchema,
@@ -11,6 +12,7 @@ import {
     playlistListRequestSchema,
     playlistListResponseSchema,
     removePlaylistFromFolderRequestSchema,
+    removeTracksFromPlaylistRequestSchema,
     updatePlaylistFolderRequestSchema,
     updatePlaylistRequestSchema,
 } from '@/controllers/playlist/playlist-api-types.js';
@@ -253,6 +255,44 @@ export const playlistApiSchema = {
                 [401, 403, 404, 500],
             ),
             security: [{ Bearer: [] }],
+        },
+    },
+    '/{id}/tracks/add': {
+        post: {
+            request: {
+                body: {
+                    content: { 'application/json': { schema: addTracksToPlaylistRequestSchema } },
+                },
+                params: z.object({ id: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Add tracks to playlist',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 422, 500],
+            ),
+        },
+    },
+    '/{id}/tracks/remove': {
+        post: {
+            request: {
+                body: {
+                    content: {
+                        'application/json': { schema: removeTracksFromPlaylistRequestSchema },
+                    },
+                },
+                params: z.object({ id: z.string(), libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Remove tracks from playlist',
+                    schema: EmptyBodySchema,
+                    status: 204,
+                },
+                [401, 403, 404, 422, 500],
+            ),
         },
     },
 };
