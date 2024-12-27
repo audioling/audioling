@@ -105,12 +105,12 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         addToPlaylist: async (request, fetchOptions) => {
             const { query, body } = request;
 
-            const songIds: string[] = [];
+            const trackIds: string[] = [];
             const albumIds: string[] = [];
 
             for (const item of body.entry) {
-                if (item.type === 'song') {
-                    songIds.push(item.id);
+                if (item.type === 'track') {
+                    trackIds.push(item.id);
                 } else if (item.type === 'album') {
                     albumIds.push(item.id);
                 }
@@ -128,10 +128,10 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             for (const albumResponse of albumResponses) {
                 if (albumResponse.status === 200) {
-                    const songs = albumResponse.body.album.song;
+                    const tracks = albumResponse.body['subsonic-response'].album.song;
 
-                    songs?.forEach((song) => {
-                        songIds.push(song.id);
+                    tracks?.forEach((track) => {
+                        trackIds.push(track.id);
                     });
                 } else {
                     return [
@@ -147,7 +147,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             await apiClient.updatePlaylist.os['1'].get({
                 query: {
                     playlistId: query.id,
-                    songIdToAdd: songIds,
+                    songIdToAdd: trackIds,
                 },
             });
 
@@ -155,7 +155,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 fetchOptions,
                 query: {
                     playlistId: query.id,
-                    songIdToAdd: songIds,
+                    songIdToAdd: trackIds,
                 },
             });
 
@@ -244,7 +244,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 ];
             }
 
-            const albums = (result.body.artist.album || []).map(
+            const albums = (result.body['subsonic-response'].artist.album || []).map(
                 subsonicHelpers.converter.albumToAdapter,
             );
 
@@ -282,7 +282,10 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 ];
             }
 
-            return [null, subsonicHelpers.converter.artistToAdapter(result.body.artist)];
+            return [
+                null,
+                subsonicHelpers.converter.artistToAdapter(result.body['subsonic-response'].artist),
+            ];
         },
         getAlbumArtistList: async (request, fetchOptions) => {
             const { query } = request;
@@ -312,15 +315,17 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 ];
             }
 
-            const flattenedArtists = result.body.artists.index.flatMap((artist) => {
-                return (artist.artist || []).map((artist) => ({
-                    ...artist,
-                    id: artist.id,
-                    name: artist.name,
-                    starred: artist.starred,
-                    userRating: artist.userRating,
-                }));
-            });
+            const flattenedArtists = result.body['subsonic-response'].artists.index.flatMap(
+                (artist) => {
+                    return (artist.artist || []).map((artist) => ({
+                        ...artist,
+                        id: artist.id,
+                        name: artist.name,
+                        starred: artist.starred,
+                        userRating: artist.userRating,
+                    }));
+                },
+            );
 
             const artists = flattenedArtists.slice(query.offset, query.offset + query.limit);
 
@@ -355,10 +360,13 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const artistCount = result.body.artists.index.reduce((acc, artist) => {
-                acc += (artist.artist || []).length;
-                return acc;
-            }, 0);
+            const artistCount = result.body['subsonic-response'].artists.index.reduce(
+                (acc, artist) => {
+                    acc += (artist.artist || []).length;
+                    return acc;
+                },
+                0,
+            );
 
             return [null, artistCount];
         },
@@ -385,7 +393,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 ];
             }
 
-            const albumIds = (result.body.artist.album || []).map((album) => album.id);
+            const albumIds = (result.body['subsonic-response'].artist.album || []).map(
+                (album) => album.id,
+            );
 
             const albumPromises = albumIds.map((albumId) =>
                 apiClient.getAlbum.os['1'].get({
@@ -442,7 +452,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 ];
             }
 
-            const album = subsonicHelpers.converter.albumToAdapter(result.body.album);
+            const album = subsonicHelpers.converter.albumToAdapter(
+                result.body['subsonic-response'].album,
+            );
             return [null, album];
         },
         getAlbumList: async (request, fetchOptions) => {
@@ -478,7 +490,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     return [{ code: result.status, message: result.body as string }, null];
                 }
 
-                const items = (result.body.searchResult3.album || []).map(
+                const items = (result.body['subsonic-response'].searchResult3.album || []).map(
                     subsonicHelpers.converter.albumToAdapter,
                 );
 
@@ -610,7 +622,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            let items = (result.body.albumList2.album || []).map(
+            let items = (result.body['subsonic-response'].albumList2.album || []).map(
                 subsonicHelpers.converter.albumToAdapter,
             );
 
@@ -655,7 +667,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return result.body.albumList2.album?.length || 0;
+                return result.body['subsonic-response'].albumList2.album?.length || 0;
             }
 
             async function getSearchPageItemCount(page: number, limit: number): Promise<number> {
@@ -676,7 +688,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return result.body.searchResult3.album?.length || 0;
+                return result.body['subsonic-response'].searchResult3.album?.length || 0;
             }
 
             const pageItemCountFn = query.searchTerm ? getSearchPageItemCount : getPageItemCount;
@@ -710,8 +722,10 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            if (result.body.album.song) {
-                const tracks = result.body.album.song.map(subsonicHelpers.converter.trackToAdapter);
+            if (result.body['subsonic-response'].album.song) {
+                const tracks = result.body['subsonic-response'].album.song.map(
+                    subsonicHelpers.converter.trackToAdapter,
+                );
 
                 const paginated = adapterHelpers.paginate(tracks, query.offset, query.limit);
 
@@ -750,14 +764,16 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const flattenedArtists = result.body.artists.index.flatMap((artist) => {
-                return (artist.artist || []).map((artist) => ({
-                    id: artist.id,
-                    name: artist.name,
-                    starred: artist.starred,
-                    userRating: artist.userRating,
-                }));
-            });
+            const flattenedArtists = result.body['subsonic-response'].artists.index.flatMap(
+                (artist) => {
+                    return (artist.artist || []).map((artist) => ({
+                        id: artist.id,
+                        name: artist.name,
+                        starred: artist.starred,
+                        userRating: artist.userRating,
+                    }));
+                },
+            );
 
             const artists = flattenedArtists.slice(query.offset, query.offset + query.limit);
 
@@ -808,16 +824,19 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const artistCount = result.body.artists.index.reduce((acc, artist) => {
-                if (query.searchTerm) {
-                    acc += (artist.artist || []).filter((artist) =>
-                        artist.name.includes(query.searchTerm!),
-                    ).length;
-                } else {
-                    acc += (artist.artist || []).length;
-                }
-                return acc;
-            }, 0);
+            const artistCount = result.body['subsonic-response'].artists.index.reduce(
+                (acc, artist) => {
+                    if (query.searchTerm) {
+                        acc += (artist.artist || []).filter((artist) =>
+                            artist.name.includes(query.searchTerm!),
+                        ).length;
+                    } else {
+                        acc += (artist.artist || []).length;
+                    }
+                    return acc;
+                },
+                0,
+            );
 
             return [null, artistCount];
         },
@@ -836,7 +855,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items = (result.body.starred2?.album || []).map(
+            const items = (result.body['subsonic-response'].starred2?.album || []).map(
                 subsonicHelpers.converter.albumToAdapter,
             );
 
@@ -846,7 +865,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: (result.body.starred2?.album || []).length,
+                    totalRecordCount: (result.body['subsonic-response'].starred2?.album || [])
+                        .length,
                 },
             ];
         },
@@ -867,9 +887,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items: AdapterArtist[] = (result.body.starred2?.artist || []).map(
-                subsonicHelpers.converter.artistToAdapter,
-            );
+            const items: AdapterArtist[] = (
+                result.body['subsonic-response'].starred2?.artist || []
+            ).map(subsonicHelpers.converter.artistToAdapter);
 
             return [
                 null,
@@ -877,7 +897,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: (result.body.starred2?.artist || []).length,
+                    totalRecordCount: (result.body['subsonic-response'].starred2?.artist || [])
+                        .length,
                 },
             ];
         },
@@ -896,9 +917,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items: AdapterTrack[] = (result.body.starred2?.song || []).map(
-                subsonicHelpers.converter.trackToAdapter,
-            );
+            const items: AdapterTrack[] = (
+                result.body['subsonic-response'].starred2?.song || []
+            ).map(subsonicHelpers.converter.trackToAdapter);
 
             return [
                 null,
@@ -906,7 +927,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: (result.body.starred2.song || []).length,
+                    totalRecordCount: (result.body['subsonic-response'].starred2.song || []).length,
                 },
             ];
         },
@@ -923,13 +944,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            let items: AdapterGenre[] = (result.body.genres.genre || []).map((genre) => ({
-                albumCount: genre.albumCount ?? null,
-                id: genre.value,
-                imageUrl: null,
-                name: genre.value,
-                trackCount: genre.songCount ?? null,
-            }));
+            let items: AdapterGenre[] = (result.body['subsonic-response'].genres.genre || []).map(
+                (genre) => ({
+                    albumCount: genre.albumCount ?? null,
+                    id: genre.value,
+                    imageUrl: null,
+                    name: genre.value,
+                    trackCount: genre.songCount ?? null,
+                }),
+            );
 
             if (query.searchTerm) {
                 items = items.filter((item) =>
@@ -952,13 +975,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            let items: AdapterGenre[] = (result.body.genres?.genre || []).map((genre) => ({
-                albumCount: genre.albumCount ?? null,
-                id: genre.value,
-                imageUrl: null,
-                name: genre.value,
-                trackCount: genre.songCount ?? null,
-            }));
+            let items: AdapterGenre[] = (result.body['subsonic-response'].genres.genre || []).map(
+                (genre) => ({
+                    albumCount: genre.albumCount ?? null,
+                    id: genre.value,
+                    imageUrl: null,
+                    name: genre.value,
+                    trackCount: genre.songCount ?? null,
+                }),
+            );
 
             if (query.searchTerm) {
                 items = items.filter((item) =>
@@ -975,7 +1000,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: (result.body.genres.genre || []).length,
+                    totalRecordCount: (result.body['subsonic-response'].genres.genre || []).length,
                 },
             ];
         },
@@ -991,10 +1016,12 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items = (result.body.musicFolders?.musicFolder || []).map((folder) => ({
-                id: folder.id.toString(),
-                name: folder.name || '',
-            }));
+            const items = (result.body['subsonic-response'].musicFolders?.musicFolder || []).map(
+                (folder) => ({
+                    id: folder.id.toString(),
+                    name: folder.name || '',
+                }),
+            );
 
             return [
                 null,
@@ -1002,7 +1029,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items,
                     limit: query.limit,
                     offset: query.offset,
-                    totalRecordCount: (result.body.musicFolders?.musicFolder || []).length,
+                    totalRecordCount: (
+                        result.body['subsonic-response'].musicFolders?.musicFolder || []
+                    ).length,
                 },
             ];
         },
@@ -1019,7 +1048,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const item = subsonicHelpers.converter.playlistToAdapter(result.body.playlist);
+            const item = subsonicHelpers.converter.playlistToAdapter(
+                result.body['subsonic-response'].playlist,
+            );
 
             return [null, item];
         },
@@ -1038,7 +1069,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const playlistResult = result.body.playlists.playlist || [];
+            const playlistResult = result.body['subsonic-response'].playlists.playlist || [];
 
             let playlists: AdapterPlaylist[] = playlistResult
                 .slice(query.offset, query.limit)
@@ -1093,7 +1124,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            return [null, (result.body.playlists.playlist || []).length];
+            return [null, (result.body['subsonic-response'].playlists.playlist || []).length];
         },
         getPlaylistTrackList: async (request, fetchOptions) => {
             const { query } = request;
@@ -1110,9 +1141,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            let tracks: AdapterPlaylistTrack[] = (result.body.playlist.entry || []).map(
-                subsonicHelpers.converter.playlistTrackToAdapter,
-            );
+            let tracks: AdapterPlaylistTrack[] = (
+                result.body['subsonic-response'].playlist.entry || []
+            ).map(subsonicHelpers.converter.playlistTrackToAdapter);
 
             if (query.searchTerm) {
                 tracks = tracks.filter((track) => {
@@ -1134,7 +1165,8 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: (result.body.playlist.entry || []).length,
+                    totalRecordCount: (result.body['subsonic-response'].playlist.entry || [])
+                        .length,
                 },
             ];
         },
@@ -1167,7 +1199,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            return [null, (result.body.playlist.entry || []).length];
+            return [null, (result.body['subsonic-response'].playlist.entry || []).length];
         },
         getTrackDetail: async (request, fetchOptions) => {
             const { query } = request;
@@ -1182,7 +1214,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const item = subsonicHelpers.converter.trackToAdapter(result.body.song);
+            const item = subsonicHelpers.converter.trackToAdapter(
+                result.body['subsonic-response'].song,
+            );
 
             return [null, item];
         },
@@ -1204,9 +1238,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const items: AdapterTrack[] = (result.body.searchResult3.song || []).map(
-                subsonicHelpers.converter.trackToAdapter,
-            );
+            const items: AdapterTrack[] = (
+                result.body['subsonic-response'].searchResult3.song || []
+            ).map(subsonicHelpers.converter.trackToAdapter);
 
             const [err, totalRecordCount] = await initSubsonicAdapter(
                 library,
@@ -1252,7 +1286,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return (result.body.searchResult3.song || []).length;
+                return (result.body['subsonic-response'].searchResult3.song || []).length;
             };
 
             try {
