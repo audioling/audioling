@@ -169,6 +169,7 @@ function Divider(props: DividerProps) {
 
 interface SubmenuContext {
     disabled?: boolean;
+    isCloseDisabled?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -178,12 +179,16 @@ const SubmenuContext = createContext<SubmenuContext | null>(null);
 interface SubmenuProps {
     children: ReactNode;
     disabled?: boolean;
+    isCloseDisabled?: boolean;
 }
 
 function Submenu(props: SubmenuProps) {
-    const { children, disabled } = props;
+    const { children, disabled, isCloseDisabled } = props;
     const [open, setOpen] = useState(false);
-    const context = useMemo(() => ({ disabled, open, setOpen }), [disabled, open]);
+    const context = useMemo(
+        () => ({ disabled, isCloseDisabled, open, setOpen }),
+        [disabled, isCloseDisabled, open],
+    );
 
     return (
         <DropdownMenu.Sub open={open}>
@@ -198,14 +203,18 @@ interface SubmenuTargetProps {
 
 function SubmenuTarget(props: SubmenuTargetProps) {
     const { children } = props;
-    const { disabled, setOpen } = useContext(SubmenuContext) as SubmenuContext;
+    const { disabled, isCloseDisabled, setOpen } = useContext(SubmenuContext) as SubmenuContext;
 
     return (
         <DropdownMenu.SubTrigger
             className={clsx({ [styles.disabled]: disabled })}
             disabled={disabled}
             onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
+            onMouseLeave={() => {
+                if (!isCloseDisabled) {
+                    setOpen(false);
+                }
+            }}
         >
             {children}
         </DropdownMenu.SubTrigger>

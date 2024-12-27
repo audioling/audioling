@@ -1,11 +1,18 @@
 @use '@/styles/base';
 
 .content {
+    width: 14rem;
     padding: var(--menu-padding);
     background-color: var(--menu-background-color);
     border: var(--menu-border);
     border-radius: var(--menu-border-radius);
     box-shadow: var(--menu-box-shadow);
+}
+
+.inner-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--base-gap-xs);
 }
 
 .item {
@@ -68,5 +75,5 @@
 }
 
 .submenu-content {
-    max-height: 18rem;
+    max-height: 16rem;
 }

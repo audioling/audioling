@@ -102,14 +102,18 @@ function Target(props: TargetProps) {
     );
 }
 
-interface LabelProps {
+interface LabelProps extends React.ComponentPropsWithoutRef<'div'> {
     children: ReactNode;
 }
 
 function Label(props: LabelProps) {
-    const { children } = props;
+    const { children, className, ...htmlProps } = props;
 
-    return <RadixContextMenu.Label className={styles.label}>{children}</RadixContextMenu.Label>;
+    return (
+        <RadixContextMenu.Label className={clsx(styles.label, className)} {...htmlProps}>
+            {children}
+        </RadixContextMenu.Label>
+    );
 }
 
 interface DividerProps {}
@@ -120,6 +124,7 @@ function Divider(props: DividerProps) {
 
 interface SubmenuContext {
     disabled?: boolean;
+    isCloseDisabled?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -129,12 +134,17 @@ const SubmenuContext = createContext<SubmenuContext | null>(null);
 interface SubmenuProps {
     children: ReactNode;
     disabled?: boolean;
+    isCloseDisabled?: boolean;
+    open?: boolean;
 }
 
 function Submenu(props: SubmenuProps) {
-    const { children, disabled } = props;
-    const [open, setOpen] = useState(false);
-    const context = useMemo(() => ({ disabled, open, setOpen }), [disabled, open]);
+    const { children, disabled, isCloseDisabled, open: isManuallyOpen } = props;
+    const [open, setOpen] = useState(isManuallyOpen ?? false);
+    const context = useMemo(
+        () => ({ disabled, isCloseDisabled, open, setOpen }),
+        [disabled, isCloseDisabled, open],
+    );
 
     return (
         <RadixContextMenu.Sub open={open}>
@@ -165,11 +175,12 @@ function SubmenuTarget(props: SubmenuTargetProps) {
 
 interface SubmenuContentProps {
     children: ReactNode;
+    stickyContent?: ReactNode;
 }
 
 function SubmenuContent(props: SubmenuContentProps) {
-    const { children } = props;
-    const { open, setOpen } = useContext(SubmenuContext) as SubmenuContext;
+    const { children, stickyContent } = props;
+    const { isCloseDisabled, open, setOpen } = useContext(SubmenuContext) as SubmenuContext;
 
     return (
         <Fragment>
@@ -178,13 +189,19 @@ function SubmenuContent(props: SubmenuContentProps) {
                     <RadixContextMenu.SubContent
                         className={styles.content}
                         onMouseEnter={() => setOpen(true)}
-                        onMouseLeave={() => setOpen(false)}
+                        onMouseLeave={() => {
+                            if (!isCloseDisabled) {
+                                setOpen(false);
+                            }
+                        }}
                     >
                         <motion.div
                             animate="show"
+                            className={styles.innerContent}
                             initial="hidden"
                             variants={animationVariants.fadeIn}
                         >
+                            {stickyContent}
                             <ScrollArea className={styles.submenuContent}>{children}</ScrollArea>
                         </motion.div>
                     </RadixContextMenu.SubContent>
