@@ -13,7 +13,7 @@ import { Text } from '@/features/ui/text/text.tsx';
 
 export function PlayerSettingsButton() {
     return (
-        <Popover position="top">
+        <Popover side="top">
             <Popover.Target>
                 <IconButton isCompact icon="mediaSettings" size="lg" />
             </Popover.Target>
@@ -41,7 +41,7 @@ export function PlayerSettings() {
                 onChange={(value) => setPlayerTransition(value as PlayerTransition)}
             />
             {transitionType === PlayerTransition.CROSSFADE && (
-                <Stack as="section">
+                <Stack as="section" gap="xs">
                     <Group justify="between">
                         <Text isNoSelect>Crossfade Duration</Text>
                         <Text isNoSelect isSecondary>
