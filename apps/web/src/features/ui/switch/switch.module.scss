@@ -1,0 +1,28 @@
+.root {
+    all: unset;
+    width: 2.5rem;
+    height: 1.25rem;
+    background-color: var(--switch-background-color);
+    border-radius: var(--switch-border-radius);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.root[data-state='checked'] {
+    background-color: var(--switch-checked-background-color);
+    border-color: var(--switch-checked-border-color);
+}
+
+.thumb {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--switch-thumb-background-color);
+    border-radius: var(--switch-thumb-border-radius);
+    transition: transform 100ms;
+    transform: translateX(2px);
+    will-change: transform;
+
+    &[data-state='checked'] {
+        transform: translateX(1.25rem);
+    }
+}

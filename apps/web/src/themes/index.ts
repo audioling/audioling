@@ -103,6 +103,11 @@ export type AppThemeConfiguration = {
         'button-subtle-hover-background-color': CSSProperties['backgroundColor'];
         'button-subtle-hover-border': CSSProperties['border'];
         'button-subtle-hover-font-color': CSSProperties['color'];
+        'checkbox-background-color': CSSProperties['backgroundColor'];
+        'checkbox-border': CSSProperties['border'];
+        'checkbox-border-radius': CSSProperties['borderRadius'];
+        'checkbox-checked-background-color': CSSProperties['backgroundColor'];
+        'checkbox-checked-border-color': CSSProperties['borderColor'];
         'global-background-color': CSSProperties['color'];
         'global-danger-color': CSSProperties['color'];
         'global-font-color': CSSProperties['color'];
@@ -202,6 +207,15 @@ export type AppThemeConfiguration = {
         'skeleton-background-color': CSSProperties['backgroundColor'];
         'skeleton-border-radius': CSSProperties['borderRadius'];
         'skeleton-highlight-color': CSSProperties['color'];
+        'switch-background-color': CSSProperties['backgroundColor'];
+        'switch-border-radius': CSSProperties['borderRadius'];
+        'switch-checked-background-color': CSSProperties['backgroundColor'];
+        'switch-checked-border': CSSProperties['borderColor'];
+        'switch-checked-thumb-background-color': CSSProperties['backgroundColor'];
+        'switch-checked-thumb-border': CSSProperties['borderColor'];
+        'switch-thumb-background-color': CSSProperties['backgroundColor'];
+        'switch-thumb-border-color': CSSProperties['borderColor'];
+        'switch-thumb-border-radius': CSSProperties['borderRadius'];
         'table-border-color': CSSProperties['borderColor'];
         'table-cell-border-color': CSSProperties['borderColor'];
         'table-group-background-color': CSSProperties['backgroundColor'];
