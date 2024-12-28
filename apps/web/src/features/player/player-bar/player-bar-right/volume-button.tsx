@@ -44,7 +44,7 @@ export function VolumeButton() {
     }
 
     return (
-        <Popover position="top" width="target">
+        <Popover side="top" width="target">
             <Popover.Target>
                 <IconButton
                     isCompact

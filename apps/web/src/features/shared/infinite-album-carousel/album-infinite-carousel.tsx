@@ -38,7 +38,6 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                             componentState="loaded"
                             id={album.id}
                             image={`${baseUrl}${album.imageUrl}&size=300`}
-                            libraryId={libraryId}
                             metadata={[
                                 {
                                     path: generatePath(APP_ROUTE.DASHBOARD_ARTISTS_DETAIL, {
