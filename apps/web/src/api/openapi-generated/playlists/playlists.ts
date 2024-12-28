@@ -86,6 +86,20 @@ import type {
     PostApiLibraryIdPlaylistsFoldersFolderIdRemove422,
     PostApiLibraryIdPlaylistsFoldersFolderIdRemove500,
     PostApiLibraryIdPlaylistsFoldersFolderIdRemoveBody,
+    PostApiLibraryIdPlaylistsIdTracksAdd204,
+    PostApiLibraryIdPlaylistsIdTracksAdd401,
+    PostApiLibraryIdPlaylistsIdTracksAdd403,
+    PostApiLibraryIdPlaylistsIdTracksAdd404,
+    PostApiLibraryIdPlaylistsIdTracksAdd422,
+    PostApiLibraryIdPlaylistsIdTracksAdd500,
+    PostApiLibraryIdPlaylistsIdTracksAddBody,
+    PostApiLibraryIdPlaylistsIdTracksRemove204,
+    PostApiLibraryIdPlaylistsIdTracksRemove401,
+    PostApiLibraryIdPlaylistsIdTracksRemove403,
+    PostApiLibraryIdPlaylistsIdTracksRemove404,
+    PostApiLibraryIdPlaylistsIdTracksRemove422,
+    PostApiLibraryIdPlaylistsIdTracksRemove500,
+    PostApiLibraryIdPlaylistsIdTracksRemoveBody,
     PutApiLibraryIdPlaylistsFoldersFolderId200,
     PutApiLibraryIdPlaylistsFoldersFolderId401,
     PutApiLibraryIdPlaylistsFoldersFolderId403,
@@ -2036,3 +2050,220 @@ export function useGetApiLibraryIdPlaylistsIdTracksSuspense<
 
     return query;
 }
+
+/**
+ * @summary Add tracks to playlist
+ */
+export const postApiLibraryIdPlaylistsIdTracksAdd = (
+    libraryId: string,
+    id: string,
+    postApiLibraryIdPlaylistsIdTracksAddBody: BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody>,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylistsIdTracksAdd204>(
+        {
+            url: `/api/${libraryId}/playlists/${id}/tracks/add`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdPlaylistsIdTracksAddBody,
+            signal,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsIdTracksAddMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsIdTracksAdd401
+        | PostApiLibraryIdPlaylistsIdTracksAdd403
+        | PostApiLibraryIdPlaylistsIdTracksAdd404
+        | PostApiLibraryIdPlaylistsIdTracksAdd422
+        | PostApiLibraryIdPlaylistsIdTracksAdd500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksAdd>>,
+        TError,
+        { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksAdd>>,
+    TError,
+    { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody> },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksAdd>>,
+        { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody> }
+    > = (props) => {
+        const { libraryId, id, data } = props ?? {};
+
+        return postApiLibraryIdPlaylistsIdTracksAdd(libraryId, id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsIdTracksAddMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksAdd>>
+>;
+export type PostApiLibraryIdPlaylistsIdTracksAddMutationBody =
+    BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody>;
+export type PostApiLibraryIdPlaylistsIdTracksAddMutationError = ErrorType<
+    | PostApiLibraryIdPlaylistsIdTracksAdd401
+    | PostApiLibraryIdPlaylistsIdTracksAdd403
+    | PostApiLibraryIdPlaylistsIdTracksAdd404
+    | PostApiLibraryIdPlaylistsIdTracksAdd422
+    | PostApiLibraryIdPlaylistsIdTracksAdd500
+>;
+
+/**
+ * @summary Add tracks to playlist
+ */
+export const usePostApiLibraryIdPlaylistsIdTracksAdd = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsIdTracksAdd401
+        | PostApiLibraryIdPlaylistsIdTracksAdd403
+        | PostApiLibraryIdPlaylistsIdTracksAdd404
+        | PostApiLibraryIdPlaylistsIdTracksAdd422
+        | PostApiLibraryIdPlaylistsIdTracksAdd500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksAdd>>,
+        TError,
+        { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksAdd>>,
+    TError,
+    { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksAddBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdPlaylistsIdTracksAddMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Remove tracks from playlist
+ */
+export const postApiLibraryIdPlaylistsIdTracksRemove = (
+    libraryId: string,
+    id: string,
+    postApiLibraryIdPlaylistsIdTracksRemoveBody: BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody>,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylistsIdTracksRemove204>(
+        {
+            url: `/api/${libraryId}/playlists/${id}/tracks/remove`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdPlaylistsIdTracksRemoveBody,
+            signal,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsIdTracksRemoveMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsIdTracksRemove401
+        | PostApiLibraryIdPlaylistsIdTracksRemove403
+        | PostApiLibraryIdPlaylistsIdTracksRemove404
+        | PostApiLibraryIdPlaylistsIdTracksRemove422
+        | PostApiLibraryIdPlaylistsIdTracksRemove500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksRemove>>,
+        TError,
+        {
+            libraryId: string;
+            id: string;
+            data: BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksRemove>>,
+    TError,
+    { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody> },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksRemove>>,
+        {
+            libraryId: string;
+            id: string;
+            data: BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody>;
+        }
+    > = (props) => {
+        const { libraryId, id, data } = props ?? {};
+
+        return postApiLibraryIdPlaylistsIdTracksRemove(libraryId, id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsIdTracksRemoveMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksRemove>>
+>;
+export type PostApiLibraryIdPlaylistsIdTracksRemoveMutationBody =
+    BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody>;
+export type PostApiLibraryIdPlaylistsIdTracksRemoveMutationError = ErrorType<
+    | PostApiLibraryIdPlaylistsIdTracksRemove401
+    | PostApiLibraryIdPlaylistsIdTracksRemove403
+    | PostApiLibraryIdPlaylistsIdTracksRemove404
+    | PostApiLibraryIdPlaylistsIdTracksRemove422
+    | PostApiLibraryIdPlaylistsIdTracksRemove500
+>;
+
+/**
+ * @summary Remove tracks from playlist
+ */
+export const usePostApiLibraryIdPlaylistsIdTracksRemove = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsIdTracksRemove401
+        | PostApiLibraryIdPlaylistsIdTracksRemove403
+        | PostApiLibraryIdPlaylistsIdTracksRemove404
+        | PostApiLibraryIdPlaylistsIdTracksRemove422
+        | PostApiLibraryIdPlaylistsIdTracksRemove500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksRemove>>,
+        TError,
+        {
+            libraryId: string;
+            id: string;
+            data: BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody>;
+        },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsIdTracksRemove>>,
+    TError,
+    { libraryId: string; id: string; data: BodyType<PostApiLibraryIdPlaylistsIdTracksRemoveBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdPlaylistsIdTracksRemoveMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
