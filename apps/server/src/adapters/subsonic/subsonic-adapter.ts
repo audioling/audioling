@@ -144,20 +144,24 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 }
             }
 
-            await apiClient.updatePlaylist.os['1'].get({
-                query: {
-                    playlistId: query.id,
-                    songIdToAdd: trackIds,
-                },
-            });
-
-            await apiClient.updatePlaylist.os['1'].get({
+            const result = await apiClient.updatePlaylist.os['1'].get({
                 fetchOptions,
                 query: {
                     playlistId: query.id,
                     songIdToAdd: trackIds,
                 },
             });
+
+            if (result.status !== 200) {
+                writeLog.error(adapterHelpers.adapterErrorMessage(library, 'addToPlaylist'));
+                return [
+                    {
+                        code: result.status,
+                        message: result.body as string,
+                    },
+                    null,
+                ];
+            }
 
             return [null, null];
         },
