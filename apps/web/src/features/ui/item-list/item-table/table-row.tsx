@@ -127,17 +127,32 @@ export function TableRow<
                             return onRowDragData(row as Row<T>, table);
                         }
 
-                        const selectedRows = [];
-                        const selectedRowIds = [];
+                        const isSelfSelected = row.getIsSelected();
 
-                        for (const row of table.getSelectedRowModel().rows) {
-                            selectedRows.push(row.original);
-                            selectedRowIds.push(row.id);
+                        if (isSelfSelected) {
+                            const selectedRows = table.getSelectedRowModel().rows;
+
+                            const selectedRowIds = [];
+                            const selectedItems = [];
+
+                            for (const row of selectedRows) {
+                                selectedRowIds.push(row.id);
+                                selectedItems.push(row.original);
+                            }
+
+                            return dndUtils.generateDragData({
+                                id: selectedRowIds,
+                                item: selectedItems,
+                                operation: [DragOperation.ADD],
+                                type: libraryItemTypeToDragTarget[
+                                    itemType as keyof typeof libraryItemTypeToDragTarget
+                                ],
+                            });
                         }
 
                         return dndUtils.generateDragData({
-                            id: selectedRowIds,
-                            item: selectedRows,
+                            id: [row.id],
+                            item: [row.original],
                             operation: [DragOperation.REORDER, DragOperation.ADD],
                             type: libraryItemTypeToDragTarget[
                                 itemType as keyof typeof libraryItemTypeToDragTarget
