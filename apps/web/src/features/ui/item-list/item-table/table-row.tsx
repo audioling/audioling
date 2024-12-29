@@ -113,102 +113,115 @@ export function TableRow<
     useEffect(() => {
         if (!ref.current) return;
 
-        return combine(
-            draggable({
-                element: ref.current,
-                getInitialData: () => {
-                    if (onRowDragData) {
-                        return onRowDragData(row as Row<T>, table);
-                    }
+        const fns = [];
 
-                    const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.id);
+        if (onRowDrag) {
+            fns.push(
+                draggable({
+                    element: ref.current,
+                    getInitialData: () => {
+                        if (onRowDragData) {
+                            return onRowDragData(row as Row<T>, table);
+                        }
 
-                    return dndUtils.generateDragData({
-                        id: selectedRowIds,
-                        operation: [DragOperation.REORDER, DragOperation.ADD],
-                        type: libraryItemTypeToDragTarget[
-                            itemType as keyof typeof libraryItemTypeToDragTarget
-                        ],
-                    });
-                },
-                onDragStart: () => {
-                    const isSelfSelected = row.getIsSelected();
+                        const selectedRowIds = table
+                            .getSelectedRowModel()
+                            .rows.map((row) => row.id);
 
-                    // If attempting to drag a row that is not selected, select it
-                    if (!isSelfSelected) {
-                        table.resetRowSelection();
-                        row.toggleSelected(true);
-                    }
+                        return dndUtils.generateDragData({
+                            id: selectedRowIds,
+                            operation: [DragOperation.REORDER, DragOperation.ADD],
+                            type: libraryItemTypeToDragTarget[
+                                itemType as keyof typeof libraryItemTypeToDragTarget
+                            ],
+                        });
+                    },
+                    onDragStart: () => {
+                        const isSelfSelected = row.getIsSelected();
 
-                    onRowDrag?.(row as Row<T>, table);
-                },
-                onDrop: () => {},
-                onGenerateDragPreview: (data) => {
-                    disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
-                    setCustomNativeDragPreview({
-                        nativeSetDragImage: data.nativeSetDragImage,
-                        render: ({ container }) => {
-                            const root = createRoot(container);
-                            const selectedCount = table.getSelectedRowModel().rows.length || 1;
-                            root.render(<DragPreview itemCount={selectedCount} />);
-                        },
-                    });
-                },
-            }),
-            dropTargetForElements({
-                canDrop: (args) => {
-                    if (!onRowDrop) {
-                        return false;
-                    }
+                        // If attempting to drag a row that is not selected, select it
+                        if (!isSelfSelected) {
+                            table.resetRowSelection();
+                            row.toggleSelected(true);
+                        }
 
-                    const data = args.source.data as DragData;
-                    const isTarget = dndUtils.isDropTarget(data.type, [
-                        DragTarget.ALBUM,
-                        DragTarget.ALBUM_ARTIST,
-                        DragTarget.ARTIST,
-                        DragTarget.PLAYLIST,
-                        DragTarget.TRACK,
-                    ]);
+                        onRowDrag?.(row as Row<T>, table);
+                    },
+                    onDrop: () => {},
+                    onGenerateDragPreview: (data) => {
+                        disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
+                        setCustomNativeDragPreview({
+                            nativeSetDragImage: data.nativeSetDragImage,
+                            render: ({ container }) => {
+                                const root = createRoot(container);
+                                const selectedCount = table.getSelectedRowModel().rows.length || 1;
+                                root.render(<DragPreview itemCount={selectedCount} />);
+                            },
+                        });
+                    },
+                }),
+            );
+        }
 
-                    return isTarget;
-                },
-                element: ref.current,
-                getData: ({ input, element }) => {
-                    const data = dndUtils.generateDragData({
-                        id: [row.id],
-                        operation: [DragOperation.REORDER],
-                        type: DragTarget.TRACK,
-                    });
+        if (onRowDrop) {
+            fns.push(
+                dropTargetForElements({
+                    canDrop: (args) => {
+                        if (!onRowDrop) {
+                            return false;
+                        }
 
-                    return attachClosestEdge(data, {
-                        allowedEdges: ['bottom', 'top'],
-                        element,
-                        input,
-                    });
-                },
-                onDrag: (args) => {
-                    const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+                        const data = args.source.data as DragData;
+                        const isTarget = dndUtils.isDropTarget(data.type, [
+                            DragTarget.ALBUM,
+                            DragTarget.ALBUM_ARTIST,
+                            DragTarget.ARTIST,
+                            DragTarget.PLAYLIST,
+                            DragTarget.TRACK,
+                        ]);
 
-                    setIsDraggedOver(closestEdgeOfTarget);
-                },
-                onDragLeave: () => {
-                    setIsDraggedOver(null);
-                },
-                onDrop: (args) => {
-                    const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+                        return isTarget;
+                    },
+                    element: ref.current,
+                    getData: ({ input, element }) => {
+                        const data = dndUtils.generateDragData({
+                            id: [row.id],
+                            operation: [DragOperation.REORDER],
+                            type: DragTarget.TRACK,
+                        });
 
-                    onRowDrop?.(row as Row<T>, table, {
-                        data: args.source.data as DragData,
-                        edge: closestEdgeOfTarget,
-                        id: row.id,
-                        index,
-                        table,
-                        uniqueId: row.original?._uniqueId || row?.id,
-                    });
-                    setIsDraggedOver(null);
-                },
-            }),
-        );
+                        return attachClosestEdge(data, {
+                            allowedEdges: ['bottom', 'top'],
+                            element,
+                            input,
+                        });
+                    },
+                    onDrag: (args) => {
+                        const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+
+                        setIsDraggedOver(closestEdgeOfTarget);
+                    },
+                    onDragLeave: () => {
+                        setIsDraggedOver(null);
+                    },
+                    onDrop: (args) => {
+                        const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+
+                        onRowDrop?.(row as Row<T>, table, {
+                            data: args.source.data as DragData,
+                            edge: closestEdgeOfTarget,
+                            id: row.id,
+                            index,
+                            table,
+                            uniqueId: row.original?._uniqueId || row?.id,
+                        });
+                        setIsDraggedOver(null);
+                    },
+                }),
+            );
+        }
+
+        return combine(...fns);
     }, [index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
 
     if (enableExpanded && !isExpanded) {

@@ -58,6 +58,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     columns: DisplayColumnDef<T | undefined>[];
     context: C;
     data: (T | undefined)[];
+    disableAutoScroll?: boolean;
     enableHeader?: boolean;
     enableMultiRowSelection?: boolean;
     enableRowSelection?: boolean;
@@ -112,6 +113,7 @@ export function ItemTable<
         onChangeColumnOrder,
         context,
         data,
+        disableAutoScroll,
         enableMultiRowSelection,
         enableRowSelection,
         HeaderComponent,
@@ -167,15 +169,17 @@ export function ItemTable<
                 target: root,
             });
 
-            autoScrollForElements({
-                element: scroller as HTMLElement,
-                getAllowedAxis: () => 'vertical',
-                getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
-            });
+            if (!disableAutoScroll) {
+                autoScrollForElements({
+                    element: scroller as HTMLElement,
+                    getAllowedAxis: () => 'vertical',
+                    getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
+                });
+            }
         }
 
         return () => osInstance()?.destroy();
-    }, [scroller, initialize, osInstance, rowsKey]);
+    }, [scroller, initialize, osInstance, rowsKey, disableAutoScroll]);
 
     const [selection, setSelection] = useState<RowSelectionState>({});
     const [expanded, setExpanded] = useState<ExpandedState>(true);
