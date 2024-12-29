@@ -46,6 +46,7 @@ export const GroupedItemTable = <
         context,
         data,
         enableMultiRowSelection,
+        enableRowDrag = true,
         enableRowSelection,
         getRowId,
         groups,
@@ -222,6 +223,7 @@ export const GroupedItemTable = <
                                     <TableRow
                                         context={tableContext}
                                         enableExpanded={true}
+                                        enableRowDrag={enableRowDrag}
                                         index={index}
                                         itemType={itemType}
                                         rowId={

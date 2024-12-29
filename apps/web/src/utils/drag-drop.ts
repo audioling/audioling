@@ -30,17 +30,26 @@ export type AlbumDragMetadata = {
     title: string;
 };
 
-export type DragData<T extends Record<string, unknown> = Record<string, unknown>> = {
+export type DragData<
+    TDataType = unknown,
+    T extends Record<string, unknown> = Record<string, unknown>,
+> = {
     id: string[];
+    item?: TDataType[];
     metadata?: T;
     operation?: DragOperation[];
     type: DragTarget;
 };
 
 export const dndUtils = {
-    generateDragData: <T extends Record<string, unknown> = Record<string, unknown>>(
+    dropType: (args: { data: DragData }) => {
+        const { data } = args;
+        return data.type;
+    },
+    generateDragData: <TDataType, T extends Record<string, unknown> = Record<string, unknown>>(
         args: {
             id: string[];
+            item?: TDataType[];
             operation?: DragOperation[];
             type: DragTarget;
         },
@@ -48,6 +57,7 @@ export const dndUtils = {
     ) => {
         return {
             id: args.id,
+            item: args.item,
             metadata,
             operation: args.operation,
             type: args.type,

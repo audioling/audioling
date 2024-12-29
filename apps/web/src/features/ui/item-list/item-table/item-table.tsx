@@ -61,6 +61,7 @@ export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: strin
     disableAutoScroll?: boolean;
     enableHeader?: boolean;
     enableMultiRowSelection?: boolean;
+    enableRowDrag?: boolean;
     enableRowSelection?: boolean;
     getRowId?: (
         originalRow: T | undefined,
@@ -114,12 +115,13 @@ export function ItemTable<
         context,
         data,
         disableAutoScroll,
+        enableHeader = true,
         enableMultiRowSelection,
+        enableRowDrag = true,
         enableRowSelection,
         HeaderComponent,
         getRowId,
         initialScrollIndex,
-        enableHeader = true,
         isScrolling,
         itemCount,
         virtuosoRef,
@@ -293,6 +295,7 @@ export function ItemTable<
                                     <TableRow
                                         context={context}
                                         enableExpanded={false}
+                                        enableRowDrag={enableRowDrag}
                                         index={index}
                                         itemType={itemType}
                                         rowId={

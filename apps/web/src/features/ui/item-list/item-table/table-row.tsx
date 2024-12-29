@@ -45,7 +45,9 @@ interface TableRowProps<
     },
 > {
     context: C;
+    disableRowDrag?: boolean;
     enableExpanded: boolean;
+    enableRowDrag?: boolean;
     index: number;
     itemType: LibraryItemType;
     onRowClick?: (
@@ -87,6 +89,7 @@ export function TableRow<
 >(props: TableRowProps<T & { _uniqueId?: string }, C>) {
     const {
         context,
+        enableRowDrag,
         enableExpanded,
         index,
         itemType,
@@ -115,7 +118,7 @@ export function TableRow<
 
         const fns = [];
 
-        if (onRowDrag) {
+        if (onRowDrag || enableRowDrag) {
             fns.push(
                 draggable({
                     element: ref.current,
@@ -124,12 +127,17 @@ export function TableRow<
                             return onRowDragData(row as Row<T>, table);
                         }
 
-                        const selectedRowIds = table
-                            .getSelectedRowModel()
-                            .rows.map((row) => row.id);
+                        const selectedRows = [];
+                        const selectedRowIds = [];
+
+                        for (const row of table.getSelectedRowModel().rows) {
+                            selectedRows.push(row.original);
+                            selectedRowIds.push(row.id);
+                        }
 
                         return dndUtils.generateDragData({
                             id: selectedRowIds,
+                            item: selectedRows,
                             operation: [DragOperation.REORDER, DragOperation.ADD],
                             type: libraryItemTypeToDragTarget[
                                 itemType as keyof typeof libraryItemTypeToDragTarget
@@ -222,7 +230,7 @@ export function TableRow<
         }
 
         return combine(...fns);
-    }, [index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
+    }, [enableRowDrag, index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
 
     if (enableExpanded && !isExpanded) {
         return null;

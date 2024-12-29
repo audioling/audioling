@@ -7,7 +7,7 @@ import {
 } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import type { AlbumItem, ArtistItem, TrackItem } from '@/api/api-types.ts';
+import type { TrackItem } from '@/api/api-types.ts';
 import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
 import { fetchTracksByAlbumArtistId } from '@/api/fetchers/artists.ts';
 import {
@@ -25,8 +25,8 @@ import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 
 interface AddToPlaylistFormProps {
-    albums?: AlbumItem[];
-    artists?: ArtistItem[];
+    albums?: string[];
+    artists?: string[];
     formId: string;
     libraryId: string;
     onSuccess: () => void;
@@ -75,8 +75,8 @@ export function AddToPlaylistForm({
         const fetchTracks = async () => {
             const newTracks = [...(tracks ?? [])];
 
-            for (const album of albums || []) {
-                const tracks = await fetchTracksByAlbumId(queryClient, libraryId, album.id, {
+            for (const albumid of albums || []) {
+                const tracks = await fetchTracksByAlbumId(queryClient, libraryId, albumid, {
                     sortBy: TrackListSortOptions.NAME,
                     sortOrder: ListSortOrder.ASC,
                 });
@@ -84,8 +84,8 @@ export function AddToPlaylistForm({
                 newTracks.push(...tracks.data);
             }
 
-            for (const artist of artists || []) {
-                const tracks = await fetchTracksByAlbumArtistId(queryClient, libraryId, artist.id, {
+            for (const artistId of artists || []) {
+                const tracks = await fetchTracksByAlbumArtistId(queryClient, libraryId, artistId, {
                     sortBy: TrackListSortOptions.NAME,
                     sortOrder: ListSortOrder.ASC,
                 });
@@ -139,17 +139,26 @@ export function AddToPlaylistForm({
                 libraryId,
             },
             {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({
+                onSuccess: async () => {
+                    await queryClient.invalidateQueries({
                         queryKey: [`/api/${libraryId}/playlists`],
                     });
+
+                    await queryClient.invalidateQueries({
+                        queryKey: [`/api/${libraryId}/playlists/${playlistId}/tracks`],
+                    });
+
                     onSuccess();
                 },
             },
         );
     });
 
-    const columnOrder = [ItemListColumn.IMAGE, ItemListColumn.ADD_TO_PLAYLIST];
+    const columnOrder = [
+        ItemListColumn.ROW_INDEX,
+        ItemListColumn.IMAGE,
+        ItemListColumn.ADD_TO_PLAYLIST,
+    ];
     const { columns } = useItemTable<TrackItem>(columnOrder, () => {});
 
     return (
@@ -165,6 +174,7 @@ export function AddToPlaylistForm({
                             data={processedTracks}
                             enableHeader={false}
                             enableMultiRowSelection={false}
+                            enableRowDrag={false}
                             enableRowSelection={false}
                             itemCount={processedTracks.length}
                             itemType={LibraryItemType.TRACK}

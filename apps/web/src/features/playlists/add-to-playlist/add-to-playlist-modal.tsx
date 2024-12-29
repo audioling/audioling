@@ -1,6 +1,6 @@
 import { Suspense, useId, useState } from 'react';
 import { createCallable } from 'react-call';
-import type { AlbumItem, ArtistItem, TrackItem } from '@/api/api-types.ts';
+import type { TrackItem } from '@/api/api-types.ts';
 import { AddToPlaylistForm } from '@/features/playlists/add-to-playlist/add-to-playlist-form.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Modal } from '@/features/ui/modal/modal.tsx';
@@ -8,8 +8,8 @@ import { Spinner } from '@/features/ui/spinner/spinner.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 
 interface AddToPlaylistModalProps {
-    albums?: AlbumItem[];
-    artists?: ArtistItem[];
+    albums?: string[];
+    artists?: string[];
     libraryId: string;
     playlistId: string;
     tracks?: TrackItem[];
