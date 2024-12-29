@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 
 interface SoundBarsProps {
@@ -6,15 +7,19 @@ interface SoundBarsProps {
     isPlaying?: boolean;
 }
 
-export const SoundBars = ({ className = '', bpm = 120, isPlaying = true }: SoundBarsProps) => {
+const SoundBarsBase = ({ className = '', bpm = 120, isPlaying = true }: SoundBarsProps) => {
     const beatDuration = (60 * 2) / bpm;
 
     const bars = [
-        { delay: 0.0, durationMultiplier: 1.0, maxHeight: 12, x: 2 },
-        { delay: 0.2, durationMultiplier: 1.2, maxHeight: 16, x: 8 },
-        { delay: 0.1, durationMultiplier: 0.9, maxHeight: 20, x: 14 },
-        { delay: 0.3, durationMultiplier: 1.1, maxHeight: 14, x: 20 },
-    ];
+        { maxHeight: 12, x: 2 },
+        { maxHeight: 16, x: 8 },
+        { maxHeight: 20, x: 14 },
+        { maxHeight: 14, x: 20 },
+    ].map((bar) => ({
+        ...bar,
+        delay: Math.random() * 0.4,
+        durationMultiplier: 0.8 + Math.random() * 0.6,
+    }));
 
     return (
         <svg className={className} fill="currentColor" height="24" viewBox="0 0 24 24" width="24">
@@ -34,6 +39,7 @@ export const SoundBars = ({ className = '', bpm = 120, isPlaying = true }: Sound
                     }
                     initial={{ height: 4, y: 20 }}
                     rx="2"
+                    style={{ willChange: 'transform' }}
                     transition={
                         isPlaying
                             ? {
@@ -53,3 +59,5 @@ export const SoundBars = ({ className = '', bpm = 120, isPlaying = true }: Sound
         </svg>
     );
 };
+
+export const SoundBars = memo(SoundBarsBase);
