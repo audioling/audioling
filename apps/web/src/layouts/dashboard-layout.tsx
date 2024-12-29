@@ -14,6 +14,7 @@ import { useNavigationStore } from '@/features/navigation/stores/navigation-stor
 import { AudioPlayer } from '@/features/player/audio-player/audio-player.tsx';
 import { SidePlayQueue } from '@/features/player/now-playing/side-play-queue.tsx';
 import { PlayerBar } from '@/features/player/player-bar/player-bar.tsx';
+import { AddToPlaylistModal } from '@/features/playlists/add-to-playlist/add-to-playlist-modal.tsx';
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
 import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
@@ -42,6 +43,7 @@ export function DashboardLayout() {
             <PlayerController.Root key="player-controller" />
             <PrefetchController.Root key="prefetch-controller" />
             <ContextMenuController.Root key="context-menu-controller" />
+            <AddToPlaylistModal.Root key="add-to-playlist-modal" />
             <AnimatePresence mode="sync">
                 <motion.div
                     animate="show"

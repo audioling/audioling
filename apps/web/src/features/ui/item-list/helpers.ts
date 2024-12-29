@@ -1,5 +1,6 @@
 import type { ColumnHelper, Row } from '@tanstack/react-table';
 import { actionsColumn } from '@/features/ui/item-list/item-table/columns/actions-column.tsx';
+import { addToPlaylistColumn } from '@/features/ui/item-list/item-table/columns/add-to-playlist-column.tsx';
 import { albumColumn } from '@/features/ui/item-list/item-table/columns/album-column.tsx';
 import { albumCountColumn } from '@/features/ui/item-list/item-table/columns/album-count-column.tsx';
 import { artistsColumn } from '@/features/ui/item-list/item-table/columns/artists-column.tsx';
@@ -20,6 +21,7 @@ import { yearColumn } from '@/features/ui/item-list/item-table/columns/year-colu
 
 export enum ItemListColumn {
     ACTIONS = 'actions',
+    ADD_TO_PLAYLIST = 'addToPlaylist',
     ALBUM = 'album',
     ALBUM_COUNT = 'albumCount',
     ARTISTS = 'artists',
@@ -60,6 +62,7 @@ const columnMap = {
     [ItemListColumn.RELEASE_DATE]: releaseDateColumn,
     [ItemListColumn.YEAR]: yearColumn,
     [ItemListColumn.ACTIONS]: actionsColumn,
+    [ItemListColumn.ADD_TO_PLAYLIST]: addToPlaylistColumn,
 };
 
 export const itemListHelpers = {

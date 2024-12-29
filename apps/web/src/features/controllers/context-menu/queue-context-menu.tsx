@@ -24,7 +24,7 @@ export function QueueContextMenu({ table }: QueueContextMenuProps) {
             <Divider />
             <QueueMove table={table} />
             <Divider />
-            <QueueAddToPlaylist />
+            <QueueAddToPlaylist table={table} />
             <QueueSetItem />
             <Divider />
             <QueueDownload />
