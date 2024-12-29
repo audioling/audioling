@@ -1,18 +1,21 @@
-import { memo } from 'react';
-import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import { memo, useCallback, useMemo } from 'react';
+import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type { Row, Table } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import type { AlbumItem, TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsIdTracksSuspense } from '@/api/openapi-generated/albums/albums.ts';
 import { AlbumCard } from '@/features/albums/components/album-card.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
+import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
-import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
-import { Text } from '@/features/ui/text/text.tsx';
+import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
+import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
+import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 import { useImageColor } from '@/hooks/use-image-color.ts';
-import { formatDuration } from '@/utils/format-duration.ts';
+import type { DragData } from '@/utils/drag-drop.ts';
+import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './album-grid-item.module.scss';
 
 export type AlbumGridItemContext = {
@@ -69,6 +72,57 @@ function ExpandedAlbumGridItemContent({
 
     const color = useImageColor(imageUrl);
 
+    const columnOrder = [
+        ItemListColumn.TRACK_NUMBER,
+        ItemListColumn.NAME,
+        ItemListColumn.DURATION,
+        ItemListColumn.ACTIONS,
+    ];
+
+    const { columns } = useItemTable<TrackItem | undefined>(columnOrder, () => {});
+
+    const { onRowClick } = useMultiRowSelection<TrackItem>();
+
+    const onRowDragData = useCallback(
+        (row: Row<TrackItem>, table: Table<TrackItem | undefined>): DragData => {
+            const isSelfSelected = row.getIsSelected();
+
+            if (isSelfSelected) {
+                const selectedRows = table.getSelectedRowModel().rows;
+
+                const selectedRowIds = [];
+                const selectedItems = [];
+
+                for (const row of selectedRows) {
+                    selectedRowIds.push(row.id);
+                    selectedItems.push(row.original);
+                }
+
+                return dndUtils.generateDragData({
+                    id: selectedRowIds,
+                    item: selectedItems,
+                    operation: [DragOperation.ADD],
+                    type: DragTarget.TRACK,
+                });
+            }
+
+            return dndUtils.generateDragData({
+                id: [row.id],
+                item: [row.original],
+                operation: [DragOperation.ADD],
+                type: DragTarget.TRACK,
+            });
+        },
+        [],
+    );
+
+    const rows: TrackItem[] = useMemo(() => {
+        return tracks?.data.map((track, index) => ({
+            ...track,
+            index,
+        }));
+    }, [tracks]);
+
     if (!color) {
         return null;
     }
@@ -94,18 +148,23 @@ function ExpandedAlbumGridItemContent({
                         {data.artists[0]?.name}
                     </Title>
                 </div>
-                <ScrollArea>
-                    <div className={styles.tracks}>
-                        {tracks?.data?.map((track, index) => (
-                            <RowItem
-                                key={track.id}
-                                index={index}
-                                isDark={color.isDark}
-                                track={track}
-                            />
-                        ))}
-                    </div>
-                </ScrollArea>
+                <div className={clsx(styles.tracks, { [styles.dark]: color.isDark })}>
+                    <ItemTable
+                        enableMultiRowSelection
+                        enableRowSelection
+                        columnOrder={columnOrder}
+                        columns={columns}
+                        context={context}
+                        data={rows}
+                        enableHeader={false}
+                        itemCount={rows.length}
+                        itemType={LibraryItemType.TRACK}
+                        onChangeColumnOrder={() => {}}
+                        onRowClick={onRowClick}
+                        onRowDragData={onRowDragData}
+                        onRowDrop={() => {}}
+                    />
+                </div>
             </div>
             <div className={styles.imageContainer}>
                 <div
@@ -117,24 +176,5 @@ function ExpandedAlbumGridItemContent({
                 />
             </div>
         </motion.div>
-    );
-}
-
-function RowItem({ index, track, isDark }: { index: number; isDark: boolean; track: TrackItem }) {
-    return (
-        <div
-            className={clsx(styles.track, {
-                [styles.dark]: isDark,
-            })}
-        >
-            <Text size="md" weight="lg">
-                {index + 1}
-            </Text>
-            <Text className={styles.trackName} size="md" weight="lg">
-                {track.name}
-            </Text>
-            <Text size="md">{formatDuration(track.duration)}</Text>
-            <IconButton icon="ellipsisHorizontal" size="xs" variant="transparent" />
-        </div>
     );
 }

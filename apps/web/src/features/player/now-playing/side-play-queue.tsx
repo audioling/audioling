@@ -146,7 +146,7 @@ export function SidePlayQueue() {
                     PlayerController.call({
                         cmd: {
                             addToQueueByData: {
-                                data: (data.metadata?.items as TrackItem[]) || [],
+                                data: (data?.item as TrackItem[]) || [],
                                 type: {
                                     edge,
                                     uniqueId,

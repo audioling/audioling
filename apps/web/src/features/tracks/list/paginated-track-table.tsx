@@ -8,7 +8,6 @@ import {
     getApiLibraryIdTracks,
     getGetApiLibraryIdTracksQueryKey,
 } from '@/api/openapi-generated/tracks/tracks.ts';
-import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { TrackTableItemContext } from '@/features/tracks/list/infinite-track-table.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
@@ -89,53 +88,33 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
             const isSelfSelected = row.getIsSelected();
 
             if (isSelfSelected) {
-                const selectedRowIds = table
-                    .getSelectedRowModel()
-                    .rows.map((row) => row.original?.id)
-                    .filter((id): id is string => id !== undefined);
+                const selectedRows = table.getSelectedRowModel().rows;
+
+                const selectedRowIds = [];
+                const selectedItems = [];
+
+                for (const row of selectedRows) {
+                    selectedRowIds.push(row.id);
+                    selectedItems.push(row.original);
+                }
 
                 return dndUtils.generateDragData({
                     id: selectedRowIds,
+                    item: selectedItems,
                     operation: [DragOperation.ADD],
-                    type: DragTarget.ALBUM,
+                    type: DragTarget.TRACK,
                 });
             }
 
             return dndUtils.generateDragData({
-                id: [row.original?.id],
+                id: [row.id],
+                item: [row.original],
                 operation: [DragOperation.ADD],
-                type: DragTarget.ALBUM,
+                type: DragTarget.TRACK,
             });
         },
         [],
     );
-
-    const onRowDrag = useCallback((row: Row<TrackItem>, table: Table<TrackItem | undefined>) => {
-        const isSelfSelected = row.getIsSelected();
-
-        if (isSelfSelected) {
-            const selectedRowIds = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original?.id)
-                .filter((id): id is string => id !== undefined);
-
-            return PrefetchController.call({
-                cmd: {
-                    tracksByAlbumId: {
-                        id: selectedRowIds,
-                    },
-                },
-            });
-        }
-
-        return PrefetchController.call({
-            cmd: {
-                tracksByAlbumId: {
-                    id: [row.original.id],
-                },
-            },
-        });
-    }, []);
 
     const columnOrder = useTrackListStore.use.columnOrder();
     const setColumnOrder = useTrackListStore.use.setColumnOrder();
@@ -155,7 +134,6 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
                 rowsKey={props.listKey}
                 onChangeColumnOrder={setColumnOrder}
                 onRowClick={onRowClick}
-                onRowDrag={onRowDrag}
                 onRowDragData={onRowDragData}
             />
         </ListWrapper>

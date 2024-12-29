@@ -17,6 +17,7 @@ import { releaseDateColumn } from '@/features/ui/item-list/item-table/columns/re
 import { rowIndexColumn } from '@/features/ui/item-list/item-table/columns/row-index-column.tsx';
 import { standaloneCombinedColumn } from '@/features/ui/item-list/item-table/columns/standalone-combined-column.tsx';
 import { trackCountColumn } from '@/features/ui/item-list/item-table/columns/track-count-column.tsx';
+import { trackNumberColumn } from '@/features/ui/item-list/item-table/columns/track-number-column.tsx';
 import { yearColumn } from '@/features/ui/item-list/item-table/columns/year-column.tsx';
 
 export enum ItemListColumn {
@@ -38,6 +39,7 @@ export enum ItemListColumn {
     ROW_INDEX = 'rowIndex',
     STANDALONE_COMBINED = 'combined',
     TRACK_COUNT = 'trackCount',
+    TRACK_NUMBER = 'trackNumber',
     YEAR = 'year',
 }
 
@@ -58,6 +60,7 @@ const columnMap = {
     [ItemListColumn.PLAY_COUNT]: playCountColumn,
     [ItemListColumn.ALBUM_COUNT]: albumCountColumn,
     [ItemListColumn.TRACK_COUNT]: trackCountColumn,
+    [ItemListColumn.TRACK_NUMBER]: trackNumberColumn,
     [ItemListColumn.RATING]: ratingColumn,
     [ItemListColumn.RELEASE_DATE]: releaseDateColumn,
     [ItemListColumn.YEAR]: yearColumn,

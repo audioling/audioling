@@ -89,26 +89,19 @@
     display: flex;
     flex-direction: column;
     gap: base.$gap-sm;
+    height: 100%;
 }
 
-.track {
-    display: grid;
-    grid-template-columns: 0.5rem minmax(0, 1fr) auto auto;
-    gap: base.$gap-md;
-    width: 100%;
-    font-variant-numeric: tabular-nums;
+.tracks * {
+    color: black;
 
-    svg {
-        color: black;
+    /* stylelint-disable-next-line selector-class-pattern */
+    :global(.table-row-module_row) {
+        height: var(--table-row-config-condensed-height);
+        border-bottom: none;
     }
 }
 
-.track-name {
-    @include base.text-ellipsis;
-}
-
-.track.dark {
-    svg {
-        color: white;
-    }
+.tracks.dark * {
+    color: white;
 }

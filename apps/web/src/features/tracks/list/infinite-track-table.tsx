@@ -99,32 +99,30 @@ export function InfiniteTrackTable({
             const isSelfSelected = row.getIsSelected();
 
             if (isSelfSelected) {
-                const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original);
+                const selectedRows = table.getSelectedRowModel().rows;
 
-                return dndUtils.generateDragData(
-                    {
-                        id: selectedRows
-                            .map((row) => row?.id)
-                            .filter((id): id is string => id !== undefined),
-                        operation: [DragOperation.ADD],
-                        type: DragTarget.TRACK,
-                    },
-                    {
-                        items: selectedRows,
-                    },
-                );
-            }
+                const selectedRowIds = [];
+                const selectedItems = [];
 
-            return dndUtils.generateDragData(
-                {
-                    id: [row.original?.id],
+                for (const row of selectedRows) {
+                    selectedRowIds.push(row.id);
+                    selectedItems.push(row.original);
+                }
+
+                return dndUtils.generateDragData({
+                    id: selectedRowIds,
+                    item: selectedItems,
                     operation: [DragOperation.ADD],
                     type: DragTarget.TRACK,
-                },
-                {
-                    items: [row.original],
-                },
-            );
+                });
+            }
+
+            return dndUtils.generateDragData({
+                id: [row.id],
+                item: [row.original],
+                operation: [DragOperation.ADD],
+                type: DragTarget.TRACK,
+            });
         },
         [],
     );
