@@ -138,7 +138,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'global-info-color': 'rgb(50, 50, 204)',
     'global-primary-color': primaryColor,
     'global-success-color': 'rgb(50, 204, 50)',
-    'global-warning-color': 'rgb(204, 204, 50)',
+    'global-warning-color': 'rgb(240, 173, 78)',
     'input-background-color': 'rgb(24, 24, 24)',
     'input-border': '1px solid rgba(60, 60, 60, 0.1)',
     'input-font-color': 'rgb(230, 230, 230)',

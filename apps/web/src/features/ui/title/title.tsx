@@ -3,14 +3,26 @@ import type { Sizes } from '@/themes/index.ts';
 import styles from './title.module.scss';
 
 interface TitleProps extends React.ComponentPropsWithoutRef<'div'> {
+    isNoSelect?: boolean;
     isSecondary?: boolean;
+    isUnderlined?: boolean;
     order: number;
     size?: Sizes;
     weight?: Sizes;
 }
 
 export const Title = (props: TitleProps) => {
-    const { className, children, order, size, weight, isSecondary, ...htmlProps } = props;
+    const {
+        className,
+        children,
+        order,
+        size,
+        weight,
+        isNoSelect,
+        isSecondary,
+        isUnderlined,
+        ...htmlProps
+    } = props;
 
     const HeaderComponent = getHeaderComponent(order);
 
@@ -18,6 +30,8 @@ export const Title = (props: TitleProps) => {
         [styles[`size-${size || 'md'}`]]: true,
         [styles[`weight-${weight || 'lg'}`]]: true,
         [styles.secondary]: isSecondary,
+        [styles.underlined]: isUnderlined,
+        [styles.noSelect]: isNoSelect,
     });
 
     return (

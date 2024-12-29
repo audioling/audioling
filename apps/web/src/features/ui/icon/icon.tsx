@@ -21,6 +21,7 @@ import {
     LuChevronRight,
     LuChevronUp,
     LuCircleCheck,
+    LuCircleX,
     LuDisc3,
     LuEllipsis,
     LuEllipsisVertical,
@@ -75,8 +76,9 @@ import {
     LuVolume2,
     LuVolumeX,
     LuWrench,
+    LuX,
 } from 'react-icons/lu';
-import { MdClose, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
+import { MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
 import { SoundBars } from '@/features/ui/icon/sound-bars.tsx';
 import styles from './icon.module.scss';
 
@@ -158,7 +160,8 @@ export const AppIcon = {
     volumeMute: LuVolumeX,
     volumeNormal: LuVolume1,
     warn: LuTriangleAlert,
-    x: MdClose,
+    x: LuX,
+    xCircle: LuCircleX,
 } as const;
 
 export interface IconProps {

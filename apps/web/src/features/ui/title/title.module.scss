@@ -1,45 +1,53 @@
 @use '@/styles/base';
 
 .size-xl {
-  font-size: base.$title-font-size-xl;
+    font-size: base.$title-font-size-xl;
 }
 
 .size-lg {
-  font-size: base.$title-font-size-lg;
+    font-size: base.$title-font-size-lg;
 }
 
 .size-md {
-  font-size: base.$title-font-size-md;
+    font-size: base.$title-font-size-md;
 }
 
 .size-sm {
-  font-size: base.$title-font-size-sm;
+    font-size: base.$title-font-size-sm;
 }
 
 .size-xs {
-  font-size: base.$title-font-size-xs;
+    font-size: base.$title-font-size-xs;
 }
 
 .weight-xl {
-  font-weight: base.$title-font-weight-xl;
+    font-weight: base.$title-font-weight-xl;
 }
 
 .weight-lg {
-  font-weight: base.$title-font-weight-lg;
+    font-weight: base.$title-font-weight-lg;
 }
 
 .weight-md {
-  font-weight: base.$title-font-weight-md;
+    font-weight: base.$title-font-weight-md;
 }
 
 .weight-sm {
-  font-weight: base.$title-font-weight-sm;
+    font-weight: base.$title-font-weight-sm;
 }
 
 .weight-xs {
-  font-weight: base.$title-font-weight-xs;
+    font-weight: base.$title-font-weight-xs;
 }
 
 .secondary {
-  color: base.$font-secondary-color;
+    color: base.$font-secondary-color;
+}
+
+.no-select {
+    user-select: none;
+}
+
+.underlined {
+    text-decoration: underline;
 }
