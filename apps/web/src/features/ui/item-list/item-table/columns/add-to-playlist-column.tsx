@@ -22,9 +22,6 @@ export function addToPlaylistColumn<T>(columnHelper: ColumnHelper<T>) {
                             className={clsx(styles.cell, {
                                 [styles.playing]: isPlaying,
                             })}
-                            style={{
-                                opacity: isSkipped ? 0.3 : 1,
-                            }}
                         >
                             <Group justify="between">
                                 <Text isEllipsis style={{ maxWidth: '80%' }}>
@@ -34,13 +31,9 @@ export function addToPlaylistColumn<T>(columnHelper: ColumnHelper<T>) {
                                 </Text>
                                 {item.name.includes('__duplicate') && (
                                     <Icon
-                                        icon="xCircle"
+                                        icon="remove"
                                         size="lg"
-                                        state={
-                                            item.name.includes('__duplicate_skip__')
-                                                ? 'error'
-                                                : 'warn'
-                                        }
+                                        state={isSkipped ? 'error' : 'warn'}
                                     />
                                 )}
                             </Group>

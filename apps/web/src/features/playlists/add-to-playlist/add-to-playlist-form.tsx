@@ -15,13 +15,13 @@ import {
     usePostApiLibraryIdPlaylistsIdTracksAdd,
 } from '@/api/openapi-generated/playlists/playlists.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
-import { Checkbox } from '@/features/ui/checkbox/checkbox.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Paper } from '@/features/ui/paper/paper.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
+import { Switch } from '@/features/ui/switch/switch.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 
 interface AddToPlaylistFormProps {
@@ -139,12 +139,12 @@ export function AddToPlaylistForm({
                 libraryId,
             },
             {
-                onSuccess: async () => {
-                    await queryClient.invalidateQueries({
+                onSuccess: () => {
+                    queryClient.invalidateQueries({
                         queryKey: [`/api/${libraryId}/playlists`],
                     });
 
-                    await queryClient.invalidateQueries({
+                    queryClient.invalidateQueries({
                         queryKey: [`/api/${libraryId}/playlists/${playlistId}/tracks`],
                     });
 
@@ -161,31 +161,25 @@ export function AddToPlaylistForm({
     ];
     const { columns } = useItemTable<TrackItem>(columnOrder, () => {});
 
+    const duplicateCount = processedTracks.filter((t) => t.name.includes('__duplicate')).length;
+    const duplicateSkippedCount = processedTracks.filter((t) =>
+        t.name.includes('__duplicate_skip__'),
+    ).length;
+
     return (
         <form id={formId} onSubmit={handleSubmit}>
-            <Stack gap="sm">
+            <Stack>
                 <Paper>
-                    <div style={{ height: '250px' }}>
-                        <ItemTable
-                            disableAutoScroll
-                            columnOrder={columnOrder}
-                            columns={columns}
-                            context={{ baseUrl, libraryId }}
-                            data={processedTracks}
-                            enableHeader={false}
-                            enableMultiRowSelection={false}
-                            enableRowDrag={false}
-                            enableRowSelection={false}
-                            itemCount={processedTracks.length}
-                            itemType={LibraryItemType.TRACK}
-                            onChangeColumnOrder={() => {}}
-                        />
-                    </div>
-                </Paper>
-                <Paper>
-                    <Group justify="between">
-                        <Text>Skip duplicates</Text>
-                        <Checkbox
+                    <Group grow align="center" justify="between">
+                        <Stack gap="xs">
+                            <Text isNoSelect>Skip duplicates</Text>
+                            <Text isNoSelect isSecondary>
+                                {duplicateSkippedCount} of {duplicateCount} duplicates skipped
+                            </Text>
+                        </Stack>
+
+                        <Switch
+                            // label="Skip duplicates"
                             value={form.watch('skipDuplicates')}
                             onChange={() =>
                                 form.setValue('skipDuplicates', !form.watch('skipDuplicates'))
@@ -193,6 +187,22 @@ export function AddToPlaylistForm({
                         />
                     </Group>
                 </Paper>
+                <div style={{ height: '250px' }}>
+                    <ItemTable
+                        disableAutoScroll
+                        columnOrder={columnOrder}
+                        columns={columns}
+                        context={{ baseUrl, libraryId }}
+                        data={processedTracks}
+                        enableHeader={false}
+                        enableMultiRowSelection={false}
+                        enableRowDrag={false}
+                        enableRowSelection={false}
+                        itemCount={processedTracks.length}
+                        itemType={LibraryItemType.TRACK}
+                        onChangeColumnOrder={() => {}}
+                    />
+                </div>
             </Stack>
         </form>
     );
