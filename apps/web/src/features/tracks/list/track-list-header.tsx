@@ -4,7 +4,6 @@ import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdTracksCountQueryKey } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
-import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
 import { ListFolderFilterButton } from '@/features/shared/list-folder-filter-button/list-folder-filter-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { ListPaginationTypeButton } from '@/features/shared/list-pagination-type-button/list-pagination-type-button.tsx';
@@ -28,17 +27,15 @@ export function TrackListHeader() {
     const folderId = useTrackListStore.use.folderId();
     const sortBy = useTrackListStore.use.sortBy();
     const sortOrder = useTrackListStore.use.sortOrder();
-    const displayType = useTrackListStore.use.displayType();
     const paginationType = useTrackListStore.use.paginationType();
 
     const setFolderId = useTrackListStore.use.setFolderId();
     const setSortBy = useTrackListStore.use.setSortBy();
     const setSortOrder = useTrackListStore.use.setSortOrder();
-    const setDisplayType = useTrackListStore.use.setDisplayType();
     const setPaginationType = useTrackListStore.use.setPaginationType();
 
     const handleRefresh = useRefreshList({
-        queryKey: [`/api/${libraryId}/albums`],
+        queryKey: [`/api/${libraryId}/tracks`],
         setListId,
     });
 
@@ -79,10 +76,6 @@ export function TrackListHeader() {
                 </ListHeader.Left>
                 <ListHeader.Right>
                     <Group gap="xs" wrap="nowrap">
-                        <ListDisplayTypeButton
-                            displayType={displayType}
-                            onChangeDisplayType={setDisplayType}
-                        />
                         <ListPaginationTypeButton
                             paginationType={paginationType}
                             onChangePaginationType={setPaginationType}
