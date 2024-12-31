@@ -4,12 +4,12 @@ import { useGetApiLibraryIdAlbumsSuspense } from '@/api/openapi-generated/albums
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import type { AlbumGridItemContext } from '@/features/albums/list/album-grid-item.tsx';
 import { MemoizedAlbumGridItem } from '@/features/albums/list/album-grid-item.tsx';
+import { FullPageSpinner } from '@/features/shared/full-page-spinner/full-page-spinner.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
 import { Paper } from '@/features/ui/paper/paper.tsx';
-import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination } from '@/hooks/use-list.ts';
 
@@ -29,7 +29,7 @@ export function PaginatedAlbumGrid(props: PaginatedAlbumGridProps) {
 
     return (
         <Stack h="100%">
-            <Suspense fallback={<EmptyPlaceholder />}>
+            <Suspense fallback={<FullPageSpinner />}>
                 <ListWrapper listKey={listKey}>
                     <PaginatedAlbumGridContent {...props} />
                 </ListWrapper>

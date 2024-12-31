@@ -1,11 +1,11 @@
 import { Suspense } from 'react';
 import { AnimatedContainer } from '@/features/shared/animated-container/animated-container.tsx';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
+import { FullPageSpinner } from '@/features/shared/full-page-spinner/full-page-spinner.tsx';
 import { PageContainer } from '@/features/shared/page-container/page-container.tsx';
 import { TrackListContent } from '@/features/tracks/list/track-list-content.tsx';
 import { TrackListHeader } from '@/features/tracks/list/track-list-header.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
-import { EmptyPlaceholder } from '@/features/ui/placeholders/empty-placeholder.tsx';
 import { useDelayedRender } from '@/hooks/use-delayed-render.ts';
 import { useListInitialize } from '@/hooks/use-list.ts';
 
@@ -20,7 +20,7 @@ export function TrackListRoute() {
             <TrackListHeader />
             {show && (
                 <AnimatedContainer>
-                    <Suspense fallback={<EmptyPlaceholder />}>
+                    <Suspense fallback={<FullPageSpinner />}>
                         <ComponentErrorBoundary>
                             <TrackListContent />
                         </ComponentErrorBoundary>
