@@ -143,7 +143,7 @@ export function TableRow<
                             return dndUtils.generateDragData({
                                 id: selectedRowIds,
                                 item: selectedItems,
-                                operation: [DragOperation.ADD],
+                                operation: [DragOperation.REORDER, DragOperation.ADD],
                                 type: libraryItemTypeToDragTarget[
                                     itemType as keyof typeof libraryItemTypeToDragTarget
                                 ],
