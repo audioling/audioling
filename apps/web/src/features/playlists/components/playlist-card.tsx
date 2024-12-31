@@ -27,33 +27,22 @@ export function PlaylistCard(props: PlaylistCardProps) {
         );
     }
 
-    const {
-        id,
-        image,
-        componentState,
-        metadata,
-        metadataLines = 1,
-        titledata,
-        className,
-        ...htmlProps
-    } = props;
-
     const controls: LoadedCardProps['controls'] = {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
                 {
-                    id: [id],
+                    id: [props.id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.PLAYLIST,
                 },
-                { image, title: titledata.text },
+                { image: props.image, title: props.titledata.text },
             );
         },
         onDragStart: () => {
             PrefetchController.call({
                 cmd: {
                     tracksByPlaylistId: {
-                        id: [id],
+                        id: [props.id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,
@@ -77,15 +66,15 @@ export function PlaylistCard(props: PlaylistCardProps) {
 
     return (
         <Card
-            className={className}
-            componentState={componentState}
+            className={props.className}
+            componentState={props.componentState}
             controls={controls}
-            id={id}
-            image={image}
-            metadata={metadata}
-            metadataLines={metadataLines}
-            titledata={titledata}
-            {...htmlProps}
+            id={props.id}
+            image={props.image}
+            itemType={LibraryItemType.PLAYLIST}
+            metadata={props.metadata}
+            metadataLines={props.metadataLines ?? 1}
+            titledata={props.titledata}
         />
     );
 }

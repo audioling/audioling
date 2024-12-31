@@ -151,7 +151,7 @@ function PaginatedGenreTableContent(props: PaginatedGenreTableProps) {
                 enableHeader={true}
                 enableMultiRowSelection={true}
                 itemCount={data.length || pagination.itemsPerPage}
-                itemType={LibraryItemType.ALBUM}
+                itemType={LibraryItemType.GENRE}
                 rowsKey={props.listKey}
                 onChangeColumnOrder={setColumnOrder}
                 onRowClick={onRowClick}
