@@ -36,6 +36,7 @@ export interface AdapterTrack {
     fileSize: number | null;
     genres: AdapterRelatedGenre[];
     id: string;
+    imageUrl: string[];
     isCompilation: boolean;
     lyrics: string | null;
     moods: {

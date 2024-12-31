@@ -47,14 +47,11 @@ export const initAlbumController = (modules: { service: AppService }) => {
                 sortOrder: query.sortOrder,
             });
 
+            console.log('albums.items :>> ', albums.items[0].imageUrl);
+
             const response: AlbumListResponse = {
                 data: albums.items.map((item) =>
-                    albumHelpers.adapterToResponse(
-                        item,
-                        adapter._getLibrary().id,
-                        item.thumbHash,
-                        authToken,
-                    ),
+                    albumHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -115,12 +112,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
             const album = await service.album.detail(adapter, { id });
 
             const response: AlbumDetailResponse = {
-                data: albumHelpers.adapterToResponse(
-                    album,
-                    adapter._getLibrary().id,
-                    album.thumbHash,
-                    authToken,
-                ),
+                data: albumHelpers.adapterToResponse(album, adapter._getLibrary().id, authToken),
                 meta: {},
             };
 
@@ -152,12 +144,7 @@ export const initAlbumController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(
-                        item,
-                        adapter._getLibrary().id,
-                        item.thumbHash,
-                        authToken,
-                    ),
+                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(

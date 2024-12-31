@@ -1,15 +1,13 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { useCurrentTrack } from '@/features/player/stores/player-store.tsx';
+import { ItemImage } from '@/features/shared/item-image/item-image.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { Image } from '@/features/ui/image/image.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './player-bar-left.module.scss';
 
 export function PlayerBarLeft() {
     const shouldReduceMotion = useReducedMotion();
     const { track: currentTrack } = useCurrentTrack();
-    const baseUrl = useAuthBaseUrl();
 
     return (
         <AnimatePresence mode="wait">
@@ -22,11 +20,7 @@ export function PlayerBarLeft() {
                 variants={shouldReduceMotion ? undefined : animationVariants.blurIn}
             >
                 <motion.div className={styles.leftColumn}>
-                    <Image
-                        alt=""
-                        className={styles.image}
-                        src={`${baseUrl}${currentTrack?.imageUrl}&size=100`}
-                    />
+                    <ItemImage className={styles.image} size="table" src={currentTrack?.imageUrl} />
                 </motion.div>
                 <motion.div className={styles.rightColumn}>
                     {currentTrack ? (

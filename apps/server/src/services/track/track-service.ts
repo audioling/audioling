@@ -1,14 +1,15 @@
-import { ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
-import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
-import type { FindByIdServiceArgs, FindManyServiceArgs } from '@/services/service-helpers.js';
+import {
+    type FindByIdServiceArgs,
+    type FindManyServiceArgs,
+    serviceHelpers,
+} from '@/services/service-helpers.js';
 
 // SECTION - Track Service
-export const initTrackService = (modules: { db: AppDatabase }) => {
-    const { db } = modules;
-
+export const initTrackService = () => {
     return {
         // ANCHOR - Detail
         detail: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
@@ -22,7 +23,10 @@ export const initTrackService = (modules: { db: AppDatabase }) => {
 
             return {
                 ...result,
-                thumbHash: db.thumbhash.findById(libraryId, result.id)?.[1] || null,
+                imageUrl: serviceHelpers.getImageUrls([
+                    { id: result.id, libraryId, type: LibraryItemType.TRACK },
+                    { id: result.albumId, libraryId, type: LibraryItemType.ALBUM },
+                ]),
             };
         },
         // ANCHOR - Favorite by id
@@ -74,7 +78,10 @@ export const initTrackService = (modules: { db: AppDatabase }) => {
                 ...result,
                 items: result.items.map((item) => ({
                     ...item,
-                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
+                    imageUrl: serviceHelpers.getImageUrls([
+                        { id: item.id, libraryId, type: LibraryItemType.TRACK },
+                        { id: item.albumId, libraryId, type: LibraryItemType.ALBUM },
+                    ]),
                 })),
             };
         },

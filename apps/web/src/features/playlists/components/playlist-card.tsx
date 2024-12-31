@@ -21,6 +21,7 @@ export function PlaylistCard(props: PlaylistCardProps) {
             <Card
                 className={props.className}
                 componentState={props.componentState}
+                itemType={LibraryItemType.PLAYLIST}
                 metadataLines={props.metadataLines ?? 1}
             />
         );

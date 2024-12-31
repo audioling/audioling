@@ -6,7 +6,6 @@ import {
 } from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
-import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import {
     type FindByIdServiceArgs,
@@ -15,9 +14,7 @@ import {
 } from '@/services/service-helpers.js';
 
 // SECTION - Album Service
-export const initAlbumService = (modules: { db: AppDatabase }) => {
-    const { db } = modules;
-
+export const initAlbumService = () => {
     return {
         // ANCHOR - Detail
         detail: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
@@ -32,7 +29,6 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
             return {
                 ...result,
                 imageUrl: serviceHelpers.getImageUrl(result.id, libraryId, LibraryItemType.ALBUM),
-                thumbHash: db.thumbhash.findById(libraryId, result.id)?.[1] || null,
             };
         },
         // ANCHOR - Detail track list
@@ -63,8 +59,10 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                 ...result,
                 items: result.items.map((item) => ({
                     ...item,
-                    imageUrl: serviceHelpers.getImageUrl(item.id, libraryId, LibraryItemType.TRACK),
-                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
+                    imageUrl: serviceHelpers.getImageUrls([
+                        { id: item.id, libraryId, type: LibraryItemType.TRACK },
+                        { id: item.albumId, libraryId, type: LibraryItemType.ALBUM },
+                    ]),
                 })),
             };
         },
@@ -108,7 +106,6 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
                 items: result.items.map((item) => ({
                     ...item,
                     imageUrl: serviceHelpers.getImageUrl(item.id, libraryId, LibraryItemType.ALBUM),
-                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
                 })),
             };
         },

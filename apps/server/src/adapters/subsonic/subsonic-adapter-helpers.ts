@@ -13,34 +13,38 @@ export type SubsonicTrack = NonNullable<
     Extract<
         Awaited<ReturnType<OpenSubsonicApiClient['getAlbum']['os']['1']['get']>>,
         { status: 200 }
-    >['body']['album']['song']
+    >['body']['subsonic-response']['album']['song']
 >[number];
 
 export type SubsonicAlbum = Extract<
     Awaited<ReturnType<OpenSubsonicApiClient['getAlbum']['os']['1']['get']>>,
     { status: 200 }
->['body']['album'];
+>['body']['subsonic-response']['album'];
 
 export type SubsonicArtist = Extract<
     Awaited<ReturnType<OpenSubsonicApiClient['getArtist']['os']['1']['get']>>,
     { status: 200 }
->['body']['artist'];
+>['body']['subsonic-response']['artist'];
 
-export type SubsonicPlaylist = Extract<
-    Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
-    { status: 200 }
->['body']['playlists']['playlist'][number];
+export type SubsonicPlaylist = NonNullable<
+    Extract<
+        Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
+        { status: 200 }
+    >['body']['subsonic-response']['playlists']['playlist']
+>[number];
 
-type PlaylistListEntry = Extract<
-    Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
-    { status: 200 }
->['body']['playlists']['playlist'][number];
+type PlaylistListEntry = NonNullable<
+    Extract<
+        Awaited<ReturnType<OpenSubsonicApiClient['getPlaylists']['os']['1']['get']>>,
+        { status: 200 }
+    >['body']['subsonic-response']['playlists']['playlist']
+>[number];
 
 type ArtistListEntry = NonNullable<
     Extract<
         Awaited<ReturnType<OpenSubsonicApiClient['getArtists']['os']['1']['get']>>,
         { status: 200 }
-    >['body']['artists']['index'][number]['artist']
+    >['body']['subsonic-response']['artists']['index'][number]['artist']
 >[number];
 
 const getArtists = (item: SubsonicAlbum | SubsonicTrack) => {
@@ -78,9 +82,9 @@ const getAlbumArtists = (item: SubsonicTrack) => {
 const getGenres = (item: SubsonicAlbum | SubsonicTrack) => {
     if (item.genres) {
         return item.genres.map((genre) => ({
-            id: genre.genre,
+            id: genre.name,
             imageUrl: null,
-            name: genre.genre,
+            name: genre.name,
         }));
     }
 
@@ -127,7 +131,7 @@ const converter = {
             },
             genres: getGenres(album),
             id: album.id,
-            imageUrl: album.coverArt || null,
+            imageUrl: album.coverArt || album.id,
             isCompilation: album.isCompilation || false,
             moods: (album.moods || []).map((mood) => ({ id: mood, name: mood })) || [],
             name: album.name,
@@ -181,7 +185,7 @@ const converter = {
             duration: playlist.duration,
             genres: [],
             id: playlist.id,
-            imageUrl: playlist.coverArt || null,
+            imageUrl: playlist.coverArt || playlist.id,
             isPublic: playlist.public || false,
             name: playlist.name,
             owner: playlist.owner || null,
@@ -239,6 +243,7 @@ const converter = {
             fileSize: track.size || null,
             genres: getGenres(track),
             id: track.id,
+            imageUrl: track.coverArt ? [track.coverArt] : [],
             isCompilation: false,
             lyrics: null,
             moods: track.moods?.map((mood) => ({ id: mood, name: mood })) || [],

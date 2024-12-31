@@ -1,4 +1,8 @@
-import { PlaylistFolderListSortOptions, TrackListSortOptions } from '@repo/shared-types';
+import {
+    LibraryItemType,
+    PlaylistFolderListSortOptions,
+    TrackListSortOptions,
+} from '@repo/shared-types';
 import { ListSortOrder, PlaylistListSortOptions } from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
@@ -11,12 +15,13 @@ import type { AppDatabase } from '@/database/init-database.js';
 import type { DbUserPlaylistFolderInsert } from '@/database/user-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import type { IdFactoryModule } from '@/modules/id/index.js';
-import type {
-    DeleteByIdServiceArgs,
-    FindByIdServiceArgs,
-    FindManyServiceArgs,
-    InsertServiceArgs,
-    UpdateByIdServiceArgs,
+import {
+    type DeleteByIdServiceArgs,
+    type FindByIdServiceArgs,
+    type FindManyServiceArgs,
+    type InsertServiceArgs,
+    serviceHelpers,
+    type UpdateByIdServiceArgs,
 } from '@/services/service-helpers.js';
 import type { initTrackService } from '@/services/track/track-service.js';
 
@@ -128,8 +133,6 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
                 throw new apiError.internalServer({ message: err.message });
             }
 
-            const libraryId = adapter._getLibrary().id;
-
             const [foldersErr, folders] = db.user.playlistFolder.findAll(args.userId);
 
             if (foldersErr) {
@@ -146,8 +149,12 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
 
             return {
                 ...result,
+                imageUrl: serviceHelpers.getImageUrl(
+                    result.id,
+                    adapter._getLibrary().id,
+                    LibraryItemType.PLAYLIST,
+                ),
                 parentId: playlistFoldersMap[result.id] || null,
-                thumbHash: db.thumbhash.findById(libraryId, result.id)?.[1] || null,
             };
         },
 
@@ -170,13 +177,22 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
                 throw new apiError.internalServer({ message: err.message });
             }
 
-            const libraryId = adapter._getLibrary().id;
-
             return {
                 ...result,
                 items: result.items.map((item) => ({
                     ...item,
-                    thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
+                    imageUrl: serviceHelpers.getImageUrls([
+                        {
+                            id: item.id,
+                            libraryId: adapter._getLibrary().id,
+                            type: LibraryItemType.TRACK,
+                        },
+                        {
+                            id: item.albumId,
+                            libraryId: adapter._getLibrary().id,
+                            type: LibraryItemType.ALBUM,
+                        },
+                    ]),
                 })),
             };
         },
@@ -226,8 +242,6 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
                 throw new apiError.internalServer({ message: err.message });
             }
 
-            const libraryId = adapter._getLibrary().id;
-
             const [foldersErr, folders] = db.user.playlistFolder.findAll(args.userId);
 
             if (foldersErr) {
@@ -244,8 +258,12 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
 
             const items = result.items.map((item) => ({
                 ...item,
+                imageUrl: serviceHelpers.getImageUrl(
+                    item.id,
+                    adapter._getLibrary().id,
+                    LibraryItemType.PLAYLIST,
+                ),
                 parentId: playlistFoldersMap[item.id] || null,
-                thumbHash: db.thumbhash.findById(libraryId, item.id)?.[1] || null,
             }));
 
             return {

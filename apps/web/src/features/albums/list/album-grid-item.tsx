@@ -41,7 +41,8 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
             <AlbumCard
                 componentState="loaded"
                 id={data.id}
-                image={`${context.baseUrl}${data.imageUrl}&size=300`}
+                image={data.imageUrl}
+                itemType={LibraryItemType.ALBUM}
                 metadata={[{ path: '/', text: data.artists[0]?.name }]}
                 metadataLines={1}
                 titledata={{ path: '/', text: data.name }}
@@ -150,6 +151,7 @@ function ExpandedAlbumGridItemContent({
                 </div>
                 <div className={clsx(styles.tracks, { [styles.dark]: color.isDark })}>
                     <ItemTable
+                        disableAutoScroll
                         enableMultiRowSelection
                         enableRowSelection
                         columnOrder={columnOrder}
@@ -162,7 +164,6 @@ function ExpandedAlbumGridItemContent({
                         onChangeColumnOrder={() => {}}
                         onRowClick={onRowClick}
                         onRowDragData={onRowDragData}
-                        onRowDrop={() => {}}
                     />
                 </div>
             </div>

@@ -23,7 +23,7 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
         // ANCHOR - Add
         add: async (
             args: InsertServiceArgs<
-                Omit<DbLibraryInsert, 'folders' | 'scanCredential' | 'scanUsername'>
+                Omit<DbLibraryInsert, 'folders' | 'scanCredential' | 'scanUsername' | 'tokens'>
             > & {
                 password: string;
                 username: string;
@@ -37,6 +37,8 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
                 password: args.password,
                 username: args.username,
             });
+
+            console.log('authResult :>> ', authResult);
 
             if (authResult === null) {
                 throw new apiError.badRequest({
@@ -109,6 +111,8 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
                     username: args.body.username,
                 },
             );
+
+            console.log('authResult :>> ', authResult);
 
             if (authResult === null) {
                 throw new apiError.badRequest({

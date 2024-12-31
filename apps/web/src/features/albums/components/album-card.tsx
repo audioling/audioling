@@ -21,6 +21,7 @@ export function AlbumCard(props: AlbumCardProps) {
             <Card
                 className={props.className}
                 componentState={props.componentState}
+                itemType={LibraryItemType.ALBUM}
                 metadataLines={props.metadataLines ?? 1}
             />
         );
@@ -70,6 +71,7 @@ export function AlbumCard(props: AlbumCardProps) {
             controls={controls}
             id={props.id}
             image={props.image}
+            itemType={LibraryItemType.ALBUM}
             metadata={props.metadata}
             metadataLines={props.metadataLines ?? 1}
             titledata={props.titledata}

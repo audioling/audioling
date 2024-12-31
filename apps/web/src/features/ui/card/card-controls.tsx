@@ -1,3 +1,4 @@
+import type { LibraryItemType } from '@repo/shared-types';
 import { motion } from 'motion/react';
 import { PlayType } from '@/features/player/stores/player-store.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
@@ -6,6 +7,7 @@ import styles from './card-controls.module.scss';
 
 interface CardControlsProps {
     id: string;
+    itemType: LibraryItemType;
     onMore?: (id: string) => void;
     onPlay: (id: string, playType: PlayType) => void;
 }

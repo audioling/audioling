@@ -13,40 +13,26 @@ export const playlistHelpers = {
     adapterToResponse: (
         playlist: AdapterPlaylist,
         libraryId: string,
-        thumbHash: string | null,
         token: string,
     ): PlaylistEntry => {
         return {
             ...playlist,
-            imageUrl: controllerHelpers.getImageUrl(
-                libraryId,
-                playlist.id,
-                LibraryItemType.PLAYLIST,
-                token,
-            ),
+            imageUrl: controllerHelpers.getImageUrl(playlist.imageUrl, token),
             itemType: LibraryItemType.PLAYLIST,
             libraryId,
-            thumbHash,
         };
     },
     adapterTrackToResponse: (
         track: AdapterPlaylistTrack,
         libraryId: string,
-        thumbHash: string | null,
         token: string,
     ): PlaylistTrackEntry => {
         return {
             ...track,
-            imageUrl: controllerHelpers.getImageUrl(
-                libraryId,
-                track.id,
-                LibraryItemType.TRACK,
-                token,
-            ),
+            imageUrl: track.imageUrl.map((url) => controllerHelpers.getImageUrl(url, token)),
             itemType: LibraryItemType.TRACK,
             libraryId,
             streamUrl: controllerHelpers.getStreamUrl(libraryId, track.id, token),
-            thumbHash,
         };
     },
 };

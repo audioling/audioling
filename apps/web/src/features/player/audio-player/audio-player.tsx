@@ -47,7 +47,7 @@ export function AudioPlayer() {
                 artist: currentTrack.artists.map((artist) => artist.name).join(', '),
                 artwork: [
                     {
-                        src: getImageUrl(currentTrack.imageUrl, baseUrl),
+                        src: getImageUrl(currentTrack.imageUrl[0], baseUrl),
                         type: 'image/png',
                     },
                 ],

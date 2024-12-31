@@ -20,7 +20,7 @@ export const playlistAttributes = z.object({
     duration: z.number().nullable(),
     genres: relatedGenre.array(),
     id: z.string(),
-    imageUrl: z.string().nullable(),
+    imageUrl: z.string(),
     isPublic: z.boolean(),
     itemType: z.literal(LibraryItemType.PLAYLIST),
     libraryId: z.string(),
@@ -29,7 +29,6 @@ export const playlistAttributes = z.object({
     ownerId: z.string().nullable(),
     parentId: z.string().nullable(),
     size: z.number().nullable(),
-    thumbHash: z.string().nullable(),
     trackCount: z.number().nullable(),
     updatedDate: z.string(),
 });

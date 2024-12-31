@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { LibraryItemType } from '@repo/shared-types';
 import type { PlaylistItem } from '@/api/api-types.ts';
 import { PlaylistCard } from '@/features/playlists/components/playlist-card.tsx';
 import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
@@ -11,14 +12,15 @@ export type PlaylistGridItemContext = {
 export function PlaylistGridItem(
     props: InfiniteGridItemProps<PlaylistItem, PlaylistGridItemContext>,
 ) {
-    const { context, data } = props;
+    const { data } = props;
 
     if (data) {
         return (
             <PlaylistCard
                 componentState="loaded"
                 id={data.id}
-                image={`${context.baseUrl}${data.imageUrl}&size=300`}
+                image={data.imageUrl}
+                itemType={LibraryItemType.PLAYLIST}
                 metadata={[]}
                 metadataLines={1}
                 titledata={{ path: '/', text: data.name }}

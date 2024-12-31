@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react';
 import type { AlbumListSortOptions } from '@repo/shared-types';
-import { type ListSortOrder } from '@repo/shared-types';
+import { LibraryItemType, type ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import { generatePath, useParams } from 'react-router';
@@ -10,7 +10,6 @@ import type {
     GetApiLibraryIdAlbumsParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { AlbumCard } from '@/features/albums/components/album-card.tsx';
-import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { GridCarousel } from '@/features/ui/grid-carousel/grid-carousel.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 
@@ -27,7 +26,6 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
     const { rowCount = 1, sortBy, sortOrder, title } = props;
     const { libraryId } = useParams() as { libraryId: string };
     const { data: albums, fetchNextPage } = useAlbumListInfinite(libraryId, sortBy, sortOrder, 20);
-    const baseUrl = useAuthBaseUrl();
 
     const cards = useMemo(
         () =>
@@ -37,7 +35,8 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                         <MemoizedAlbumCard
                             componentState="loaded"
                             id={album.id}
-                            image={`${baseUrl}${album.imageUrl}&size=300`}
+                            image={album.imageUrl}
+                            itemType={LibraryItemType.ALBUM}
                             metadata={[
                                 {
                                     path: generatePath(APP_ROUTE.DASHBOARD_ARTISTS_DETAIL, {
@@ -77,7 +76,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     }),
                 ];
             }),
-        [albums.pages, baseUrl, libraryId],
+        [albums.pages, libraryId],
     );
 
     const handleNextPage = useCallback(() => {}, []);

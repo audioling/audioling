@@ -1497,7 +1497,6 @@ export const subsonicAuthenticationAdapter: AdapterAuthentication = {
                 params: {
                     c: CONSTANTS.APP_NAME,
                     f: 'json',
-                    p: body.password,
                     s: salt,
                     t: token,
                     u: body.username,

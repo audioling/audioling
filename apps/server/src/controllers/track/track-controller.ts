@@ -46,12 +46,7 @@ export const initTrackController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(
-                        item,
-                        adapter._getLibrary().id,
-                        item.thumbHash,
-                        authToken,
-                    ),
+                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -113,12 +108,7 @@ export const initTrackController = (modules: { service: AppService }) => {
             });
 
             const response: TrackDetailResponse = {
-                data: trackHelpers.adapterToResponse(
-                    track,
-                    adapter._getLibrary().id,
-                    track.thumbHash,
-                    authToken,
-                ),
+                data: trackHelpers.adapterToResponse(track, adapter._getLibrary().id, authToken),
                 meta: {},
             };
 

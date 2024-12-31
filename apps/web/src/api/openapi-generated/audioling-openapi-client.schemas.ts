@@ -210,7 +210,7 @@ export type GetApiLibraryIdPlaylistsIdTracks200DataItem = {
     fileSize: number | null;
     genres: GetApiLibraryIdPlaylistsIdTracks200DataItemGenresItem[];
     id: string;
-    imageUrl: string;
+    imageUrl: string[];
     isCompilation: boolean;
     itemType: GetApiLibraryIdPlaylistsIdTracks200DataItemItemType;
     libraryId: string;
@@ -228,8 +228,6 @@ export type GetApiLibraryIdPlaylistsIdTracks200DataItem = {
     rgTrackPeak: number | null;
     sortName: string;
     streamUrl: string;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackNumber: number | null;
     /** @nullable */
@@ -429,8 +427,7 @@ export type GetApiLibraryIdPlaylistsId200Data = {
     duration: number | null;
     genres: GetApiLibraryIdPlaylistsId200DataGenresItem[];
     id: string;
-    /** @nullable */
-    imageUrl: string | null;
+    imageUrl: string;
     isPublic: boolean;
     itemType: GetApiLibraryIdPlaylistsId200DataItemType;
     libraryId: string;
@@ -443,8 +440,6 @@ export type GetApiLibraryIdPlaylistsId200Data = {
     parentId: string | null;
     /** @nullable */
     size: number | null;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackCount: number | null;
     updatedDate: string;
@@ -692,8 +687,7 @@ export type GetApiLibraryIdPlaylistsFoldersFolderId200DataItem = {
     duration: number | null;
     genres: GetApiLibraryIdPlaylistsFoldersFolderId200DataItemGenresItem[];
     id: string;
-    /** @nullable */
-    imageUrl: string | null;
+    imageUrl: string;
     isPublic: boolean;
     itemType: GetApiLibraryIdPlaylistsFoldersFolderId200DataItemItemType;
     libraryId: string;
@@ -706,8 +700,6 @@ export type GetApiLibraryIdPlaylistsFoldersFolderId200DataItem = {
     parentId: string | null;
     /** @nullable */
     size: number | null;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackCount: number | null;
     updatedDate: string;
@@ -962,8 +954,7 @@ export type PostApiLibraryIdPlaylists201Data = {
     duration: number | null;
     genres: PostApiLibraryIdPlaylists201DataGenresItem[];
     id: string;
-    /** @nullable */
-    imageUrl: string | null;
+    imageUrl: string;
     isPublic: boolean;
     itemType: PostApiLibraryIdPlaylists201DataItemType;
     libraryId: string;
@@ -976,8 +967,6 @@ export type PostApiLibraryIdPlaylists201Data = {
     parentId: string | null;
     /** @nullable */
     size: number | null;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackCount: number | null;
     updatedDate: string;
@@ -1070,8 +1059,7 @@ export type GetApiLibraryIdPlaylists200DataItem = {
     duration: number | null;
     genres: GetApiLibraryIdPlaylists200DataItemGenresItem[];
     id: string;
-    /** @nullable */
-    imageUrl: string | null;
+    imageUrl: string;
     isPublic: boolean;
     itemType: GetApiLibraryIdPlaylists200DataItemItemType;
     libraryId: string;
@@ -1084,8 +1072,6 @@ export type GetApiLibraryIdPlaylists200DataItem = {
     parentId: string | null;
     /** @nullable */
     size: number | null;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackCount: number | null;
     updatedDate: string;
@@ -1532,7 +1518,7 @@ export type GetApiLibraryIdAlbumArtistsIdTracks200DataItem = {
     fileSize: number | null;
     genres: GetApiLibraryIdAlbumArtistsIdTracks200DataItemGenresItem[];
     id: string;
-    imageUrl: string;
+    imageUrl: string[];
     isCompilation: boolean;
     itemType: GetApiLibraryIdAlbumArtistsIdTracks200DataItemItemType;
     libraryId: string;
@@ -1549,8 +1535,6 @@ export type GetApiLibraryIdAlbumArtistsIdTracks200DataItem = {
     rgTrackPeak: number | null;
     sortName: string;
     streamUrl: string;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackNumber: number | null;
     /** @nullable */
@@ -1740,8 +1724,6 @@ export type GetApiLibraryIdAlbumArtistsIdAlbums200DataItem = {
     songCount: number | null;
     sortName: string;
     /** @nullable */
-    thumbHash: string | null;
-    /** @nullable */
     updatedDate: string | null;
     userFavorite: boolean;
     /** @nullable */
@@ -1867,8 +1849,6 @@ export type GetApiLibraryIdAlbumArtistsId200Data = {
     name: string;
     /** @nullable */
     songCount: number | null;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     updatedDate: string | null;
     userFavorite: boolean;
@@ -2033,8 +2013,6 @@ export type GetApiLibraryIdAlbumArtists200DataItem = {
     name: string;
     /** @nullable */
     songCount: number | null;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     updatedDate: string | null;
     userFavorite: boolean;
@@ -2315,8 +2293,6 @@ export type GetApiLibraryIdTracksId200Data = {
     songCount: number | null;
     sortName: string;
     /** @nullable */
-    thumbHash: string | null;
-    /** @nullable */
     updatedDate: string | null;
     userFavorite: boolean;
     /** @nullable */
@@ -2512,7 +2488,7 @@ export type GetApiLibraryIdTracks200DataItem = {
     fileSize: number | null;
     genres: GetApiLibraryIdTracks200DataItemGenresItem[];
     id: string;
-    imageUrl: string;
+    imageUrl: string[];
     isCompilation: boolean;
     itemType: GetApiLibraryIdTracks200DataItemItemType;
     libraryId: string;
@@ -2529,8 +2505,6 @@ export type GetApiLibraryIdTracks200DataItem = {
     rgTrackPeak: number | null;
     sortName: string;
     streamUrl: string;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackNumber: number | null;
     /** @nullable */
@@ -2788,7 +2762,7 @@ export type GetApiLibraryIdAlbumsIdTracks200DataItem = {
     fileSize: number | null;
     genres: GetApiLibraryIdAlbumsIdTracks200DataItemGenresItem[];
     id: string;
-    imageUrl: string;
+    imageUrl: string[];
     isCompilation: boolean;
     itemType: GetApiLibraryIdAlbumsIdTracks200DataItemItemType;
     libraryId: string;
@@ -2805,8 +2779,6 @@ export type GetApiLibraryIdAlbumsIdTracks200DataItem = {
     rgTrackPeak: number | null;
     sortName: string;
     streamUrl: string;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     trackNumber: number | null;
     /** @nullable */
@@ -2983,8 +2955,6 @@ export type GetApiLibraryIdAlbumsId200Data = {
     /** @nullable */
     songCount: number | null;
     sortName: string;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     updatedDate: string | null;
     userFavorite: boolean;
@@ -3193,8 +3163,6 @@ export type GetApiLibraryIdAlbums200DataItem = {
     /** @nullable */
     songCount: number | null;
     sortName: string;
-    /** @nullable */
-    thumbHash: string | null;
     /** @nullable */
     updatedDate: string | null;
     userFavorite: boolean;

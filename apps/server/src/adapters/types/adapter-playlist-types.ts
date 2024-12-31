@@ -17,7 +17,7 @@ export interface AdapterPlaylist {
     duration: number | null;
     genres: AdapterRelatedGenre[];
     id: string;
-    imageUrl: string | null;
+    imageUrl: string;
     isPublic: boolean;
     name: string;
     owner: string | null;

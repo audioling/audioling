@@ -50,12 +50,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
 
             const response: PlaylistListResponse = {
                 data: playlists.items.map((item) =>
-                    playlistHelpers.adapterToResponse(
-                        item,
-                        adapter._getLibrary().id,
-                        item.thumbHash,
-                        authToken,
-                    ),
+                    playlistHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -330,7 +325,6 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 data: playlistHelpers.adapterToResponse(
                     playlist,
                     adapter._getLibrary().id,
-                    playlist.thumbHash,
                     authToken,
                 ),
                 meta: {},
@@ -367,7 +361,6 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                     playlistHelpers.adapterTrackToResponse(
                         item,
                         adapter._getLibrary().id,
-                        item.thumbHash,
                         authToken,
                     ),
                 ),

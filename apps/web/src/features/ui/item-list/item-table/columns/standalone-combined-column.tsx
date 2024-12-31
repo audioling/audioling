@@ -15,8 +15,6 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
                 if (
                     'name' in item &&
                     typeof item.name === 'string' &&
-                    'imageUrl' in item &&
-                    typeof item.imageUrl === 'string' &&
                     'artists' in item &&
                     Array.isArray(item.artists)
                 ) {
@@ -39,7 +37,7 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
                 }
             }
 
-            return <Skeleton height={20} width={100} />;
+            return <Skeleton height="100%" />;
         },
         header: 'Combined',
         id: 'combined',

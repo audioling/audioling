@@ -22,7 +22,7 @@ export interface AdapterAlbum {
     };
     genres: AdapterRelatedGenre[];
     id: string;
-    imageUrl: string | null;
+    imageUrl: string;
     isCompilation: boolean;
     moods: {
         id: string;

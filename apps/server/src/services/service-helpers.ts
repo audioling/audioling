@@ -47,6 +47,19 @@ const getImageUrl = (id: string, libraryId: string, type: LibraryItemType) => {
     return `/api/${libraryId}/images/${id}?type=${type}`;
 };
 
+const getImageUrls = (args: { id: string | null; libraryId: string; type: LibraryItemType }[]) => {
+    const urls = [];
+
+    for (const url of args) {
+        if (url.id) {
+            urls.push(getImageUrl(url.id, url.libraryId, url.type));
+        }
+    }
+
+    return urls;
+};
+
 export const serviceHelpers = {
     getImageUrl,
+    getImageUrls,
 };

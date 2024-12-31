@@ -4,13 +4,14 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
+import type { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
 import { NavLink } from 'react-router';
 import type { PlayType } from '@/features/player/stores/player-store.tsx';
+import { ItemImage } from '@/features/shared/item-image/item-image.tsx';
 import { CardControls } from '@/features/ui/card/card-controls.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
-import { Image } from '@/features/ui/image/image.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
@@ -35,6 +36,7 @@ export type LoadedCardProps = BaseCardProps & {
     };
     id: string;
     image: string;
+    itemType: LibraryItemType;
     metadata: {
         path: string;
         text: string;
@@ -128,10 +130,11 @@ export function Card(props: CardProps) {
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
                     >
-                        <Image className={styles.image} src={loadedProps.image} />
+                        <ItemImage className={styles.image} size="card" src={[loadedProps.image]} />
                         {isHovering && (
                             <CardControls
                                 id={loadedProps.id}
+                                itemType={loadedProps.itemType}
                                 onMore={loadedProps.controls.onMore}
                                 onPlay={loadedProps.controls.onPlay}
                             />
