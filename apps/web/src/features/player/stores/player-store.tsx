@@ -369,6 +369,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 },
                 clearQueue: () => {
                     set((state) => {
+                        state.player.index = -1;
                         state.queue.default = [];
                         state.queue.priority = [];
                     });
@@ -936,7 +937,9 @@ export const subscribeCurrentTrack = (
             onChange(track, prevTrack);
         },
         {
-            equalityFn: (a, b) => a.track._uniqueId === b.track._uniqueId,
+            equalityFn: (a, b) => {
+                return a.track?._uniqueId === b.track?._uniqueId;
+            },
         },
     );
 };
