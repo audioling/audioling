@@ -57,6 +57,14 @@ export const exactTotalRecordCount = async (
     startPage: number,
     limit: number,
 ) => {
+    // Add early return for page 1 with no results
+    if (startPage === 1) {
+        const firstPageCount = await fetcher(1, limit);
+        if (firstPageCount === 0) {
+            return 0;
+        }
+    }
+
     const fetchCountRecursive = async (
         page: number,
         limit: number,
@@ -64,6 +72,11 @@ export const exactTotalRecordCount = async (
         totalRecordCount: number,
         previousPageRecordCount?: number,
     ): Promise<number> => {
+        // Add guard against negative page numbers
+        if (page < 1) {
+            return totalRecordCount;
+        }
+
         const currentPageRecordCount = await fetcher(page, limit);
 
         if (currentPageRecordCount !== limit && currentPageRecordCount !== 0) {
