@@ -12,11 +12,12 @@ interface AddToPlaylistModalProps {
     artists?: string[];
     libraryId: string;
     playlistId: string;
+    playlists?: string[];
     tracks?: TrackItem[];
 }
 
 export const AddToPlaylistModal = createCallable<AddToPlaylistModalProps, boolean>(
-    ({ call, libraryId, playlistId, albums, artists, tracks }) => {
+    ({ call, libraryId, playlistId, albums, artists, playlists, tracks }) => {
         const formId = useId();
         const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +31,7 @@ export const AddToPlaylistModal = createCallable<AddToPlaylistModalProps, boolea
                             formId={formId}
                             libraryId={libraryId}
                             playlistId={playlistId}
+                            playlists={playlists}
                             setIsLoading={setIsLoading}
                             tracks={tracks}
                             onSuccess={() => call.end(true)}

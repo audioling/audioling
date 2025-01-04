@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import type { TrackItem } from '@/api/api-types.ts';
 import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
 import { fetchTracksByAlbumArtistId } from '@/api/fetchers/artists.ts';
+import { fetchTracksByPlaylistId } from '@/api/fetchers/playlists.ts';
 import {
     useGetApiLibraryIdPlaylistsIdTracksSuspense,
     usePostApiLibraryIdPlaylistsIdTracksAdd,
@@ -31,6 +32,7 @@ interface AddToPlaylistFormProps {
     libraryId: string;
     onSuccess: () => void;
     playlistId: string;
+    playlists?: string[];
     setIsLoading: (isLoading: boolean) => void;
     tracks?: TrackItem[];
 }
@@ -42,6 +44,7 @@ export function AddToPlaylistForm({
     libraryId,
     playlistId,
     onSuccess,
+    playlists,
     setIsLoading,
     tracks,
 }: AddToPlaylistFormProps) {
@@ -93,11 +96,20 @@ export function AddToPlaylistForm({
                 newTracks.push(...tracks.data);
             }
 
+            for (const playlistId of playlists || []) {
+                const tracks = await fetchTracksByPlaylistId(queryClient, libraryId, playlistId, {
+                    sortBy: TrackListSortOptions.NAME,
+                    sortOrder: ListSortOrder.ASC,
+                });
+
+                newTracks.push(...tracks.data);
+            }
+
             setTracksToAdd(newTracks);
         };
 
         fetchTracks();
-    }, [albums, tracks, artists, libraryId, queryClient]);
+    }, [albums, tracks, artists, libraryId, queryClient, playlists]);
 
     const skipDuplicates = form.watch('skipDuplicates');
 

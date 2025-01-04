@@ -47,6 +47,11 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
 
                 switch (type) {
                     case DragTarget.PLAYLIST:
+                        AddToPlaylistModal.call({
+                            libraryId,
+                            playlistId,
+                            playlists: dragData.id,
+                        });
                         break;
                     case DragTarget.TRACK:
                         AddToPlaylistModal.call({
