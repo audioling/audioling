@@ -180,7 +180,7 @@ export function AudiolingWebPlayer() {
 
     usePlayerEvents(
         {
-            onPlayerSeek: (timestamp) => {
+            onPlayerSeekToTimestamp: (timestamp) => {
                 if (player.playerNum === 1) {
                     playerRef.current?.player1()?.ref?.seekTo(timestamp);
                 } else {

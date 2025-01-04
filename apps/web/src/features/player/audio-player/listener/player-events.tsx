@@ -19,7 +19,8 @@ export interface PlayerEventsCallbacks {
     onPlayerMute?: (muted: boolean, prevMuted: boolean) => void;
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;
-    onPlayerSeek?: (timestamp: number, prevTimestamp: number) => void;
+    onPlayerSeek?: (seconds: number, prevSeconds: number) => void;
+    onPlayerSeekToTimestamp?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerSpeed?: (speed: number, prevSpeed: number) => void;
     onPlayerStatus?: (status: PlayerStatus, prevStatus: PlayerStatus) => void;
     onPlayerVolume?: (volume: number, prevVolume: number) => void;
@@ -51,8 +52,8 @@ export function createPlayerEvents(callbacks: PlayerEventsCallbacks): PlayerEven
     }
 
     // Subscribe to seek events
-    if (callbacks.onPlayerSeek) {
-        const unsubscribe = subscribePlayerSeekToTimestamp(callbacks.onPlayerSeek);
+    if (callbacks.onPlayerSeekToTimestamp) {
+        const unsubscribe = subscribePlayerSeekToTimestamp(callbacks.onPlayerSeekToTimestamp);
         unsubscribers.push(unsubscribe);
     }
 

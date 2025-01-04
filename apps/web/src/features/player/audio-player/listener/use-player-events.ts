@@ -11,7 +11,7 @@ export interface PlayerEvents {
     onPlayerMute?: (muted: boolean, prevMuted: boolean) => void;
     onPlayerProgress?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerQueueChange?: (queue: QueueData, prevQueue: QueueData) => void;
-    onPlayerSeek?: (timestamp: number, prevTimestamp: number) => void;
+    onPlayerSeekToTimestamp?: (timestamp: number, prevTimestamp: number) => void;
     onPlayerSpeed?: (speed: number, prevSpeed: number) => void;
     onPlayerStatus?: (status: PlayerStatus, prevStatus: PlayerStatus) => void;
     onPlayerVolume?: (volume: number, prevVolume: number) => void;
