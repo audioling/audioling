@@ -1,10 +1,16 @@
-import { GenreListSortOptions, LibraryItemType, ListSortOrder } from '@repo/shared-types';
+import {
+    GenreListSortOptions,
+    LibraryItemType,
+    ListSortOrder,
+    TrackListSortOptions,
+} from '@repo/shared-types';
 import { z } from 'zod';
 import {
     createIndividualResponseSchema,
     createPaginatedResponseSchema,
     paginationQuery,
 } from '@/controllers/shared-api-types.js';
+import { trackAttributes } from '@/controllers/track/track-api-types.js';
 
 export const genreAttributes = z.object({
     albumCount: z.number().nullable(),
@@ -36,3 +42,20 @@ export const genreListResponseSchema = createPaginatedResponseSchema({
 });
 
 export type GenreListResponse = z.infer<typeof genreListResponseSchema>;
+
+export const genreTrackListRequestSchema = z.object({
+    ...paginationQuery,
+    id: z.string(),
+    sortBy: z.nativeEnum(TrackListSortOptions),
+    sortOrder: z.nativeEnum(ListSortOrder),
+});
+
+export const genreTrackListResponseSchema = createPaginatedResponseSchema({
+    attributes: trackAttributes,
+});
+
+export type GenreTrackListResponse = z.infer<typeof genreTrackListResponseSchema>;
+
+export const genreTrackListCountResponseSchema = z.number();
+
+export type GenreTrackListCountResponse = z.infer<typeof genreTrackListCountResponseSchema>;

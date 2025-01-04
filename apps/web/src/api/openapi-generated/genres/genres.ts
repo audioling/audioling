@@ -23,6 +23,17 @@ import type {
     GetApiLibraryIdGenresCount422,
     GetApiLibraryIdGenresCount500,
     GetApiLibraryIdGenresCountParams,
+    GetApiLibraryIdGenresIdTracks200,
+    GetApiLibraryIdGenresIdTracks401,
+    GetApiLibraryIdGenresIdTracks403,
+    GetApiLibraryIdGenresIdTracks422,
+    GetApiLibraryIdGenresIdTracks500,
+    GetApiLibraryIdGenresIdTracksCount401,
+    GetApiLibraryIdGenresIdTracksCount403,
+    GetApiLibraryIdGenresIdTracksCount422,
+    GetApiLibraryIdGenresIdTracksCount500,
+    GetApiLibraryIdGenresIdTracksCountParams,
+    GetApiLibraryIdGenresIdTracksParams,
     GetApiLibraryIdGenresParams,
 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
@@ -365,6 +376,361 @@ export function useGetApiLibraryIdGenresCountSuspense<
     },
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
     const queryOptions = getGetApiLibraryIdGenresCountSuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Get genre tracks
+ */
+export const getApiLibraryIdGenresIdTracks = (
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdGenresIdTracks200>(
+        { url: `/api/${libraryId}/genres/:id/tracks`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdGenresIdTracksQueryKey = (
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+) => {
+    return [`/api/${libraryId}/genres/:id/tracks`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracks401
+        | GetApiLibraryIdGenresIdTracks403
+        | GetApiLibraryIdGenresIdTracks422
+        | GetApiLibraryIdGenresIdTracks500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdGenresIdTracksQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>> = ({
+        signal,
+    }) => getApiLibraryIdGenresIdTracks(libraryId, params, requestOptions, signal);
+
+    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetApiLibraryIdGenresIdTracksSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>
+>;
+export type GetApiLibraryIdGenresIdTracksSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdGenresIdTracks401
+    | GetApiLibraryIdGenresIdTracks403
+    | GetApiLibraryIdGenresIdTracks422
+    | GetApiLibraryIdGenresIdTracks500
+>;
+
+export function useGetApiLibraryIdGenresIdTracksSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracks401
+        | GetApiLibraryIdGenresIdTracks403
+        | GetApiLibraryIdGenresIdTracks422
+        | GetApiLibraryIdGenresIdTracks500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetApiLibraryIdGenresIdTracksSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracks401
+        | GetApiLibraryIdGenresIdTracks403
+        | GetApiLibraryIdGenresIdTracks422
+        | GetApiLibraryIdGenresIdTracks500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetApiLibraryIdGenresIdTracksSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracks401
+        | GetApiLibraryIdGenresIdTracks403
+        | GetApiLibraryIdGenresIdTracks422
+        | GetApiLibraryIdGenresIdTracks500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+/**
+ * @summary Get genre tracks
+ */
+
+export function useGetApiLibraryIdGenresIdTracksSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracks401
+        | GetApiLibraryIdGenresIdTracks403
+        | GetApiLibraryIdGenresIdTracks422
+        | GetApiLibraryIdGenresIdTracks500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Get genre tracks count
+ */
+export const getApiLibraryIdGenresIdTracksCount = (
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<number>(
+        { url: `/api/${libraryId}/genres/:id/tracks/count`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdGenresIdTracksCountQueryKey = (
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+) => {
+    return [`/api/${libraryId}/genres/:id/tracks/count`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracksCount401
+        | GetApiLibraryIdGenresIdTracksCount403
+        | GetApiLibraryIdGenresIdTracksCount422
+        | GetApiLibraryIdGenresIdTracksCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdGenresIdTracksCountQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>
+    > = ({ signal }) =>
+        getApiLibraryIdGenresIdTracksCount(libraryId, params, requestOptions, signal);
+
+    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData> };
+};
+
+export type GetApiLibraryIdGenresIdTracksCountSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>
+>;
+export type GetApiLibraryIdGenresIdTracksCountSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdGenresIdTracksCount401
+    | GetApiLibraryIdGenresIdTracksCount403
+    | GetApiLibraryIdGenresIdTracksCount422
+    | GetApiLibraryIdGenresIdTracksCount500
+>;
+
+export function useGetApiLibraryIdGenresIdTracksCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracksCount401
+        | GetApiLibraryIdGenresIdTracksCount403
+        | GetApiLibraryIdGenresIdTracksCount422
+        | GetApiLibraryIdGenresIdTracksCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetApiLibraryIdGenresIdTracksCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracksCount401
+        | GetApiLibraryIdGenresIdTracksCount403
+        | GetApiLibraryIdGenresIdTracksCount422
+        | GetApiLibraryIdGenresIdTracksCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+export function useGetApiLibraryIdGenresIdTracksCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracksCount401
+        | GetApiLibraryIdGenresIdTracksCount403
+        | GetApiLibraryIdGenresIdTracksCount422
+        | GetApiLibraryIdGenresIdTracksCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+/**
+ * @summary Get genre tracks count
+ */
+
+export function useGetApiLibraryIdGenresIdTracksCountSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+    TError = ErrorType<
+        | GetApiLibraryIdGenresIdTracksCount401
+        | GetApiLibraryIdGenresIdTracksCount403
+        | GetApiLibraryIdGenresIdTracksCount422
+        | GetApiLibraryIdGenresIdTracksCount500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdGenresIdTracksCountParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+    const queryOptions = getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions(
         libraryId,
         params,
         options,

@@ -38,8 +38,6 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
                 username: args.username,
             });
 
-            console.log('authResult :>> ', authResult);
-
             if (authResult === null) {
                 throw new apiError.badRequest({
                     message: `Failed to authenticate to ${cleanBaseUrl}`,
@@ -111,8 +109,6 @@ export const initLibraryService = (modules: { db: AppDatabase; idFactory: IdFact
                     username: args.body.username,
                 },
             );
-
-            console.log('authResult :>> ', authResult);
 
             if (authResult === null) {
                 throw new apiError.badRequest({

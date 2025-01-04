@@ -47,8 +47,6 @@ export const initAlbumController = (modules: { service: AppService }) => {
                 sortOrder: query.sortOrder,
             });
 
-            console.log('albums.items :>> ', albums.items[0].imageUrl);
-
             const response: AlbumListResponse = {
                 data: albums.items.map((item) =>
                     albumHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),

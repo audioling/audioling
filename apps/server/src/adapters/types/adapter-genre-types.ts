@@ -1,4 +1,5 @@
-import type { GenreListSortOptions, ListSortOrder } from '@repo/shared-types';
+import type { GenreListSortOptions, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { PaginatedResponse, QueryRequest } from '@/adapters/types/shared-types.js';
 
 export interface AdapterGenre {
@@ -35,3 +36,25 @@ export type AdapterGenreListCountQuery = Omit<
 export type AdapterGenreListCountRequest = QueryRequest<AdapterGenreListCountQuery>;
 
 export type AdapterGenreListCountResponse = number;
+
+export type AdapterGenreTrackListQuery = {
+    folderId?: string[];
+    id: string;
+    limit: number;
+    offset: number;
+    sortBy: TrackListSortOptions;
+    sortOrder: ListSortOrder;
+};
+
+export type AdapterGenreTrackListRequest = QueryRequest<AdapterGenreTrackListQuery>;
+
+export type AdapterGenreTrackListResponse = PaginatedResponse<AdapterTrack>;
+
+export type AdapterGenreTrackListCountQuery = Omit<
+    AdapterGenreTrackListQuery,
+    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+>;
+
+export type AdapterGenreTrackListCountRequest = QueryRequest<AdapterGenreTrackListCountQuery>;
+
+export type AdapterGenreTrackListCountResponse = number;

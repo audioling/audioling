@@ -1008,6 +1008,105 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 },
             ];
         },
+        getGenreTrackList: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const [err, totalRecordCount] = await initSubsonicAdapter(
+                library,
+                db,
+            ).getGenreTrackListCount({
+                query,
+            });
+
+            if (err) {
+                return [err, null];
+            }
+
+            const tracks = [];
+            const pageSize = 500;
+
+            for (let i = 0; i < totalRecordCount; i += pageSize) {
+                const result = await apiClient.getSongsByGenre.os['1'].get({
+                    fetchOptions,
+                    query: {
+                        count: pageSize,
+                        genre: query.id,
+                        musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
+                        offset: i,
+                    },
+                });
+
+                if (result.status !== 200) {
+                    writeLog.error(
+                        adapterHelpers.adapterErrorMessage(library, 'getGenreTrackList'),
+                    );
+                    return [{ code: result.status, message: result.body as string }, null];
+                }
+
+                tracks.push(...(result.body['subsonic-response'].songs.songsByGenre || []));
+            }
+
+            const items = tracks.map(subsonicHelpers.converter.trackToAdapter);
+
+            const sorted = adapterHelpers.sortBy.track(items, query.sortBy, query.sortOrder);
+
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+            return [
+                null,
+                {
+                    items: paginated.items,
+                    limit: query.limit,
+                    offset: query.offset,
+                    totalRecordCount,
+                },
+            ];
+        },
+        getGenreTrackListCount: async (request, fetchOptions) => {
+            const { query } = request;
+
+            const sanitizedQuery: Pick<
+                AdapterTrackListQuery,
+                'folderId' | 'searchTerm' | 'genreId'
+            > = {
+                folderId: query.folderId,
+                genreId: query.id,
+            };
+
+            const getPageItemCount = async (page: number, limit: number): Promise<number> => {
+                const result = await apiClient.getSongsByGenre.os['1'].get({
+                    fetchOptions,
+                    query: {
+                        count: limit,
+                        genre: query.id,
+                        musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
+                        offset: page * limit,
+                    },
+                });
+
+                if (result.status !== 200) {
+                    throw new Error(JSON.stringify(result.body));
+                }
+
+                return (result.body['subsonic-response'].songs.songsByGenre || []).length;
+            };
+
+            try {
+                const totalRecordCount = await adapterHelpers.db.getCount(db, getPageItemCount, {
+                    expiration: 1440,
+                    libraryId: library.id,
+                    query: sanitizedQuery,
+                    type: 'track',
+                });
+
+                return [null, totalRecordCount];
+            } catch (err) {
+                writeLog.error(
+                    adapterHelpers.adapterErrorMessage(library, 'getGenreTrackListCount'),
+                );
+                return [{ code: 500, message: err as string }, null];
+            }
+        },
         getMusicFolderList: async (request, fetchOptions) => {
             const { query } = request;
 
@@ -1270,8 +1369,12 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getTrackListCount: async (request, fetchOptions) => {
             const { query } = request;
 
-            const sanitizedQuery: Pick<AdapterTrackListQuery, 'folderId' | 'searchTerm'> = {
+            const sanitizedQuery: Pick<
+                AdapterTrackListQuery,
+                'folderId' | 'searchTerm' | 'genreId'
+            > = {
                 folderId: query.folderId,
+                genreId: query.genreId,
                 searchTerm: query.searchTerm,
             };
 
@@ -1293,8 +1396,31 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return (result.body['subsonic-response'].searchResult3.song || []).length;
             };
 
+            const getPageItemCountWithGenre = async (
+                page: number,
+                limit: number,
+            ): Promise<number> => {
+                const result = await apiClient.getSongsByGenre.os['1'].get({
+                    fetchOptions,
+                    query: {
+                        count: limit,
+                        genre: query.genreId || '',
+                        musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
+                        offset: page * limit,
+                    },
+                });
+
+                if (result.status !== 200) {
+                    throw new Error(JSON.stringify(result.body));
+                }
+
+                return (result.body['subsonic-response'].songs.songsByGenre || []).length;
+            };
+
             try {
-                const totalRecordCount = await adapterHelpers.db.getCount(db, getPageItemCount, {
+                const fetcherFn = query.genreId ? getPageItemCountWithGenre : getPageItemCount;
+
+                const totalRecordCount = await adapterHelpers.db.getCount(db, fetcherFn, {
                     expiration: 1440,
                     libraryId: library.id,
                     query: sanitizedQuery,

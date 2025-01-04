@@ -66,6 +66,7 @@ export type AdapterTrackListResponse = PaginatedResponse<AdapterTrack>;
 
 export type AdapterTrackListQuery = {
     folderId?: string[];
+    genreId?: string;
     imageSize?: number;
     limit: number;
     offset: number;

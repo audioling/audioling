@@ -31,6 +31,10 @@ import type {
     AdapterGenreListCountResponse,
     AdapterGenreListRequest,
     AdapterGenreListResponse,
+    AdapterGenreTrackListCountRequest,
+    AdapterGenreTrackListCountResponse,
+    AdapterGenreTrackListRequest,
+    AdapterGenreTrackListResponse,
 } from '@/adapters/types/adapter-genre-types.js';
 import type {
     AdapterMusicFolderListRequest,
@@ -139,6 +143,11 @@ export type AdapterApi = {
     getFavoriteTrackList: AdapterFn<AdapterTrackListRequest, AdapterTrackListResponse>;
     getGenreCount: AdapterFn<AdapterGenreListCountRequest, AdapterGenreListCountResponse>;
     getGenreList: AdapterFn<AdapterGenreListRequest, AdapterGenreListResponse>;
+    getGenreTrackList: AdapterFn<AdapterGenreTrackListRequest, AdapterGenreTrackListResponse>;
+    getGenreTrackListCount: AdapterFn<
+        AdapterGenreTrackListCountRequest,
+        AdapterGenreTrackListCountResponse
+    >;
     getMusicFolderList: AdapterFn<AdapterMusicFolderListRequest, AdapterMusicFolderListResponse>;
     getPlaylistDetail: AdapterFn<AdapterPlaylistDetailRequest, AdapterPlaylistDetailResponse>;
     getPlaylistList: AdapterFn<AdapterPlaylistListRequest, AdapterPlaylistListResponse>;

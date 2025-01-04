@@ -107,10 +107,12 @@ interface State {
         muted: boolean;
         playerNum: 1 | 2;
         repeat: PlayerRepeat;
-        seekToTimestamp: number;
+        seekToTimestamp: string;
         shuffle: PlayerShuffle;
         speed: number;
         status: PlayerStatus;
+        stepBackward: number;
+        stepForward: number;
         timestamp: number;
         transitionType: PlayerTransition;
         volume: number;
@@ -548,17 +550,36 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 },
                 mediaSeekToTimestamp: (timestamp: number) => {
                     set((state) => {
-                        state.player.seekToTimestamp = timestamp;
+                        state.player.seekToTimestamp = uniqueSeekToTimestamp(timestamp);
                     });
                 },
                 mediaStepBackward: () => {
                     set((state) => {
-                        state.mediaPrevious();
+                        const newTimestamp = Math.max(
+                            0,
+                            state.player.timestamp - state.player.stepBackward,
+                        );
+
+                        state.player.seekToTimestamp = uniqueSeekToTimestamp(newTimestamp);
                     });
                 },
                 mediaStepForward: () => {
                     set((state) => {
-                        state.mediaNext();
+                        const queue = state.getQueue();
+                        const index = state.player.index;
+                        const currentTrack = queue.items[index];
+                        const duration = currentTrack?.duration;
+
+                        if (!duration) {
+                            return;
+                        }
+
+                        const newTimestamp = Math.min(
+                            duration - 1,
+                            state.player.timestamp + state.player.stepForward,
+                        );
+
+                        state.player.seekToTimestamp = uniqueSeekToTimestamp(newTimestamp);
                     });
                 },
                 mediaToggleMute: () => {
@@ -729,10 +750,12 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     muted: false,
                     playerNum: 1,
                     repeat: PlayerRepeat.OFF,
-                    seekToTimestamp: 0,
+                    seekToTimestamp: uniqueSeekToTimestamp(0),
                     shuffle: PlayerShuffle.OFF,
                     speed: 1,
                     status: PlayerStatus.PAUSED,
+                    stepBackward: 10,
+                    stepForward: 10,
                     timestamp: 0,
                     transitionType: PlayerTransition.GAPLESS,
                     volume: 30,
@@ -981,7 +1004,10 @@ export const subscribePlayerSeekToTimestamp = (
     return usePlayerStoreBase.subscribe(
         (state) => state.player.seekToTimestamp,
         (timestamp, prevTimestamp) => {
-            onChange(timestamp, prevTimestamp);
+            onChange(
+                parseUniqueSeekToTimestamp(timestamp),
+                parseUniqueSeekToTimestamp(prevTimestamp),
+            );
         },
     );
 };
@@ -1086,4 +1112,13 @@ function recalculatePlayerIndex(state: any, queue: PlayQueueItem[]) {
 
     const index = queue.findIndex((item) => item._uniqueId === currentTrack._uniqueId);
     state.player.index = Math.max(0, index);
+}
+
+// We need to use a unique id so that the equalityFn can work if attempting to set the same timestamp
+function uniqueSeekToTimestamp(timestamp: number) {
+    return `${timestamp}-${nanoid()}`;
+}
+
+function parseUniqueSeekToTimestamp(timestamp: string) {
+    return Number(timestamp.split('-')[0]);
 }
