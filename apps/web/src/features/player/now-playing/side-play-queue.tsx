@@ -166,6 +166,17 @@ export function SidePlayQueue() {
                         },
                     });
                     break;
+                case DragTarget.GENRE:
+                    PlayerController.call({
+                        cmd: {
+                            addToQueueByFetch: {
+                                id: data.id,
+                                itemType: LibraryItemType.GENRE,
+                                type: { edge, uniqueId },
+                            },
+                        },
+                    });
+                    break;
             }
         }
     };

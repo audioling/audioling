@@ -201,6 +201,7 @@ export function TableRow<
                             DragTarget.ARTIST,
                             DragTarget.PLAYLIST,
                             DragTarget.TRACK,
+                            DragTarget.GENRE,
                         ]);
 
                         return isTarget;

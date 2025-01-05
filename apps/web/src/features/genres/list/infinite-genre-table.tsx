@@ -132,7 +132,7 @@ export function InfiniteGenreTable({
 
             return PrefetchController.call({
                 cmd: {
-                    tracksByAlbumId: {
+                    tracksByGenreId: {
                         id: selectedRowIds,
                     },
                 },
@@ -141,7 +141,7 @@ export function InfiniteGenreTable({
 
         return PrefetchController.call({
             cmd: {
-                tracksByAlbumId: {
+                tracksByGenreId: {
                     id: [row.original.id],
                 },
             },

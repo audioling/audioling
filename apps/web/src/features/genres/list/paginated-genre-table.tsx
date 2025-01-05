@@ -121,7 +121,7 @@ function PaginatedGenreTableContent(props: PaginatedGenreTableProps) {
 
             return PrefetchController.call({
                 cmd: {
-                    tracksByAlbumId: {
+                    tracksByGenreId: {
                         id: selectedRowIds,
                     },
                 },
@@ -130,7 +130,7 @@ function PaginatedGenreTableContent(props: PaginatedGenreTableProps) {
 
         return PrefetchController.call({
             cmd: {
-                tracksByAlbumId: {
+                tracksByGenreId: {
                     id: [row.original.id],
                 },
             },

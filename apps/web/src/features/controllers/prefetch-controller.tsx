@@ -4,9 +4,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createCallable } from 'react-call';
 import { useParams } from 'react-router';
 import { prefetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
+import { prefetchTracksByGenreId } from '@/api/fetchers/genres.ts';
 import { prefetchTracksByPlaylistId } from '@/api/fetchers/playlists.ts';
 import type {
     GetApiLibraryIdAlbumsIdTracksParams,
+    GetApiLibraryIdGenresIdTracksParams,
     GetApiLibraryIdPlaylistsIdTracksParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 
@@ -51,6 +53,17 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
                 }
                 break;
             }
+            case 'tracksByGenreId': {
+                const command = cmd as PrefetchTracksByGenreId;
+                for (const id of command.tracksByGenreId.id) {
+                    prefetchTracksByGenreId(queryClient, libraryId, id, {
+                        sortBy: TrackListSortOptions.ID,
+                        sortOrder: ListSortOrder.ASC,
+                        ...(command.tracksByGenreId.params ?? {}),
+                    });
+                }
+                break;
+            }
         }
 
         call.end();
@@ -79,7 +92,15 @@ type PrefetchTracksByPlaylistId = {
     };
 };
 
+type PrefetchTracksByGenreId = {
+    tracksByGenreId: {
+        id: string[];
+        params?: GetApiLibraryIdGenresIdTracksParams;
+    };
+};
+
 export type PrefetchCommand =
     | PrefetchTracksByAlbumId
     | PrefetchTracksByPlaylistId
-    | PrefetchTrackById;
+    | PrefetchTrackById
+    | PrefetchTracksByGenreId;
