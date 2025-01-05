@@ -1240,7 +1240,6 @@ export const GetApiLibraryIdGenresIdTracksCountSortBy = {
 } as const;
 
 export type GetApiLibraryIdGenresIdTracksCountParams = {
-    id: string;
     sortBy: GetApiLibraryIdGenresIdTracksCountSortBy;
     sortOrder: GetApiLibraryIdGenresIdTracksCountSortOrder;
 };
@@ -1426,7 +1425,6 @@ export const GetApiLibraryIdGenresIdTracksSortBy = {
 export type GetApiLibraryIdGenresIdTracksParams = {
     limit?: string;
     offset?: string;
-    id: string;
     sortBy: GetApiLibraryIdGenresIdTracksSortBy;
     sortOrder: GetApiLibraryIdGenresIdTracksSortOrder;
 };

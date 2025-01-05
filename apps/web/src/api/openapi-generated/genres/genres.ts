@@ -395,21 +395,23 @@ export function useGetApiLibraryIdGenresCountSuspense<
  */
 export const getApiLibraryIdGenresIdTracks = (
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
     options?: SecondParameter<typeof apiInstance>,
     signal?: AbortSignal,
 ) => {
     return apiInstance<GetApiLibraryIdGenresIdTracks200>(
-        { url: `/api/${libraryId}/genres/:id/tracks`, method: 'GET', params, signal },
+        { url: `/api/${libraryId}/genres/${id}/tracks`, method: 'GET', params, signal },
         options,
     );
 };
 
 export const getGetApiLibraryIdGenresIdTracksQueryKey = (
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
 ) => {
-    return [`/api/${libraryId}/genres/:id/tracks`, ...(params ? [params] : [])] as const;
+    return [`/api/${libraryId}/genres/${id}/tracks`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions = <
@@ -422,6 +424,7 @@ export const getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions = <
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
     options?: {
         query?: Partial<
@@ -437,11 +440,11 @@ export const getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions = <
     const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey =
-        queryOptions?.queryKey ?? getGetApiLibraryIdGenresIdTracksQueryKey(libraryId, params);
+        queryOptions?.queryKey ?? getGetApiLibraryIdGenresIdTracksQueryKey(libraryId, id, params);
 
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>> = ({
         signal,
-    }) => getApiLibraryIdGenresIdTracks(libraryId, params, requestOptions, signal);
+    }) => getApiLibraryIdGenresIdTracks(libraryId, id, params, requestOptions, signal);
 
     return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
@@ -470,6 +473,7 @@ export function useGetApiLibraryIdGenresIdTracksSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
     options: {
         query: Partial<
@@ -492,6 +496,7 @@ export function useGetApiLibraryIdGenresIdTracksSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
     options?: {
         query?: Partial<
@@ -514,6 +519,7 @@ export function useGetApiLibraryIdGenresIdTracksSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
     options?: {
         query?: Partial<
@@ -540,6 +546,7 @@ export function useGetApiLibraryIdGenresIdTracksSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
     options?: {
         query?: Partial<
@@ -554,6 +561,7 @@ export function useGetApiLibraryIdGenresIdTracksSuspense<
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
     const queryOptions = getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions(
         libraryId,
+        id,
         params,
         options,
     );
@@ -572,21 +580,23 @@ export function useGetApiLibraryIdGenresIdTracksSuspense<
  */
 export const getApiLibraryIdGenresIdTracksCount = (
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
     options?: SecondParameter<typeof apiInstance>,
     signal?: AbortSignal,
 ) => {
     return apiInstance<number>(
-        { url: `/api/${libraryId}/genres/:id/tracks/count`, method: 'GET', params, signal },
+        { url: `/api/${libraryId}/genres/${id}/tracks/count`, method: 'GET', params, signal },
         options,
     );
 };
 
 export const getGetApiLibraryIdGenresIdTracksCountQueryKey = (
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
 ) => {
-    return [`/api/${libraryId}/genres/:id/tracks/count`, ...(params ? [params] : [])] as const;
+    return [`/api/${libraryId}/genres/${id}/tracks/count`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions = <
@@ -599,6 +609,7 @@ export const getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions = <
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
     options?: {
         query?: Partial<
@@ -614,12 +625,13 @@ export const getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions = <
     const { query: queryOptions, request: requestOptions } = options ?? {};
 
     const queryKey =
-        queryOptions?.queryKey ?? getGetApiLibraryIdGenresIdTracksCountQueryKey(libraryId, params);
+        queryOptions?.queryKey ??
+        getGetApiLibraryIdGenresIdTracksCountQueryKey(libraryId, id, params);
 
     const queryFn: QueryFunction<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>
     > = ({ signal }) =>
-        getApiLibraryIdGenresIdTracksCount(libraryId, params, requestOptions, signal);
+        getApiLibraryIdGenresIdTracksCount(libraryId, id, params, requestOptions, signal);
 
     return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
@@ -648,6 +660,7 @@ export function useGetApiLibraryIdGenresIdTracksCountSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
     options: {
         query: Partial<
@@ -670,6 +683,7 @@ export function useGetApiLibraryIdGenresIdTracksCountSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
     options?: {
         query?: Partial<
@@ -692,6 +706,7 @@ export function useGetApiLibraryIdGenresIdTracksCountSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
     options?: {
         query?: Partial<
@@ -718,6 +733,7 @@ export function useGetApiLibraryIdGenresIdTracksCountSuspense<
     >,
 >(
     libraryId: string,
+    id: string,
     params: GetApiLibraryIdGenresIdTracksCountParams,
     options?: {
         query?: Partial<
@@ -732,6 +748,7 @@ export function useGetApiLibraryIdGenresIdTracksCountSuspense<
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
     const queryOptions = getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions(
         libraryId,
+        id,
         params,
         options,
     );

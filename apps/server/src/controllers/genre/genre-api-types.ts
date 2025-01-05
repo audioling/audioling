@@ -45,7 +45,6 @@ export type GenreListResponse = z.infer<typeof genreListResponseSchema>;
 
 export const genreTrackListRequestSchema = z.object({
     ...paginationQuery,
-    id: z.string(),
     sortBy: z.nativeEnum(TrackListSortOptions),
     sortOrder: z.nativeEnum(ListSortOrder),
 });

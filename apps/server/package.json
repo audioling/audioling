@@ -15,7 +15,7 @@
         "lint": "eslint . --ext .js,.ts --fix"
     },
     "dependencies": {
-        "@audioling/open-subsonic-api-client": "4.0.1",
+        "@audioling/open-subsonic-api-client": "4.0.2",
         "@hono/zod-openapi": "^0.18.3",
         "@paralleldrive/cuid2": "^2.2.2",
         "@repo/logger": "workspace:*",

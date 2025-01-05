@@ -95,10 +95,10 @@ export const initGenreController = (modules: { service: AppService }) => {
     controller.openapi(
         createRoute({
             method: 'get',
-            path: '/:id/tracks',
+            path: '/{id}/tracks',
             summary: 'Get genre tracks',
             tags: [...defaultOpenapiTags],
-            ...apiSchema.genre['/:id/tracks'].get,
+            ...apiSchema.genre['/{id}/tracks'].get,
         }),
         async (c) => {
             const { adapter, authToken } = c.var;
@@ -136,10 +136,10 @@ export const initGenreController = (modules: { service: AppService }) => {
     controller.openapi(
         createRoute({
             method: 'get',
-            path: '/:id/tracks/count',
+            path: '/{id}/tracks/count',
             summary: 'Get genre tracks count',
             tags: [...defaultOpenapiTags],
-            ...apiSchema.genre['/:id/tracks/count'].get,
+            ...apiSchema.genre['/{id}/tracks/count'].get,
         }),
         async (c) => {
             const { adapter } = c.var;

@@ -21,7 +21,20 @@ export const genreApiSchema = {
             security: [{ Bearer: [] }],
         },
     },
-    '/:id/tracks': {
+    '/count': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: genreListRequestSchema.omit({ limit: true, offset: true }),
+            },
+            responses: schemaResponse(
+                { description: 'Get genres count', schema: CountResponseSchema, status: 200 },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/{id}/tracks': {
         get: {
             request: {
                 params: z.object({ id: z.string(), libraryId: z.string() }),
@@ -38,7 +51,7 @@ export const genreApiSchema = {
             security: [{ Bearer: [] }],
         },
     },
-    '/:id/tracks/count': {
+    '/{id}/tracks/count': {
         get: {
             request: {
                 params: z.object({ id: z.string(), libraryId: z.string() }),
@@ -46,19 +59,6 @@ export const genreApiSchema = {
             },
             responses: schemaResponse(
                 { description: 'Get genre tracks count', schema: CountResponseSchema, status: 200 },
-                [401, 403, 422, 500],
-            ),
-            security: [{ Bearer: [] }],
-        },
-    },
-    '/count': {
-        get: {
-            request: {
-                params: z.object({ libraryId: z.string() }),
-                query: genreListRequestSchema.omit({ limit: true, offset: true }),
-            },
-            responses: schemaResponse(
-                { description: 'Get genres count', schema: CountResponseSchema, status: 200 },
                 [401, 403, 422, 500],
             ),
             security: [{ Bearer: [] }],

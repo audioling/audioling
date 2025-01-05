@@ -1043,7 +1043,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     return [{ code: result.status, message: result.body as string }, null];
                 }
 
-                tracks.push(...(result.body['subsonic-response'].songs.songsByGenre || []));
+                tracks.push(...(result.body['subsonic-response'].songsByGenre.song || []));
             }
 
             const items = tracks.map(subsonicHelpers.converter.trackToAdapter);
@@ -1088,7 +1088,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return (result.body['subsonic-response'].songs.songsByGenre || []).length;
+                return (result.body['subsonic-response'].songsByGenre.song || []).length;
             };
 
             try {
@@ -1414,7 +1414,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                     throw new Error(JSON.stringify(result.body));
                 }
 
-                return (result.body['subsonic-response'].songs.songsByGenre || []).length;
+                return (result.body['subsonic-response'].songsByGenre.song || []).length;
             };
 
             try {
