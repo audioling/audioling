@@ -2,6 +2,7 @@ import path from 'path';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
 import { HTTPException } from 'hono/http-exception';
+import { timeout } from 'hono/timeout';
 import { CONSTANTS } from '@/constants.js';
 import { initAlbumController } from '@/controllers/album/album-controller.js';
 import { initAlbumArtistController } from '@/controllers/album-artist/album-artist-controller.js';
@@ -65,6 +66,7 @@ export const initApplication = async (options: ApplicationOptions) => {
 
     const server = Bun.serve({
         fetch: app.fetch,
+        idleTimeout: 60,
         port: config.get('port') || 4544,
     });
 
@@ -85,7 +87,7 @@ export const initApplication = async (options: ApplicationOptions) => {
     app.route('/auth', authController);
     app.route('/api/users', userController);
     app.route('/api/libraries', libraryController);
-    app.use('/api/:libraryId/*', adapterMiddleware(db, service.library));
+    app.use('/api/:libraryId/*', adapterMiddleware(db, service.library), timeout(60000));
     app.route('/api/:libraryId/albums', albumController);
     app.route('/api/:libraryId/tracks', trackController);
     app.route('/api/:libraryId/album-artists', albumArtistController);
