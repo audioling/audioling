@@ -820,6 +820,12 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 return deepMerge(currentState, persistedState);
             },
             name: 'player-store',
+            // TODO: We need to use an alternative persistence method for the queue since it may not fit localStorage
+            partialize: (state) => {
+                return Object.fromEntries(
+                    Object.entries(state).filter(([key]) => !['queue'].includes(key)),
+                );
+            },
             version: 1,
         },
     ),
@@ -896,6 +902,8 @@ export async function addToQueueByFetch(
     if (args.itemType === LibraryItemType.ALBUM) {
         for (const id of args.id) {
             const result = await fetchTracksByAlbumId(queryClient, libraryId, id, {
+                limit: '-1',
+                offset: '0',
                 sortBy: TrackListSortOptions.ID,
                 sortOrder: ListSortOrder.ASC,
                 ...args.params,
@@ -906,6 +914,8 @@ export async function addToQueueByFetch(
     } else if (args.itemType === LibraryItemType.PLAYLIST) {
         for (const id of args.id) {
             const result = await fetchTracksByPlaylistId(queryClient, libraryId, id, {
+                limit: '-1',
+                offset: '0',
                 sortBy: TrackListSortOptions.ID,
                 sortOrder: ListSortOrder.ASC,
                 ...args.params,
@@ -916,6 +926,8 @@ export async function addToQueueByFetch(
     } else if (args.itemType === LibraryItemType.GENRE) {
         for (const id of args.id) {
             const result = await fetchTracksByGenreId(queryClient, libraryId, id, {
+                limit: '-1',
+                offset: '0',
                 sortBy: TrackListSortOptions.ID,
                 sortOrder: ListSortOrder.ASC,
                 ...args.params,
