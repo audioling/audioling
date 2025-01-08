@@ -3,7 +3,6 @@ import { initOpenSubsonicApiClient } from '@audioling/open-subsonic-api-client';
 import { AlbumListSortOptions, LibraryType } from '@repo/shared-types';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import sortBy from 'lodash/sortBy.js';
 import md5 from 'md5';
 import { adapterHelpers } from '@/adapters/adapter-helpers.js';
 import type { SubsonicAlbum } from '@/adapters/subsonic/subsonic-adapter-helpers.js';
@@ -334,13 +333,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const artists = flattenedArtists.slice(query.offset, query.offset + query.limit);
 
             const items = artists.map(subsonicHelpers.converter.artistToAdapter);
+            const sorted = adapterHelpers.sortBy.artist(items, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
 
             return [
                 null,
                 {
-                    items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: flattenedArtists.length,
                 },
             ];
@@ -388,13 +389,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 writeLog.error(
                     adapterHelpers.adapterErrorMessage(library, 'getAlbumArtistTrackList'),
                 );
-                return [
-                    {
-                        code: result.status,
-                        message: result.body as string,
-                    },
-                    null,
-                ];
+                return [{ code: result.status, message: result.body as string }, null];
             }
 
             const albumIds = (result.body['subsonic-response'].artist.album || []).map(
@@ -459,6 +454,7 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             const album = subsonicHelpers.converter.albumToAdapter(
                 result.body['subsonic-response'].album,
             );
+
             return [null, album];
         },
         getAlbumList: async (request, fetchOptions) => {
@@ -476,6 +472,48 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             if (query.searchTerm) {
+                if (query.limit === -1) {
+                    const fetcher = async (page: number, limit: number) => {
+                        const result = await apiClient.search3.os['1'].get({
+                            fetchOptions,
+                            query: {
+                                albumCount: limit,
+                                albumOffset: page * limit,
+                                artistCount: 0,
+                                artistOffset: 0,
+                                query: query.searchTerm,
+                                songCount: 0,
+                                songOffset: 0,
+                            },
+                        });
+
+                        if (result.status !== 200) {
+                            throw new Error(JSON.stringify(result.body));
+                        }
+
+                        return result.body['subsonic-response'].searchResult3.album || [];
+                    };
+
+                    const results = await adapterHelpers.fetchAllRecords(fetcher, query.limit);
+                    const items = results.map(subsonicHelpers.converter.albumToAdapter);
+                    const sorted = adapterHelpers.sortBy.album(
+                        items,
+                        query.sortBy,
+                        query.sortOrder,
+                    );
+                    const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+                    return [
+                        null,
+                        {
+                            items: paginated.items,
+                            limit: paginated.limit,
+                            offset: paginated.offset,
+                            totalRecordCount: results.length,
+                        },
+                    ];
+                }
+
                 const result = await apiClient.search3.os['1'].get({
                     fetchOptions,
                     query: {
@@ -609,6 +647,43 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 }
             }
 
+            if (query.limit === -1) {
+                const fetcher = async (page: number, limit: number) => {
+                    const result = await apiClient.getAlbumList2.os['1'].get({
+                        fetchOptions,
+                        query: {
+                            fromYear,
+                            musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
+                            offset: page * limit,
+                            size: limit,
+                            toYear,
+                            type: sortType,
+                        },
+                    });
+
+                    if (result.status !== 200) {
+                        throw new Error(JSON.stringify(result.body));
+                    }
+
+                    return result.body['subsonic-response'].albumList2.album || [];
+                };
+
+                const results = await adapterHelpers.fetchAllRecords(fetcher, query.limit);
+                const items = results.map(subsonicHelpers.converter.albumToAdapter);
+                const sorted = adapterHelpers.sortBy.album(items, query.sortBy, query.sortOrder);
+                const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+                return [
+                    null,
+                    {
+                        items: paginated.items,
+                        limit: paginated.limit,
+                        offset: paginated.offset,
+                        totalRecordCount: results.length,
+                    },
+                ];
+            }
+
             const result = await apiClient.getAlbumList2.os['1'].get({
                 fetchOptions,
                 query: {
@@ -726,31 +801,20 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            if (result.body['subsonic-response'].album.song) {
-                const tracks = result.body['subsonic-response'].album.song.map(
-                    subsonicHelpers.converter.trackToAdapter,
-                );
+            const results = (result.body['subsonic-response'].album.song || []).map(
+                subsonicHelpers.converter.trackToAdapter,
+            );
 
-                const paginated = adapterHelpers.paginate(tracks, query.offset, query.limit);
-
-                return [
-                    null,
-                    {
-                        items: paginated.items,
-                        limit: paginated.limit,
-                        offset: paginated.offset,
-                        totalRecordCount: tracks.length,
-                    },
-                ];
-            }
+            const sorted = adapterHelpers.sortBy.track(results, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
 
             return [
                 null,
                 {
-                    items: [],
-                    limit: query.limit,
-                    offset: query.offset,
-                    totalRecordCount: 0,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
+                    totalRecordCount: results.length,
                 },
             ];
         },
@@ -788,12 +852,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 }),
             );
 
+            const sorted = adapterHelpers.sortBy.artist(items, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
             return [
                 null,
                 {
-                    items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: flattenedArtists.length,
                 },
             ];
@@ -863,12 +930,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 subsonicHelpers.converter.albumToAdapter,
             );
 
+            const sorted = adapterHelpers.sortBy.album(items, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
             return [
                 null,
                 {
-                    items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: (result.body['subsonic-response'].starred2?.album || [])
                         .length,
                 },
@@ -895,12 +965,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 result.body['subsonic-response'].starred2?.artist || []
             ).map(subsonicHelpers.converter.artistToAdapter);
 
+            const sorted = adapterHelpers.sortBy.artist(items, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
             return [
                 null,
                 {
-                    items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: (result.body['subsonic-response'].starred2?.artist || [])
                         .length,
                 },
@@ -925,12 +998,15 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 result.body['subsonic-response'].starred2?.song || []
             ).map(subsonicHelpers.converter.trackToAdapter);
 
+            const sorted = adapterHelpers.sortBy.track(items, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
             return [
                 null,
                 {
-                    items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount: (result.body['subsonic-response'].starred2.song || []).length,
                 },
             ];
@@ -1011,28 +1087,37 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         getGenreTrackList: async (request, fetchOptions) => {
             const { query } = request;
 
-            const [err, totalRecordCount] = await initSubsonicAdapter(
-                library,
-                db,
-            ).getGenreTrackListCount({
-                query,
-            });
-
-            if (err) {
-                return [err, null];
-            }
-
             const tracks = [];
-            const pageSize = 500;
 
-            for (let i = 0; i < totalRecordCount; i += pageSize) {
+            if (query.limit === -1) {
+                const fetcher = async (page: number, limit: number) => {
+                    const result = await apiClient.getSongsByGenre.os['1'].get({
+                        fetchOptions,
+                        query: {
+                            count: limit,
+                            genre: query.id,
+                            musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
+                            offset: page * limit,
+                        },
+                    });
+
+                    if (result.status !== 200) {
+                        throw new Error(JSON.stringify(result.body));
+                    }
+
+                    return result.body['subsonic-response'].songsByGenre.song || [];
+                };
+
+                const results = await adapterHelpers.fetchAllRecords(fetcher);
+                tracks.push(...results);
+            } else {
                 const result = await apiClient.getSongsByGenre.os['1'].get({
                     fetchOptions,
                     query: {
-                        count: pageSize,
+                        count: query.limit,
                         genre: query.id,
                         musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
-                        offset: i,
+                        offset: query.offset,
                     },
                 });
 
@@ -1047,17 +1132,26 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             const items = tracks.map(subsonicHelpers.converter.trackToAdapter);
-
             const sorted = adapterHelpers.sortBy.track(items, query.sortBy, query.sortOrder);
-
             const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+            const [err, totalRecordCount] = await initSubsonicAdapter(
+                library,
+                db,
+            ).getGenreTrackListCount({
+                query,
+            });
+
+            if (err) {
+                return [err, null];
+            }
 
             return [
                 null,
                 {
                     items: paginated.items,
-                    limit: query.limit,
-                    offset: query.offset,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
                     totalRecordCount,
                 },
             ];
@@ -1172,11 +1266,9 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 return [{ code: result.status, message: result.body as string }, null];
             }
 
-            const playlistResult = result.body['subsonic-response'].playlists.playlist || [];
-
-            let playlists: AdapterPlaylist[] = playlistResult
-                .slice(query.offset, query.limit)
-                .map(subsonicHelpers.converter.playlistToAdapter);
+            let playlists: AdapterPlaylist[] = (
+                result.body['subsonic-response'].playlists.playlist || []
+            ).map(subsonicHelpers.converter.playlistToAdapter);
 
             if (query.searchTerm) {
                 playlists = playlists.filter((playlist) => {
@@ -1184,17 +1276,27 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
                 });
             }
 
-            if (query.sortBy) {
-                playlists = sortBy(playlists, [query.sortBy], [query.sortOrder || 'asc']);
+            const sorted = adapterHelpers.sortBy.playlist(playlists, query.sortBy, query.sortOrder);
+            const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+            const [err, totalRecordCount] = await initSubsonicAdapter(
+                library,
+                db,
+            ).getPlaylistListCount({
+                query,
+            });
+
+            if (err) {
+                return [err, null];
             }
 
             return [
                 null,
                 {
-                    items: playlists,
-                    limit: query.limit,
-                    offset: query.offset,
-                    totalRecordCount: playlistResult.length,
+                    items: paginated.items,
+                    limit: paginated.limit,
+                    offset: paginated.offset,
+                    totalRecordCount,
                 },
             ];
         },
@@ -1262,14 +1364,24 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
 
             const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
 
+            const [err, totalRecordCount] = await initSubsonicAdapter(
+                library,
+                db,
+            ).getPlaylistTrackListCount({
+                query,
+            });
+
+            if (err) {
+                return [err, null];
+            }
+
             return [
                 null,
                 {
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: (result.body['subsonic-response'].playlist.entry || [])
-                        .length,
+                    totalRecordCount,
                 },
             ];
         },
@@ -1325,6 +1437,41 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
         },
         getTrackList: async (request, fetchOptions) => {
             const { query } = request;
+
+            if (query.limit === -1) {
+                const fetcher = async (page: number, limit: number) => {
+                    const result = await apiClient.search3.os['1'].get({
+                        fetchOptions,
+                        query: {
+                            musicFolderId: query.folderId ? Number(query.folderId[0]) : undefined,
+                            query: query.searchTerm || '',
+                            songCount: limit,
+                            songOffset: page * limit,
+                        },
+                    });
+
+                    if (result.status !== 200) {
+                        throw new Error(JSON.stringify(result.body));
+                    }
+
+                    return result.body['subsonic-response'].searchResult3.song || [];
+                };
+
+                const results = await adapterHelpers.fetchAllRecords(fetcher, query.limit);
+                const items = results.map(subsonicHelpers.converter.trackToAdapter);
+                const sorted = adapterHelpers.sortBy.track(items, query.sortBy, query.sortOrder);
+                const paginated = adapterHelpers.paginate(sorted, query.offset, query.limit);
+
+                return [
+                    null,
+                    {
+                        items: paginated.items,
+                        limit: paginated.limit,
+                        offset: paginated.offset,
+                        totalRecordCount: results.length,
+                    },
+                ];
+            }
 
             const result = await apiClient.search3.os['1'].get({
                 fetchOptions,

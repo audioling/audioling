@@ -1,6 +1,8 @@
 import {
     AlbumListSortOptions,
+    ArtistListSortOptions,
     GenreListSortOptions,
+    PlaylistListSortOptions,
     TrackListSortOptions,
 } from '@repo/shared-types';
 import dayjs from 'dayjs';
@@ -9,8 +11,12 @@ import shuffle from 'lodash/shuffle.js';
 import md5 from 'md5';
 import stringify from 'safe-stable-stringify';
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
+import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterGenre } from '@/adapters/types/adapter-genre-types.js';
-import type { AdapterPlaylistTrack } from '@/adapters/types/adapter-playlist-types.js';
+import type {
+    AdapterPlaylist,
+    AdapterPlaylistTrack,
+} from '@/adapters/types/adapter-playlist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import { CONSTANTS } from '@/constants.js';
 import type { AppDatabase } from '@/database/init-database.js';
@@ -35,6 +41,29 @@ const fetchTotalRecordCount = async (
     const estimatedPages = Math.ceil(estimatedCount / limit);
     const totalRecordCount = await utils.exactTotalRecordCount(fetcher, estimatedPages, limit);
     return totalRecordCount;
+};
+
+const fetchAllRecords = async <T>(
+    fetcher: (page: number, limit: number) => Promise<T[]>,
+    fetchLimit?: number,
+    page: number = 0,
+    items: T[] = [],
+) => {
+    const limit = fetchLimit || 500;
+
+    const result = await fetcher(page, limit);
+
+    // If we get an empty array, we've reached the end
+    if (result.length === 0) {
+        return items;
+    }
+
+    // If we get less than the limit, we've reached the end
+    if (result.length < limit) {
+        return [...result, ...items];
+    }
+
+    return fetchAllRecords(fetcher, fetchLimit, page + 1, [...items, ...result]);
 };
 
 const db = {
@@ -209,6 +238,26 @@ const sortBy = {
 
         return value;
     },
+    artist: (array: AdapterArtist[], key: ArtistListSortOptions, order: 'asc' | 'desc') => {
+        let value = array;
+
+        switch (key) {
+            case ArtistListSortOptions.NAME: {
+                value = orderBy(value, ['name'], [order]);
+                break;
+            }
+            case ArtistListSortOptions.TRACK_COUNT: {
+                value = orderBy(value, ['trackCount'], [order]);
+                break;
+            }
+            case ArtistListSortOptions.ALBUM_COUNT: {
+                value = orderBy(value, ['albumCount'], [order]);
+                break;
+            }
+        }
+
+        return value;
+    },
     genre: (array: AdapterGenre[], key: GenreListSortOptions, order: 'asc' | 'desc') => {
         let value = array;
 
@@ -223,6 +272,34 @@ const sortBy = {
             }
             case GenreListSortOptions.ALBUM_COUNT: {
                 value = orderBy(value, ['albumCount'], [order]);
+                break;
+            }
+        }
+
+        return value;
+    },
+    playlist: (array: AdapterPlaylist[], key: PlaylistListSortOptions, order: 'asc' | 'desc') => {
+        let value = array;
+
+        switch (key) {
+            case PlaylistListSortOptions.NAME: {
+                value = orderBy(value, ['name'], [order]);
+                break;
+            }
+            case PlaylistListSortOptions.TRACK_COUNT: {
+                value = orderBy(value, ['trackCount'], [order]);
+                break;
+            }
+            case PlaylistListSortOptions.DURATION: {
+                value = orderBy(value, ['duration'], [order]);
+                break;
+            }
+            case PlaylistListSortOptions.OWNER: {
+                value = orderBy(value, ['owner'], [order]);
+                break;
+            }
+            case PlaylistListSortOptions.PUBLIC: {
+                value = orderBy(value, ['isPublic'], [order]);
                 break;
             }
         }
@@ -337,6 +414,7 @@ const getAppId = (library: DbLibrary) => {
 export const adapterHelpers = {
     adapterErrorMessage,
     db,
+    fetchAllRecords,
     getAppId,
     paginate,
     sortBy,
