@@ -33,6 +33,7 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                     DragTarget.ARTIST,
                     DragTarget.PLAYLIST,
                     DragTarget.TRACK,
+                    DragTarget.GENRE,
                 ]);
             },
             element: ref.current,
@@ -77,6 +78,13 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                     case DragTarget.ARTIST:
                         AddToPlaylistModal.call({
                             artists: dragData.id,
+                            libraryId,
+                            playlistId,
+                        });
+                        break;
+                    case DragTarget.GENRE:
+                        AddToPlaylistModal.call({
+                            genres: dragData.id,
                             libraryId,
                             playlistId,
                         });

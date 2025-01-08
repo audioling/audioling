@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import type { TrackItem } from '@/api/api-types.ts';
 import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
 import { fetchTracksByAlbumArtistId } from '@/api/fetchers/artists.ts';
+import { fetchTracksByGenreId } from '@/api/fetchers/genres.ts';
 import { fetchTracksByPlaylistId } from '@/api/fetchers/playlists.ts';
 import {
     useGetApiLibraryIdPlaylistsIdTracksSuspense,
@@ -29,6 +30,7 @@ interface AddToPlaylistFormProps {
     albums?: string[];
     artists?: string[];
     formId: string;
+    genres?: string[];
     libraryId: string;
     onSuccess: () => void;
     playlistId: string;
@@ -41,6 +43,7 @@ export function AddToPlaylistForm({
     albums,
     artists,
     formId,
+    genres,
     libraryId,
     playlistId,
     onSuccess,
@@ -80,7 +83,9 @@ export function AddToPlaylistForm({
 
             for (const albumid of albums || []) {
                 const tracks = await fetchTracksByAlbumId(queryClient, libraryId, albumid, {
-                    sortBy: TrackListSortOptions.NAME,
+                    limit: '-1',
+                    offset: '0',
+                    sortBy: TrackListSortOptions.ID,
                     sortOrder: ListSortOrder.ASC,
                 });
 
@@ -89,7 +94,9 @@ export function AddToPlaylistForm({
 
             for (const artistId of artists || []) {
                 const tracks = await fetchTracksByAlbumArtistId(queryClient, libraryId, artistId, {
-                    sortBy: TrackListSortOptions.NAME,
+                    limit: '-1',
+                    offset: '0',
+                    sortBy: TrackListSortOptions.ID,
                     sortOrder: ListSortOrder.ASC,
                 });
 
@@ -98,7 +105,20 @@ export function AddToPlaylistForm({
 
             for (const playlistId of playlists || []) {
                 const tracks = await fetchTracksByPlaylistId(queryClient, libraryId, playlistId, {
-                    sortBy: TrackListSortOptions.NAME,
+                    limit: '-1',
+                    offset: '0',
+                    sortBy: TrackListSortOptions.ID,
+                    sortOrder: ListSortOrder.ASC,
+                });
+
+                newTracks.push(...tracks.data);
+            }
+
+            for (const genreId of genres || []) {
+                const tracks = await fetchTracksByGenreId(queryClient, libraryId, genreId, {
+                    limit: '-1',
+                    offset: '0',
+                    sortBy: TrackListSortOptions.ID,
                     sortOrder: ListSortOrder.ASC,
                 });
 
@@ -109,7 +129,7 @@ export function AddToPlaylistForm({
         };
 
         fetchTracks();
-    }, [albums, tracks, artists, libraryId, queryClient, playlists]);
+    }, [albums, tracks, artists, libraryId, queryClient, playlists, genres]);
 
     const skipDuplicates = form.watch('skipDuplicates');
 

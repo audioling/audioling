@@ -10,6 +10,7 @@ import { Stack } from '@/features/ui/stack/stack.tsx';
 interface AddToPlaylistModalProps {
     albums?: string[];
     artists?: string[];
+    genres?: string[];
     libraryId: string;
     playlistId: string;
     playlists?: string[];
@@ -17,7 +18,7 @@ interface AddToPlaylistModalProps {
 }
 
 export const AddToPlaylistModal = createCallable<AddToPlaylistModalProps, boolean>(
-    ({ call, libraryId, playlistId, albums, artists, playlists, tracks }) => {
+    ({ call, libraryId, playlistId, albums, artists, genres, playlists, tracks }) => {
         const formId = useId();
         const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +30,7 @@ export const AddToPlaylistModal = createCallable<AddToPlaylistModalProps, boolea
                             albums={albums}
                             artists={artists}
                             formId={formId}
+                            genres={genres}
                             libraryId={libraryId}
                             playlistId={playlistId}
                             playlists={playlists}

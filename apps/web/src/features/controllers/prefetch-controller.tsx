@@ -35,6 +35,8 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
                 const command = cmd as PrefetchTracksByAlbumId;
                 for (const id of command.tracksByAlbumId.id) {
                     prefetchTracksByAlbumId(queryClient, libraryId, id, {
+                        limit: '-1',
+                        offset: '0',
                         sortBy: TrackListSortOptions.ID,
                         sortOrder: ListSortOrder.ASC,
                         ...(command.tracksByAlbumId.params ?? {}),
@@ -46,6 +48,8 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
                 const command = cmd as PrefetchTracksByPlaylistId;
                 for (const id of command.tracksByPlaylistId.id) {
                     prefetchTracksByPlaylistId(queryClient, libraryId, id, {
+                        limit: '-1',
+                        offset: '0',
                         sortBy: TrackListSortOptions.ID,
                         sortOrder: ListSortOrder.ASC,
                         ...(command.tracksByPlaylistId.params ?? {}),
@@ -57,6 +61,8 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
                 const command = cmd as PrefetchTracksByGenreId;
                 for (const id of command.tracksByGenreId.id) {
                     prefetchTracksByGenreId(queryClient, libraryId, id, {
+                        limit: '-1',
+                        offset: '0',
                         sortBy: TrackListSortOptions.ID,
                         sortOrder: ListSortOrder.ASC,
                         ...(command.tracksByGenreId.params ?? {}),
