@@ -1,0 +1,8 @@
+.empty-queue {
+}
+
+.empty-queue.is-dragged-over {
+    background-color: var(--global-primary-color);
+    opacity: 0.2;
+    transition: background-color 0.2s ease-in-out;
+}
