@@ -18,7 +18,9 @@
     align-items: center;
     aspect-ratio: 1/1;
     overflow: hidden;
-    border-radius: base.$border-radius-md;
+
+    // border-radius: base.$border-radius-md;
+    border-radius: 50%;
 }
 
 .image-container {
@@ -54,6 +56,10 @@
     &:hover .card-controls {
         opacity: 1;
     }
+}
+
+.circle {
+    border-radius: 50%;
 }
 
 .image {

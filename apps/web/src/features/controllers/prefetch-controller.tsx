@@ -4,9 +4,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createCallable } from 'react-call';
 import { useParams } from 'react-router';
 import { prefetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
+import { prefetchTracksByAlbumArtistId } from '@/api/fetchers/artists.ts';
 import { prefetchTracksByGenreId } from '@/api/fetchers/genres.ts';
 import { prefetchTracksByPlaylistId } from '@/api/fetchers/playlists.ts';
 import type {
+    GetApiLibraryIdAlbumArtistsIdTracksParams,
     GetApiLibraryIdAlbumsIdTracksParams,
     GetApiLibraryIdGenresIdTracksParams,
     GetApiLibraryIdPlaylistsIdTracksParams,
@@ -40,6 +42,19 @@ export const PrefetchController = createCallable<PrefetchControllerProps, void>(
                         sortBy: TrackListSortOptions.ID,
                         sortOrder: ListSortOrder.ASC,
                         ...(command.tracksByAlbumId.params ?? {}),
+                    });
+                }
+                break;
+            }
+            case 'tracksByAlbumArtistId': {
+                const command = cmd as PrefetchTracksByAlbumArtistId;
+                for (const id of command.tracksByAlbumArtistId.id) {
+                    prefetchTracksByAlbumArtistId(queryClient, libraryId, id, {
+                        limit: '-1',
+                        offset: '0',
+                        sortBy: TrackListSortOptions.ID,
+                        sortOrder: ListSortOrder.ASC,
+                        ...(command.tracksByAlbumArtistId.params ?? {}),
                     });
                 }
                 break;
@@ -105,8 +120,16 @@ type PrefetchTracksByGenreId = {
     };
 };
 
+type PrefetchTracksByAlbumArtistId = {
+    tracksByAlbumArtistId: {
+        id: string[];
+        params?: GetApiLibraryIdAlbumArtistsIdTracksParams;
+    };
+};
+
 export type PrefetchCommand =
     | PrefetchTracksByAlbumId
+    | PrefetchTracksByAlbumArtistId
     | PrefetchTracksByPlaylistId
     | PrefetchTrackById
     | PrefetchTracksByGenreId;

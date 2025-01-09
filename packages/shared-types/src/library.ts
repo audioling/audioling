@@ -1,8 +1,6 @@
 import type { LibraryFeatures } from 'src/types.js';
 
 export const SubsonicLibraryFeatures: LibraryFeatures = {
-    'album-artist:detail': true,
-    'album-artist:list': true,
     'album:detail': true,
     'album:list': true,
     'album:list:filter:albumArtist': true,
@@ -20,6 +18,15 @@ export const SubsonicLibraryFeatures: LibraryFeatures = {
     'album:list:filter:releaseDate': false,
     'album:list:filter:trackCount': false,
     'album:list:filter:year': true,
+    'artist:detail': true,
+    'artist:list': true,
+    'artist:list:filter:albumCount': true,
+    'artist:list:filter:duration': false,
+    'artist:list:filter:isFavorite': true,
+    'artist:list:filter:name': true,
+    'artist:list:filter:random': true,
+    'artist:list:filter:rating': true,
+    'artist:list:filter:trackCount': false,
     'genre:detail': true,
     'genre:list': true,
     'genre:list:filter:albumCount': true,

@@ -157,22 +157,25 @@ const converter = {
 
         return item;
     },
-    artistToAdapter: (artist: SubsonicArtist | ArtistListEntry): AdapterArtist => {
+    artistToAdapter: (artist: ArtistListEntry): AdapterArtist => {
         const item: AdapterArtist = {
-            albumCount: null,
+            albumCount: artist.albumCount || null,
             biography: null,
             createdDate: null,
             duration: 0,
-            external: {},
+            external: {
+                musicBrainzId: artist.musicBrainzId,
+            },
             genres: [],
             id: artist.id,
+            imageUrl: artist.artistImageUrl || artist.id,
             name: artist.name,
             songCount: null,
             updatedDate: null,
             userFavorite: Boolean(artist.starred),
             userFavoriteDate: dayjs(artist.starred).toISOString() || null,
             userLastPlayedDate: null,
-            userRating: artist.userRating ?? null,
+            userRating: null,
             userRatingDate: null,
         };
 

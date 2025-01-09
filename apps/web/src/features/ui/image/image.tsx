@@ -31,7 +31,7 @@ export function Image(props: ImageProps) {
 function ImageLoader(props: { className?: string }) {
     return (
         <div className={clsx(styles.loader, props.className)}>
-            <Skeleton height="100%" width="100%" />
+            <Skeleton className={props.className} height="100%" width="100%" />
         </div>
     );
 }

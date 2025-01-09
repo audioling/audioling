@@ -407,6 +407,17 @@ const paginate = <T>(array: T[], offset: number, limit: number) => {
     };
 };
 
+const search = <T>(array: T[], searchTerm: string, keys: (keyof T)[]) => {
+    return array.filter((item) =>
+        keys.some((key) => {
+            const value = item[key];
+            return String(value ?? '')
+                .toLocaleLowerCase()
+                .includes(searchTerm.toLocaleLowerCase());
+        }),
+    );
+};
+
 const getAppId = (library: DbLibrary) => {
     return `${CONSTANTS.APP_NAME}@v${packageJson.version}—(${library.id})@${library.type}@${library.baseUrl}`;
 };
@@ -417,5 +428,6 @@ export const adapterHelpers = {
     fetchAllRecords,
     getAppId,
     paginate,
+    search,
     sortBy,
 };

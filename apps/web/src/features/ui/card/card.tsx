@@ -23,6 +23,7 @@ export type BaseCardProps = HTMLAttributes<HTMLDivElement> & {
 
 export type LoadingCardProps = BaseCardProps & {
     componentState: 'loading' | 'scrolling';
+    isCircle?: boolean;
 };
 
 export type LoadedCardProps = BaseCardProps & {
@@ -36,6 +37,7 @@ export type LoadedCardProps = BaseCardProps & {
     };
     id: string;
     image: string;
+    isCircle?: boolean;
     itemType: LibraryItemType;
     metadata: {
         path: string;
@@ -95,13 +97,16 @@ export function Card(props: CardProps) {
         default: {
             return (
                 <div ref={ref} className={clsx(styles.card, className)} {...htmlProps}>
-                    <div className={styles.baseImageContainer}>
-                        <Skeleton height="100%" width="100%" />
+                    <div className={clsx(styles.baseImageContainer)}>
+                        <Skeleton
+                            className={clsx({
+                                [styles.circle]: props.isCircle,
+                            })}
+                            height="100%"
+                            width="100%"
+                        />
                     </div>
                     <div className={styles.descriptionContainer}>
-                        <Text className={styles.description}>
-                            <Skeleton height="100%" width="100%" />
-                        </Text>
                         {Array.from({ length: metadataLines }).map((_, metadataIndex) => (
                             <Text
                                 key={`${loadedProps?.id}-metadata-${metadataIndex}`}
@@ -123,14 +128,19 @@ export function Card(props: CardProps) {
                     className={clsx(styles.card, className, {
                         [styles.dragging]: isDragging,
                     })}
-                    {...htmlProps}
                 >
                     <div
-                        className={styles.imageContainer}
+                        className={clsx(styles.imageContainer)}
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
                     >
-                        <ItemImage className={styles.image} size="card" src={[loadedProps.image]} />
+                        <ItemImage
+                            className={clsx(styles.image, {
+                                [styles.circle]: props.isCircle,
+                            })}
+                            size="card"
+                            src={[loadedProps.image]}
+                        />
                         {isHovering && (
                             <CardControls
                                 id={loadedProps.id}

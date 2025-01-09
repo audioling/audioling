@@ -8,6 +8,7 @@ import { immer } from 'zustand/middleware/immer';
 import { useShallow } from 'zustand/react/shallow';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
 import { fetchTracksByAlbumId } from '@/api/fetchers/albums.ts';
+import { fetchTracksByAlbumArtistId } from '@/api/fetchers/artists.ts';
 import { fetchTracksByGenreId } from '@/api/fetchers/genres.ts';
 import { fetchTracksByPlaylistId } from '@/api/fetchers/playlists.ts';
 import type { GetApiLibraryIdAlbumsIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
@@ -926,6 +927,21 @@ export async function addToQueueByFetch(
     } else if (args.itemType === LibraryItemType.GENRE) {
         for (const id of args.id) {
             const result = await fetchTracksByGenreId(queryClient, libraryId, id, {
+                limit: '-1',
+                offset: '0',
+                sortBy: TrackListSortOptions.ID,
+                sortOrder: ListSortOrder.ASC,
+                ...args.params,
+            });
+
+            items.push(...result.data);
+        }
+    } else if (
+        args.itemType === LibraryItemType.ALBUM_ARTIST ||
+        args.itemType === LibraryItemType.ARTIST
+    ) {
+        for (const id of args.id) {
+            const result = await fetchTracksByAlbumArtistId(queryClient, libraryId, id, {
                 limit: '-1',
                 offset: '0',
                 sortBy: TrackListSortOptions.ID,

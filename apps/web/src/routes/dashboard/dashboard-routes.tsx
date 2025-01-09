@@ -1,5 +1,6 @@
 import { type RouteObject } from 'react-router';
 import { AlbumListRoute } from '@/features/albums/list/album-list-route.tsx';
+import { ArtistListRoute } from '@/features/artists/list/artist-list-route.jsx';
 import { HomeRoute } from '@/features/dashboard/home/home-route.tsx';
 import { GenreListRoute } from '@/features/genres/list/genre-list-route.tsx';
 import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-library-edit-route.tsx';
@@ -11,6 +12,13 @@ import { PlaylistListRoute } from '@/features/playlists/list/playlist-list-route
 import { TrackListRoute } from '@/features/tracks/list/track-list-route.tsx';
 import { AuthProtectedLayout } from '@/layouts/auth-protected-layout.tsx';
 import { DashboardLayout } from '@/layouts/dashboard-layout.tsx';
+
+const artistRoutes: RouteObject[] = [
+    {
+        element: <ArtistListRoute />,
+        path: 'artists',
+    },
+];
 
 const albumRoutes: RouteObject[] = [
     {
@@ -52,6 +60,7 @@ export const dashboardRoutes: RouteObject[] = [
                     {
                         children: [
                             ...albumRoutes,
+                            ...artistRoutes,
                             ...trackRoutes,
                             ...genreRoutes,
                             ...playlistRoutes,

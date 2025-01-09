@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { useParams } from 'react-router';
 import { MostPlayedAlbumCarousel } from '@/features/dashboard/home/most-played-album-carousel.tsx';
 import { NewlyAddedAlbumCarousel } from '@/features/dashboard/home/newly-added-album-carousel.tsx';
@@ -16,10 +17,12 @@ export function HomeRoute() {
             <PageContainer id="home-route">
                 <AnimatedContainer>
                     <Stack h="100%">
-                        <ItemCountDisplay libraryId={libraryId} />
-                        <RecentlyPlayedAlbumCarousel />
-                        <NewlyAddedAlbumCarousel />
-                        <MostPlayedAlbumCarousel />
+                        <Suspense fallback={<></>}>
+                            <ItemCountDisplay libraryId={libraryId} />
+                            <RecentlyPlayedAlbumCarousel />
+                            <NewlyAddedAlbumCarousel />
+                            <MostPlayedAlbumCarousel />
+                        </Suspense>
                     </Stack>
                 </AnimatedContainer>
             </PageContainer>

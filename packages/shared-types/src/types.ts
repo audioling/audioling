@@ -16,8 +16,6 @@ export enum LibraryItemType {
 }
 
 export type LibraryFeatures = {
-    'album-artist:detail': boolean;
-    'album-artist:list': boolean;
     'album:detail': boolean;
     'album:list': boolean;
     'album:list:filter:albumArtist': boolean;
@@ -35,6 +33,15 @@ export type LibraryFeatures = {
     'album:list:filter:releaseDate': boolean;
     'album:list:filter:trackCount': boolean;
     'album:list:filter:year': boolean;
+    'artist:detail': boolean;
+    'artist:list': boolean;
+    'artist:list:filter:albumCount': boolean;
+    'artist:list:filter:duration': boolean;
+    'artist:list:filter:isFavorite': boolean;
+    'artist:list:filter:name': boolean;
+    'artist:list:filter:random': boolean;
+    'artist:list:filter:rating': boolean;
+    'artist:list:filter:trackCount': boolean;
     'genre:detail': boolean;
     'genre:list': boolean;
     'genre:list:filter:albumCount': boolean;
@@ -100,16 +107,12 @@ export enum AlbumListSortOptions {
 
 // Sync with LibraryFeatures[albumArtist][list][filter]
 export enum ArtistListSortOptions {
-    ALBUM = 'album',
     ALBUM_COUNT = 'albumCount',
-    DATE_ADDED = 'dateAdded',
     DURATION = 'duration',
     IS_FAVORITE = 'isFavorite',
     NAME = 'name',
-    PLAY_COUNT = 'playCount',
     RANDOM = 'random',
     RATING = 'rating',
-    RELEASE_DATE = 'releaseDate',
     TRACK_COUNT = 'trackCount',
 }
 

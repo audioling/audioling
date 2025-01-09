@@ -174,6 +174,18 @@ export function PlayQueueTable({ baseUrl, groupBy, libraryId }: PlayQueueTablePr
                         },
                     });
                     break;
+                case DragTarget.ALBUM_ARTIST:
+                case DragTarget.ARTIST:
+                    PlayerController.call({
+                        cmd: {
+                            addToQueueByFetch: {
+                                id: data.id,
+                                itemType: LibraryItemType.ALBUM_ARTIST,
+                                type: { edge, uniqueId },
+                            },
+                        },
+                    });
+                    break;
             }
         }
     };
@@ -319,6 +331,18 @@ function EmptyQueue() {
                                 addToQueueByFetch: {
                                     id: dragData.id,
                                     itemType: LibraryItemType.GENRE,
+                                    type: PlayType.NOW,
+                                },
+                            },
+                        });
+                        break;
+                    case DragTarget.ALBUM_ARTIST:
+                    case DragTarget.ARTIST:
+                        PlayerController.call({
+                            cmd: {
+                                addToQueueByFetch: {
+                                    id: dragData.id,
+                                    itemType: LibraryItemType.ALBUM_ARTIST,
                                     type: PlayType.NOW,
                                 },
                             },

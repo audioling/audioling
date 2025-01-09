@@ -44,6 +44,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
                 folderId: query.folderId,
                 limit: query.limit ? Number(query.limit) : undefined,
                 offset: query.offset ? Number(query.offset) : undefined,
+                searchTerm: query.searchTerm,
                 sortBy: query.sortBy,
                 sortOrder: query.sortOrder,
             });

@@ -1,0 +1,107 @@
+@use '@/styles/base';
+
+.grid-item-component {
+    display: flex;
+    grid-column: span 2;
+    padding: base.$gap-sm;
+}
+
+.expanded {
+    position: relative;
+    display: grid;
+    grid-template-areas: 'content image';
+    grid-template-columns: 80% auto;
+    gap: base.$gap-md;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    user-select: none;
+    border-radius: base.$border-radius-md;
+    container-name: album-grid-item-expanded;
+
+    @include base.container-larger-than-sm {
+        grid-template-columns: 70% auto;
+    }
+
+    @include base.container-larger-than-md {
+        grid-template-columns: 50% auto;
+    }
+
+    @include base.container-larger-than-lg {
+        grid-template-columns: 40% auto;
+    }
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-xs;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    grid-area: content;
+    gap: base.$gap-md;
+    width: 100%;
+    height: 100%;
+    padding: base.$gap-md;
+    overflow: hidden;
+}
+
+.item-title {
+    display: -webkit-box;
+    overflow: hidden;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.image-container {
+    position: relative;
+    display: flex;
+    grid-area: image;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.background-image {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(10px);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        content: '';
+        background: linear-gradient(to right, var(--bg-color) 0%, transparent 100%);
+    }
+}
+
+.tracks {
+    display: flex;
+    flex-direction: column;
+    gap: base.$gap-sm;
+    height: 100%;
+}
+
+.tracks * {
+    color: black;
+
+    /* stylelint-disable-next-line selector-class-pattern */
+    :global(.table-row-module_row) {
+        height: var(--table-row-config-condensed-height);
+        border-bottom: none;
+    }
+}
+
+.tracks.dark * {
+    color: white;
+}

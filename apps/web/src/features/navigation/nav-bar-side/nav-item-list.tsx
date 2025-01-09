@@ -44,6 +44,11 @@ function getNavItems(libraryId: string): {
             to: generatePath(APP_ROUTE.DASHBOARD_TRACKS, { libraryId }),
         },
         {
+            icon: 'artist',
+            label: 'Artists',
+            to: generatePath(APP_ROUTE.DASHBOARD_ARTISTS, { libraryId }),
+        },
+        {
             icon: 'genre',
             label: 'Genres',
             to: generatePath(APP_ROUTE.DASHBOARD_GENRES, { libraryId }),
