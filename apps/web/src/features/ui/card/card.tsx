@@ -98,13 +98,7 @@ export function Card(props: CardProps) {
             return (
                 <div ref={ref} className={clsx(styles.card, className)} {...htmlProps}>
                     <div className={clsx(styles.baseImageContainer)}>
-                        <Skeleton
-                            className={clsx({
-                                [styles.circle]: props.isCircle,
-                            })}
-                            height="100%"
-                            width="100%"
-                        />
+                        <Skeleton height="100%" width="100%" />
                     </div>
                     <div className={styles.descriptionContainer}>
                         {Array.from({ length: metadataLines }).map((_, metadataIndex) => (
