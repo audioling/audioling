@@ -65,7 +65,7 @@ function ExpandedAlbumGridItemContent({
     libraryId: string;
 }) {
     const { data: tracks } = useGetApiLibraryIdAlbumsIdTracksSuspense(libraryId, data.id, {
-        sortBy: TrackListSortOptions.NAME,
+        sortBy: TrackListSortOptions.ID,
         sortOrder: ListSortOrder.ASC,
     });
 
