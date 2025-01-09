@@ -38,7 +38,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const query = c.req.valid('query');
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const artists = await service.albumArtist.list(adapter, {
                 folderId: query.folderId,
@@ -50,7 +50,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
 
             const response: AlbumArtistListResponse = {
                 data: artists.items.map((item) =>
-                    albumArtistHelpers.adapterToResponse(item, adapter._getLibrary().id),
+                    albumArtistHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -80,17 +80,30 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
             const query = c.req.valid('query');
             const { adapter } = c.var;
 
-            const artists = await service.albumArtist.list(adapter, {
+            const totalRecordCount = await service.albumArtist.listCount(adapter, {
                 folderId: query.folderId,
-                limit: 1,
-                offset: 0,
-                sortBy: query.sortBy,
-                sortOrder: query.sortOrder,
+                searchTerm: query.searchTerm,
             });
 
-            const response: CountResponse = artists.totalRecordCount || 0;
+            const response: CountResponse = totalRecordCount;
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - POST /count/invalidate
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/count/invalidate',
+            summary: 'Invalidate album artist count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.albumArtist['/count/invalidate'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            await service.albumArtist.invalidateCounts(adapter);
+            return c.json(null, 204);
         },
     );
 
@@ -105,12 +118,16 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             const { id } = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const artist = await service.albumArtist.detail(adapter, { id });
 
             const response: AlbumArtistDetailResponse = {
-                data: albumArtistHelpers.adapterToResponse(artist, adapter._getLibrary().id),
+                data: albumArtistHelpers.adapterToResponse(
+                    artist,
+                    adapter._getLibrary().id,
+                    authToken,
+                ),
                 meta: {},
             };
 
@@ -130,7 +147,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
         async (c) => {
             const query = c.req.valid('query');
             const { id } = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const albums = await service.albumArtist.detailAlbumList(adapter, {
                 id,
@@ -142,7 +159,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
 
             const response: AlbumListResponse = {
                 data: albums.items.map((item) =>
-                    albumHelpers.adapterToResponse(item, adapter._getLibrary().id, null),
+                    albumHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(
@@ -171,7 +188,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
         async (c) => {
             const query = c.req.valid('query');
             const { id } = c.req.param();
-            const { adapter } = c.var;
+            const { adapter, authToken } = c.var;
 
             const tracks = await service.albumArtist.detailTrackList(adapter, {
                 id,
@@ -183,7 +200,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
 
             const response: TrackListResponse = {
                 data: tracks.items.map((item) =>
-                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, null),
+                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
                 ),
                 meta: {
                     next: controllerHelpers.getIsNextPage(

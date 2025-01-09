@@ -19,6 +19,7 @@ export interface AdapterArtist {
     };
     genres: AdapterRelatedGenre[];
     id: string;
+    imageUrl: string;
     name: string;
     songCount: number | null;
     updatedDate: string | null;

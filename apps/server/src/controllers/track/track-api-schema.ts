@@ -40,6 +40,17 @@ export const trackApiSchema = {
             ),
         },
     },
+    '/count/invalidate': {
+        post: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                { description: 'Invalidate track count', schema: EmptyResponseSchema, status: 204 },
+                [401, 403, 422, 500],
+            ),
+        },
+    },
     '/{id}': {
         get: {
             request: {

@@ -23,10 +23,10 @@ export const initServices = (modules: {
     const authService = initAuthService({ config, db, idFactory });
     const userService = initUserService({ db, idFactory });
     const libraryService = initLibraryService({ db, idFactory });
-    const albumService = initAlbumService();
-    const trackService = initTrackService();
-    const albumArtistService = initAlbumArtistService();
-    const genreService = initGenreService({ db });
+    const albumService = initAlbumService({ db });
+    const trackService = initTrackService({ db });
+    const albumArtistService = initAlbumArtistService({ db });
+    const genreService = initGenreService();
     const imageService = initImageService({ db, imageModule });
     const playlistService = initPlaylistService({ db, idFactory });
 

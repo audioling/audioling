@@ -66,6 +66,11 @@ import type {
     PostApiLibraryIdPlaylists422,
     PostApiLibraryIdPlaylists500,
     PostApiLibraryIdPlaylistsBody,
+    PostApiLibraryIdPlaylistsCountInvalidate204,
+    PostApiLibraryIdPlaylistsCountInvalidate401,
+    PostApiLibraryIdPlaylistsCountInvalidate403,
+    PostApiLibraryIdPlaylistsCountInvalidate422,
+    PostApiLibraryIdPlaylistsCountInvalidate500,
     PostApiLibraryIdPlaylistsFolders201,
     PostApiLibraryIdPlaylistsFolders401,
     PostApiLibraryIdPlaylistsFolders403,
@@ -571,6 +576,96 @@ export function useGetApiLibraryIdPlaylistsCountSuspense<
     return query;
 }
 
+/**
+ * @summary Invalidate playlist count
+ */
+export const postApiLibraryIdPlaylistsCountInvalidate = (
+    libraryId: string,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdPlaylistsCountInvalidate204>(
+        { url: `/api/${libraryId}/playlists/count/invalidate`, method: 'POST', signal },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdPlaylistsCountInvalidateMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsCountInvalidate401
+        | PostApiLibraryIdPlaylistsCountInvalidate403
+        | PostApiLibraryIdPlaylistsCountInvalidate422
+        | PostApiLibraryIdPlaylistsCountInvalidate500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsCountInvalidate>>,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsCountInvalidate>>,
+    TError,
+    { libraryId: string },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsCountInvalidate>>,
+        { libraryId: string }
+    > = (props) => {
+        const { libraryId } = props ?? {};
+
+        return postApiLibraryIdPlaylistsCountInvalidate(libraryId, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdPlaylistsCountInvalidateMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsCountInvalidate>>
+>;
+
+export type PostApiLibraryIdPlaylistsCountInvalidateMutationError = ErrorType<
+    | PostApiLibraryIdPlaylistsCountInvalidate401
+    | PostApiLibraryIdPlaylistsCountInvalidate403
+    | PostApiLibraryIdPlaylistsCountInvalidate422
+    | PostApiLibraryIdPlaylistsCountInvalidate500
+>;
+
+/**
+ * @summary Invalidate playlist count
+ */
+export const usePostApiLibraryIdPlaylistsCountInvalidate = <
+    TError = ErrorType<
+        | PostApiLibraryIdPlaylistsCountInvalidate401
+        | PostApiLibraryIdPlaylistsCountInvalidate403
+        | PostApiLibraryIdPlaylistsCountInvalidate422
+        | PostApiLibraryIdPlaylistsCountInvalidate500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdPlaylistsCountInvalidate>>,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdPlaylistsCountInvalidate>>,
+    TError,
+    { libraryId: string },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdPlaylistsCountInvalidateMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
 /**
  * @summary Get all playlist folders
  */

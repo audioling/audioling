@@ -76,17 +76,31 @@ export const initTrackController = (modules: { service: AppService }) => {
             const query = c.req.valid('query');
             const { adapter } = c.var;
 
-            const tracks = await service.track.list(adapter, {
+            const totalRecordCount = await service.track.listCount(adapter, {
                 folderId: query.folderId,
-                limit: 1,
-                offset: 0,
+                searchTerm: query.searchTerm,
                 sortBy: query.sortBy,
-                sortOrder: query.sortOrder,
             });
 
-            const response: CountResponse = tracks.totalRecordCount || 0;
+            const response: CountResponse = totalRecordCount;
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - POST /count/invalidate
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/count/invalidate',
+            summary: 'Invalidate track count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/count/invalidate'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            await service.track.invalidateCounts(adapter);
+            return c.json(null, 204);
         },
     );
 

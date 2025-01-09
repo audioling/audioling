@@ -85,7 +85,7 @@ const db = {
         if (!value) {
             const totalRecordCount = await fetchTotalRecordCount(fetcher, fetchLimit);
             const expiresAt = dayjs()
-                .add(options.expiration || 1, 'minutes')
+                .add(options.expiration || 1440, 'minutes')
                 .toISOString();
             db.kv.updateById(key, `${totalRecordCount}::${expiresAt}`);
             return totalRecordCount;
@@ -163,7 +163,7 @@ const db = {
         const hash = hashQuery(options.query);
         const key = `${options.libraryId}::${options.type}::${hash}`;
         const expiresAt = dayjs()
-            .add(options.expiration || 60, 'minutes')
+            .add(options.expiration || 1440, 'minutes')
             .toISOString();
         db.kv.updateById(key, `${options.count}::${expiresAt}`);
     },

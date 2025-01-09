@@ -221,6 +221,12 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
             return result;
         },
 
+        // ANCHOR - Invalidate counts
+        invalidateCounts: async (adapter: AdapterApi) => {
+            db.kv.deleteByIncludes(`${adapter._getLibrary().id}::playlist`);
+            return null;
+        },
+
         // ANCHOR - List
         list: async (
             adapter: AdapterApi,
@@ -270,6 +276,27 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
                 ...result,
                 items,
             };
+        },
+
+        // ANCHOR - List count
+        listCount: async (
+            adapter: AdapterApi,
+            args: Omit<FindManyServiceArgs<PlaylistListSortOptions>, 'sortBy' | 'sortOrder'> & {
+                userId: string;
+            },
+        ) => {
+            const [err, result] = await adapter.getPlaylistListCount({
+                query: {
+                    searchTerm: args.searchTerm,
+                    userId: args.userId,
+                },
+            });
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return result;
         },
 
         // ANCHOR - Remove

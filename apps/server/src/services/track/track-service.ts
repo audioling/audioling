@@ -1,6 +1,7 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
+import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import {
     type FindByIdServiceArgs,
@@ -9,7 +10,9 @@ import {
 } from '@/services/service-helpers.js';
 
 // SECTION - Track Service
-export const initTrackService = () => {
+export const initTrackService = (modules: { db: AppDatabase }) => {
+    const { db } = modules;
+
     return {
         // ANCHOR - Detail
         detail: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
@@ -53,6 +56,12 @@ export const initTrackService = () => {
             return streamUrl;
         },
 
+        // ANCHOR - Invalidate counts
+        invalidateCounts: async (adapter: AdapterApi) => {
+            db.kv.deleteByIncludes(`${adapter._getLibrary().id}::track`);
+            return null;
+        },
+
         // ANCHOR - List
         list: async (adapter: AdapterApi, args: FindManyServiceArgs<TrackListSortOptions>) => {
             const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
@@ -84,6 +93,26 @@ export const initTrackService = () => {
                     ]),
                 })),
             };
+        },
+
+        // ANCHOR - List count
+        listCount: async (
+            adapter: AdapterApi,
+            args: Omit<FindManyServiceArgs<TrackListSortOptions>, 'sortOrder'>,
+        ) => {
+            const [err, result] = await adapter.getTrackListCount({
+                query: {
+                    folderId: args.folderId,
+                    searchTerm: args.searchTerm,
+                    sortBy: args.sortBy,
+                },
+            });
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return result;
         },
 
         // ANCHOR - Unfavorite by id

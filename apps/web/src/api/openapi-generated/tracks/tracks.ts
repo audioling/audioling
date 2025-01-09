@@ -42,6 +42,11 @@ import type {
     GetApiLibraryIdTracksIdStream404,
     GetApiLibraryIdTracksIdStream500,
     GetApiLibraryIdTracksParams,
+    PostApiLibraryIdTracksCountInvalidate204,
+    PostApiLibraryIdTracksCountInvalidate401,
+    PostApiLibraryIdTracksCountInvalidate403,
+    PostApiLibraryIdTracksCountInvalidate422,
+    PostApiLibraryIdTracksCountInvalidate500,
     PostApiLibraryIdTracksIdFavorite204,
     PostApiLibraryIdTracksIdFavorite401,
     PostApiLibraryIdTracksIdFavorite403,
@@ -402,6 +407,96 @@ export function useGetApiLibraryIdTracksCountSuspense<
     return query;
 }
 
+/**
+ * @summary Invalidate track count
+ */
+export const postApiLibraryIdTracksCountInvalidate = (
+    libraryId: string,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdTracksCountInvalidate204>(
+        { url: `/api/${libraryId}/tracks/count/invalidate`, method: 'POST', signal },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdTracksCountInvalidateMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdTracksCountInvalidate401
+        | PostApiLibraryIdTracksCountInvalidate403
+        | PostApiLibraryIdTracksCountInvalidate422
+        | PostApiLibraryIdTracksCountInvalidate500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdTracksCountInvalidate>>,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdTracksCountInvalidate>>,
+    TError,
+    { libraryId: string },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdTracksCountInvalidate>>,
+        { libraryId: string }
+    > = (props) => {
+        const { libraryId } = props ?? {};
+
+        return postApiLibraryIdTracksCountInvalidate(libraryId, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdTracksCountInvalidateMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdTracksCountInvalidate>>
+>;
+
+export type PostApiLibraryIdTracksCountInvalidateMutationError = ErrorType<
+    | PostApiLibraryIdTracksCountInvalidate401
+    | PostApiLibraryIdTracksCountInvalidate403
+    | PostApiLibraryIdTracksCountInvalidate422
+    | PostApiLibraryIdTracksCountInvalidate500
+>;
+
+/**
+ * @summary Invalidate track count
+ */
+export const usePostApiLibraryIdTracksCountInvalidate = <
+    TError = ErrorType<
+        | PostApiLibraryIdTracksCountInvalidate401
+        | PostApiLibraryIdTracksCountInvalidate403
+        | PostApiLibraryIdTracksCountInvalidate422
+        | PostApiLibraryIdTracksCountInvalidate500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdTracksCountInvalidate>>,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdTracksCountInvalidate>>,
+    TError,
+    { libraryId: string },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdTracksCountInvalidateMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
 /**
  * @summary Get track by id
  */

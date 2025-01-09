@@ -71,6 +71,21 @@ export const playlistApiSchema = {
             security: [{ Bearer: [] }],
         },
     },
+    '/count/invalidate': {
+        post: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Invalidate playlist count',
+                    schema: EmptyResponseSchema,
+                    status: 204,
+                },
+                [401, 403, 422, 500],
+            ),
+        },
+    },
     '/folders': {
         get: {
             request: {

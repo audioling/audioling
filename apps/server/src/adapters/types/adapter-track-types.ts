@@ -79,7 +79,7 @@ export type AdapterTrackListRequest = { query: AdapterTrackListQuery };
 
 export type AdapterTrackListCountQuery = Omit<
     AdapterTrackListQuery,
-    'sortBy' | 'sortOrder' | 'limit' | 'offset'
+    'sortOrder' | 'limit' | 'offset'
 >;
 
 export type AdapterTrackListCountRequest = QueryRequest<AdapterTrackListCountQuery>;

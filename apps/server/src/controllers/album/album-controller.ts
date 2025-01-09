@@ -79,18 +79,32 @@ export const initAlbumController = (modules: { service: AppService }) => {
             const query = c.req.valid('query');
             const { adapter } = c.var;
 
-            const albums = await service.album.list(adapter, {
+            const totalRecordCount = await service.album.listCount(adapter, {
                 folderId: query.folderId,
-                limit: 1,
-                offset: 0,
                 searchTerm: query.searchTerm,
                 sortBy: query.sortBy,
                 sortOrder: query.sortOrder,
             });
 
-            const response: CountResponse = albums.totalRecordCount || 0;
+            const response: CountResponse = totalRecordCount;
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - POST /count/invalidate
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/count/invalidate',
+            summary: 'Invalidate album count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.album['/count/invalidate'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            await service.album.invalidateCounts(adapter);
+            return c.json(null, 204);
         },
     );
 

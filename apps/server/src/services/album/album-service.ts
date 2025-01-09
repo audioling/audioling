@@ -6,6 +6,7 @@ import {
 } from '@repo/shared-types';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
+import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import {
     type FindByIdServiceArgs,
@@ -14,7 +15,8 @@ import {
 } from '@/services/service-helpers.js';
 
 // SECTION - Album Service
-export const initAlbumService = () => {
+export const initAlbumService = (modules: { db: AppDatabase }) => {
+    const { db } = modules;
     return {
         // ANCHOR - Detail
         detail: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
@@ -31,6 +33,7 @@ export const initAlbumService = () => {
                 imageUrl: serviceHelpers.getImageUrl(result.id, libraryId, LibraryItemType.ALBUM),
             };
         },
+
         // ANCHOR - Detail track list
         detailTrackList: async (
             adapter: AdapterApi,
@@ -66,6 +69,7 @@ export const initAlbumService = () => {
                 })),
             };
         },
+
         // ANCHOR - Favorite by id
         favoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
             const [err, result] = await adapter.setFavorite({
@@ -79,6 +83,13 @@ export const initAlbumService = () => {
 
             return result;
         },
+
+        // ANCHOR - Invalidate counts
+        invalidateCounts: async (adapter: AdapterApi) => {
+            db.kv.deleteByIncludes(`${adapter._getLibrary().id}::album`);
+            return null;
+        },
+
         // ANCHOR - List
         list: async (adapter: AdapterApi, args: FindManyServiceArgs<AlbumListSortOptions>) => {
             const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
@@ -109,6 +120,24 @@ export const initAlbumService = () => {
                 })),
             };
         },
+
+        // ANCHOR - List count
+        listCount: async (adapter: AdapterApi, args: FindManyServiceArgs<AlbumListSortOptions>) => {
+            const [err, result] = await adapter.getAlbumListCount({
+                query: {
+                    folderId: args.folderId,
+                    searchTerm: args.searchTerm,
+                    sortBy: args.sortBy || AlbumListSortOptions.NAME,
+                },
+            });
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return result;
+        },
+
         // ANCHOR - Unfavorite by id
         unfavoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
             const [err, result] = await adapter.setFavorite({

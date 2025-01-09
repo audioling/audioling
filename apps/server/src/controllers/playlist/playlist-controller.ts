@@ -80,18 +80,31 @@ export const initPlaylistController = (modules: { service: AppService }) => {
             const query = c.req.valid('query');
             const { adapter, user } = c.var;
 
-            const count = await service.playlist.list(adapter, {
+            const totalRecordCount = await service.playlist.listCount(adapter, {
                 folderId: query.folderId,
-                limit: 1,
-                offset: 0,
-                sortBy: query.sortBy,
-                sortOrder: query.sortOrder,
+                searchTerm: query.searchTerm,
                 userId: user.id,
             });
 
-            const response: CountResponse = count.totalRecordCount || 0;
+            const response: CountResponse = totalRecordCount;
 
             return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - POST /count/invalidate
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/count/invalidate',
+            summary: 'Invalidate playlist count',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.playlist['/count/invalidate'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            await service.playlist.invalidateCounts(adapter);
+            return c.json(null, 204);
         },
     );
 

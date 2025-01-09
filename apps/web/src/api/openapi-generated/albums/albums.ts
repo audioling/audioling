@@ -44,6 +44,11 @@ import type {
     GetApiLibraryIdAlbumsIdTracks500,
     GetApiLibraryIdAlbumsIdTracksParams,
     GetApiLibraryIdAlbumsParams,
+    PostApiLibraryIdAlbumsCountInvalidate204,
+    PostApiLibraryIdAlbumsCountInvalidate401,
+    PostApiLibraryIdAlbumsCountInvalidate403,
+    PostApiLibraryIdAlbumsCountInvalidate422,
+    PostApiLibraryIdAlbumsCountInvalidate500,
     PostApiLibraryIdAlbumsIdFavorite204,
     PostApiLibraryIdAlbumsIdFavorite401,
     PostApiLibraryIdAlbumsIdFavorite403,
@@ -404,6 +409,96 @@ export function useGetApiLibraryIdAlbumsCountSuspense<
     return query;
 }
 
+/**
+ * @summary Invalidate album count
+ */
+export const postApiLibraryIdAlbumsCountInvalidate = (
+    libraryId: string,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdAlbumsCountInvalidate204>(
+        { url: `/api/${libraryId}/albums/count/invalidate`, method: 'POST', signal },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdAlbumsCountInvalidateMutationOptions = <
+    TError = ErrorType<
+        | PostApiLibraryIdAlbumsCountInvalidate401
+        | PostApiLibraryIdAlbumsCountInvalidate403
+        | PostApiLibraryIdAlbumsCountInvalidate422
+        | PostApiLibraryIdAlbumsCountInvalidate500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdAlbumsCountInvalidate>>,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof postApiLibraryIdAlbumsCountInvalidate>>,
+    TError,
+    { libraryId: string },
+    TContext
+> => {
+    const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdAlbumsCountInvalidate>>,
+        { libraryId: string }
+    > = (props) => {
+        const { libraryId } = props ?? {};
+
+        return postApiLibraryIdAlbumsCountInvalidate(libraryId, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiLibraryIdAlbumsCountInvalidateMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdAlbumsCountInvalidate>>
+>;
+
+export type PostApiLibraryIdAlbumsCountInvalidateMutationError = ErrorType<
+    | PostApiLibraryIdAlbumsCountInvalidate401
+    | PostApiLibraryIdAlbumsCountInvalidate403
+    | PostApiLibraryIdAlbumsCountInvalidate422
+    | PostApiLibraryIdAlbumsCountInvalidate500
+>;
+
+/**
+ * @summary Invalidate album count
+ */
+export const usePostApiLibraryIdAlbumsCountInvalidate = <
+    TError = ErrorType<
+        | PostApiLibraryIdAlbumsCountInvalidate401
+        | PostApiLibraryIdAlbumsCountInvalidate403
+        | PostApiLibraryIdAlbumsCountInvalidate422
+        | PostApiLibraryIdAlbumsCountInvalidate500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof postApiLibraryIdAlbumsCountInvalidate>>,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    Awaited<ReturnType<typeof postApiLibraryIdAlbumsCountInvalidate>>,
+    TError,
+    { libraryId: string },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdAlbumsCountInvalidateMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
 /**
  * @summary Get album by id
  */

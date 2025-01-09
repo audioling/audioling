@@ -1,7 +1,9 @@
 import type { AlbumListSortOptions, TrackListSortOptions } from '@repo/shared-types';
 import { ArtistListSortOptions, LibraryItemType, ListSortOrder } from '@repo/shared-types';
+import type { Omit } from 'lodash';
 import { type AdapterApi } from '@/adapters/types/index.js';
 import { CONSTANTS } from '@/constants.js';
+import type { AppDatabase } from '@/database/init-database.js';
 import { apiError } from '@/modules/error-handler/index.js';
 import {
     type FindByIdServiceArgs,
@@ -10,7 +12,9 @@ import {
 } from '@/services/service-helpers.js';
 
 // SECTION - Album Artist Service
-export const initAlbumArtistService = () => {
+export const initAlbumArtistService = (modules: { db: AppDatabase }) => {
+    const { db } = modules;
+
     return {
         // ANCHOR - Detail
         detail: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
@@ -29,6 +33,7 @@ export const initAlbumArtistService = () => {
                 ),
             };
         },
+
         // ANCHOR - Detail Album List
         detailAlbumList: async (
             adapter: AdapterApi,
@@ -58,6 +63,7 @@ export const initAlbumArtistService = () => {
                 })),
             };
         },
+
         // ANCHOR - Detail Track List
         detailTrackList: async (
             adapter: AdapterApi,
@@ -99,6 +105,7 @@ export const initAlbumArtistService = () => {
                 })),
             };
         },
+
         // ANCHOR - Favorite by id
         favoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
             const [err, result] = await adapter.setFavorite({
@@ -113,6 +120,12 @@ export const initAlbumArtistService = () => {
             return result;
         },
 
+        // ANCHOR - Invalidate counts
+        invalidateCounts: async (adapter: AdapterApi) => {
+            db.kv.deleteByIncludes(`${adapter._getLibrary().id}::artist`);
+            return null;
+        },
+
         // ANCHOR - List
         list: async (adapter: AdapterApi, args: FindManyServiceArgs<ArtistListSortOptions>) => {
             const limit = args.limit ?? CONSTANTS.DEFAULT_PAGINATION_LIMIT;
@@ -123,6 +136,7 @@ export const initAlbumArtistService = () => {
                     folderId: args.folderId,
                     limit,
                     offset,
+                    searchTerm: args.searchTerm,
                     sortBy: args.sortBy || ArtistListSortOptions.NAME,
                     sortOrder: args.sortOrder || ListSortOrder.ASC,
                 },
@@ -144,6 +158,26 @@ export const initAlbumArtistService = () => {
                 })),
             };
         },
+
+        // ANCHOR - Count
+        listCount: async (
+            adapter: AdapterApi,
+            args: Omit<FindManyServiceArgs<ArtistListSortOptions>, 'sortBy' | 'sortOrder'>,
+        ) => {
+            const [err, result] = await adapter.getAlbumArtistListCount({
+                query: {
+                    folderId: args.folderId,
+                    searchTerm: args.searchTerm,
+                },
+            });
+
+            if (err) {
+                throw new apiError.internalServer({ message: err.message });
+            }
+
+            return result;
+        },
+
         // ANCHOR - Unfavorite by id
         unfavoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
             const [err, result] = await adapter.setFavorite({
