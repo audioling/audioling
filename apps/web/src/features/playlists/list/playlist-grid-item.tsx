@@ -22,13 +22,13 @@ export function PlaylistGridItem(
                 image={data.imageUrl}
                 itemType={LibraryItemType.PLAYLIST}
                 metadata={[]}
-                metadataLines={1}
+                metadataLines={0}
                 titledata={{ path: '/', text: data.name }}
             />
         );
     }
 
-    return <PlaylistCard componentState="loading" metadataLines={1} />;
+    return <PlaylistCard componentState="loading" metadataLines={0} />;
 }
 
 export const MemoizedPlaylistGridItem = memo(PlaylistGridItem);

@@ -101,7 +101,7 @@ export function Card(props: CardProps) {
                         <Skeleton height="100%" width="100%" />
                     </div>
                     <div className={styles.descriptionContainer}>
-                        {Array.from({ length: metadataLines }).map((_, metadataIndex) => (
+                        {Array.from({ length: metadataLines + 1 }).map((_, metadataIndex) => (
                             <Text
                                 key={`${loadedProps?.id}-metadata-${metadataIndex}`}
                                 className={styles.description}
