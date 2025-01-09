@@ -1,6 +1,11 @@
 import { useCallback, useEffect } from 'react';
+import { LibraryItemType } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router';
+import { usePostApiLibraryIdAlbumArtistsCountInvalidate } from '@/api/openapi-generated/album-artists/album-artists.ts';
+import { usePostApiLibraryIdAlbumsCountInvalidate } from '@/api/openapi-generated/albums/albums.ts';
+import { usePostApiLibraryIdPlaylistsCountInvalidate } from '@/api/openapi-generated/playlists/playlists.ts';
+import { usePostApiLibraryIdTracksCountInvalidate } from '@/api/openapi-generated/tracks/tracks.ts';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { randomString } from '@/utils/random-string.ts';
 import { safeStringify } from '@/utils/stringify.ts';
@@ -32,15 +37,40 @@ export function useListKey(args: Record<string, unknown>) {
 }
 
 interface UseRefreshListProps {
+    itemType: LibraryItemType;
+    libraryId: string;
     queryKey: string[];
     setListId: (pathname: string, listId: string) => void;
 }
 
-export function useRefreshList({ queryKey, setListId }: UseRefreshListProps) {
+export function useRefreshList({ queryKey, setListId, libraryId, itemType }: UseRefreshListProps) {
     const location = useLocation();
     const queryClient = useQueryClient();
 
+    const invalidateAlbumCount = usePostApiLibraryIdAlbumsCountInvalidate();
+    const invalidateTrackCount = usePostApiLibraryIdTracksCountInvalidate();
+    const invalidateAlbumArtistCount = usePostApiLibraryIdAlbumArtistsCountInvalidate();
+    const invalidatePlaylistCount = usePostApiLibraryIdPlaylistsCountInvalidate();
+
     const handleRefresh = async () => {
+        switch (itemType) {
+            case LibraryItemType.ALBUM:
+                await invalidateAlbumCount.mutateAsync({ libraryId });
+                break;
+            case LibraryItemType.TRACK:
+                await invalidateTrackCount.mutateAsync({ libraryId });
+                break;
+            case LibraryItemType.ARTIST:
+                await invalidateAlbumArtistCount.mutateAsync({ libraryId });
+                break;
+            case LibraryItemType.ALBUM_ARTIST:
+                await invalidateAlbumArtistCount.mutateAsync({ libraryId });
+                break;
+            case LibraryItemType.PLAYLIST:
+                await invalidatePlaylistCount.mutateAsync({ libraryId });
+                break;
+        }
+
         await queryClient.invalidateQueries({ queryKey });
         setListId(location.pathname, randomString(12));
     };

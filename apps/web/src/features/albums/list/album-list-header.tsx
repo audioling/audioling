@@ -1,5 +1,5 @@
 import type { LibraryFeatures } from '@repo/shared-types';
-import { AlbumListSortOptions } from '@repo/shared-types';
+import { AlbumListSortOptions, LibraryItemType } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdAlbumsCountQueryKey } from '@/api/openapi-generated/albums/albums.ts';
@@ -37,6 +37,8 @@ export function AlbumListHeader() {
     const setListId = useAlbumListStore.use.setListId();
 
     const handleRefresh = useRefreshList({
+        itemType: LibraryItemType.ALBUM,
+        libraryId,
         queryKey: [`/api/${libraryId}/albums`],
         setListId,
     });

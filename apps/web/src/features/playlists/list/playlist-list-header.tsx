@@ -1,4 +1,4 @@
-import { type LibraryFeatures, PlaylistListSortOptions } from '@repo/shared-types';
+import { type LibraryFeatures, LibraryItemType, PlaylistListSortOptions } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdPlaylistsCountQueryKey } from '@/api/openapi-generated/playlists/playlists.ts';
@@ -32,7 +32,10 @@ export function PlaylistListHeader() {
     const setSortOrder = usePlaylistListStore.use.setSortOrder();
     const setPaginationType = usePlaylistListStore.use.setPaginationType();
     const setListId = usePlaylistListStore.use.setListId();
+
     const handleRefresh = useRefreshList({
+        itemType: LibraryItemType.PLAYLIST,
+        libraryId,
         queryKey: [`/api/${libraryId}/playlists`],
         setListId,
     });

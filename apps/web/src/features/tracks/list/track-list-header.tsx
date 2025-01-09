@@ -1,5 +1,5 @@
 import type { LibraryFeatures } from '@repo/shared-types';
-import { TrackListSortOptions } from '@repo/shared-types';
+import { LibraryItemType, TrackListSortOptions } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdTracksCountQueryKey } from '@/api/openapi-generated/tracks/tracks.ts';
@@ -35,6 +35,8 @@ export function TrackListHeader() {
     const setPaginationType = useTrackListStore.use.setPaginationType();
 
     const handleRefresh = useRefreshList({
+        itemType: LibraryItemType.TRACK,
+        libraryId,
         queryKey: [`/api/${libraryId}/tracks`],
         setListId,
     });
