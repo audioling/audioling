@@ -26,7 +26,7 @@ export function SidePlayQueue() {
     return (
         <div className={styles.container}>
             <Group align="center" className={styles.header} gap="sm" justify="between">
-                <Text>Queue</Text>
+                <Text isNoSelect>Queue</Text>
                 <QueueControls
                     groupBy={groupBy}
                     table={itemTableRef.current?.getTable() ?? undefined}
@@ -34,7 +34,12 @@ export function SidePlayQueue() {
                 />
             </Group>
             <div className={styles.content}>
-                <PlayQueueTable baseUrl={baseUrl} groupBy={groupBy} libraryId={libraryId} />
+                <PlayQueueTable
+                    baseUrl={baseUrl}
+                    groupBy={groupBy}
+                    itemTableRef={itemTableRef}
+                    libraryId={libraryId}
+                />
             </div>
         </div>
     );
@@ -74,9 +79,12 @@ export function QueueControls({
 
     const handleSelect = useCallback(
         (value: boolean) => {
+            console.log('table :>> ', table);
             if (!table) {
                 return;
             }
+
+            console.log('table', table);
 
             table.getRowModel().rows.forEach((row) => {
                 row.toggleSelected(value);

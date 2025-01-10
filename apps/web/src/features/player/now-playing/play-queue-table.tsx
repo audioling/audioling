@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, MutableRefObject } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { LibraryItemType } from '@repo/shared-types';
@@ -39,12 +39,11 @@ interface SidePlayQueueTableItemContext {
 interface PlayQueueTableProps {
     baseUrl: string;
     groupBy: QueueGroupingProperty | undefined;
+    itemTableRef: MutableRefObject<ItemTableHandle<PlayQueueItem> | undefined>;
     libraryId: string;
 }
 
-export function PlayQueueTable({ baseUrl, groupBy, libraryId }: PlayQueueTableProps) {
-    const itemTableRef = useRef<ItemTableHandle<PlayQueueItem> | undefined>(undefined);
-
+export function PlayQueueTable({ baseUrl, groupBy, libraryId, itemTableRef }: PlayQueueTableProps) {
     const { getQueue } = usePlayerActions();
 
     useEffect(() => {
@@ -80,7 +79,7 @@ export function PlayQueueTable({ baseUrl, groupBy, libraryId }: PlayQueueTablePr
             unsub();
             unsubCurrentTrack();
         };
-    }, [getQueue, groupBy]);
+    }, [getQueue, groupBy, itemTableRef]);
 
     const [data, setData] = useState<PlayQueueItem[]>([]);
     const [groups, setGroups] = useState<{ count: number; name: string }[]>([]);
@@ -207,7 +206,7 @@ export function PlayQueueTable({ baseUrl, groupBy, libraryId }: PlayQueueTablePr
 
             PlayerController.call({ cmd: { mediaPlay: { id: row.original?._uniqueId } } });
         },
-        [],
+        [itemTableRef],
     );
 
     const onRowContextMenu = (
