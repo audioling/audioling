@@ -1,4 +1,4 @@
-import { GenreListSortOptions, type LibraryFeatures } from '@repo/shared-types';
+import { GenreListSortOptions, type LibraryFeatures, LibraryItemType } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdGenresCountQueryKey } from '@/api/openapi-generated/genres/genres.ts';
@@ -29,6 +29,8 @@ export function GenreListHeader() {
     const setListId = useGenreListStore.use.setListId();
 
     const handleRefresh = useRefreshList({
+        itemType: LibraryItemType.GENRE,
+        libraryId,
         queryKey: [`/api/${libraryId}/genres`],
         setListId,
     });

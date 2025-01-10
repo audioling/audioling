@@ -136,7 +136,7 @@ export function InfiniteArtistTable({
 
             return PrefetchController.call({
                 cmd: {
-                    tracksByArtistId: {
+                    tracksByAlbumArtistId: {
                         id: selectedRowIds,
                     },
                 },
@@ -145,7 +145,7 @@ export function InfiniteArtistTable({
 
         return PrefetchController.call({
             cmd: {
-                tracksByArtistId: {
+                tracksByAlbumArtistId: {
                     id: [row.original.id],
                 },
             },

@@ -121,7 +121,7 @@ function PaginatedArtistTableContent(props: PaginatedArtistTableProps) {
 
             return PrefetchController.call({
                 cmd: {
-                    tracksByArtistId: {
+                    tracksByAlbumArtistId: {
                         id: selectedRowIds,
                     },
                 },
@@ -130,7 +130,7 @@ function PaginatedArtistTableContent(props: PaginatedArtistTableProps) {
 
         return PrefetchController.call({
             cmd: {
-                tracksByArtistId: {
+                tracksByAlbumArtistId: {
                     id: [row.original.id],
                 },
             },
