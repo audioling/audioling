@@ -1,0 +1,67 @@
+@use '@/styles/base';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.filter-group {
+    position: relative;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border: 1px solid var(--layout-border-color);
+    border-radius: 4px;
+}
+
+.filter-group.dragged-over {
+    border: 1px solid base.$primary-color;
+}
+
+.condition-row {
+    align-items: center;
+    height: 100%;
+    margin: 0.5rem 0;
+}
+
+.condition-row * {
+    height: 100%;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.sort-by {
+    display: flex;
+    flex: 1;
+    gap: 0.5rem;
+}
+
+.dragged-over-top {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: -5px;
+        right: 0;
+        left: 0;
+        height: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-bottom {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        right: 0;
+        bottom: -5px;
+        left: 0;
+        height: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}

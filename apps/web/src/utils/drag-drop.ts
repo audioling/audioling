@@ -9,6 +9,8 @@ export enum DragTarget {
     GENRE = LibraryItemType.GENRE,
     ALBUM_ARTIST = LibraryItemType.ALBUM_ARTIST,
     TABLE_COLUMN = 'tableColumn',
+    QUERY_BUILDER_ROW = 'queryBuilderRow',
+    QUERY_BUILDER_GROUP = 'queryBuilderGroup',
 }
 
 export enum DragOperation {
