@@ -80,7 +80,7 @@ function Content(props: ContentProps) {
                                     initial="hidden"
                                     variants={animationVariants.fadeIn}
                                 >
-                                    {children}
+                                    <ScrollArea>{children}</ScrollArea>
                                 </motion.div>
                             </DropdownMenu.Content>
                         </DropdownMenu.Portal>
@@ -99,7 +99,7 @@ function Content(props: ContentProps) {
                                 initial="hidden"
                                 variants={animationVariants.fadeIn}
                             >
-                                {children}
+                                <ScrollArea>{children}</ScrollArea>
                             </motion.div>
                         </DropdownMenu.Content>
                     )}

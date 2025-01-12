@@ -1,14 +1,21 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { createContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import * as RSelect from '@radix-ui/react-select';
 import clsx from 'clsx';
+import { AnimatePresence, motion } from 'motion/react';
+import { animationVariants } from '@/features/ui/animations/variants.ts';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
+import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import styles from './select.module.scss';
 
 interface SelectContext {
     align: 'start' | 'center' | 'end';
+    hasLeftIcon: boolean;
+    hasRightIcon: boolean;
     open: boolean;
+    setHasLeftIcon: Dispatch<SetStateAction<boolean>>;
+    setHasRightIcon: Dispatch<SetStateAction<boolean>>;
     setOpen: Dispatch<SetStateAction<boolean>>;
     side: 'top' | 'right' | 'bottom' | 'left';
 }
@@ -19,18 +26,37 @@ interface SelectProps {
     align?: 'start' | 'center' | 'end';
     children: ReactNode;
     onChange: (value: string | null) => void;
+    onOpenChange?: (open: boolean) => void;
     side?: 'top' | 'right' | 'bottom' | 'left';
     value: string;
 }
 
 export function Select(props: SelectProps) {
-    const { children, align = 'center', side = 'bottom', onChange, value } = props;
+    const { children, align = 'center', side = 'bottom', onChange, onOpenChange, value } = props;
     const [open, setOpen] = useState(false);
+    const [hasLeftIcon, setHasLeftIcon] = useState(false);
+    const [hasRightIcon, setHasRightIcon] = useState(false);
+    const context = useMemo(
+        () => ({
+            align,
+            hasLeftIcon,
+            hasRightIcon,
+            open,
+            setHasLeftIcon,
+            setHasRightIcon,
+            setOpen,
+            side,
+        }),
+        [align, hasLeftIcon, hasRightIcon, open, side],
+    );
 
-    const context = useMemo(() => ({ align, open, setOpen, side }), [align, open, side]);
+    const handleOpenChange = (open: boolean) => {
+        onOpenChange?.(open);
+        setOpen(open);
+    };
 
     return (
-        <RSelect.Root value={value} onValueChange={onChange}>
+        <RSelect.Root value={value} onOpenChange={handleOpenChange} onValueChange={onChange}>
             <SelectContext.Provider value={context}>{children}</SelectContext.Provider>
         </RSelect.Root>
     );
@@ -38,20 +64,35 @@ export function Select(props: SelectProps) {
 
 interface ContentProps {
     children: ReactNode;
+    stickyContent?: ReactNode;
 }
 
 function Content(props: ContentProps) {
-    const { children } = props;
+    const { children, stickyContent } = props;
+    const { open } = useContext(SelectContext) as SelectContext;
 
     return (
-        <RSelect.Content
-            className={styles.content}
-            collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
-            position="popper"
-            sideOffset={6}
-        >
-            {children}
-        </RSelect.Content>
+        <AnimatePresence>
+            {open && (
+                <RSelect.Content
+                    hideWhenDetached
+                    className={styles.content}
+                    collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
+                    position="popper"
+                    sideOffset={6}
+                >
+                    <motion.div
+                        animate="show"
+                        className={styles.innerContent}
+                        initial="hidden"
+                        variants={animationVariants.fadeIn}
+                    >
+                        {stickyContent}
+                        <ScrollArea>{children}</ScrollArea>
+                    </motion.div>
+                </RSelect.Content>
+            )}
+        </AnimatePresence>
     );
 }
 
@@ -66,12 +107,22 @@ interface ItemProps {
 
 function Item(props: ItemProps) {
     const { children, disabled, isSelected, leftIcon, rightIcon, value } = props;
+    const { hasLeftIcon, hasRightIcon, setHasLeftIcon, setHasRightIcon } = useContext(
+        SelectContext,
+    ) as SelectContext;
+
+    useEffect(() => {
+        setHasLeftIcon?.(!!leftIcon);
+        setHasRightIcon?.(!!rightIcon);
+    }, [leftIcon, rightIcon, setHasLeftIcon, setHasRightIcon]);
 
     return (
         <RSelect.Item
             className={clsx(styles.item, {
                 [styles.selected]: isSelected,
                 [styles.disabled]: disabled,
+                [styles.hasLeftIcon]: hasLeftIcon,
+                [styles.hasRightIcon]: hasRightIcon,
             })}
             disabled={disabled}
             value={value}

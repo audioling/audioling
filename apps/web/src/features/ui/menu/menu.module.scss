@@ -63,6 +63,11 @@
     }
 }
 
+.item[data-highlighted] {
+    color: var(--menu-item-hover-font-color);
+    background-color: var(--menu-item-hover-background-color);
+}
+
 .divider {
     margin: var(--menu-divider-margin);
     border-top: var(--menu-divider-border-top);

@@ -26,12 +26,19 @@
     z-index: 10000;
     width: var(--radix-select-trigger-width);
     min-width: 8rem;
-    max-height: var(--radix-select-content-available-height);
+    max-height: 18rem;
     padding: var(--menu-padding);
     background-color: var(--menu-background-color);
     border: var(--menu-border);
     border-radius: var(--menu-border-radius);
     box-shadow: var(--menu-box-shadow);
+}
+
+.inner-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--base-gap-xs);
+    overflow: hidden;
 }
 
 .item {
@@ -40,8 +47,10 @@
     justify-content: space-between;
     min-width: 8rem;
     padding: var(--menu-item-padding);
-    padding-right: 2rem;
-    padding-left: 2rem;
+
+    // padding-right: 2rem;
+
+    // padding-left: 2rem;
     font-size: var(--menu-item-font-size);
     font-weight: var(--menu-item-font-weight);
     color: var(--menu-item-font-color);
@@ -53,6 +62,19 @@
         color: var(--menu-item-hover-font-color);
         background-color: var(--menu-item-hover-background-color);
     }
+}
+
+.item[data-highlighted] {
+    color: var(--menu-item-hover-font-color);
+    background-color: var(--menu-item-hover-background-color);
+}
+
+.item.has-left-icon {
+    padding-left: 2rem;
+}
+
+.item.has-right-icon {
+    padding-right: 2rem;
 }
 
 .target {
