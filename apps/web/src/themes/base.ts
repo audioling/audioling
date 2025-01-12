@@ -150,7 +150,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'input-placeholder-color': 'var(--global-font-secondary-color)',
     'layout-base-border-radius': radius.sm,
     'layout-base-padding': 0,
-    'layout-border-color': 'rgba(60, 60, 60, 0)',
+    'layout-border-color': 'rgba(255, 255, 255, 0.1)',
     'layout-border-focus-color': 'rgba(255, 255, 255, 0.1)',
     'layout-content-background-color': 'rgb(13, 13, 13)',
     'layout-content-padding': `${gap.sm} ${gap.md}`,

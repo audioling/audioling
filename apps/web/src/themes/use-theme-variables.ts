@@ -16,13 +16,7 @@ export function useThemeVariables(theme: string) {
             let cssText = ':root {\n';
 
             for (const [key, value] of Object.entries(themes[theme as keyof typeof themes].theme)) {
-                if (key === 'layout-border-color') {
-                    cssText += `  --separator-border: ${value};\n`;
-                } else if (key === 'layout-border-focus-color') {
-                    cssText += `  --focus-border: ${value};\n`;
-                } else {
-                    cssText += `  --${key}: ${value};\n`;
-                }
+                cssText += `  --${key}: ${value};\n`;
             }
 
             for (const [key, value] of Object.entries(
