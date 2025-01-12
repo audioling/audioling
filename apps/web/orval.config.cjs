@@ -9,7 +9,7 @@ module.exports = {
             client: 'react-query',
             override: {
                 query: {
-                    useQuery: false,
+                    useQuery: true,
                     useInfinite: false,
                     useSuspenseQuery: true,
                     useSuspenseInfiniteQuery: false,
