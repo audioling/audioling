@@ -79,12 +79,9 @@ export function QueueControls({
 
     const handleSelect = useCallback(
         (value: boolean) => {
-            console.log('table :>> ', table);
             if (!table) {
                 return;
             }
-
-            console.log('table', table);
 
             table.getRowModel().rows.forEach((row) => {
                 row.toggleSelected(value);
