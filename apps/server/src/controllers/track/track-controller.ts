@@ -5,6 +5,7 @@ import type { CountResponse } from '@/controllers/shared-api-types.js';
 import type {
     TrackDetailResponse,
     TrackListResponse,
+    TrackQuery,
 } from '@/controllers/track/track-api-types.js';
 import { trackHelpers } from '@/controllers/track/track-helpers.js';
 import type { AdapterVariables } from '@/middlewares/adapter-middleware.js';
@@ -104,6 +105,94 @@ export const initTrackController = (modules: { service: AppService }) => {
         },
     );
 
+    // ANCHOR - POST /query
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/query',
+            summary: 'Get tracks query',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/query'].get,
+        }),
+        async (c) => {
+            const { adapter, authToken } = c.var;
+            const query = c.req.valid('query');
+
+            const trackQuery = decodeURIComponent(query.query);
+            const queryObject = JSON.parse(trackQuery) as TrackQuery;
+
+            const result = await service.track.queryIndex(adapter, {
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                query: queryObject,
+            });
+
+            const response: TrackListResponse = {
+                data: result.items.map((item) =>
+                    trackHelpers.adapterToResponse(item, adapter._getLibrary().id, authToken),
+                ),
+                meta: {
+                    next: controllerHelpers.getIsNextPage(
+                        result.offset,
+                        result.limit,
+                        result.totalRecordCount,
+                    ),
+                    prev: controllerHelpers.getIsPrevPage(result.offset, result.limit),
+                    totalRecordCount: result.totalRecordCount,
+                },
+            };
+
+            return c.json(response, 200);
+        },
+    );
+
+    // ANCHOR - GET /query/status
+    controller.openapi(
+        createRoute({
+            method: 'get',
+            path: '/query/status',
+            summary: 'Get track query status',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/query/status'].get,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            const status = await service.track.queryStatus(adapter);
+            return c.json(status, 200);
+        },
+    );
+
+    // ANCHOR - POST /query/index
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/query/index',
+            summary: 'Start track list indexing',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/query/index'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            await service.track.buildQueryIndex(adapter);
+            return c.json(null, 204);
+        },
+    );
+
+    // ANCHOR - DELETE /query/index
+    controller.openapi(
+        createRoute({
+            method: 'delete',
+            path: '/query/index',
+            summary: 'Abort track list indexing',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/query/index'].delete,
+        }),
+        async (c) => {
+            await service.track.abortIndexJob();
+            return c.json(null, 204);
+        },
+    );
+
     // ANCHOR - GET /{id}
     controller.openapi(
         createRoute({
@@ -174,9 +263,9 @@ export const initTrackController = (modules: { service: AppService }) => {
             const { id } = c.req.param();
             const { adapter } = c.var;
 
-            await service.track.unfavoriteById(adapter, { id });
+            await service.track.favoriteById(adapter, { id });
 
-            return c.json(null, 204);
+            return c.text(null, 204);
         },
     );
 
@@ -202,4 +291,4 @@ export const initTrackController = (modules: { service: AppService }) => {
     return controller;
 };
 
-export type MediaFileController = ReturnType<typeof initTrackController>;
+export type TrackController = ReturnType<typeof initTrackController>;

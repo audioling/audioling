@@ -26,6 +26,7 @@
         "configstore": "^7.0.0",
         "dayjs": "^1.11.13",
         "hono": "^4.6.14",
+        "jsonata": "^2.0.6",
         "lodash": "^4.17.21",
         "md5": "^2.3.0",
         "normalize-text": "^2.5.0",

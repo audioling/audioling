@@ -8,6 +8,8 @@ import {
     trackDetailResponseSchema,
     trackListRequestSchema,
     trackListResponseSchema,
+    trackQueryRequestSchema,
+    trackQueryStatusResponseSchema,
 } from '@/controllers/track/track-api-types.js';
 
 export const trackApiSchema = {
@@ -48,6 +50,81 @@ export const trackApiSchema = {
             responses: schemaResponse(
                 { description: 'Invalidate track count', schema: EmptyResponseSchema, status: 204 },
                 [401, 403, 422, 500],
+            ),
+        },
+    },
+    '/query': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+                query: trackQueryRequestSchema,
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Get tracks query',
+                    schema: trackListResponseSchema,
+                    status: 200,
+                },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/query/index': {
+        delete: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Abort track list indexing',
+                    schema: EmptyResponseSchema,
+                    status: 204,
+                },
+                [401, 403, 404, 500],
+            ),
+        },
+        post: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Start track list indexing',
+                    schema: EmptyResponseSchema,
+                    status: 204,
+                },
+                [401, 403, 422, 500],
+            ),
+        },
+    },
+    '/query/status': {
+        get: {
+            request: {
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Get track query status',
+                    schema: trackQueryStatusResponseSchema,
+                    status: 200,
+                },
+                [401, 403, 422, 500],
+            ),
+        },
+    },
+    '/query/{queryId}': {
+        delete: {
+            request: {
+                params: z.object({ libraryId: z.string(), queryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Delete and abort a track query',
+                    schema: EmptyResponseSchema,
+                    status: 204,
+                },
+                [401, 403, 404, 500],
             ),
         },
     },

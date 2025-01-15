@@ -26,6 +26,11 @@ import type {
     DeleteApiLibraryIdTracksIdFavorite403,
     DeleteApiLibraryIdTracksIdFavorite404,
     DeleteApiLibraryIdTracksIdFavorite500,
+    DeleteApiLibraryIdTracksQueryIndex204,
+    DeleteApiLibraryIdTracksQueryIndex401,
+    DeleteApiLibraryIdTracksQueryIndex403,
+    DeleteApiLibraryIdTracksQueryIndex404,
+    DeleteApiLibraryIdTracksQueryIndex500,
     GetApiLibraryIdTracks200,
     GetApiLibraryIdTracks401,
     GetApiLibraryIdTracks403,
@@ -47,6 +52,17 @@ import type {
     GetApiLibraryIdTracksIdStream404,
     GetApiLibraryIdTracksIdStream500,
     GetApiLibraryIdTracksParams,
+    GetApiLibraryIdTracksQuery200,
+    GetApiLibraryIdTracksQuery401,
+    GetApiLibraryIdTracksQuery403,
+    GetApiLibraryIdTracksQuery422,
+    GetApiLibraryIdTracksQuery500,
+    GetApiLibraryIdTracksQueryParams,
+    GetApiLibraryIdTracksQueryStatus200,
+    GetApiLibraryIdTracksQueryStatus401,
+    GetApiLibraryIdTracksQueryStatus403,
+    GetApiLibraryIdTracksQueryStatus422,
+    GetApiLibraryIdTracksQueryStatus500,
     PostApiLibraryIdTracksCountInvalidate204,
     PostApiLibraryIdTracksCountInvalidate401,
     PostApiLibraryIdTracksCountInvalidate403,
@@ -57,6 +73,11 @@ import type {
     PostApiLibraryIdTracksIdFavorite403,
     PostApiLibraryIdTracksIdFavorite404,
     PostApiLibraryIdTracksIdFavorite500,
+    PostApiLibraryIdTracksQueryIndex204,
+    PostApiLibraryIdTracksQueryIndex401,
+    PostApiLibraryIdTracksQueryIndex403,
+    PostApiLibraryIdTracksQueryIndex422,
+    PostApiLibraryIdTracksQueryIndex500,
 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
 import type { ErrorType } from '../../api-instance.ts';
@@ -792,6 +813,832 @@ export const usePostApiLibraryIdTracksCountInvalidate = <
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<TData, TError, { libraryId: string }, TContext> => {
     const mutationOptions = getPostApiLibraryIdTracksCountInvalidateMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Get tracks query
+ */
+export const getApiLibraryIdTracksQuery = (
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdTracksQuery200>(
+        { url: `/api/${libraryId}/tracks/query`, method: 'GET', params, signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdTracksQueryQueryKey = (
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+) => {
+    return [`/api/${libraryId}/tracks/query`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiLibraryIdTracksQueryQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdTracksQueryQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>> = ({
+        signal,
+    }) => getApiLibraryIdTracksQuery(libraryId, params, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+};
+
+export type GetApiLibraryIdTracksQueryQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>
+>;
+export type GetApiLibraryIdTracksQueryQueryError = ErrorType<
+    | GetApiLibraryIdTracksQuery401
+    | GetApiLibraryIdTracksQuery403
+    | GetApiLibraryIdTracksQuery422
+    | GetApiLibraryIdTracksQuery500
+>;
+
+export function useGetApiLibraryIdTracksQuery<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options: {
+        query: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData>
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                    TError,
+                    TData
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQuery<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                    TError,
+                    TData
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQuery<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get tracks query
+ */
+
+export function useGetApiLibraryIdTracksQuery<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetApiLibraryIdTracksQueryQueryOptions(libraryId, params, options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibraryIdTracksQuerySuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdTracksQueryQueryKey(libraryId, params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>> = ({
+        signal,
+    }) => getApiLibraryIdTracksQuery(libraryId, params, requestOptions, signal);
+
+    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiLibraryIdTracksQuerySuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>
+>;
+export type GetApiLibraryIdTracksQuerySuspenseQueryError = ErrorType<
+    | GetApiLibraryIdTracksQuery401
+    | GetApiLibraryIdTracksQuery403
+    | GetApiLibraryIdTracksQuery422
+    | GetApiLibraryIdTracksQuery500
+>;
+
+export function useGetApiLibraryIdTracksQuerySuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQuerySuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQuerySuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get tracks query
+ */
+
+export function useGetApiLibraryIdTracksQuerySuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQuery401
+        | GetApiLibraryIdTracksQuery403
+        | GetApiLibraryIdTracksQuery422
+        | GetApiLibraryIdTracksQuery500
+    >,
+>(
+    libraryId: string,
+    params: GetApiLibraryIdTracksQueryParams,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetApiLibraryIdTracksQuerySuspenseQueryOptions(
+        libraryId,
+        params,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Get track query status
+ */
+export const getApiLibraryIdTracksQueryStatus = (
+    libraryId: string,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<GetApiLibraryIdTracksQueryStatus200>(
+        { url: `/api/${libraryId}/tracks/query/status`, method: 'GET', signal },
+        options,
+    );
+};
+
+export const getGetApiLibraryIdTracksQueryStatusQueryKey = (libraryId: string) => {
+    return [`/api/${libraryId}/tracks/query/status`] as const;
+};
+
+export const getGetApiLibraryIdTracksQueryStatusQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdTracksQueryStatusQueryKey(libraryId);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>> = ({
+        signal,
+    }) => getApiLibraryIdTracksQueryStatus(libraryId, requestOptions, signal);
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: !!libraryId,
+        staleTime: 10000,
+        ...queryOptions,
+    } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiLibraryIdTracksQueryStatusQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>
+>;
+export type GetApiLibraryIdTracksQueryStatusQueryError = ErrorType<
+    | GetApiLibraryIdTracksQueryStatus401
+    | GetApiLibraryIdTracksQueryStatus403
+    | GetApiLibraryIdTracksQueryStatus422
+    | GetApiLibraryIdTracksQueryStatus500
+>;
+
+export function useGetApiLibraryIdTracksQueryStatus<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options: {
+        query: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                    TError,
+                    TData
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQueryStatus<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                    TError,
+                    TData
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQueryStatus<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get track query status
+ */
+
+export function useGetApiLibraryIdTracksQueryStatus<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetApiLibraryIdTracksQueryStatusQueryOptions(libraryId, options);
+
+    const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+export const getGetApiLibraryIdTracksQueryStatusSuspenseQueryOptions = <
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey =
+        queryOptions?.queryKey ?? getGetApiLibraryIdTracksQueryStatusQueryKey(libraryId);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>> = ({
+        signal,
+    }) => getApiLibraryIdTracksQueryStatus(libraryId, requestOptions, signal);
+
+    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiLibraryIdTracksQueryStatusSuspenseQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>
+>;
+export type GetApiLibraryIdTracksQueryStatusSuspenseQueryError = ErrorType<
+    | GetApiLibraryIdTracksQueryStatus401
+    | GetApiLibraryIdTracksQueryStatus403
+    | GetApiLibraryIdTracksQueryStatus422
+    | GetApiLibraryIdTracksQueryStatus500
+>;
+
+export function useGetApiLibraryIdTracksQueryStatusSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options: {
+        query: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQueryStatusSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiLibraryIdTracksQueryStatusSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get track query status
+ */
+
+export function useGetApiLibraryIdTracksQueryStatusSuspense<
+    TData = Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+    TError = ErrorType<
+        | GetApiLibraryIdTracksQueryStatus401
+        | GetApiLibraryIdTracksQueryStatus403
+        | GetApiLibraryIdTracksQueryStatus422
+        | GetApiLibraryIdTracksQueryStatus500
+    >,
+>(
+    libraryId: string,
+    options?: {
+        query?: Partial<
+            UseSuspenseQueryOptions<
+                Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
+                TError,
+                TData
+            >
+        >;
+        request?: SecondParameter<typeof apiInstance>;
+    },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetApiLibraryIdTracksQueryStatusSuspenseQueryOptions(
+        libraryId,
+        options,
+    );
+
+    const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    query.queryKey = queryOptions.queryKey;
+
+    return query;
+}
+
+/**
+ * @summary Start track list indexing
+ */
+export const postApiLibraryIdTracksQueryIndex = (
+    libraryId: string,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdTracksQueryIndex204>(
+        { url: `/api/${libraryId}/tracks/query/index`, method: 'POST', signal },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdTracksQueryIndexMutationOptions = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksQueryIndex>>,
+    TError = ErrorType<
+        | PostApiLibraryIdTracksQueryIndex401
+        | PostApiLibraryIdTracksQueryIndex403
+        | PostApiLibraryIdTracksQueryIndex422
+        | PostApiLibraryIdTracksQueryIndex500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<TData, TError, { libraryId: string }, TContext>;
+    request?: SecondParameter<typeof apiInstance>;
+}) => {
+    const mutationKey = ['postApiLibraryIdTracksQueryIndex'];
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdTracksQueryIndex>>,
+        { libraryId: string }
+    > = (props) => {
+        const { libraryId } = props ?? {};
+
+        return postApiLibraryIdTracksQueryIndex(libraryId, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions } as UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+};
+
+export type PostApiLibraryIdTracksQueryIndexMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdTracksQueryIndex>>
+>;
+
+export type PostApiLibraryIdTracksQueryIndexMutationError = ErrorType<
+    | PostApiLibraryIdTracksQueryIndex401
+    | PostApiLibraryIdTracksQueryIndex403
+    | PostApiLibraryIdTracksQueryIndex422
+    | PostApiLibraryIdTracksQueryIndex500
+>;
+
+/**
+ * @summary Start track list indexing
+ */
+export const usePostApiLibraryIdTracksQueryIndex = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksQueryIndex>>,
+    TError = ErrorType<
+        | PostApiLibraryIdTracksQueryIndex401
+        | PostApiLibraryIdTracksQueryIndex403
+        | PostApiLibraryIdTracksQueryIndex422
+        | PostApiLibraryIdTracksQueryIndex500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<TData, TError, { libraryId: string }, TContext>;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<TData, TError, { libraryId: string }, TContext> => {
+    const mutationOptions = getPostApiLibraryIdTracksQueryIndexMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Abort track list indexing
+ */
+export const deleteApiLibraryIdTracksQueryIndex = (
+    libraryId: string,
+    options?: SecondParameter<typeof apiInstance>,
+) => {
+    return apiInstance<DeleteApiLibraryIdTracksQueryIndex204>(
+        { url: `/api/${libraryId}/tracks/query/index`, method: 'DELETE' },
+        options,
+    );
+};
+
+export const getDeleteApiLibraryIdTracksQueryIndexMutationOptions = <
+    TData = Awaited<ReturnType<typeof deleteApiLibraryIdTracksQueryIndex>>,
+    TError = ErrorType<
+        | DeleteApiLibraryIdTracksQueryIndex401
+        | DeleteApiLibraryIdTracksQueryIndex403
+        | DeleteApiLibraryIdTracksQueryIndex404
+        | DeleteApiLibraryIdTracksQueryIndex500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<TData, TError, { libraryId: string }, TContext>;
+    request?: SecondParameter<typeof apiInstance>;
+}) => {
+    const mutationKey = ['deleteApiLibraryIdTracksQueryIndex'];
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof deleteApiLibraryIdTracksQueryIndex>>,
+        { libraryId: string }
+    > = (props) => {
+        const { libraryId } = props ?? {};
+
+        return deleteApiLibraryIdTracksQueryIndex(libraryId, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions } as UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string },
+        TContext
+    >;
+};
+
+export type DeleteApiLibraryIdTracksQueryIndexMutationResult = NonNullable<
+    Awaited<ReturnType<typeof deleteApiLibraryIdTracksQueryIndex>>
+>;
+
+export type DeleteApiLibraryIdTracksQueryIndexMutationError = ErrorType<
+    | DeleteApiLibraryIdTracksQueryIndex401
+    | DeleteApiLibraryIdTracksQueryIndex403
+    | DeleteApiLibraryIdTracksQueryIndex404
+    | DeleteApiLibraryIdTracksQueryIndex500
+>;
+
+/**
+ * @summary Abort track list indexing
+ */
+export const useDeleteApiLibraryIdTracksQueryIndex = <
+    TData = Awaited<ReturnType<typeof deleteApiLibraryIdTracksQueryIndex>>,
+    TError = ErrorType<
+        | DeleteApiLibraryIdTracksQueryIndex401
+        | DeleteApiLibraryIdTracksQueryIndex403
+        | DeleteApiLibraryIdTracksQueryIndex404
+        | DeleteApiLibraryIdTracksQueryIndex500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<TData, TError, { libraryId: string }, TContext>;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<TData, TError, { libraryId: string }, TContext> => {
+    const mutationOptions = getDeleteApiLibraryIdTracksQueryIndexMutationOptions(options);
 
     return useMutation(mutationOptions);
 };

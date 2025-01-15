@@ -73,3 +73,61 @@ export const trackListResponseSchema = createPaginatedResponseSchema({
 });
 
 export type TrackListResponse = z.infer<typeof trackListResponseSchema>;
+
+export const trackQueryBuilderConditionSchema = z.object({
+    field: z.string(),
+    operator: z.string(),
+    value: z.string(),
+});
+
+export const trackQueryBuilderGroupSchema: z.ZodType = z.lazy(() =>
+    z.object({
+        conditions: z.array(
+            z.union([trackQueryBuilderConditionSchema, trackQueryBuilderGroupSchema]),
+        ),
+        groupId: z.string(),
+        operator: z.enum(['AND', 'OR']),
+    }),
+);
+
+export const trackQuerySchema = z.object({
+    limit: z.number().optional(),
+    rules: z.union([trackQueryBuilderConditionSchema, trackQueryBuilderGroupSchema]),
+    sortBy: z
+        .object({
+            direction: z.enum(['asc', 'desc']),
+            field: z.string(),
+        })
+        .array(),
+});
+
+export type TrackQuery = z.infer<typeof trackQuerySchema>;
+
+export const trackQueryRequestSchema = z.object({
+    ...paginationQuery,
+    query: z.string(),
+    searchTerm: z.string().optional(),
+});
+
+export type TrackQueryRequest = z.infer<typeof trackQueryRequestSchema>;
+
+export const trackQueryStatusResponseSchema = z.object({
+    index: z.object({
+        dateFinished: z.string().nullable(),
+        dateStarted: z.string().nullable(),
+        isRunning: z.boolean(),
+        totalRecordCount: z.number().nullable(),
+    }),
+    queries: z.record(
+        z.string(),
+        z.object({
+            dateFinished: z.string().nullable(),
+            dateStarted: z.string().nullable(),
+            isFinished: z.boolean(),
+            isRunning: z.boolean(),
+            totalRecordCount: z.number(),
+        }),
+    ),
+});
+
+export type TrackQueryStatusResponse = z.infer<typeof trackQueryStatusResponseSchema>;

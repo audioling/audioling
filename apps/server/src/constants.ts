@@ -6,6 +6,8 @@ const APP_NAME = process.env.APP_NAME || 'audioling';
 
 const APP_DIR = getAppDataPath(APP_NAME);
 
+const LIBRARY_DIR = (libraryId: string) => path.join(APP_DIR, libraryId);
+
 const USER_DIR = process.env.APP_USER_DIR || path.join(APP_DIR, 'user');
 
 const CACHE_DIR = (libraryId: string) =>
@@ -32,6 +34,7 @@ export const CONSTANTS = {
     DEFAULT_PAGINATION_LIMIT,
     ENV,
     IMAGE_DIR,
+    LIBRARY_DIR,
     NODE_ENV,
     TEMP_DIR,
     USER_DIR,

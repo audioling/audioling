@@ -7,6 +7,7 @@ import { initDatabase } from '@/database/init-database.js';
 import { initConfig } from '@/modules/config/index.js';
 import { initIdFactoryModule } from '@/modules/id/index.js';
 import { initImageModule } from '@/modules/image/index.js';
+import { initQueryModule } from '@/modules/query/index.js';
 
 const config = initConfig({
     name: CONSTANTS.APP_NAME,
@@ -20,6 +21,7 @@ export const appLogger = initLogger({
 
 const idFactory = initIdFactoryModule();
 const imageModule = initImageModule();
+const queryModule = initQueryModule({ idFactory });
 
 const db = initDatabase({ idFactory });
 
@@ -36,5 +38,6 @@ initApplication({
         db,
         idFactory,
         imageModule,
+        queryModule,
     },
 });

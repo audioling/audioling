@@ -25,6 +25,7 @@ import { apiError } from '@/modules/error-handler/index.js';
 import type { IdFactoryModule } from '@/modules/id/index.js';
 import type { ImageModule } from '@/modules/image/index.js';
 import { initOpenApiUI } from '@/modules/open-api';
+import type { QueryModule } from '@/modules/query/index.js';
 import { initServices } from '@/services/index.js';
 
 type ApplicationOptions = {
@@ -33,12 +34,13 @@ type ApplicationOptions = {
         db: AppDatabase;
         idFactory: IdFactoryModule;
         imageModule: ImageModule;
+        queryModule: QueryModule;
     };
 };
 
 export const initApplication = async (options: ApplicationOptions) => {
     const { modules } = options;
-    const { db, idFactory, imageModule } = modules;
+    const { db, idFactory, imageModule, queryModule } = modules;
 
     const config = initConfig({
         name: CONSTANTS.APP_NAME,
@@ -70,7 +72,7 @@ export const initApplication = async (options: ApplicationOptions) => {
         port: config.get('port') || 4544,
     });
 
-    const service = initServices({ config, db, idFactory, imageModule });
+    const service = initServices({ config, db, idFactory, imageModule, queryModule });
 
     const rootController = initRootController({ service });
     const authController = initAuthController({ service });
