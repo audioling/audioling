@@ -190,7 +190,7 @@ export const initLibraryController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             await service.library.remove({ id: c.req.param('id') });
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 

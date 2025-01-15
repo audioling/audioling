@@ -101,7 +101,7 @@ export const initTrackController = (modules: { service: AppService }) => {
         async (c) => {
             const { adapter } = c.var;
             await service.track.invalidateCounts(adapter);
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -174,7 +174,7 @@ export const initTrackController = (modules: { service: AppService }) => {
         async (c) => {
             const { adapter } = c.var;
             await service.track.buildQueryIndex(adapter);
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -189,7 +189,7 @@ export const initTrackController = (modules: { service: AppService }) => {
         }),
         async (c) => {
             await service.track.abortIndexJob();
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -265,7 +265,7 @@ export const initTrackController = (modules: { service: AppService }) => {
 
             await service.track.favoriteById(adapter, { id });
 
-            return c.text(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -284,7 +284,7 @@ export const initTrackController = (modules: { service: AppService }) => {
 
             await service.track.unfavoriteById(adapter, { id });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 

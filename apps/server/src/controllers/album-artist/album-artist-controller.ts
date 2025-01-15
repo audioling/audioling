@@ -104,7 +104,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
         async (c) => {
             const { adapter } = c.var;
             await service.albumArtist.invalidateCounts(adapter);
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -231,9 +231,9 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
             const { id } = c.req.param();
             const { adapter } = c.var;
 
-            await service.albumArtist.unfavoriteById(adapter, { id });
+            await service.albumArtist.favoriteById(adapter, { id });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -252,7 +252,7 @@ export const initAlbumArtistController = (modules: { service: AppService }) => {
 
             await service.albumArtist.unfavoriteById(adapter, { id });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 

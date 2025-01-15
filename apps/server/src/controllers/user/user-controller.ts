@@ -86,7 +86,7 @@ export const initUserController = (modules: { service: AppService }) => {
                     isAdmin: false,
                     isEnabled: true,
                     password: body.password,
-                    tokens: [],
+                    tokens: {},
                     username: body.username,
                 },
             });
@@ -146,7 +146,7 @@ export const initUserController = (modules: { service: AppService }) => {
 
             await service.user.remove({ id: params.id });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 

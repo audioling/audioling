@@ -104,7 +104,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
         async (c) => {
             const { adapter } = c.var;
             await service.playlist.invalidateCounts(adapter);
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -125,7 +125,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 values: body,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -242,7 +242,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 values: body,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -264,7 +264,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 userId: user.id,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -288,7 +288,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 userId: user.id,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -312,7 +312,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 userId: user.id,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -411,7 +411,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 trackIds: body.trackIds,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -434,7 +434,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 trackIds: body.trackIds,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -457,7 +457,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
                 values: body,
             });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
@@ -476,7 +476,7 @@ export const initPlaylistController = (modules: { service: AppService }) => {
 
             await service.playlist.remove(adapter, { id: params.id });
 
-            return c.json(null, 204);
+            return c.body(null, 204);
         },
     );
 
