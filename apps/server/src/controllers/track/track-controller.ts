@@ -105,7 +105,7 @@ export const initTrackController = (modules: { service: AppService }) => {
         },
     );
 
-    // ANCHOR - POST /query
+    // ANCHOR - GET /query
     controller.openapi(
         createRoute({
             method: 'get',

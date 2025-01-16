@@ -302,7 +302,21 @@ export const initTrackService = (modules: { db: AppDatabase; queryModule: QueryM
                 const paginated = adapterHelpers.paginate(cachedQueryResults, offset, limit);
 
                 return {
-                    items: paginated.items,
+                    items: paginated.items.map((item) => ({
+                        ...item,
+                        imageUrl: serviceHelpers.getImageUrls([
+                            {
+                                id: item.id,
+                                libraryId: adapter._getLibrary().id,
+                                type: LibraryItemType.TRACK,
+                            },
+                            {
+                                id: item.albumId,
+                                libraryId: adapter._getLibrary().id,
+                                type: LibraryItemType.ALBUM,
+                            },
+                        ]),
+                    })),
                     limit: paginated.limit,
                     offset: paginated.offset,
                     totalRecordCount: cachedQueryResults.length,
@@ -335,7 +349,21 @@ export const initTrackService = (modules: { db: AppDatabase; queryModule: QueryM
             const paginated = adapterHelpers.paginate(sorted, offset, limit);
 
             return {
-                items: paginated.items,
+                items: paginated.items.map((item) => ({
+                    ...item,
+                    imageUrl: serviceHelpers.getImageUrls([
+                        {
+                            id: item.id,
+                            libraryId: adapter._getLibrary().id,
+                            type: LibraryItemType.TRACK,
+                        },
+                        {
+                            id: item.albumId,
+                            libraryId: adapter._getLibrary().id,
+                            type: LibraryItemType.ALBUM,
+                        },
+                    ]),
+                })),
                 limit: paginated.limit,
                 offset: paginated.offset,
                 totalRecordCount: results.length,
