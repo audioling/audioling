@@ -1627,12 +1627,12 @@ export const initSubsonicAdapter: RemoteAdapter = (library: DbLibrary, db: AppDa
             }
 
             if (shouldRemove) {
-                const result = await apiClient.star.os['1'].get({
+                const result = await apiClient.unstar.os['1'].get({
                     fetchOptions,
                     query: {
-                        albumId: albumIds.add,
-                        artistId: artistIds.add,
-                        id: trackIds.add,
+                        albumId: albumIds.remove,
+                        artistId: artistIds.remove,
+                        id: trackIds.remove,
                     },
                 });
 
