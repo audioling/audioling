@@ -175,7 +175,7 @@ export interface IconProps {
     fill?: boolean;
     icon: keyof typeof AppIcon;
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
-    state?: 'success' | 'error' | 'info' | 'warn' | 'secondary';
+    state?: 'success' | 'error' | 'info' | 'warn' | 'secondary' | 'primary';
 }
 
 export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {

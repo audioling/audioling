@@ -11,7 +11,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
     children?: React.ReactNode;
     icon: keyof typeof AppIcon;
     iconFill?: boolean;
-    iconProps?: React.ComponentProps<typeof Icon>;
+    iconProps?: Omit<React.ComponentProps<typeof Icon>, 'icon'>;
     isCompact?: boolean;
     isDisabled?: boolean;
     isLoading?: boolean;

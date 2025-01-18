@@ -69,6 +69,12 @@
     }
 }
 
+.color-primary {
+    svg {
+        color: base.$primary-color !important;
+    }
+}
+
 .color-warn {
     svg {
         color: base.$warning-color !important;
