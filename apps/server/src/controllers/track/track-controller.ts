@@ -105,6 +105,48 @@ export const initTrackController = (modules: { service: AppService }) => {
         },
     );
 
+    // ANCHOR - POST /favorite
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/favorite',
+            summary: 'Add track favorites by ids',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/favorite'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            const body = c.req.valid('json');
+
+            for (const id of body.ids) {
+                await service.track.favoriteById(adapter, { id });
+            }
+
+            return c.body(null, 204);
+        },
+    );
+
+    // ANCHOR - POST /unfavorite
+    controller.openapi(
+        createRoute({
+            method: 'post',
+            path: '/unfavorite',
+            summary: 'Remove track favorites by ids',
+            tags: [...defaultOpenapiTags],
+            ...apiSchema.track['/unfavorite'].post,
+        }),
+        async (c) => {
+            const { adapter } = c.var;
+            const body = c.req.valid('json');
+
+            for (const id of body.ids) {
+                await service.track.unfavoriteById(adapter, { id });
+            }
+
+            return c.body(null, 204);
+        },
+    );
+
     // ANCHOR - GET /query
     controller.openapi(
         createRoute({
@@ -247,44 +289,6 @@ export const initTrackController = (modules: { service: AppService }) => {
                 headers,
                 status: response.status,
             });
-        },
-    );
-
-    // ANCHOR - POST /{id}/favorite
-    controller.openapi(
-        createRoute({
-            method: 'post',
-            path: '/{id}/favorite',
-            summary: 'Add track favorite by id',
-            tags: [...defaultOpenapiTags],
-            ...apiSchema.track['/{id}/favorite'].post,
-        }),
-        async (c) => {
-            const { id } = c.req.param();
-            const { adapter } = c.var;
-
-            await service.track.favoriteById(adapter, { id });
-
-            return c.body(null, 204);
-        },
-    );
-
-    // ANCHOR - DELETE /{id}/favorite
-    controller.openapi(
-        createRoute({
-            method: 'delete',
-            path: '/{id}/favorite',
-            summary: 'Remove track favorite by id',
-            tags: [...defaultOpenapiTags],
-            ...apiSchema.track['/{id}/favorite'].delete,
-        }),
-        async (c) => {
-            const { id } = c.req.param();
-            const { adapter } = c.var;
-
-            await service.track.unfavoriteById(adapter, { id });
-
-            return c.body(null, 204);
         },
     );
 

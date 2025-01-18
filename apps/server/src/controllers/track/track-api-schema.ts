@@ -53,6 +53,25 @@ export const trackApiSchema = {
             ),
         },
     },
+    '/favorite': {
+        post: {
+            request: {
+                body: {
+                    content: {
+                        'application/json': {
+                            schema: z.object({ ids: z.array(z.string()) }),
+                        },
+                    },
+                },
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                { description: 'Add track favorites', schema: EmptyResponseSchema, status: 204 },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
     '/query': {
         get: {
             request: {
@@ -128,6 +147,25 @@ export const trackApiSchema = {
             ),
         },
     },
+    '/unfavorite': {
+        post: {
+            request: {
+                body: {
+                    content: {
+                        'application/json': {
+                            schema: z.object({ ids: z.array(z.string()) }),
+                        },
+                    },
+                },
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                { description: 'Remove track favorites', schema: EmptyResponseSchema, status: 204 },
+                [401, 403, 422, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
     '/{id}': {
         get: {
             request: {
@@ -138,36 +176,6 @@ export const trackApiSchema = {
                     description: 'Get track by id',
                     schema: trackDetailResponseSchema,
                     status: 200,
-                },
-                [401, 403, 404, 500],
-            ),
-            security: [{ Bearer: [] }],
-        },
-    },
-    '/{id}/favorite': {
-        delete: {
-            request: {
-                params: z.object({ id: z.string(), libraryId: z.string() }),
-            },
-            responses: schemaResponse(
-                {
-                    description: 'Remove track favorite by id',
-                    schema: EmptyResponseSchema,
-                    status: 204,
-                },
-                [401, 403, 404, 500],
-            ),
-            security: [{ Bearer: [] }],
-        },
-        post: {
-            request: {
-                params: z.object({ id: z.string(), libraryId: z.string() }),
-            },
-            responses: schemaResponse(
-                {
-                    description: 'Add track favorite by id',
-                    schema: EmptyResponseSchema,
-                    status: 204,
                 },
                 [401, 403, 404, 500],
             ),

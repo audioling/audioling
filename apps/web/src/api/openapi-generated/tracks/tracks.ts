@@ -21,11 +21,6 @@ import type {
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 import type {
-    DeleteApiLibraryIdTracksIdFavorite204,
-    DeleteApiLibraryIdTracksIdFavorite401,
-    DeleteApiLibraryIdTracksIdFavorite403,
-    DeleteApiLibraryIdTracksIdFavorite404,
-    DeleteApiLibraryIdTracksIdFavorite500,
     DeleteApiLibraryIdTracksQueryIndex204,
     DeleteApiLibraryIdTracksQueryIndex401,
     DeleteApiLibraryIdTracksQueryIndex403,
@@ -68,19 +63,26 @@ import type {
     PostApiLibraryIdTracksCountInvalidate403,
     PostApiLibraryIdTracksCountInvalidate422,
     PostApiLibraryIdTracksCountInvalidate500,
-    PostApiLibraryIdTracksIdFavorite204,
-    PostApiLibraryIdTracksIdFavorite401,
-    PostApiLibraryIdTracksIdFavorite403,
-    PostApiLibraryIdTracksIdFavorite404,
-    PostApiLibraryIdTracksIdFavorite500,
+    PostApiLibraryIdTracksFavorite204,
+    PostApiLibraryIdTracksFavorite401,
+    PostApiLibraryIdTracksFavorite403,
+    PostApiLibraryIdTracksFavorite422,
+    PostApiLibraryIdTracksFavorite500,
+    PostApiLibraryIdTracksFavoriteBody,
     PostApiLibraryIdTracksQueryIndex204,
     PostApiLibraryIdTracksQueryIndex401,
     PostApiLibraryIdTracksQueryIndex403,
     PostApiLibraryIdTracksQueryIndex422,
     PostApiLibraryIdTracksQueryIndex500,
+    PostApiLibraryIdTracksUnfavorite204,
+    PostApiLibraryIdTracksUnfavorite401,
+    PostApiLibraryIdTracksUnfavorite403,
+    PostApiLibraryIdTracksUnfavorite422,
+    PostApiLibraryIdTracksUnfavorite500,
+    PostApiLibraryIdTracksUnfavoriteBody,
 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
-import type { ErrorType } from '../../api-instance.ts';
+import type { ErrorType, BodyType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -813,6 +815,216 @@ export const usePostApiLibraryIdTracksCountInvalidate = <
     request?: SecondParameter<typeof apiInstance>;
 }): UseMutationResult<TData, TError, { libraryId: string }, TContext> => {
     const mutationOptions = getPostApiLibraryIdTracksCountInvalidateMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Add track favorites by ids
+ */
+export const postApiLibraryIdTracksFavorite = (
+    libraryId: string,
+    postApiLibraryIdTracksFavoriteBody: BodyType<PostApiLibraryIdTracksFavoriteBody>,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdTracksFavorite204>(
+        {
+            url: `/api/${libraryId}/tracks/favorite`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdTracksFavoriteBody,
+            signal,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdTracksFavoriteMutationOptions = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksFavorite>>,
+    TError = ErrorType<
+        | PostApiLibraryIdTracksFavorite401
+        | PostApiLibraryIdTracksFavorite403
+        | PostApiLibraryIdTracksFavorite422
+        | PostApiLibraryIdTracksFavorite500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksFavoriteBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}) => {
+    const mutationKey = ['postApiLibraryIdTracksFavorite'];
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdTracksFavorite>>,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksFavoriteBody> }
+    > = (props) => {
+        const { libraryId, data } = props ?? {};
+
+        return postApiLibraryIdTracksFavorite(libraryId, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions } as UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksFavoriteBody> },
+        TContext
+    >;
+};
+
+export type PostApiLibraryIdTracksFavoriteMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdTracksFavorite>>
+>;
+export type PostApiLibraryIdTracksFavoriteMutationBody =
+    BodyType<PostApiLibraryIdTracksFavoriteBody>;
+export type PostApiLibraryIdTracksFavoriteMutationError = ErrorType<
+    | PostApiLibraryIdTracksFavorite401
+    | PostApiLibraryIdTracksFavorite403
+    | PostApiLibraryIdTracksFavorite422
+    | PostApiLibraryIdTracksFavorite500
+>;
+
+/**
+ * @summary Add track favorites by ids
+ */
+export const usePostApiLibraryIdTracksFavorite = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksFavorite>>,
+    TError = ErrorType<
+        | PostApiLibraryIdTracksFavorite401
+        | PostApiLibraryIdTracksFavorite403
+        | PostApiLibraryIdTracksFavorite422
+        | PostApiLibraryIdTracksFavorite500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksFavoriteBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    TData,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdTracksFavoriteBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdTracksFavoriteMutationOptions(options);
+
+    return useMutation(mutationOptions);
+};
+/**
+ * @summary Remove track favorites by ids
+ */
+export const postApiLibraryIdTracksUnfavorite = (
+    libraryId: string,
+    postApiLibraryIdTracksUnfavoriteBody: BodyType<PostApiLibraryIdTracksUnfavoriteBody>,
+    options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
+) => {
+    return apiInstance<PostApiLibraryIdTracksUnfavorite204>(
+        {
+            url: `/api/${libraryId}/tracks/unfavorite`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdTracksUnfavoriteBody,
+            signal,
+        },
+        options,
+    );
+};
+
+export const getPostApiLibraryIdTracksUnfavoriteMutationOptions = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksUnfavorite>>,
+    TError = ErrorType<
+        | PostApiLibraryIdTracksUnfavorite401
+        | PostApiLibraryIdTracksUnfavorite403
+        | PostApiLibraryIdTracksUnfavorite422
+        | PostApiLibraryIdTracksUnfavorite500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksUnfavoriteBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}) => {
+    const mutationKey = ['postApiLibraryIdTracksUnfavorite'];
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof postApiLibraryIdTracksUnfavorite>>,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksUnfavoriteBody> }
+    > = (props) => {
+        const { libraryId, data } = props ?? {};
+
+        return postApiLibraryIdTracksUnfavorite(libraryId, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions } as UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksUnfavoriteBody> },
+        TContext
+    >;
+};
+
+export type PostApiLibraryIdTracksUnfavoriteMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdTracksUnfavorite>>
+>;
+export type PostApiLibraryIdTracksUnfavoriteMutationBody =
+    BodyType<PostApiLibraryIdTracksUnfavoriteBody>;
+export type PostApiLibraryIdTracksUnfavoriteMutationError = ErrorType<
+    | PostApiLibraryIdTracksUnfavorite401
+    | PostApiLibraryIdTracksUnfavorite403
+    | PostApiLibraryIdTracksUnfavorite422
+    | PostApiLibraryIdTracksUnfavorite500
+>;
+
+/**
+ * @summary Remove track favorites by ids
+ */
+export const usePostApiLibraryIdTracksUnfavorite = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksUnfavorite>>,
+    TError = ErrorType<
+        | PostApiLibraryIdTracksUnfavorite401
+        | PostApiLibraryIdTracksUnfavorite403
+        | PostApiLibraryIdTracksUnfavorite422
+        | PostApiLibraryIdTracksUnfavorite500
+    >,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdTracksUnfavoriteBody> },
+        TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+}): UseMutationResult<
+    TData,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdTracksUnfavoriteBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdTracksUnfavoriteMutationOptions(options);
 
     return useMutation(mutationOptions);
 };
@@ -2307,169 +2519,3 @@ export function useGetApiLibraryIdTracksIdStreamSuspense<
 
     return query;
 }
-
-/**
- * @summary Add track favorite by id
- */
-export const postApiLibraryIdTracksIdFavorite = (
-    libraryId: string,
-    id: string,
-    options?: SecondParameter<typeof apiInstance>,
-    signal?: AbortSignal,
-) => {
-    return apiInstance<PostApiLibraryIdTracksIdFavorite204>(
-        { url: `/api/${libraryId}/tracks/${id}/favorite`, method: 'POST', signal },
-        options,
-    );
-};
-
-export const getPostApiLibraryIdTracksIdFavoriteMutationOptions = <
-    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksIdFavorite>>,
-    TError = ErrorType<
-        | PostApiLibraryIdTracksIdFavorite401
-        | PostApiLibraryIdTracksIdFavorite403
-        | PostApiLibraryIdTracksIdFavorite404
-        | PostApiLibraryIdTracksIdFavorite500
-    >,
-    TContext = unknown,
->(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
-    request?: SecondParameter<typeof apiInstance>;
-}) => {
-    const mutationKey = ['postApiLibraryIdTracksIdFavorite'];
-    const { mutation: mutationOptions, request: requestOptions } = options
-        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-            ? options
-            : { ...options, mutation: { ...options.mutation, mutationKey } }
-        : { mutation: { mutationKey }, request: undefined };
-
-    const mutationFn: MutationFunction<
-        Awaited<ReturnType<typeof postApiLibraryIdTracksIdFavorite>>,
-        { libraryId: string; id: string }
-    > = (props) => {
-        const { libraryId, id } = props ?? {};
-
-        return postApiLibraryIdTracksIdFavorite(libraryId, id, requestOptions);
-    };
-
-    return { mutationFn, ...mutationOptions } as UseMutationOptions<
-        TData,
-        TError,
-        { libraryId: string; id: string },
-        TContext
-    >;
-};
-
-export type PostApiLibraryIdTracksIdFavoriteMutationResult = NonNullable<
-    Awaited<ReturnType<typeof postApiLibraryIdTracksIdFavorite>>
->;
-
-export type PostApiLibraryIdTracksIdFavoriteMutationError = ErrorType<
-    | PostApiLibraryIdTracksIdFavorite401
-    | PostApiLibraryIdTracksIdFavorite403
-    | PostApiLibraryIdTracksIdFavorite404
-    | PostApiLibraryIdTracksIdFavorite500
->;
-
-/**
- * @summary Add track favorite by id
- */
-export const usePostApiLibraryIdTracksIdFavorite = <
-    TData = Awaited<ReturnType<typeof postApiLibraryIdTracksIdFavorite>>,
-    TError = ErrorType<
-        | PostApiLibraryIdTracksIdFavorite401
-        | PostApiLibraryIdTracksIdFavorite403
-        | PostApiLibraryIdTracksIdFavorite404
-        | PostApiLibraryIdTracksIdFavorite500
-    >,
-    TContext = unknown,
->(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
-    request?: SecondParameter<typeof apiInstance>;
-}): UseMutationResult<TData, TError, { libraryId: string; id: string }, TContext> => {
-    const mutationOptions = getPostApiLibraryIdTracksIdFavoriteMutationOptions(options);
-
-    return useMutation(mutationOptions);
-};
-/**
- * @summary Remove track favorite by id
- */
-export const deleteApiLibraryIdTracksIdFavorite = (
-    libraryId: string,
-    id: string,
-    options?: SecondParameter<typeof apiInstance>,
-) => {
-    return apiInstance<DeleteApiLibraryIdTracksIdFavorite204>(
-        { url: `/api/${libraryId}/tracks/${id}/favorite`, method: 'DELETE' },
-        options,
-    );
-};
-
-export const getDeleteApiLibraryIdTracksIdFavoriteMutationOptions = <
-    TData = Awaited<ReturnType<typeof deleteApiLibraryIdTracksIdFavorite>>,
-    TError = ErrorType<
-        | DeleteApiLibraryIdTracksIdFavorite401
-        | DeleteApiLibraryIdTracksIdFavorite403
-        | DeleteApiLibraryIdTracksIdFavorite404
-        | DeleteApiLibraryIdTracksIdFavorite500
-    >,
-    TContext = unknown,
->(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
-    request?: SecondParameter<typeof apiInstance>;
-}) => {
-    const mutationKey = ['deleteApiLibraryIdTracksIdFavorite'];
-    const { mutation: mutationOptions, request: requestOptions } = options
-        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-            ? options
-            : { ...options, mutation: { ...options.mutation, mutationKey } }
-        : { mutation: { mutationKey }, request: undefined };
-
-    const mutationFn: MutationFunction<
-        Awaited<ReturnType<typeof deleteApiLibraryIdTracksIdFavorite>>,
-        { libraryId: string; id: string }
-    > = (props) => {
-        const { libraryId, id } = props ?? {};
-
-        return deleteApiLibraryIdTracksIdFavorite(libraryId, id, requestOptions);
-    };
-
-    return { mutationFn, ...mutationOptions } as UseMutationOptions<
-        TData,
-        TError,
-        { libraryId: string; id: string },
-        TContext
-    >;
-};
-
-export type DeleteApiLibraryIdTracksIdFavoriteMutationResult = NonNullable<
-    Awaited<ReturnType<typeof deleteApiLibraryIdTracksIdFavorite>>
->;
-
-export type DeleteApiLibraryIdTracksIdFavoriteMutationError = ErrorType<
-    | DeleteApiLibraryIdTracksIdFavorite401
-    | DeleteApiLibraryIdTracksIdFavorite403
-    | DeleteApiLibraryIdTracksIdFavorite404
-    | DeleteApiLibraryIdTracksIdFavorite500
->;
-
-/**
- * @summary Remove track favorite by id
- */
-export const useDeleteApiLibraryIdTracksIdFavorite = <
-    TData = Awaited<ReturnType<typeof deleteApiLibraryIdTracksIdFavorite>>,
-    TError = ErrorType<
-        | DeleteApiLibraryIdTracksIdFavorite401
-        | DeleteApiLibraryIdTracksIdFavorite403
-        | DeleteApiLibraryIdTracksIdFavorite404
-        | DeleteApiLibraryIdTracksIdFavorite500
-    >,
-    TContext = unknown,
->(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
-    request?: SecondParameter<typeof apiInstance>;
-}): UseMutationResult<TData, TError, { libraryId: string; id: string }, TContext> => {
-    const mutationOptions = getDeleteApiLibraryIdTracksIdFavoriteMutationOptions(options);
-
-    return useMutation(mutationOptions);
-};
