@@ -70,10 +70,10 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
             };
         },
 
-        // ANCHOR - Favorite by id
-        favoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        // ANCHOR - Favorite
+        favorite: async (adapter: AdapterApi, args: { ids: string[] }) => {
             const [err, result] = await adapter.setFavorite({
-                body: { entry: [{ favorite: true, id: args.id, type: 'album' }] },
+                body: { entry: args.ids.map((id) => ({ favorite: true, id, type: 'album' })) },
                 query: null,
             });
 
@@ -138,10 +138,10 @@ export const initAlbumService = (modules: { db: AppDatabase }) => {
             return result;
         },
 
-        // ANCHOR - Unfavorite by id
-        unfavoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        // ANCHOR - Unfavorite
+        unfavorite: async (adapter: AdapterApi, args: { ids: string[] }) => {
             const [err, result] = await adapter.setFavorite({
-                body: { entry: [{ favorite: false, id: args.id, type: 'album' }] },
+                body: { entry: args.ids.map((id) => ({ favorite: false, id, type: 'album' })) },
                 query: null,
             });
 

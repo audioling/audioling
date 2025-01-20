@@ -158,10 +158,10 @@ export const initTrackService = (modules: { db: AppDatabase; queryModule: QueryM
             };
         },
 
-        // ANCHOR - Favorite by id
-        favoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        // ANCHOR - Favorite
+        favorite: async (adapter: AdapterApi, args: { ids: string[] }) => {
             const [err, result] = await adapter.setFavorite({
-                body: { entry: [{ favorite: true, id: args.id, type: 'track' }] },
+                body: { entry: args.ids.map((id) => ({ favorite: true, id, type: 'track' })) },
                 query: null,
             });
 
@@ -389,10 +389,10 @@ export const initTrackService = (modules: { db: AppDatabase; queryModule: QueryM
             return result;
         },
 
-        // ANCHOR - Unfavorite by id
-        unfavoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        // ANCHOR - Unfavorite
+        unfavorite: async (adapter: AdapterApi, args: { ids: string[] }) => {
             const [err, result] = await adapter.setFavorite({
-                body: { entry: [{ favorite: false, id: args.id, type: 'track' }] },
+                body: { entry: args.ids.map((id) => ({ favorite: false, id, type: 'track' })) },
                 query: null,
             });
 

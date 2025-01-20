@@ -37,17 +37,7 @@ export function AlbumGridItem(props: InfiniteGridItemProps<AlbumItem, AlbumGridI
     }
 
     if (data) {
-        return (
-            <AlbumCard
-                componentState="loaded"
-                id={data.id}
-                image={data.imageUrl}
-                itemType={LibraryItemType.ALBUM}
-                metadata={[{ path: '/', text: data.artists[0]?.name }]}
-                metadataLines={1}
-                titledata={{ path: '/', text: data.name }}
-            />
-        );
+        return <AlbumCard album={data} componentState="loaded" metadataLines={1} />;
     }
 
     return <AlbumCard componentState="loading" id={index.toString()} metadataLines={1} />;

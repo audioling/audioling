@@ -1,6 +1,9 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type { AlbumItem } from '@/api/api-types.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
+import { useFavoriteAlbum } from '@/features/favorites/hooks/use-favorite-album.ts';
+import { useUnfavoriteAlbum } from '@/features/favorites/hooks/use-unfavorite-album.ts';
 import type { BaseCardProps, LoadedCardProps, LoadingCardProps } from '@/features/ui/card/card.tsx';
 import { Card } from '@/features/ui/card/card.tsx';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
@@ -11,11 +14,17 @@ type BaseAlbumCardProps = BaseCardProps & {
 
 type LoadingAlbumCardProps = LoadingCardProps & BaseAlbumCardProps;
 
-type LoadedAlbumCardProps = Omit<LoadedCardProps, 'controls'> & BaseAlbumCardProps;
+type LoadedAlbumCardProps = BaseAlbumCardProps & {
+    album: AlbumItem;
+    componentState: 'loaded';
+};
 
 type AlbumCardProps = LoadingAlbumCardProps | LoadedAlbumCardProps;
 
 export function AlbumCard(props: AlbumCardProps) {
+    const { mutate: favoriteAlbum } = useFavoriteAlbum();
+    const { mutate: unfavoriteAlbum } = useUnfavoriteAlbum();
+
     if (props.componentState !== 'loaded') {
         return (
             <Card
@@ -27,22 +36,24 @@ export function AlbumCard(props: AlbumCardProps) {
         );
     }
 
+    const { album } = props;
+
     const controls: LoadedCardProps['controls'] = {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
                 {
-                    id: [props.id],
+                    id: [album.id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.ALBUM,
                 },
-                { image: props.image, title: props.titledata.text },
+                { image: album.imageUrl, title: album.name },
             );
         },
         onDragStart: () => {
             PrefetchController.call({
                 cmd: {
                     tracksByAlbumId: {
-                        id: [props.id],
+                        id: [album.id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,
@@ -50,6 +61,9 @@ export function AlbumCard(props: AlbumCardProps) {
                     },
                 },
             });
+        },
+        onFavorite: (id, libraryId) => {
+            favoriteAlbum({ data: { ids: [id] }, libraryId });
         },
         onPlay: (id, playType) => {
             PlayerController.call({
@@ -62,6 +76,10 @@ export function AlbumCard(props: AlbumCardProps) {
                 },
             });
         },
+        onUnfavorite: (id, libraryId) => {
+            unfavoriteAlbum({ data: { ids: [id] }, libraryId });
+        },
+        userFavorite: album?.userFavorite,
     };
 
     return (
@@ -69,12 +87,13 @@ export function AlbumCard(props: AlbumCardProps) {
             className={props.className}
             componentState={props.componentState}
             controls={controls}
-            id={props.id}
-            image={props.image}
+            id={album.id}
+            image={album.imageUrl}
             itemType={LibraryItemType.ALBUM}
-            metadata={props.metadata}
+            libraryId={album.libraryId}
+            metadata={[{ path: '/', text: album.artists[0]?.name }]}
             metadataLines={props.metadataLines ?? 1}
-            titledata={props.titledata}
+            titledata={{ path: '/', text: album.name }}
         />
     );
 }

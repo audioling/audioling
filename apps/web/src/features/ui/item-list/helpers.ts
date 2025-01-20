@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react';
 import type { ColumnHelper, Row } from '@tanstack/react-table';
 import { actionsColumn } from '@/features/ui/item-list/item-table/columns/actions-column.tsx';
 import { addToPlaylistColumn } from '@/features/ui/item-list/item-table/columns/add-to-playlist-column.tsx';
@@ -132,5 +133,27 @@ export const itemListHelpers = {
             if (unit === 'px') return size;
             return size + 100000;
         },
+    },
+    updateFavorite<T>(
+        setData: Dispatch<SetStateAction<T[]>>,
+        idMap: Record<string, number>,
+        ids: string[],
+        favorite: boolean,
+    ) {
+        setData((prevData) => {
+            const newData = [...prevData];
+            ids.forEach((id) => {
+                const index = idMap[id];
+                if (index !== undefined && index !== -1) {
+                    if (newData[index]) {
+                        newData[index] = {
+                            ...newData[index],
+                            userFavorite: favorite,
+                        };
+                    }
+                }
+            });
+            return newData;
+        });
     },
 };

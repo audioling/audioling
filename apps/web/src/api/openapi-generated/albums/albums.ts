@@ -21,11 +21,6 @@ import type {
     UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 import type {
-    DeleteApiLibraryIdAlbumsIdFavorite204,
-    DeleteApiLibraryIdAlbumsIdFavorite401,
-    DeleteApiLibraryIdAlbumsIdFavorite403,
-    DeleteApiLibraryIdAlbumsIdFavorite404,
-    DeleteApiLibraryIdAlbumsIdFavorite500,
     GetApiLibraryIdAlbums200,
     GetApiLibraryIdAlbums401,
     GetApiLibraryIdAlbums403,
@@ -54,14 +49,21 @@ import type {
     PostApiLibraryIdAlbumsCountInvalidate403,
     PostApiLibraryIdAlbumsCountInvalidate422,
     PostApiLibraryIdAlbumsCountInvalidate500,
-    PostApiLibraryIdAlbumsIdFavorite204,
-    PostApiLibraryIdAlbumsIdFavorite401,
-    PostApiLibraryIdAlbumsIdFavorite403,
-    PostApiLibraryIdAlbumsIdFavorite404,
-    PostApiLibraryIdAlbumsIdFavorite500,
+    PostApiLibraryIdAlbumsFavorite204,
+    PostApiLibraryIdAlbumsFavorite401,
+    PostApiLibraryIdAlbumsFavorite403,
+    PostApiLibraryIdAlbumsFavorite404,
+    PostApiLibraryIdAlbumsFavorite500,
+    PostApiLibraryIdAlbumsFavoriteBody,
+    PostApiLibraryIdAlbumsUnfavorite204,
+    PostApiLibraryIdAlbumsUnfavorite401,
+    PostApiLibraryIdAlbumsUnfavorite403,
+    PostApiLibraryIdAlbumsUnfavorite404,
+    PostApiLibraryIdAlbumsUnfavorite500,
+    PostApiLibraryIdAlbumsUnfavoriteBody,
 } from '../audioling-openapi-client.schemas.ts';
 import { apiInstance } from '../../api-instance.ts';
-import type { ErrorType } from '../../api-instance.ts';
+import type { ErrorType, BodyType } from '../../api-instance.ts';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -1497,34 +1499,45 @@ export function useGetApiLibraryIdAlbumsIdTracksSuspense<
 }
 
 /**
- * @summary Add album favorite by id
+ * @summary Add album favorites
  */
-export const postApiLibraryIdAlbumsIdFavorite = (
+export const postApiLibraryIdAlbumsFavorite = (
     libraryId: string,
-    id: string,
+    postApiLibraryIdAlbumsFavoriteBody: BodyType<PostApiLibraryIdAlbumsFavoriteBody>,
     options?: SecondParameter<typeof apiInstance>,
     signal?: AbortSignal,
 ) => {
-    return apiInstance<PostApiLibraryIdAlbumsIdFavorite204>(
-        { url: `/api/${libraryId}/albums/${id}/favorite`, method: 'POST', signal },
+    return apiInstance<PostApiLibraryIdAlbumsFavorite204>(
+        {
+            url: `/api/${libraryId}/albums/favorite`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdAlbumsFavoriteBody,
+            signal,
+        },
         options,
     );
 };
 
-export const getPostApiLibraryIdAlbumsIdFavoriteMutationOptions = <
-    TData = Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
+export const getPostApiLibraryIdAlbumsFavoriteMutationOptions = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdAlbumsFavorite>>,
     TError = ErrorType<
-        | PostApiLibraryIdAlbumsIdFavorite401
-        | PostApiLibraryIdAlbumsIdFavorite403
-        | PostApiLibraryIdAlbumsIdFavorite404
-        | PostApiLibraryIdAlbumsIdFavorite500
+        | PostApiLibraryIdAlbumsFavorite401
+        | PostApiLibraryIdAlbumsFavorite403
+        | PostApiLibraryIdAlbumsFavorite404
+        | PostApiLibraryIdAlbumsFavorite500
     >,
     TContext = unknown,
 >(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsFavoriteBody> },
+        TContext
+    >;
     request?: SecondParameter<typeof apiInstance>;
 }) => {
-    const mutationKey = ['postApiLibraryIdAlbumsIdFavorite'];
+    const mutationKey = ['postApiLibraryIdAlbumsFavorite'];
     const { mutation: mutationOptions, request: requestOptions } = options
         ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
             ? options
@@ -1532,81 +1545,104 @@ export const getPostApiLibraryIdAlbumsIdFavoriteMutationOptions = <
         : { mutation: { mutationKey }, request: undefined };
 
     const mutationFn: MutationFunction<
-        Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
-        { libraryId: string; id: string }
+        Awaited<ReturnType<typeof postApiLibraryIdAlbumsFavorite>>,
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsFavoriteBody> }
     > = (props) => {
-        const { libraryId, id } = props ?? {};
+        const { libraryId, data } = props ?? {};
 
-        return postApiLibraryIdAlbumsIdFavorite(libraryId, id, requestOptions);
+        return postApiLibraryIdAlbumsFavorite(libraryId, data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions } as UseMutationOptions<
         TData,
         TError,
-        { libraryId: string; id: string },
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsFavoriteBody> },
         TContext
     >;
 };
 
-export type PostApiLibraryIdAlbumsIdFavoriteMutationResult = NonNullable<
-    Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>
+export type PostApiLibraryIdAlbumsFavoriteMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdAlbumsFavorite>>
 >;
-
-export type PostApiLibraryIdAlbumsIdFavoriteMutationError = ErrorType<
-    | PostApiLibraryIdAlbumsIdFavorite401
-    | PostApiLibraryIdAlbumsIdFavorite403
-    | PostApiLibraryIdAlbumsIdFavorite404
-    | PostApiLibraryIdAlbumsIdFavorite500
+export type PostApiLibraryIdAlbumsFavoriteMutationBody =
+    BodyType<PostApiLibraryIdAlbumsFavoriteBody>;
+export type PostApiLibraryIdAlbumsFavoriteMutationError = ErrorType<
+    | PostApiLibraryIdAlbumsFavorite401
+    | PostApiLibraryIdAlbumsFavorite403
+    | PostApiLibraryIdAlbumsFavorite404
+    | PostApiLibraryIdAlbumsFavorite500
 >;
 
 /**
- * @summary Add album favorite by id
+ * @summary Add album favorites
  */
-export const usePostApiLibraryIdAlbumsIdFavorite = <
-    TData = Awaited<ReturnType<typeof postApiLibraryIdAlbumsIdFavorite>>,
+export const usePostApiLibraryIdAlbumsFavorite = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdAlbumsFavorite>>,
     TError = ErrorType<
-        | PostApiLibraryIdAlbumsIdFavorite401
-        | PostApiLibraryIdAlbumsIdFavorite403
-        | PostApiLibraryIdAlbumsIdFavorite404
-        | PostApiLibraryIdAlbumsIdFavorite500
+        | PostApiLibraryIdAlbumsFavorite401
+        | PostApiLibraryIdAlbumsFavorite403
+        | PostApiLibraryIdAlbumsFavorite404
+        | PostApiLibraryIdAlbumsFavorite500
     >,
     TContext = unknown,
 >(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsFavoriteBody> },
+        TContext
+    >;
     request?: SecondParameter<typeof apiInstance>;
-}): UseMutationResult<TData, TError, { libraryId: string; id: string }, TContext> => {
-    const mutationOptions = getPostApiLibraryIdAlbumsIdFavoriteMutationOptions(options);
+}): UseMutationResult<
+    TData,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsFavoriteBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdAlbumsFavoriteMutationOptions(options);
 
     return useMutation(mutationOptions);
 };
 /**
- * @summary Remove album favorite by id
+ * @summary Remove album favorites
  */
-export const deleteApiLibraryIdAlbumsIdFavorite = (
+export const postApiLibraryIdAlbumsUnfavorite = (
     libraryId: string,
-    id: string,
+    postApiLibraryIdAlbumsUnfavoriteBody: BodyType<PostApiLibraryIdAlbumsUnfavoriteBody>,
     options?: SecondParameter<typeof apiInstance>,
+    signal?: AbortSignal,
 ) => {
-    return apiInstance<DeleteApiLibraryIdAlbumsIdFavorite204>(
-        { url: `/api/${libraryId}/albums/${id}/favorite`, method: 'DELETE' },
+    return apiInstance<PostApiLibraryIdAlbumsUnfavorite204>(
+        {
+            url: `/api/${libraryId}/albums/unfavorite`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            data: postApiLibraryIdAlbumsUnfavoriteBody,
+            signal,
+        },
         options,
     );
 };
 
-export const getDeleteApiLibraryIdAlbumsIdFavoriteMutationOptions = <
-    TData = Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
+export const getPostApiLibraryIdAlbumsUnfavoriteMutationOptions = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdAlbumsUnfavorite>>,
     TError = ErrorType<
-        | DeleteApiLibraryIdAlbumsIdFavorite401
-        | DeleteApiLibraryIdAlbumsIdFavorite403
-        | DeleteApiLibraryIdAlbumsIdFavorite404
-        | DeleteApiLibraryIdAlbumsIdFavorite500
+        | PostApiLibraryIdAlbumsUnfavorite401
+        | PostApiLibraryIdAlbumsUnfavorite403
+        | PostApiLibraryIdAlbumsUnfavorite404
+        | PostApiLibraryIdAlbumsUnfavorite500
     >,
     TContext = unknown,
 >(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsUnfavoriteBody> },
+        TContext
+    >;
     request?: SecondParameter<typeof apiInstance>;
 }) => {
-    const mutationKey = ['deleteApiLibraryIdAlbumsIdFavorite'];
+    const mutationKey = ['postApiLibraryIdAlbumsUnfavorite'];
     const { mutation: mutationOptions, request: requestOptions } = options
         ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
             ? options
@@ -1614,50 +1650,61 @@ export const getDeleteApiLibraryIdAlbumsIdFavoriteMutationOptions = <
         : { mutation: { mutationKey }, request: undefined };
 
     const mutationFn: MutationFunction<
-        Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
-        { libraryId: string; id: string }
+        Awaited<ReturnType<typeof postApiLibraryIdAlbumsUnfavorite>>,
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsUnfavoriteBody> }
     > = (props) => {
-        const { libraryId, id } = props ?? {};
+        const { libraryId, data } = props ?? {};
 
-        return deleteApiLibraryIdAlbumsIdFavorite(libraryId, id, requestOptions);
+        return postApiLibraryIdAlbumsUnfavorite(libraryId, data, requestOptions);
     };
 
     return { mutationFn, ...mutationOptions } as UseMutationOptions<
         TData,
         TError,
-        { libraryId: string; id: string },
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsUnfavoriteBody> },
         TContext
     >;
 };
 
-export type DeleteApiLibraryIdAlbumsIdFavoriteMutationResult = NonNullable<
-    Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>
+export type PostApiLibraryIdAlbumsUnfavoriteMutationResult = NonNullable<
+    Awaited<ReturnType<typeof postApiLibraryIdAlbumsUnfavorite>>
 >;
-
-export type DeleteApiLibraryIdAlbumsIdFavoriteMutationError = ErrorType<
-    | DeleteApiLibraryIdAlbumsIdFavorite401
-    | DeleteApiLibraryIdAlbumsIdFavorite403
-    | DeleteApiLibraryIdAlbumsIdFavorite404
-    | DeleteApiLibraryIdAlbumsIdFavorite500
+export type PostApiLibraryIdAlbumsUnfavoriteMutationBody =
+    BodyType<PostApiLibraryIdAlbumsUnfavoriteBody>;
+export type PostApiLibraryIdAlbumsUnfavoriteMutationError = ErrorType<
+    | PostApiLibraryIdAlbumsUnfavorite401
+    | PostApiLibraryIdAlbumsUnfavorite403
+    | PostApiLibraryIdAlbumsUnfavorite404
+    | PostApiLibraryIdAlbumsUnfavorite500
 >;
 
 /**
- * @summary Remove album favorite by id
+ * @summary Remove album favorites
  */
-export const useDeleteApiLibraryIdAlbumsIdFavorite = <
-    TData = Awaited<ReturnType<typeof deleteApiLibraryIdAlbumsIdFavorite>>,
+export const usePostApiLibraryIdAlbumsUnfavorite = <
+    TData = Awaited<ReturnType<typeof postApiLibraryIdAlbumsUnfavorite>>,
     TError = ErrorType<
-        | DeleteApiLibraryIdAlbumsIdFavorite401
-        | DeleteApiLibraryIdAlbumsIdFavorite403
-        | DeleteApiLibraryIdAlbumsIdFavorite404
-        | DeleteApiLibraryIdAlbumsIdFavorite500
+        | PostApiLibraryIdAlbumsUnfavorite401
+        | PostApiLibraryIdAlbumsUnfavorite403
+        | PostApiLibraryIdAlbumsUnfavorite404
+        | PostApiLibraryIdAlbumsUnfavorite500
     >,
     TContext = unknown,
 >(options?: {
-    mutation?: UseMutationOptions<TData, TError, { libraryId: string; id: string }, TContext>;
+    mutation?: UseMutationOptions<
+        TData,
+        TError,
+        { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsUnfavoriteBody> },
+        TContext
+    >;
     request?: SecondParameter<typeof apiInstance>;
-}): UseMutationResult<TData, TError, { libraryId: string; id: string }, TContext> => {
-    const mutationOptions = getDeleteApiLibraryIdAlbumsIdFavoriteMutationOptions(options);
+}): UseMutationResult<
+    TData,
+    TError,
+    { libraryId: string; data: BodyType<PostApiLibraryIdAlbumsUnfavoriteBody> },
+    TContext
+> => {
+    const mutationOptions = getPostApiLibraryIdAlbumsUnfavoriteMutationOptions(options);
 
     return useMutation(mutationOptions);
 };

@@ -12,6 +12,10 @@ import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
+import {
+    subscribeAlbumFavoritesAdded,
+    subscribeAlbumFavoritesRemoved,
+} from '@/store/change-store.ts';
 
 interface InfiniteAlbumGridProps {
     baseUrl: string;
@@ -40,6 +44,7 @@ export function InfiniteAlbumGridContent({
     params,
 }: InfiniteAlbumGridProps) {
     const queryClient = useQueryClient();
+    const [idMap, setIdMap] = useState<Record<string, number>>({});
     const [data, setData] = useState<(AlbumItem | undefined)[]>(
         itemListHelpers.getInitialData(itemCount),
     );
@@ -49,6 +54,21 @@ export function InfiniteAlbumGridContent({
     useEffect(() => {
         loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
     }, [itemCount, pagination.itemsPerPage]);
+
+    useEffect(() => {
+        const unsubscribeFavoritesAdded = subscribeAlbumFavoritesAdded((newIds) => {
+            itemListHelpers.updateFavorite(setData, idMap, newIds, true);
+        });
+
+        const unsubscribeFavoritesRemoved = subscribeAlbumFavoritesRemoved((newIds) => {
+            itemListHelpers.updateFavorite(setData, idMap, newIds, false);
+        });
+
+        return () => {
+            unsubscribeFavoritesAdded();
+            unsubscribeFavoritesRemoved();
+        };
+    }, [idMap, setData]);
 
     const handleRangeChanged = useCallback(
         async (event: { endIndex: number; startIndex: number }) => {
@@ -85,6 +105,14 @@ export function InfiniteAlbumGridContent({
                             newData[startIndex + index] = item;
                         });
                         return newData;
+                    });
+
+                    setIdMap((prevIdMap) => {
+                        const newIdMap: Record<string, number> = { ...prevIdMap };
+                        data.forEach((item, index) => {
+                            newIdMap[item.id] = currentOffset + index;
+                        });
+                        return newIdMap;
                     });
                 }
             }

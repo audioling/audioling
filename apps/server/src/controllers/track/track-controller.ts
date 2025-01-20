@@ -118,9 +118,7 @@ export const initTrackController = (modules: { service: AppService }) => {
             const { adapter } = c.var;
             const body = c.req.valid('json');
 
-            for (const id of body.ids) {
-                await service.track.favoriteById(adapter, { id });
-            }
+            await service.track.favorite(adapter, { ids: body.ids });
 
             return c.body(null, 204);
         },
@@ -139,9 +137,7 @@ export const initTrackController = (modules: { service: AppService }) => {
             const { adapter } = c.var;
             const body = c.req.valid('json');
 
-            for (const id of body.ids) {
-                await service.track.unfavoriteById(adapter, { id });
-            }
+            await service.track.unfavorite(adapter, { ids: body.ids });
 
             return c.body(null, 204);
         },

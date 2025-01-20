@@ -145,20 +145,22 @@ export const subscribeTrackFavoritesRemoved = () => {
     );
 };
 
-export const subscribeAlbumFavoritesAdded = () => {
-    useChangeStoreBase.subscribe(
+export const subscribeAlbumFavoritesAdded = (onChange: (newIds: string[]) => void) => {
+    return useChangeStoreBase.subscribe(
         (state) => state.album.favorite,
         (favorite, previousFavorite) => {
-            return favorite.filter((id) => !previousFavorite.includes(id));
+            const newIds = favorite.slice(previousFavorite.length);
+            onChange(newIds);
         },
     );
 };
 
-export const subscribeAlbumFavoritesRemoved = () => {
-    useChangeStoreBase.subscribe(
+export const subscribeAlbumFavoritesRemoved = (onChange: (newIds: string[]) => void) => {
+    return useChangeStoreBase.subscribe(
         (state) => state.album.unfavorite,
         (unfavorite, previousUnfavorite) => {
-            return unfavorite.filter((id) => !previousUnfavorite.includes(id));
+            const newIds = unfavorite.slice(previousUnfavorite.length);
+            onChange(newIds);
         },
     );
 };
@@ -167,7 +169,8 @@ export const subscribeAlbumArtistFavoritesAdded = () => {
     useChangeStoreBase.subscribe(
         (state) => state.albumArtist.favorite,
         (favorite, previousFavorite) => {
-            return favorite.filter((id) => !previousFavorite.includes(id));
+            const newIds = favorite.slice(previousFavorite.length);
+            return newIds;
         },
     );
 };
@@ -176,7 +179,8 @@ export const subscribeAlbumArtistFavoritesRemoved = () => {
     useChangeStoreBase.subscribe(
         (state) => state.albumArtist.unfavorite,
         (unfavorite, previousUnfavorite) => {
-            return unfavorite.filter((id) => !previousUnfavorite.includes(id));
+            const newIds = unfavorite.slice(previousUnfavorite.length);
+            return newIds;
         },
     );
 };
@@ -185,7 +189,8 @@ export const subscribeArtistFavoritesAdded = () => {
     useChangeStoreBase.subscribe(
         (state) => state.artist.favorite,
         (favorite, previousFavorite) => {
-            return favorite.filter((id) => !previousFavorite.includes(id));
+            const newIds = favorite.slice(previousFavorite.length);
+            return newIds;
         },
     );
 };
@@ -194,7 +199,8 @@ export const subscribeArtistFavoritesRemoved = () => {
     useChangeStoreBase.subscribe(
         (state) => state.artist.unfavorite,
         (unfavorite, previousUnfavorite) => {
-            return unfavorite.filter((id) => !previousUnfavorite.includes(id));
+            const newIds = unfavorite.slice(previousUnfavorite.length);
+            return newIds;
         },
     );
 };

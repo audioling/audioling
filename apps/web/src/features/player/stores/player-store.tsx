@@ -1128,6 +1128,30 @@ export const usePlayerData = (): PlayerData => {
     );
 };
 
+export const updateQueueFavorites = (ids: string[], favorite: boolean) => {
+    const queue = usePlayerStore.getState().queue;
+
+    const defaultQueue = queue.default.map((item) => {
+        if (ids.includes(item.id)) {
+            return { ...item, userFavorite: favorite };
+        }
+
+        return item;
+    });
+
+    const priorityQueue = queue.priority.map((item) => {
+        if (ids.includes(item.id)) {
+            return { ...item, userFavorite: favorite };
+        }
+
+        return item;
+    });
+
+    usePlayerStoreBase.setState({
+        queue: { default: defaultQueue, priority: priorityQueue, shuffled: queue.shuffled },
+    });
+};
+
 function toPlayQueueItem(item: TrackItem): PlayQueueItem {
     return {
         ...item,

@@ -8,8 +8,12 @@ import styles from './card-controls.module.scss';
 interface CardControlsProps {
     id: string;
     itemType: LibraryItemType;
+    libraryId: string;
+    onFavorite?: (id: string, libraryId: string) => void;
     onMore?: (id: string) => void;
     onPlay: (id: string, playType: PlayType) => void;
+    onUnfavorite?: (id: string, libraryId: string) => void;
+    userFavorite?: boolean;
 }
 
 export function CardControls(props: CardControlsProps) {
@@ -23,17 +27,32 @@ export function CardControls(props: CardControlsProps) {
             <div className={styles.top}>
                 <div className={styles.topLeft}></div>
                 <div className={styles.topRight}>
-                    <IconButtonWithTooltip
-                        isCompact
-                        icon="favorite"
-                        size="lg"
-                        tooltipProps={{ label: 'Add to favorites', openDelay: 500 }}
-                        variant="transparent"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            props.onPlay(props.id, PlayType.LAST);
-                        }}
-                    />
+                    {props.onFavorite && props.onUnfavorite && (
+                        <IconButtonWithTooltip
+                            isCompact
+                            icon={props.userFavorite ? 'unfavorite' : 'favorite'}
+                            iconFill={props.userFavorite}
+                            iconProps={{
+                                state: props.userFavorite ? 'primary' : undefined,
+                            }}
+                            size="lg"
+                            tooltipProps={{
+                                label: props.userFavorite
+                                    ? 'Remove from favorites'
+                                    : 'Add to favorites',
+                                openDelay: 500,
+                            }}
+                            variant="transparent"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (props.userFavorite) {
+                                    props.onUnfavorite?.(props.id, props.libraryId);
+                                } else {
+                                    props.onFavorite?.(props.id, props.libraryId);
+                                }
+                            }}
+                        />
+                    )}
                 </div>
             </div>
             {Boolean(props.onPlay) && (

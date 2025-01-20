@@ -16,6 +16,10 @@ import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
+import {
+    subscribeAlbumFavoritesAdded,
+    subscribeAlbumFavoritesRemoved,
+} from '@/store/change-store.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import { throttle } from '@/utils/throttle.ts';
@@ -43,13 +47,31 @@ export function InfiniteAlbumTable({
     pagination,
 }: InfiniteAlbumTableProps) {
     const queryClient = useQueryClient();
-    const [data, setData] = useState<(AlbumItem | undefined)[]>(Array(itemCount).fill(undefined));
+    const [idMap, setIdMap] = useState<Record<string, number>>({});
+    const [data, setData] = useState<(AlbumItem | undefined)[]>(
+        itemListHelpers.getInitialData(itemCount),
+    );
 
     const loadedPages = useRef<Record<number, boolean>>({});
 
     useEffect(() => {
         loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
     }, [itemCount, pagination.itemsPerPage]);
+
+    useEffect(() => {
+        const unsubscribeFavoritesAdded = subscribeAlbumFavoritesAdded((newIds) => {
+            itemListHelpers.updateFavorite(setData, idMap, newIds, true);
+        });
+
+        const unsubscribeFavoritesRemoved = subscribeAlbumFavoritesRemoved((newIds) => {
+            itemListHelpers.updateFavorite(setData, idMap, newIds, false);
+        });
+
+        return () => {
+            unsubscribeFavoritesAdded();
+            unsubscribeFavoritesRemoved();
+        };
+    }, [idMap, setData]);
 
     const { onRowClick } = useMultiRowSelection<AlbumItem>();
 
@@ -87,6 +109,14 @@ export function InfiniteAlbumTable({
                             newData[currentOffset + index] = item;
                         });
                         return newData;
+                    });
+
+                    setIdMap((prevIdMap) => {
+                        const newIdMap: Record<string, number> = { ...prevIdMap };
+                        data.forEach((item, index) => {
+                            newIdMap[item.id] = currentOffset + index;
+                        });
+                        return newIdMap;
                     });
                 }
             }

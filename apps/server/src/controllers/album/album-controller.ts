@@ -173,39 +173,39 @@ export const initAlbumController = (modules: { service: AppService }) => {
         },
     );
 
-    // ANCHOR - POST /{id}/favorite
+    // ANCHOR - POST /favorite
     controller.openapi(
         createRoute({
             method: 'post',
-            path: '/{id}/favorite',
-            summary: 'Add album favorite by id',
+            path: '/favorite',
+            summary: 'Add album favorites',
             tags: [...defaultOpenapiTags],
-            ...apiSchema.album['/{id}/favorite'].post,
+            ...apiSchema.album['/favorite'].post,
         }),
         async (c) => {
-            const { id } = c.req.param();
+            const body = c.req.valid('json');
             const { adapter } = c.var;
 
-            await service.album.favoriteById(adapter, { id });
+            await service.album.favorite(adapter, { ids: body.ids });
 
             return c.body(null, 204);
         },
     );
 
-    // ANCHOR - DELETE /{id}/favorite
+    // ANCHOR - POST /unfavorite
     controller.openapi(
         createRoute({
-            method: 'delete',
-            path: '/{id}/favorite',
-            summary: 'Remove album favorite by id',
+            method: 'post',
+            path: '/unfavorite',
+            summary: 'Remove album favorites',
             tags: [...defaultOpenapiTags],
-            ...apiSchema.album['/{id}/favorite'].delete,
+            ...apiSchema.album['/unfavorite'].post,
         }),
         async (c) => {
-            const { id } = c.req.param();
+            const body = c.req.valid('json');
             const { adapter } = c.var;
 
-            await service.album.unfavoriteById(adapter, { id });
+            await service.album.unfavorite(adapter, { ids: body.ids });
 
             return c.body(null, 204);
         },

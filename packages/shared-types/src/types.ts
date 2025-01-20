@@ -17,6 +17,8 @@ export enum LibraryItemType {
 
 export type LibraryFeatures = {
     'album:detail': boolean;
+    'album:detail:favorites': boolean;
+    'album:detail:ratings': boolean;
     'album:list': boolean;
     'album:list:filter:albumArtist': boolean;
     'album:list:filter:artist': boolean;
@@ -33,7 +35,20 @@ export type LibraryFeatures = {
     'album:list:filter:releaseDate': boolean;
     'album:list:filter:trackCount': boolean;
     'album:list:filter:year': boolean;
+    'albumArtist:detail': boolean;
+    'albumArtist:detail:favorites': boolean;
+    'albumArtist:detail:ratings': boolean;
+    'albumArtist:list': boolean;
+    'albumArtist:list:filter:albumCount': boolean;
+    'albumArtist:list:filter:duration': boolean;
+    'albumArtist:list:filter:isFavorite': boolean;
+    'albumArtist:list:filter:name': boolean;
+    'albumArtist:list:filter:random': boolean;
+    'albumArtist:list:filter:rating': boolean;
+    'albumArtist:list:filter:trackCount': boolean;
     'artist:detail': boolean;
+    'artist:detail:favorites': boolean;
+    'artist:detail:ratings': boolean;
     'artist:list': boolean;
     'artist:list:filter:albumCount': boolean;
     'artist:list:filter:duration': boolean;
@@ -58,6 +73,8 @@ export type LibraryFeatures = {
     'playlist:list:filter:trackCount': boolean;
     'playlist:list:filter:updatedAt': boolean;
     'track:detail': boolean;
+    'track:detail:favorites': boolean;
+    'track:detail:ratings': boolean;
     'track:list': boolean;
     'track:list:filter:album': boolean;
     'track:list:filter:albumArtist': boolean;

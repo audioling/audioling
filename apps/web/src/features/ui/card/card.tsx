@@ -18,12 +18,12 @@ import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './card.module.scss';
 
 export type BaseCardProps = HTMLAttributes<HTMLDivElement> & {
+    isCircle?: boolean;
     metadataLines: number;
 };
 
 export type LoadingCardProps = BaseCardProps & {
     componentState: 'loading' | 'scrolling';
-    isCircle?: boolean;
 };
 
 export type LoadedCardProps = BaseCardProps & {
@@ -32,13 +32,16 @@ export type LoadedCardProps = BaseCardProps & {
         onDragInitialData?: (id: string) => DragData;
         onDragStart?: (id: string) => void;
         onDrop?: (id: string) => void;
+        onFavorite?: (id: string, libraryId: string) => void;
         onMore?: (id: string) => void;
         onPlay: (id: string, playType: PlayType) => void;
+        onUnfavorite?: (id: string, libraryId: string) => void;
+        userFavorite?: boolean;
     };
     id: string;
     image: string;
-    isCircle?: boolean;
     itemType: LibraryItemType;
+    libraryId: string;
     metadata: {
         path: string;
         text: string;
@@ -139,8 +142,12 @@ export function Card(props: CardProps) {
                             <CardControls
                                 id={loadedProps.id}
                                 itemType={loadedProps.itemType}
+                                libraryId={loadedProps.libraryId}
+                                userFavorite={loadedProps.controls.userFavorite}
+                                onFavorite={loadedProps.controls.onFavorite}
                                 onMore={loadedProps.controls.onMore}
                                 onPlay={loadedProps.controls.onPlay}
+                                onUnfavorite={loadedProps.controls.onUnfavorite}
                             />
                         )}
                     </div>

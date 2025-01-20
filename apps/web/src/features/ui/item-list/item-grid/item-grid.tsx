@@ -13,7 +13,7 @@ import React, {
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
-import type { GridIndexLocation, VirtuosoGridHandle } from 'react-virtuoso';
+import type { GridIndexLocation, GridStateSnapshot, VirtuosoGridHandle } from 'react-virtuoso';
 import { VirtuosoGrid } from 'react-virtuoso';
 import styles from './item-grid.module.scss';
 
@@ -154,6 +154,8 @@ interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: strin
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
+    onStateChanged?: (state: GridStateSnapshot) => void;
+    restoreState?: GridStateSnapshot | null | undefined;
     virtuosoRef?: RefObject<VirtuosoGridHandle | undefined>;
 }
 
@@ -165,13 +167,15 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
         data,
         enableExpanded = false,
         GridComponent,
-        itemCount = 0,
         initialScrollIndex,
         isScrolling,
+        itemCount = 0,
         onEndReached,
         onRangeChanged,
         onScroll,
         onStartReached,
+        onStateChanged,
+        restoreState,
         virtuosoRef,
     } = props;
     const rootRef = useRef(null);
@@ -246,8 +250,10 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
                     <GridComponent context={context} data={data} index={index} />
                 )}
                 rangeChanged={onRangeChanged}
+                restoreStateFrom={restoreState}
                 scrollerRef={setScroller}
                 startReached={onStartReached}
+                stateChanged={onStateChanged}
                 style={{ overflow: 'hidden' }}
                 totalCount={itemCount}
                 onScroll={onScroll}

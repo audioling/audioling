@@ -3,7 +3,7 @@ import type { AlbumListSortOptions } from '@repo/shared-types';
 import { LibraryItemType, type ListSortOrder } from '@repo/shared-types';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
-import { generatePath, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { apiInstance } from '@/api/api-instance.ts';
 import type {
     GetApiLibraryIdAlbums200,
@@ -11,7 +11,6 @@ import type {
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { AlbumCard } from '@/features/albums/components/album-card.tsx';
 import { GridCarousel } from '@/features/ui/grid-carousel/grid-carousel.tsx';
-import { APP_ROUTE } from '@/routes/app-routes.ts';
 
 interface AlbumCarouselProps {
     rowCount?: number;
@@ -33,27 +32,11 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                 const loadedCards = page.data.map((album) => ({
                     content: (
                         <MemoizedAlbumCard
+                            album={album}
                             componentState="loaded"
                             id={album.id}
-                            image={album.imageUrl}
                             itemType={LibraryItemType.ALBUM}
-                            metadata={[
-                                {
-                                    path: generatePath(APP_ROUTE.DASHBOARD_ARTISTS_DETAIL, {
-                                        artistId: album.artists[0]?.id,
-                                        libraryId,
-                                    }),
-                                    text: album.artists[0]?.name,
-                                },
-                            ]}
                             metadataLines={1}
-                            titledata={{
-                                path: generatePath(APP_ROUTE.DASHBOARD_ALBUMS_DETAIL, {
-                                    albumId: album.id,
-                                    libraryId,
-                                }),
-                                text: album.name,
-                            }}
                         />
                     ),
                     id: album.id,
@@ -76,7 +59,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     }),
                 ];
             }),
-        [albums.pages, libraryId],
+        [albums.pages],
     );
 
     const handleNextPage = useCallback(() => {}, []);
