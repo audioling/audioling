@@ -1,4 +1,4 @@
-import { GenreListSortOptions, type LibraryFeatures, LibraryItemType } from '@repo/shared-types';
+import { GenreListSortOptions, type LibraryFeatures } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdGenresCountQueryKey } from '@/api/openapi-generated/genres/genres.ts';
@@ -11,9 +11,8 @@ import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.t
 import { SearchButton } from '@/features/shared/search-button/search-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
-import { useRefreshList } from '@/hooks/use-list.ts';
 
-export function GenreListHeader() {
+export function GenreListHeader({ handleRefresh }: { handleRefresh: () => void }) {
     const { libraryId } = useParams() as { libraryId: string };
     const queryClient = useQueryClient();
 
@@ -26,14 +25,6 @@ export function GenreListHeader() {
     const setSortBy = useGenreListStore.use.setSortBy();
     const setSortOrder = useGenreListStore.use.setSortOrder();
     const setPaginationType = useGenreListStore.use.setPaginationType();
-    const setListId = useGenreListStore.use.setListId();
-
-    const handleRefresh = useRefreshList({
-        itemType: LibraryItemType.GENRE,
-        libraryId,
-        queryKey: [`/api/${libraryId}/genres`],
-        setListId,
-    });
 
     const [searchParams] = useSearchParams();
     const itemCountQueryKey = getGetApiLibraryIdGenresCountQueryKey(libraryId, {
