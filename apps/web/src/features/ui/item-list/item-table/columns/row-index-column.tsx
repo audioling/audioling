@@ -21,13 +21,14 @@ function Cell<T>({
     row,
     context,
 }: {
-    context: { currentTrack: PlayQueueItem | undefined };
+    context: { currentTrack?: PlayQueueItem; startIndex?: number };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     row: Row<T | any>;
 }) {
     const isPlaying = row.id === context?.currentTrack?._uniqueId;
     const bpm = context?.currentTrack?.bpm || undefined;
     const status = usePlayerStore.use.player().status;
+    const rowIndex = (context.startIndex || 0) + row.index + 1;
 
     return (
         <Text
@@ -42,7 +43,7 @@ function Cell<T>({
                     <SoundBars bpm={bpm} isPlaying={status === PlayerStatus.PLAYING} />
                 </>
             ) : (
-                row.index + 1
+                rowIndex
             )}
         </Text>
     );

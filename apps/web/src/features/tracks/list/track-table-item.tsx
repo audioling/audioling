@@ -169,10 +169,8 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                             {flexRender(cell.column.columnDef.cell, {
                                 ...cell.getContext(),
                                 context: {
-                                    currentTrack: context.currentTrack,
-                                    data: data,
-                                    libraryId: context.libraryId!,
-                                    listKey: context.listKey,
+                                    ...context,
+                                    data,
                                 },
                             })}
                         </Fragment>

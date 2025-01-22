@@ -16,12 +16,14 @@ interface PaginatedPlaylistTableProps
     extends PaginatedItemListProps<GetApiLibraryIdPlaylistsParams> {}
 
 export function PaginatedPlaylistTable(props: PaginatedPlaylistTableProps) {
-    const { itemCount, pagination, setPagination } = props;
+    const { itemCount, listKey, pagination, setPagination } = props;
     const paginationProps = useListPagination({ pagination, setPagination });
 
     return (
         <Stack h="100%">
-            <PaginatedPlaylistTableContent {...props} />
+            <ListWrapper listKey={listKey}>
+                <PaginatedPlaylistTableContent {...props} />
+            </ListWrapper>
             <Paper>
                 <Pagination
                     currentPage={pagination.currentPage}
@@ -54,21 +56,23 @@ function PaginatedPlaylistTableContent(props: PaginatedPlaylistTableProps) {
     const { columns } = useItemTable<string>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper>
-            <ItemTable<string>
-                ItemComponent={PlaylistTableServerItem}
-                columnOrder={columnOrder}
-                columns={columns}
-                context={{ libraryId, listKey }}
-                data={data}
-                enableHeader={true}
-                enableMultiRowSelection={true}
-                itemCount={data.length || pagination.itemsPerPage}
-                itemType={LibraryItemType.PLAYLIST}
-                rowsKey={props.listKey}
-                onChangeColumnOrder={setColumnOrder}
-                onRowClick={onRowClick}
-            />
-        </ListWrapper>
+        <ItemTable<string>
+            ItemComponent={PlaylistTableServerItem}
+            columnOrder={columnOrder}
+            columns={columns}
+            context={{
+                libraryId,
+                listKey,
+                startIndex: (pagination.currentPage - 1) * pagination.itemsPerPage,
+            }}
+            data={data}
+            enableHeader={true}
+            enableMultiRowSelection={true}
+            itemCount={data.length || pagination.itemsPerPage}
+            itemType={LibraryItemType.PLAYLIST}
+            rowsKey={props.listKey}
+            onChangeColumnOrder={setColumnOrder}
+            onRowClick={onRowClick}
+        />
     );
 }

@@ -34,6 +34,7 @@ export interface ItemTableContext {
     data?: unknown;
     libraryId: string;
     listKey: string;
+    startIndex?: number;
 }
 
 export interface TableItemProps<T> {

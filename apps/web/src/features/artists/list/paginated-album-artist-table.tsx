@@ -60,7 +60,11 @@ function PaginatedArtistTableContent(props: PaginatedArtistTableProps) {
             ItemComponent={AlbumArtistTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
-            context={{ libraryId, listKey }}
+            context={{
+                libraryId,
+                listKey,
+                startIndex: (pagination.currentPage - 1) * pagination.itemsPerPage,
+            }}
             data={data}
             enableHeader={true}
             enableMultiRowSelection={true}

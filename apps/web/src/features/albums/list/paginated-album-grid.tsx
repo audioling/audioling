@@ -49,7 +49,10 @@ function PaginatedAlbumGridContent(props: PaginatedAlbumGridProps) {
         <InfiniteItemGrid<string>
             enableExpanded
             ItemComponent={AlbumGridItem}
-            context={{ libraryId, listKey }}
+            context={{
+                libraryId,
+                listKey,
+            }}
             data={data}
             itemCount={itemCount}
         />

@@ -35,8 +35,6 @@ export function InfiniteAlbumArtistGridContent({
         type: LibraryItemType.ALBUM_ARTIST,
     });
 
-    console.log('data', data);
-
     return (
         <InfiniteItemGrid<string>
             ItemComponent={AlbumArtistGridItem}

@@ -47,7 +47,7 @@ function PaginatedAlbumArtistGridContent(props: PaginatedAlbumArtistGridProps) {
         listKey,
         pagination,
         params,
-        type: LibraryItemType.ARTIST,
+        type: LibraryItemType.ALBUM_ARTIST,
     });
 
     return (
