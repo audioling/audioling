@@ -40,7 +40,7 @@ export function AlbumArtistCard(props: AlbumArtistCardProps) {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
                 {
-                    id: [props.id],
+                    id: [albumArtist.id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.ALBUM_ARTIST,
                 },
@@ -51,7 +51,7 @@ export function AlbumArtistCard(props: AlbumArtistCardProps) {
             PrefetchController.call({
                 cmd: {
                     tracksByAlbumArtistId: {
-                        id: [props.id],
+                        id: [albumArtist.id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,
