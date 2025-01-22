@@ -15,6 +15,7 @@ export const useGenreListStoreBase = create<GenreListStore>()(
         subscribeWithSelector(
             immer((set) => ({
                 columnOrder: [
+                    ItemListColumn.ROW_INDEX,
                     ItemListColumn.NAME,
                     ItemListColumn.ALBUM_COUNT,
                     ItemListColumn.TRACK_COUNT,
