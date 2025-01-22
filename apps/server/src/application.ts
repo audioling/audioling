@@ -17,6 +17,7 @@ import { initUserController } from '@/controllers/user/user-controller.js';
 import type { AppDatabase } from '@/database/init-database.js';
 import { migrateUserConfig } from '@/database/user-database.js';
 import { adapterMiddleware } from '@/middlewares/adapter-middleware.js';
+import type { AuthVariables } from '@/middlewares/auth-middleware.js';
 import { authMiddleware } from '@/middlewares/auth-middleware.js';
 import { loggerMiddleware, writeLog } from '@/middlewares/logger-middleware.js';
 import type { ConfigModule } from '@/modules/config/index.js';
@@ -49,7 +50,7 @@ export const initApplication = async (options: ApplicationOptions) => {
 
     await migrateUserConfig(db);
 
-    const app = new OpenAPIHono();
+    const app = new OpenAPIHono<{ Variables: AuthVariables }>();
 
     app.use(
         '/*',
