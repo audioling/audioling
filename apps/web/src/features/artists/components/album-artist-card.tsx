@@ -78,7 +78,7 @@ export function AlbumArtistCard(props: AlbumArtistCardProps) {
             className={props.className}
             componentState={props.componentState}
             controls={controls}
-            id={props.id}
+            id={albumArtist.id}
             image={albumArtist.imageUrl}
             isCircle={true}
             itemType={LibraryItemType.ALBUM_ARTIST}
