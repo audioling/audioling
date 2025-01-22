@@ -21,7 +21,7 @@ export const usePlaylistListStoreBase = create<PlaylistListStore>()(
                 listId: {},
                 pagination: {
                     currentPage: 1,
-                    itemsPerPage: 100,
+                    itemsPerPage: 500,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
                 setColumnOrder: (columnOrder) => {
@@ -73,8 +73,14 @@ export const usePlaylistListStoreBase = create<PlaylistListStore>()(
                         state.sortOrder = sortOrder;
                     });
                 },
+                setState: (key, listState) => {
+                    set((state) => {
+                        state.state[key] = listState;
+                    });
+                },
                 sortBy: PlaylistListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
+                state: {},
             })),
         ),
         { name: 'playlist-list-store', version: 1 },

@@ -109,7 +109,7 @@ export function Card(props: CardProps) {
                                 key={`${loadedProps?.id}-metadata-${metadataIndex}`}
                                 className={styles.description}
                             >
-                                <Skeleton height="100%" width="100%" />
+                                &nbsp;
                             </Text>
                         ))}
                     </div>
@@ -152,13 +152,20 @@ export function Card(props: CardProps) {
                         )}
                     </div>
                     <div className={styles.descriptionContainer}>
-                        <NavLink className={styles.description} to={loadedProps.titledata.path}>
+                        <NavLink
+                            className={clsx(styles.description, styles.underline)}
+                            to={loadedProps.titledata.path}
+                        >
                             {loadedProps.titledata.text}
                         </NavLink>
                         {loadedProps.metadata.map(({ path, text }, index) => (
                             <NavLink
                                 key={index}
-                                className={clsx(styles.description, styles.secondary)}
+                                className={clsx(
+                                    styles.description,
+                                    styles.secondary,
+                                    styles.underline,
+                                )}
                                 to={path}
                             >
                                 {text}

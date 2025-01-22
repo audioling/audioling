@@ -1,31 +1,20 @@
 import { Suspense } from 'react';
-import type { ArtistItem } from '@/api/api-types.ts';
-import { useGetApiLibraryIdAlbumArtistsSuspense } from '@/api/openapi-generated/album-artists/album-artists.ts';
+import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdAlbumArtistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import {
-    type ArtistGridItemContext,
-    MemoizedArtistGridItem,
-} from '@/features/artists/list/artist-grid-item.tsx';
+import { AlbumArtistGridItem } from '@/features/artists/list/album-artist-grid-item.tsx';
 import { FullPageSpinner } from '@/features/shared/full-page-spinner/full-page-spinner.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
+import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
-import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
 import { Paper } from '@/features/ui/paper/paper.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
-import { useListPagination } from '@/hooks/use-list.ts';
+import { useListPagination, usePaginatedListData } from '@/hooks/use-list.ts';
 
-interface PaginatedArtistGridProps {
-    baseUrl: string;
-    itemCount: number;
-    libraryId: string;
-    listKey: string;
-    pagination: ItemListPaginationState;
-    params: GetApiLibraryIdAlbumArtistsParams;
-    setPagination: (pagination: ItemListPaginationState) => void;
-}
+interface PaginatedAlbumArtistGridProps
+    extends PaginatedItemListProps<GetApiLibraryIdAlbumArtistsParams> {}
 
-export function PaginatedArtistGrid(props: PaginatedArtistGridProps) {
+export function PaginatedAlbumArtistGrid(props: PaginatedAlbumArtistGridProps) {
     const { itemCount, listKey, pagination, setPagination } = props;
     const paginationProps = useListPagination({ pagination, setPagination });
 
@@ -33,7 +22,7 @@ export function PaginatedArtistGrid(props: PaginatedArtistGridProps) {
         <Stack h="100%">
             <Suspense fallback={<FullPageSpinner />}>
                 <ListWrapper listKey={listKey}>
-                    <PaginatedArtistGridContent {...props} />
+                    <PaginatedAlbumArtistGridContent {...props} />
                 </ListWrapper>
             </Suspense>
             <Paper>
@@ -50,21 +39,23 @@ export function PaginatedArtistGrid(props: PaginatedArtistGridProps) {
     );
 }
 
-function PaginatedArtistGridContent(props: PaginatedArtistGridProps) {
-    const { baseUrl, itemCount, libraryId, params, pagination } = props;
+function PaginatedAlbumArtistGridContent(props: PaginatedAlbumArtistGridProps) {
+    const { itemCount, libraryId, listKey, params, pagination } = props;
 
-    const { data: fetchedData } = useGetApiLibraryIdAlbumArtistsSuspense(libraryId, {
-        ...params,
-        limit: pagination.itemsPerPage.toString(),
-        offset: ((pagination.currentPage - 1) * pagination.itemsPerPage).toString(),
+    const { data } = usePaginatedListData({
+        libraryId,
+        listKey,
+        pagination,
+        params,
+        type: LibraryItemType.ARTIST,
     });
 
     return (
-        <InfiniteItemGrid<ArtistItem, ArtistGridItemContext>
+        <InfiniteItemGrid<string>
             enableExpanded
-            GridComponent={MemoizedArtistGridItem}
-            context={{ baseUrl, libraryId }}
-            data={fetchedData.data}
+            ItemComponent={AlbumArtistGridItem}
+            context={{ libraryId, listKey }}
+            data={data}
             itemCount={itemCount}
         />
     );

@@ -1,5 +1,5 @@
 import type { LibraryFeatures } from '@repo/shared-types';
-import { AlbumListSortOptions, LibraryItemType } from '@repo/shared-types';
+import { AlbumListSortOptions } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdAlbumsCountQueryKey } from '@/api/openapi-generated/albums/albums.ts';
@@ -14,9 +14,8 @@ import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.t
 import { SearchButton } from '@/features/shared/search-button/search-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
-import { useRefreshList } from '@/hooks/use-list.ts';
 
-export function AlbumListHeader() {
+export function AlbumListHeader({ handleRefresh }: { handleRefresh: () => void }) {
     const { libraryId } = useParams() as { libraryId: string };
     const queryClient = useQueryClient();
 
@@ -34,14 +33,6 @@ export function AlbumListHeader() {
     const setDisplayType = useAlbumListStore.use.setDisplayType();
     const setPaginationType = useAlbumListStore.use.setPaginationType();
     const setFolderId = useAlbumListStore.use.setFolderId();
-    const setListId = useAlbumListStore.use.setListId();
-
-    const handleRefresh = useRefreshList({
-        itemType: LibraryItemType.ALBUM,
-        libraryId,
-        queryKey: [`/api/${libraryId}/albums`],
-        setListId,
-    });
 
     const [searchParams] = useSearchParams();
     const itemCountQueryKey = getGetApiLibraryIdAlbumsCountQueryKey(libraryId, {

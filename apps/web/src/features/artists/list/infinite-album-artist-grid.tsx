@@ -1,44 +1,48 @@
 import { LibraryItemType } from '@repo/shared-types';
-import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { PlaylistGridItem } from '@/features/playlists/list/playlist-grid-item.tsx';
+import type { GetApiLibraryIdAlbumArtistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { AlbumArtistGridItem } from '@/features/artists/list/album-artist-grid-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { InfiniteItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
 import { useInfiniteListData } from '@/hooks/use-list.ts';
 
-interface InfinitePlaylistGridProps extends InfiniteItemListProps<GetApiLibraryIdPlaylistsParams> {}
+interface InfiniteAlbumArtistGridProps
+    extends InfiniteItemListProps<GetApiLibraryIdAlbumArtistsParams> {}
 
-export function InfinitePlaylistGrid(props: InfinitePlaylistGridProps) {
+export function InfiniteAlbumArtistGrid(props: InfiniteAlbumArtistGridProps) {
     const { listKey } = props;
 
     return (
         <ListWrapper listKey={listKey}>
-            <InfinitePlaylistGridContent {...props} />
+            <InfiniteAlbumArtistGridContent {...props} />
         </ListWrapper>
     );
 }
 
-export function InfinitePlaylistGridContent({
+export function InfiniteAlbumArtistGridContent({
     itemCount,
     libraryId,
     listKey,
     pagination,
     params,
-}: InfinitePlaylistGridProps) {
+}: InfiniteAlbumArtistGridProps) {
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
         listKey,
         pagination,
         params,
-        type: LibraryItemType.PLAYLIST,
+        type: LibraryItemType.ALBUM_ARTIST,
     });
+
+    console.log('data', data);
 
     return (
         <InfiniteItemGrid<string>
-            ItemComponent={PlaylistGridItem}
+            ItemComponent={AlbumArtistGridItem}
             context={{ libraryId, listKey }}
             data={data}
+            enableExpanded={false}
             itemCount={itemCount}
             onRangeChanged={handleRangeChanged}
         />

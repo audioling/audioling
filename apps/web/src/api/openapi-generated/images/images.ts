@@ -83,15 +83,11 @@ export const getGetApiLibraryIdImagesIdQueryOptions = <
         signal,
     }) => getApiLibraryIdImagesId(libraryId, id, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdImagesId>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdImagesIdQueryResult = NonNullable<
@@ -249,7 +245,7 @@ export const getGetApiLibraryIdImagesIdSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdImagesId(libraryId, id, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdImagesId>>,
         TError,
         TData

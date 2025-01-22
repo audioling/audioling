@@ -1,11 +1,41 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
+import type { QueryFunction, QueryKey } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
+import { nanoid } from 'nanoid/non-secure';
 import { useLocation } from 'react-router';
-import { usePostApiLibraryIdAlbumArtistsCountInvalidate } from '@/api/openapi-generated/album-artists/album-artists.ts';
-import { usePostApiLibraryIdAlbumsCountInvalidate } from '@/api/openapi-generated/albums/albums.ts';
-import { usePostApiLibraryIdPlaylistsCountInvalidate } from '@/api/openapi-generated/playlists/playlists.ts';
-import { usePostApiLibraryIdTracksCountInvalidate } from '@/api/openapi-generated/tracks/tracks.ts';
+import {
+    getApiLibraryIdAlbumArtists,
+    getGetApiLibraryIdAlbumArtistsQueryKey,
+    usePostApiLibraryIdAlbumArtistsCountInvalidate,
+} from '@/api/openapi-generated/album-artists/album-artists.ts';
+import {
+    getApiLibraryIdAlbums,
+    getGetApiLibraryIdAlbumsQueryKey,
+    usePostApiLibraryIdAlbumsCountInvalidate,
+} from '@/api/openapi-generated/albums/albums.ts';
+import type {
+    GetApiLibraryIdAlbumArtistsParams,
+    GetApiLibraryIdAlbumsParams,
+    GetApiLibraryIdGenresParams,
+    GetApiLibraryIdPlaylistsParams,
+    GetApiLibraryIdTracksParams,
+} from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import {
+    getApiLibraryIdGenres,
+    getGetApiLibraryIdGenresQueryKey,
+} from '@/api/openapi-generated/genres/genres.ts';
+import {
+    getApiLibraryIdPlaylists,
+    getGetApiLibraryIdPlaylistsQueryKey,
+    usePostApiLibraryIdPlaylistsCountInvalidate,
+} from '@/api/openapi-generated/playlists/playlists.ts';
+import {
+    getApiLibraryIdTracks,
+    getGetApiLibraryIdTracksQueryKey,
+    usePostApiLibraryIdTracksCountInvalidate,
+} from '@/api/openapi-generated/tracks/tracks.ts';
+import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 import { randomString } from '@/utils/random-string.ts';
 import { safeStringify } from '@/utils/stringify.ts';
@@ -39,13 +69,16 @@ export function useListKey(args: Record<string, unknown>) {
 interface UseRefreshListProps {
     itemType: LibraryItemType;
     libraryId: string;
-    queryKey: string[];
-    setListId: (pathname: string, listId: string) => void;
+    queryKey: QueryKey;
 }
 
-export function useRefreshList({ queryKey, setListId, libraryId, itemType }: UseRefreshListProps) {
+export function useRefreshList({ queryKey, libraryId, itemType }: UseRefreshListProps) {
     const location = useLocation();
     const queryClient = useQueryClient();
+
+    const [listId, setListId] = useState<string>(
+        itemListHelpers.generateListId(libraryId, location.pathname),
+    );
 
     const invalidateAlbumCount = usePostApiLibraryIdAlbumsCountInvalidate();
     const invalidateTrackCount = usePostApiLibraryIdTracksCountInvalidate();
@@ -71,11 +104,18 @@ export function useRefreshList({ queryKey, setListId, libraryId, itemType }: Use
                 break;
         }
 
+        // Invalidate the list fetch query
         await queryClient.invalidateQueries({ queryKey });
-        setListId(location.pathname, randomString(12));
+
+        queryClient.removeQueries({
+            exact: false,
+            queryKey: [libraryId, 'list', itemType],
+        });
+
+        setListId(itemListHelpers.generateListId(libraryId, location.pathname));
     };
 
-    return handleRefresh;
+    return { handleRefresh, listId };
 }
 
 interface UseListPaginationProps {
@@ -110,4 +150,281 @@ export function useListPagination({ pagination, setPagination }: UseListPaginati
     );
 
     return { onFirstPage, onLastPage, onNextPage, onPageChange, onPreviousPage };
+}
+
+export type ItemListQueryData = {
+    data: Record<string, unknown>;
+    uniqueIdToId: Record<string, string>;
+};
+
+export function usePaginatedListData(args: {
+    libraryId: string;
+    listKey: string;
+    pagination: ItemListPaginationState;
+    params: Record<string, unknown>;
+    type: LibraryItemType;
+}) {
+    const { libraryId, listKey, pagination, params, type } = args;
+
+    const queryClient = useQueryClient();
+    const [data, setData] = useState<(string | undefined)[]>(
+        itemListHelpers.getInitialData(pagination.itemsPerPage),
+    );
+
+    const query = useMemo(() => {
+        const fetchParams = {
+            ...params,
+            limit: pagination.itemsPerPage.toString(),
+            offset: ((pagination.currentPage - 1) * pagination.itemsPerPage).toString(),
+        };
+
+        if (type === LibraryItemType.ALBUM) {
+            return {
+                queryFn: () =>
+                    getApiLibraryIdAlbums(libraryId, fetchParams as GetApiLibraryIdAlbumsParams),
+                queryKey: getGetApiLibraryIdAlbumsQueryKey(
+                    libraryId,
+                    fetchParams as GetApiLibraryIdAlbumsParams,
+                ),
+            };
+        }
+
+        if (type === LibraryItemType.ALBUM_ARTIST) {
+            return {
+                queryFn: () =>
+                    getApiLibraryIdAlbumArtists(
+                        libraryId,
+                        fetchParams as GetApiLibraryIdAlbumArtistsParams,
+                    ),
+                queryKey: getGetApiLibraryIdAlbumArtistsQueryKey(
+                    libraryId,
+                    fetchParams as GetApiLibraryIdAlbumArtistsParams,
+                ),
+            };
+        }
+
+        if (type === LibraryItemType.GENRE) {
+            return {
+                queryFn: () =>
+                    getApiLibraryIdGenres(libraryId, fetchParams as GetApiLibraryIdGenresParams),
+                queryKey: getGetApiLibraryIdGenresQueryKey(
+                    libraryId,
+                    fetchParams as GetApiLibraryIdGenresParams,
+                ),
+            };
+        }
+
+        if (type === LibraryItemType.PLAYLIST) {
+            return {
+                queryFn: () =>
+                    getApiLibraryIdPlaylists(
+                        libraryId,
+                        fetchParams as GetApiLibraryIdPlaylistsParams,
+                    ),
+                queryKey: getGetApiLibraryIdPlaylistsQueryKey(
+                    libraryId,
+                    fetchParams as GetApiLibraryIdPlaylistsParams,
+                ),
+            };
+        }
+
+        if (type === LibraryItemType.TRACK) {
+            return {
+                queryFn: () =>
+                    getApiLibraryIdTracks(libraryId, fetchParams as GetApiLibraryIdTracksParams),
+                queryKey: getGetApiLibraryIdTracksQueryKey(
+                    libraryId,
+                    fetchParams as GetApiLibraryIdTracksParams,
+                ),
+            };
+        }
+
+        return null;
+    }, [pagination, params, type, libraryId]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!query) return;
+
+            const { data } = await queryClient.fetchQuery({
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                queryFn: query.queryFn as QueryFunction<any, any>,
+                queryKey: query.queryKey,
+            });
+
+            const listQueryKey = itemListHelpers.getQueryKey(libraryId, listKey, type);
+
+            const dataWithUniqueId = data.map((item: { id: string }) => ({
+                data: item,
+                id: item.id,
+                uniqueId: nanoid(),
+            }));
+
+            queryClient.setQueryData(listQueryKey, (prev: ItemListQueryData | undefined) => {
+                const updates: ItemListQueryData = {
+                    data: { ...prev?.data },
+                    uniqueIdToId: { ...prev?.uniqueIdToId },
+                };
+
+                for (const item of dataWithUniqueId) {
+                    updates.data[item.id] = item.data;
+                    updates.uniqueIdToId[item.uniqueId] = item.id;
+                }
+                return updates;
+            });
+
+            setData(dataWithUniqueId.map((item: { uniqueId: string }) => item.uniqueId));
+        };
+
+        fetchData();
+    }, [
+        libraryId,
+        listKey,
+        pagination.currentPage,
+        pagination.itemsPerPage,
+        params,
+        query,
+        queryClient,
+        type,
+    ]);
+
+    return { data, setData };
+}
+
+export function useInfiniteListData(args: {
+    itemCount: number;
+    libraryId: string;
+    listKey: string;
+    pagination: ItemListPaginationState;
+    params: Record<string, unknown>;
+    type: LibraryItemType;
+}) {
+    const { itemCount, libraryId, listKey, pagination, params, type } = args;
+
+    const queryClient = useQueryClient();
+
+    const [data, setData] = useState<(string | undefined)[]>(
+        itemListHelpers.getInitialData(itemCount),
+    );
+
+    const loadedPages = useRef<Record<number, boolean>>({});
+
+    useEffect(() => {
+        loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
+    }, [itemCount, pagination.itemsPerPage]);
+
+    const query = useMemo(() => {
+        if (type === LibraryItemType.ALBUM) {
+            return {
+                queryFn: getApiLibraryIdAlbums,
+                queryKey: getGetApiLibraryIdAlbumsQueryKey,
+            };
+        }
+
+        if (type === LibraryItemType.ALBUM_ARTIST) {
+            return {
+                queryFn: getApiLibraryIdAlbumArtists,
+                queryKey: getGetApiLibraryIdAlbumArtistsQueryKey,
+            };
+        }
+
+        if (type === LibraryItemType.GENRE) {
+            return {
+                queryFn: getApiLibraryIdGenres,
+                queryKey: getGetApiLibraryIdGenresQueryKey,
+            };
+        }
+
+        if (type === LibraryItemType.PLAYLIST) {
+            return {
+                queryFn: getApiLibraryIdPlaylists,
+                queryKey: getGetApiLibraryIdPlaylistsQueryKey,
+            };
+        }
+
+        if (type === LibraryItemType.TRACK) {
+            return {
+                queryFn: getApiLibraryIdTracks,
+                queryKey: getGetApiLibraryIdTracksQueryKey,
+            };
+        }
+
+        return null;
+    }, [type]);
+
+    const listQueryKey = itemListHelpers.getQueryKey(libraryId, listKey, type);
+
+    const handleRangeChanged = useCallback(
+        async (event: { endIndex: number; startIndex: number }) => {
+            const { startIndex, endIndex } = event;
+
+            if (!query) return;
+
+            const pagesToLoad = itemListHelpers.getPagesToLoad(queryClient, {
+                endIndex,
+                listQueryKey,
+                loadedPages: loadedPages,
+                pageSize: pagination.itemsPerPage,
+                startIndex,
+            });
+
+            if (pagesToLoad.length > 0) {
+                for (const page of pagesToLoad) {
+                    loadedPages.current[page] = true;
+
+                    const currentOffset = page * pagination.itemsPerPage;
+
+                    const fetchParams = {
+                        ...params,
+                        limit: pagination.itemsPerPage.toString(),
+                        offset: currentOffset.toString(),
+                    };
+
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const queryKey = query.queryKey(libraryId, fetchParams as any);
+
+                    const { data } = await queryClient.fetchQuery({
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        queryFn: () => query.queryFn(libraryId, fetchParams as any) as any,
+                        queryKey,
+                    });
+
+                    const dataWithUniqueId = data.map((item: { id: string }) => ({
+                        data: item,
+                        id: item.id,
+                        uniqueId: nanoid(),
+                    }));
+
+                    queryClient.setQueryData(
+                        listQueryKey,
+                        (prev: ItemListQueryData | undefined) => {
+                            const updates: ItemListQueryData = {
+                                data: { ...prev?.data },
+                                uniqueIdToId: { ...prev?.uniqueIdToId },
+                            };
+
+                            for (const item of dataWithUniqueId) {
+                                updates.data[item.id] = item.data;
+                                updates.uniqueIdToId[item.uniqueId] = item.id;
+                            }
+
+                            return updates;
+                        },
+                    );
+
+                    setData((prevData) => {
+                        const newData = [...prevData];
+                        const startIndex = currentOffset;
+                        dataWithUniqueId.forEach((item: { uniqueId: string }, index: number) => {
+                            newData[startIndex + index] = item.uniqueId;
+                        });
+                        return newData;
+                    });
+                }
+            }
+        },
+        [libraryId, listQueryKey, pagination.itemsPerPage, params, query, queryClient],
+    );
+
+    return { data, handleRangeChanged, setData };
 }

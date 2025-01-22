@@ -94,7 +94,7 @@ export const getGetApiUsersQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
         getApiUsers(params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiUsers>>,
         TError,
         TData
@@ -188,7 +188,7 @@ export const getGetApiUsersSuspenseQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
         getApiUsers(params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiUsers>>,
         TError,
         TData
@@ -390,15 +390,11 @@ export const getGetApiUsersIdQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersId>>> = ({ signal }) =>
         getApiUsersId(id, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!id,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiUsersId>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiUsersIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUsersId>>>;
@@ -492,7 +488,7 @@ export const getGetApiUsersIdSuspenseQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersId>>> = ({ signal }) =>
         getApiUsersId(id, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiUsersId>>,
         TError,
         TData

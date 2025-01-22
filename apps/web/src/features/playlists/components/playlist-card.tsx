@@ -1,4 +1,5 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type { PlaylistItem } from '@/api/api-types.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import type { BaseCardProps, LoadedCardProps, LoadingCardProps } from '@/features/ui/card/card.tsx';
@@ -11,7 +12,12 @@ type BasePlaylistCardProps = BaseCardProps & {
 
 type LoadingPlaylistCardProps = LoadingCardProps & BasePlaylistCardProps;
 
-type LoadedPlaylistCardProps = Omit<LoadedCardProps, 'controls'> & BasePlaylistCardProps;
+type LoadedPlaylistCardProps = BasePlaylistCardProps & {
+    componentState: 'loaded';
+    id: string;
+    libraryId: string;
+    playlist: PlaylistItem;
+};
 
 type PlaylistCardProps = LoadingPlaylistCardProps | LoadedPlaylistCardProps;
 
@@ -27,22 +33,24 @@ export function PlaylistCard(props: PlaylistCardProps) {
         );
     }
 
+    const { playlist } = props;
+
     const controls: LoadedCardProps['controls'] = {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
                 {
-                    id: [props.id],
+                    id: [playlist.id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.PLAYLIST,
                 },
-                { image: props.image, title: props.titledata.text },
+                { image: playlist.imageUrl, title: playlist.name },
             );
         },
         onDragStart: () => {
             PrefetchController.call({
                 cmd: {
                     tracksByPlaylistId: {
-                        id: [props.id],
+                        id: [playlist.id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,
@@ -69,12 +77,13 @@ export function PlaylistCard(props: PlaylistCardProps) {
             className={props.className}
             componentState={props.componentState}
             controls={controls}
-            id={props.id}
-            image={props.image}
+            id={playlist.id}
+            image={playlist.imageUrl}
             itemType={LibraryItemType.PLAYLIST}
-            metadata={props.metadata}
+            libraryId={playlist.libraryId}
+            metadata={[]}
             metadataLines={props.metadataLines ?? 1}
-            titledata={props.titledata}
+            titledata={{ path: '/', text: playlist.name }}
         />
     );
 }

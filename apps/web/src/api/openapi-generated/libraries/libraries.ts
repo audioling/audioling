@@ -114,7 +114,7 @@ export const getGetApiLibrariesQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraries>>> = ({ signal }) =>
         getApiLibraries(params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraries>>,
         TError,
         TData
@@ -258,7 +258,7 @@ export const getGetApiLibrariesSuspenseQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibraries>>> = ({ signal }) =>
         getApiLibraries(params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraries>>,
         TError,
         TData
@@ -514,15 +514,11 @@ export const getGetApiLibrariesIdQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibrariesId>>> = ({ signal }) =>
         getApiLibrariesId(id, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!id,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibrariesId>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibrariesId>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibrariesIdQueryResult = NonNullable<
@@ -664,7 +660,7 @@ export const getGetApiLibrariesIdSuspenseQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiLibrariesId>>> = ({ signal }) =>
         getApiLibrariesId(id, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibrariesId>>,
         TError,
         TData

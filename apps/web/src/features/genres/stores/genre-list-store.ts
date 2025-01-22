@@ -26,7 +26,7 @@ export const useGenreListStoreBase = create<GenreListStore>()(
                 listId: {},
                 pagination: {
                     currentPage: 1,
-                    itemsPerPage: 100,
+                    itemsPerPage: 500,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
                 setColumnOrder: (columnOrder) => {
@@ -78,8 +78,14 @@ export const useGenreListStoreBase = create<GenreListStore>()(
                         state.sortOrder = sortOrder;
                     });
                 },
+                setState: (key, listState) => {
+                    set((state) => {
+                        state.state[key] = listState;
+                    });
+                },
                 sortBy: GenreListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
+                state: {},
             })),
         ),
         { name: 'genre-list-store', version: 1 },

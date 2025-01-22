@@ -1,5 +1,5 @@
 import type { LibraryFeatures } from '@repo/shared-types';
-import { LibraryItemType, TrackListSortOptions } from '@repo/shared-types';
+import { TrackListSortOptions } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdTracksCountQueryKey } from '@/api/openapi-generated/tracks/tracks.ts';
@@ -13,9 +13,8 @@ import { SearchButton } from '@/features/shared/search-button/search-button.tsx'
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { Group } from '@/features/ui/group/group.tsx';
-import { useRefreshList } from '@/hooks/use-list.ts';
 
-export function TrackListHeader() {
+export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }) {
     const { libraryId } = useParams() as { libraryId: string };
     const [searchParams] = useSearchParams();
     const queryClient = useQueryClient();
@@ -23,7 +22,6 @@ export function TrackListHeader() {
     const features = useLibraryFeatures(libraryId);
     const sortOptions = getSortOptions(features);
 
-    const setListId = useTrackListStore.use.setListId();
     const folderId = useTrackListStore.use.folderId();
     const sortBy = useTrackListStore.use.sortBy();
     const sortOrder = useTrackListStore.use.sortOrder();
@@ -33,13 +31,6 @@ export function TrackListHeader() {
     const setSortBy = useTrackListStore.use.setSortBy();
     const setSortOrder = useTrackListStore.use.setSortOrder();
     const setPaginationType = useTrackListStore.use.setPaginationType();
-
-    const handleRefresh = useRefreshList({
-        itemType: LibraryItemType.TRACK,
-        libraryId,
-        queryKey: [`/api/${libraryId}/tracks`],
-        setListId,
-    });
 
     const itemCountQueryKey = getGetApiLibraryIdTracksCountQueryKey(libraryId, {
         searchTerm: searchParams.get('search') ?? undefined,

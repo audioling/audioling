@@ -1,4 +1,5 @@
 import type { ListSortOrder } from '@repo/shared-types';
+import type { GridStateSnapshot } from 'react-virtuoso';
 import type { ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 import type {
     ItemListDisplayType,
@@ -23,6 +24,8 @@ export type ListStore<TSortBy> = {
     setPaginationType: (paginationType: ItemListPaginationType) => void;
     setSortBy: (sortBy: TSortBy) => void;
     setSortOrder: (sortOrder: ListSortOrder) => void;
+    setState: (key: string, state: GridStateSnapshot) => void;
     sortBy: TSortBy;
     sortOrder: ListSortOrder;
+    state: Record<string, GridStateSnapshot>;
 };

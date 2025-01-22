@@ -87,7 +87,9 @@
     transition: all 0.3s ease-in-out;
 
     @include base.text-ellipsis;
+}
 
+.description.underline {
     &:hover {
         text-decoration: underline;
     }

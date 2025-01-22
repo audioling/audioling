@@ -8,7 +8,7 @@ import styles from './column.module.scss';
 export function nameColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
         cell: ({ row, context }) => {
-            const item = row.original;
+            const item = context.data || row.original;
             const isPlaying = row.id === context?.currentTrack?._uniqueId;
 
             if (typeof item === 'object' && item) {

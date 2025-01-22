@@ -5,9 +5,10 @@ import type { PlayQueueItem } from '@/api/api-types.ts';
 declare module '@tanstack/react-table' {
     interface CellContext<TData extends RowData, TValue> {
         context: {
-            baseUrl: string;
             currentTrack: PlayQueueItem | undefined;
+            data?: unknown;
             libraryId: string;
+            listKey: string;
         };
     }
 }

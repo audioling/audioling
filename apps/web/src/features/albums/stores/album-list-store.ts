@@ -26,7 +26,7 @@ export const useAlbumListStoreBase = create<AlbumListStore>()(
                 listId: {},
                 pagination: {
                     currentPage: 1,
-                    itemsPerPage: 100,
+                    itemsPerPage: 500,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
                 setColumnOrder: (columnOrder) => {
@@ -78,8 +78,14 @@ export const useAlbumListStoreBase = create<AlbumListStore>()(
                         state.sortOrder = sortOrder;
                     });
                 },
+                setState: (key, listState) => {
+                    set((state) => {
+                        state.state[key] = listState;
+                    });
+                },
                 sortBy: AlbumListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
+                state: {},
             })),
         ),
         { name: 'album-list-store', version: 1 },

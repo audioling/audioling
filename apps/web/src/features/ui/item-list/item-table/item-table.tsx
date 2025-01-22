@@ -20,16 +20,24 @@ import type {
     VirtuosoHandle,
 } from 'react-virtuoso';
 import { Virtuoso } from 'react-virtuoso';
+import type { PlayQueueItem } from '@/api/api-types.ts';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
-import { LoaderRow, TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './item-table.module.scss';
 
-export interface TableItemProps<T, C extends { baseUrl: string; libraryId: string }> {
-    context?: C;
+export interface ItemTableContext {
+    columnStyles?: { sizes: string[]; styles: { gridTemplateColumns: string } };
+    currentTrack?: PlayQueueItem;
+    data?: unknown;
+    libraryId: string;
+    listKey: string;
+}
+
+export interface TableItemProps<T> {
+    context?: ItemTableContext;
     data: T | undefined;
     index: number;
 }
@@ -52,11 +60,43 @@ export type ItemTableRowDragData<T> = {
     uniqueId: string;
 };
 
-export interface ItemTableProps<T, C extends { baseUrl: string; libraryId: string }> {
+export interface ItemTableItemProps<T> {
+    context: ItemTableContext;
+    data: T;
+    disableRowDrag?: boolean;
+    enableExpanded: boolean;
+    enableRowDrag?: boolean;
+    index: number;
+    itemType: LibraryItemType;
+    onRowClick?: (
+        e: MouseEvent<HTMLDivElement>,
+        row: Row<T | undefined>,
+        table: Table<T | undefined>,
+    ) => void;
+    onRowContextMenu?: (
+        e: MouseEvent<HTMLDivElement>,
+        row: Row<T | undefined>,
+        table: Table<T | undefined>,
+    ) => void;
+    onRowDoubleClick?: (
+        e: MouseEvent<HTMLDivElement>,
+        row: Row<T | undefined>,
+        table: Table<T | undefined>,
+    ) => void;
+    onRowDrag?: (row: Row<T>, table: Table<T | undefined>) => void;
+    onRowDragData?: (row: Row<T>, table: Table<T | undefined>) => DragData;
+    onRowDrop?: (row: Row<T>, table: Table<T | undefined>, args: ItemTableRowDrop<T>) => void;
+    rowId: string;
+    table: Table<T | undefined>;
+    tableId: string;
+}
+
+export interface ItemTableProps<T> {
     HeaderComponent?: ElementType;
+    ItemComponent: React.ComponentType<ItemTableItemProps<T>>;
     columnOrder: ItemListColumn[];
     columns: DisplayColumnDef<T | undefined>[];
-    context: C;
+    context: ItemTableContext;
     data: (T | undefined)[];
     disableAutoScroll?: boolean;
     enableHeader?: boolean;
@@ -104,10 +144,7 @@ export interface ItemTableHandle<T> extends VirtuosoHandle {
     getTable: () => Table<T | undefined>;
 }
 
-export function ItemTable<
-    T extends { _uniqueId?: string; id: string },
-    C extends { baseUrl: string; libraryId: string },
->(props: ItemTableProps<T, C>) {
+export function ItemTable<T>(props: ItemTableProps<T>) {
     const {
         columns,
         columnOrder,
@@ -124,6 +161,7 @@ export function ItemTable<
         initialScrollIndex,
         isScrolling,
         itemCount,
+        ItemComponent,
         virtuosoRef,
         itemType,
         onEndReached,
@@ -285,40 +323,37 @@ export function ItemTable<
                                 : undefined,
                         }}
                         context={tableContext}
+                        data={data}
                         endReached={onEndReached}
                         increaseViewportBy={100}
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
-                        itemContent={(index, _data, context) => {
-                            if (data[index] !== undefined) {
-                                return (
-                                    <TableRow
-                                        context={context}
-                                        enableExpanded={false}
-                                        enableRowDrag={enableRowDrag}
-                                        index={index}
-                                        itemType={itemType}
-                                        rowId={
-                                            getRowId && rowIdProperty
-                                                ? (data[index]?.[
-                                                      rowIdProperty as keyof T
-                                                  ] as string)
-                                                : index.toString()
-                                        }
-                                        table={table}
-                                        tableId={tableId}
-                                        onRowClick={onRowClick}
-                                        onRowContextMenu={onRowContextMenu}
-                                        onRowDoubleClick={onRowDoubleClick}
-                                        onRowDrag={onRowDrag}
-                                        onRowDragData={onRowDragData}
-                                        onRowDrop={onRowDrop}
-                                    />
-                                );
-                            }
-
-                            return <LoaderRow />;
+                        itemContent={(index, d, context) => {
+                            return (
+                                <ItemComponent
+                                    context={context}
+                                    data={d as T}
+                                    enableExpanded={false}
+                                    enableRowDrag={enableRowDrag}
+                                    index={index}
+                                    itemType={itemType}
+                                    rowId={
+                                        getRowId && rowIdProperty
+                                            ? (data[index]?.[rowIdProperty as keyof T] as string)
+                                            : index.toString()
+                                    }
+                                    table={table}
+                                    tableId={tableId}
+                                    onRowClick={onRowClick}
+                                    onRowContextMenu={onRowContextMenu}
+                                    onRowDoubleClick={onRowDoubleClick}
+                                    onRowDrag={onRowDrag}
+                                    onRowDragData={onRowDragData}
+                                    onRowDrop={onRowDrop}
+                                />
+                            );
                         }}
+                        overscan={50}
                         rangeChanged={onRangeChanged}
                         scrollerRef={setScroller}
                         startReached={onStartReached}

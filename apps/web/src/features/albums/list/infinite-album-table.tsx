@@ -1,212 +1,49 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
-import { useQueryClient } from '@tanstack/react-query';
-import type { Row, Table } from '@tanstack/react-table';
-import type { AlbumItem } from '@/api/api-types.ts';
-import {
-    getApiLibraryIdAlbums,
-    getGetApiLibraryIdAlbumsQueryKey,
-} from '@/api/openapi-generated/albums/albums.ts';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { AlbumTableServerItem } from '@/features/albums/list/album-table-item.tsx';
 import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
-import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
-import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { InfiniteItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
-import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
-import {
-    subscribeAlbumFavoritesAdded,
-    subscribeAlbumFavoritesRemoved,
-} from '@/store/change-store.ts';
-import type { DragData } from '@/utils/drag-drop.ts';
-import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
-import { throttle } from '@/utils/throttle.ts';
+import { useInfiniteListData } from '@/hooks/use-list.ts';
 
-type AlbumTableItemContext = {
-    baseUrl: string;
-    libraryId: string;
-};
+interface InfiniteAlbumTableProps extends InfiniteItemListProps<GetApiLibraryIdAlbumsParams> {}
 
-interface InfiniteAlbumTableProps {
-    baseUrl: string;
-    itemCount: number;
-    libraryId: string;
-    listKey: string;
-    pagination: ItemListPaginationState;
-    params: GetApiLibraryIdAlbumsParams;
-}
+export function InfiniteAlbumTable(props: InfiniteAlbumTableProps) {
+    const { itemCount, libraryId, listKey, params, pagination } = props;
 
-export function InfiniteAlbumTable({
-    baseUrl,
-    itemCount,
-    libraryId,
-    listKey,
-    params,
-    pagination,
-}: InfiniteAlbumTableProps) {
-    const queryClient = useQueryClient();
-    const [idMap, setIdMap] = useState<Record<string, number>>({});
-    const [data, setData] = useState<(AlbumItem | undefined)[]>(
-        itemListHelpers.getInitialData(itemCount),
-    );
+    const { data, handleRangeChanged } = useInfiniteListData({
+        itemCount,
+        libraryId,
+        listKey,
+        pagination,
+        params,
+        type: LibraryItemType.ALBUM,
+    });
 
-    const loadedPages = useRef<Record<number, boolean>>({});
-
-    useEffect(() => {
-        loadedPages.current = itemListHelpers.getPageMap(itemCount, pagination.itemsPerPage);
-    }, [itemCount, pagination.itemsPerPage]);
-
-    useEffect(() => {
-        const unsubscribeFavoritesAdded = subscribeAlbumFavoritesAdded((newIds) => {
-            itemListHelpers.updateFavorite(setData, idMap, newIds, true);
-        });
-
-        const unsubscribeFavoritesRemoved = subscribeAlbumFavoritesRemoved((newIds) => {
-            itemListHelpers.updateFavorite(setData, idMap, newIds, false);
-        });
-
-        return () => {
-            unsubscribeFavoritesAdded();
-            unsubscribeFavoritesRemoved();
-        };
-    }, [idMap, setData]);
-
-    const { onRowClick } = useMultiRowSelection<AlbumItem>();
-
-    const onRangeChanged = useCallback(
-        async (event: { endIndex: number; startIndex: number }) => {
-            const { startIndex, endIndex } = event;
-            const pagesToLoad = itemListHelpers.getPagesToLoad(
-                startIndex,
-                endIndex,
-                pagination.itemsPerPage,
-                loadedPages.current,
-            );
-
-            if (pagesToLoad.length > 0) {
-                for (const page of pagesToLoad) {
-                    loadedPages.current[page] = true;
-
-                    const currentOffset = page * pagination.itemsPerPage;
-
-                    const paramsWithPagination = {
-                        ...params,
-                        limit: pagination.itemsPerPage.toString(),
-                        offset: currentOffset.toString(),
-                    };
-
-                    const { data } = await queryClient.fetchQuery({
-                        queryFn: () => getApiLibraryIdAlbums(libraryId, paramsWithPagination),
-                        queryKey: getGetApiLibraryIdAlbumsQueryKey(libraryId, paramsWithPagination),
-                        staleTime: 30 * 1000,
-                    });
-
-                    setData((prevData) => {
-                        const newData = [...prevData];
-                        data.forEach((item, index) => {
-                            newData[currentOffset + index] = item;
-                        });
-                        return newData;
-                    });
-
-                    setIdMap((prevIdMap) => {
-                        const newIdMap: Record<string, number> = { ...prevIdMap };
-                        data.forEach((item, index) => {
-                            newIdMap[item.id] = currentOffset + index;
-                        });
-                        return newIdMap;
-                    });
-                }
-            }
-        },
-        [libraryId, pagination.itemsPerPage, params, queryClient],
-    );
-
-    const throttledOnRangeChanged = throttle(onRangeChanged, 200);
-
-    const onRowDragData = useCallback(
-        (row: Row<AlbumItem>, table: Table<AlbumItem | undefined>): DragData => {
-            const isSelfSelected = row.getIsSelected();
-
-            if (isSelfSelected) {
-                const selectedRowIds = table
-                    .getSelectedRowModel()
-                    .rows.map((row) => row.original?.id)
-                    .filter((id): id is string => id !== undefined);
-
-                return dndUtils.generateDragData({
-                    id: selectedRowIds,
-                    operation: [DragOperation.ADD],
-                    type: DragTarget.ALBUM,
-                });
-            }
-
-            return dndUtils.generateDragData({
-                id: [row.original?.id],
-                operation: [DragOperation.ADD],
-                type: DragTarget.ALBUM,
-            });
-        },
-        [],
-    );
-
-    const onRowDrag = useCallback((row: Row<AlbumItem>, table: Table<AlbumItem | undefined>) => {
-        const isSelfSelected = row.getIsSelected();
-
-        if (isSelfSelected) {
-            const selectedRowIds = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original?.id)
-                .filter((id): id is string => id !== undefined);
-
-            return PrefetchController.call({
-                cmd: {
-                    tracksByAlbumId: {
-                        id: selectedRowIds,
-                    },
-                },
-            });
-        }
-
-        return PrefetchController.call({
-            cmd: {
-                tracksByAlbumId: {
-                    id: [row.original.id],
-                },
-            },
-        });
-    }, []);
-
-    useEffect(() => {
-        setData(Array(itemCount).fill(undefined));
-        loadedPages.current = {};
-    }, [itemCount, listKey]);
+    const { onRowClick } = useMultiRowSelection<string>();
 
     const columnOrder = useAlbumListStore.use.columnOrder();
     const setColumnOrder = useAlbumListStore.use.setColumnOrder();
 
-    const { columns } = useItemTable<AlbumItem>(columnOrder, setColumnOrder);
+    const { columns } = useItemTable<string>(columnOrder, setColumnOrder);
 
     return (
-        <ListWrapper>
-            <ItemTable<AlbumItem, AlbumTableItemContext>
-                columnOrder={columnOrder}
-                columns={columns}
-                context={{ baseUrl, libraryId }}
-                data={data}
-                enableHeader={true}
-                enableMultiRowSelection={true}
-                itemCount={itemCount}
-                itemType={LibraryItemType.ALBUM}
-                rowsKey={listKey}
-                onChangeColumnOrder={setColumnOrder}
-                onRangeChanged={throttledOnRangeChanged}
-                onRowClick={onRowClick}
-                onRowDrag={onRowDrag}
-                onRowDragData={onRowDragData}
-            />
-        </ListWrapper>
+        <ItemTable<string>
+            ItemComponent={AlbumTableServerItem}
+            columnOrder={columnOrder}
+            columns={columns}
+            context={{ libraryId, listKey }}
+            data={data}
+            enableHeader={true}
+            enableMultiRowSelection={true}
+            itemCount={itemCount}
+            itemType={LibraryItemType.ALBUM}
+            rowsKey={listKey}
+            onChangeColumnOrder={setColumnOrder}
+            onRangeChanged={handleRangeChanged}
+            onRowClick={onRowClick}
+        />
     );
 }

@@ -7,12 +7,13 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import {
     attachClosestEdge,
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import type { LibraryItemType } from '@repo/shared-types';
+import { LibraryItemType } from '@repo/shared-types';
+import { useQuery } from '@tanstack/react-query';
 import type { Row, Table } from '@tanstack/react-table';
 import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
@@ -20,21 +21,22 @@ import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
+import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
+import type { ItemListQueryData } from '@/hooks/use-list.ts';
+import type { DragData } from '@/utils/drag-drop.ts';
 import {
     dndUtils,
     DragOperation,
     DragTarget,
     libraryItemTypeToDragTarget,
 } from '@/utils/drag-drop.ts';
-import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './table-row.module.scss';
 
 interface TableRowProps<
-    T extends { _uniqueId?: string; id: string },
+    T,
     C extends {
-        baseUrl: string;
         columnStyles: {
             sizes: string[];
             styles: {
@@ -45,6 +47,7 @@ interface TableRowProps<
     },
 > {
     context: C;
+    data: T;
     disableRowDrag?: boolean;
     enableExpanded: boolean;
     enableRowDrag?: boolean;
@@ -74,9 +77,8 @@ interface TableRowProps<
 }
 
 export function TableRow<
-    T extends { _uniqueId?: string; id: string },
+    T,
     C extends {
-        baseUrl: string;
         columnStyles: {
             sizes: string[];
             styles: {
@@ -85,11 +87,27 @@ export function TableRow<
         };
         currentTrack?: PlayQueueItem;
         libraryId: string;
+        listKey: string;
     },
->(props: TableRowProps<T & { _uniqueId?: string }, C>) {
+>(props: TableRowProps<T, C>) {
+    return <InnerTableRow {...props} />;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const InnerTableRow = <
+    T,
+    C extends {
+        columnStyles: { sizes: string[]; styles: { gridTemplateColumns: string } };
+        currentTrack?: PlayQueueItem;
+        libraryId: string;
+        listKey: string;
+    },
+>(
+    props: TableRowProps<T, C>,
+) => {
     const {
         context,
-        enableRowDrag,
+        data: uniqueId,
         enableExpanded,
         index,
         itemType,
@@ -99,10 +117,12 @@ export function TableRow<
         onRowDrop,
         onRowDrag,
         onRowDragData,
+        enableRowDrag,
         rowId,
         table,
         tableId,
     } = props;
+
     const ref = useRef<HTMLDivElement>(null);
 
     const row = table.getRow(rowId);
@@ -112,6 +132,15 @@ export function TableRow<
     const isExpanded = row?.getIsExpanded();
 
     const [isDraggedOver, setIsDraggedOver] = useState<Edge | null>(null);
+
+    const { data: list } = useQuery<ItemListQueryData>({
+        enabled: false,
+        queryKey: itemListHelpers.getQueryKey(
+            context.libraryId,
+            context.listKey,
+            LibraryItemType.ALBUM,
+        ),
+    });
 
     useEffect(() => {
         if (!ref.current) return;
@@ -237,7 +266,7 @@ export function TableRow<
                             id: row.id,
                             index,
                             table,
-                            uniqueId: row.original?._uniqueId || row?.id,
+                            uniqueId: (row.original as PlayQueueItem)?._uniqueId || row?.id,
                         });
                         setIsDraggedOver(null);
                     },
@@ -247,6 +276,8 @@ export function TableRow<
 
         return combine(...fns);
     }, [enableRowDrag, index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
+
+    const data = list?.data[list.uniqueIdToId[uniqueId as string]];
 
     if (enableExpanded && !isExpanded) {
         return null;
@@ -274,9 +305,10 @@ export function TableRow<
                             {flexRender(cell.column.columnDef.cell, {
                                 ...cell.getContext(),
                                 context: {
-                                    baseUrl: context.baseUrl!,
                                     currentTrack: context.currentTrack,
+                                    data: data,
                                     libraryId: context.libraryId!,
+                                    listKey: context.listKey,
                                 },
                             })}
                         </Fragment>
@@ -285,7 +317,7 @@ export function TableRow<
             </div>
         </div>
     );
-}
+};
 
 export function LoaderRow() {
     return (

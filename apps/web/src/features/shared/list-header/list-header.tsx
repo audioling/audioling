@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { motion, useSpring, useTransform } from 'motion/react';
+import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import styles from './list-header.module.scss';
 
 interface ListHeaderProps {
@@ -73,8 +74,19 @@ function Footer(props: ListHeaderFooterProps) {
     return <div className={styles.footer}>{children}</div>;
 }
 
+interface ListHeaderQueryBuilderProps {
+    children: ReactNode;
+}
+
+function QueryBuilder(props: ListHeaderQueryBuilderProps) {
+    const { children } = props;
+
+    return <ScrollArea className={styles.queryBuilder}>{children}</ScrollArea>;
+}
+
 ListHeader.Left = Left;
 ListHeader.Right = Right;
 ListHeader.Title = Title;
 ListHeader.Footer = Footer;
 ListHeader.ItemCount = ItemCount;
+ListHeader.QueryBuilder = QueryBuilder;

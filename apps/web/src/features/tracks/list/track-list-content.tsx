@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from 'react-router';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
+import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
 import { PaginatedTrackTable } from '@/features/tracks/list/paginated-track-table.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
@@ -66,7 +67,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
         case ItemListPaginationType.PAGINATED:
             return (
                 <PaginatedTrackTable
-                    baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
                     listKey={listKey}
@@ -77,14 +77,16 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             );
         case ItemListPaginationType.INFINITE:
             return (
-                <InfiniteTrackTable
-                    baseUrl={baseUrl}
-                    itemCount={itemCount}
-                    libraryId={libraryId}
-                    listKey={listKey}
-                    pagination={pagination}
-                    params={params}
-                />
+                <ListWrapper listKey={listKey}>
+                    <InfiniteTrackTable
+                        baseUrl={baseUrl}
+                        itemCount={itemCount}
+                        libraryId={libraryId}
+                        listKey={listKey}
+                        pagination={pagination}
+                        params={params}
+                    />
+                </ListWrapper>
             );
     }
 }

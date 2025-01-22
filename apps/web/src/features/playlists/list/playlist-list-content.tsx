@@ -1,11 +1,11 @@
 import { useParams, useSearchParams } from 'react-router';
 import { useGetApiLibraryIdPlaylistsCountSuspense } from '@/api/openapi-generated/playlists/playlists.ts';
-import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { InfinitePlaylistGrid } from '@/features/playlists/list/infinite-playlist-grid.tsx';
 import { InfinitePlaylistTable } from '@/features/playlists/list/infinite-playlist-table.tsx';
 import { PaginatedPlaylistGrid } from '@/features/playlists/list/paginated-playlist-grid.tsx';
 import { PaginatedPlaylistTable } from '@/features/playlists/list/paginated-playlist-table.tsx';
 import { usePlaylistListStore } from '@/features/playlists/stores/playlist-list-store.ts';
+import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
 import { useListKey } from '@/hooks/use-list.ts';
 
@@ -34,7 +34,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     const displayType = usePlaylistListStore.use.displayType();
     const paginationType = usePlaylistListStore.use.paginationType();
     const setPagination = usePlaylistListStore.use.setPagination();
-    const baseUrl = useAuthBaseUrl();
 
     const params = {
         searchTerm: searchParams.get('search') ?? undefined,
@@ -55,7 +54,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             case ItemListPaginationType.PAGINATED:
                 return (
                     <PaginatedPlaylistGrid
-                        baseUrl={baseUrl}
                         itemCount={itemCount}
                         libraryId={libraryId}
                         listKey={listKey}
@@ -66,14 +64,15 @@ function ListComponent({ itemCount }: { itemCount: number }) {
                 );
             case ItemListPaginationType.INFINITE:
                 return (
-                    <InfinitePlaylistGrid
-                        baseUrl={baseUrl}
-                        itemCount={itemCount}
-                        libraryId={libraryId}
-                        listKey={listKey}
-                        pagination={pagination}
-                        params={params}
-                    />
+                    <ListWrapper listKey={listKey}>
+                        <InfinitePlaylistGrid
+                            itemCount={itemCount}
+                            libraryId={libraryId}
+                            listKey={listKey}
+                            pagination={pagination}
+                            params={params}
+                        />
+                    </ListWrapper>
                 );
         }
     }
@@ -82,7 +81,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
         case ItemListPaginationType.PAGINATED:
             return (
                 <PaginatedPlaylistTable
-                    baseUrl={baseUrl}
                     itemCount={itemCount}
                     libraryId={libraryId}
                     listKey={listKey}
@@ -93,14 +91,15 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             );
         case ItemListPaginationType.INFINITE:
             return (
-                <InfinitePlaylistTable
-                    baseUrl={baseUrl}
-                    itemCount={itemCount}
-                    libraryId={libraryId}
-                    listKey={listKey}
-                    pagination={pagination}
-                    params={params}
-                />
+                <ListWrapper listKey={listKey}>
+                    <InfinitePlaylistTable
+                        itemCount={itemCount}
+                        libraryId={libraryId}
+                        listKey={listKey}
+                        pagination={pagination}
+                        params={params}
+                    />
+                </ListWrapper>
             );
     }
 }

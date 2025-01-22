@@ -1,7 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
-import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { PlaylistTableServerItem } from '@/features/playlists/list/playlist-table-item.tsx';
-import { usePlaylistListStore } from '@/features/playlists/stores/playlist-list-store.ts';
+import type { GetApiLibraryIdAlbumArtistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { AlbumArtistTableServerItem } from '@/features/artists/list/album-artist-table-item.tsx';
+import { useArtistListStore } from '@/features/artists/stores/artist-list-store.ts';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { InfiniteItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -9,36 +9,36 @@ import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/u
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { useInfiniteListData } from '@/hooks/use-list.ts';
 
-interface InfinitePlaylistTableProps
-    extends InfiniteItemListProps<GetApiLibraryIdPlaylistsParams> {}
+interface InfiniteAlbumArtistTableProps
+    extends InfiniteItemListProps<GetApiLibraryIdAlbumArtistsParams> {}
 
-export function InfinitePlaylistTable({
+export function InfiniteAlbumArtistTable({
     itemCount,
     libraryId,
     listKey,
     params,
     pagination,
-}: InfinitePlaylistTableProps) {
+}: InfiniteAlbumArtistTableProps) {
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
         listKey,
         pagination,
         params,
-        type: LibraryItemType.PLAYLIST,
+        type: LibraryItemType.ALBUM_ARTIST,
     });
 
     const { onRowClick } = useMultiRowSelection<string>();
 
-    const columnOrder = usePlaylistListStore.use.columnOrder();
-    const setColumnOrder = usePlaylistListStore.use.setColumnOrder();
+    const columnOrder = useArtistListStore.use.columnOrder();
+    const setColumnOrder = useArtistListStore.use.setColumnOrder();
 
     const { columns } = useItemTable<string>(columnOrder, setColumnOrder);
 
     return (
         <ListWrapper>
             <ItemTable<string>
-                ItemComponent={PlaylistTableServerItem}
+                ItemComponent={AlbumArtistTableServerItem}
                 columnOrder={columnOrder}
                 columns={columns}
                 context={{ libraryId, listKey }}
@@ -46,7 +46,7 @@ export function InfinitePlaylistTable({
                 enableHeader={true}
                 enableMultiRowSelection={true}
                 itemCount={itemCount}
-                itemType={LibraryItemType.PLAYLIST}
+                itemType={LibraryItemType.ALBUM_ARTIST}
                 rowsKey={listKey}
                 onChangeColumnOrder={setColumnOrder}
                 onRangeChanged={handleRangeChanged}

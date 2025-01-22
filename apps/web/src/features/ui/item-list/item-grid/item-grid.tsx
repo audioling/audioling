@@ -135,15 +135,21 @@ const GridItemComponent = forwardRef<
 
 GridItemComponent.displayName = 'GridItemComponent';
 
-export interface InfiniteGridItemProps<T, C extends { baseUrl: string; libraryId: string }> {
+export interface InfiniteGridItemProps<
+    T,
+    C extends { libraryId: string; listKey: string } = { libraryId: string; listKey: string },
+> {
     context: C;
     data: T | undefined;
     index: number;
     isExpanded?: boolean;
 }
 
-interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: string }> {
-    GridComponent: React.ComponentType<InfiniteGridItemProps<T, C>>;
+interface InfiniteItemGridProps<
+    T,
+    C extends { libraryId: string; listKey: string } = { libraryId: string; listKey: string },
+> {
+    ItemComponent: React.ComponentType<InfiniteGridItemProps<T, C>>;
     context: C;
     data: (T | undefined)[];
     enableExpanded?: boolean;
@@ -159,14 +165,15 @@ interface InfiniteItemGridProps<T, C extends { baseUrl: string; libraryId: strin
     virtuosoRef?: RefObject<VirtuosoGridHandle | undefined>;
 }
 
-export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: string }>(
-    props: InfiniteItemGridProps<T, C>,
-) {
+export function InfiniteItemGrid<
+    T,
+    C extends { libraryId: string; listKey: string } = { libraryId: string; listKey: string },
+>(props: InfiniteItemGridProps<T, C>) {
     const {
         context,
         data,
         enableExpanded = false,
-        GridComponent,
+        ItemComponent,
         initialScrollIndex,
         isScrolling,
         itemCount = 0,
@@ -243,12 +250,13 @@ export function InfiniteItemGrid<T, C extends { baseUrl: string; libraryId: stri
                 }}
                 data={data}
                 endReached={onEndReached}
-                increaseViewportBy={200}
+                increaseViewportBy={100}
                 initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={(index, data) => (
-                    <GridComponent context={context} data={data} index={index} />
+                    <ItemComponent context={context} data={data} index={index} />
                 )}
+                overscan={50}
                 rangeChanged={onRangeChanged}
                 restoreStateFrom={restoreState}
                 scrollerRef={setScroller}

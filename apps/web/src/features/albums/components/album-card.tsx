@@ -17,6 +17,8 @@ type LoadingAlbumCardProps = LoadingCardProps & BaseAlbumCardProps;
 type LoadedAlbumCardProps = BaseAlbumCardProps & {
     album: AlbumItem;
     componentState: 'loaded';
+    id: string;
+    libraryId: string;
 };
 
 type AlbumCardProps = LoadingAlbumCardProps | LoadedAlbumCardProps;

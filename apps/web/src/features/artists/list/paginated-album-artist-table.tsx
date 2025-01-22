@@ -1,8 +1,8 @@
 import { LibraryItemType } from '@repo/shared-types';
-import type { GetApiLibraryIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import type { GetApiLibraryIdAlbumArtistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { AlbumArtistTableServerItem } from '@/features/artists/list/album-artist-table-item.tsx';
+import { useArtistListStore } from '@/features/artists/stores/artist-list-store.ts';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
-import { TrackTableServerItem } from '@/features/tracks/list/track-table-item.tsx';
-import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
@@ -12,16 +12,17 @@ import { Paper } from '@/features/ui/paper/paper.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination, usePaginatedListData } from '@/hooks/use-list.ts';
 
-interface PaginatedTrackTableProps extends PaginatedItemListProps<GetApiLibraryIdTracksParams> {}
+interface PaginatedArtistTableProps
+    extends PaginatedItemListProps<GetApiLibraryIdAlbumArtistsParams> {}
 
-export function PaginatedTrackTable(props: PaginatedTrackTableProps) {
+export function PaginatedArtistTable(props: PaginatedArtistTableProps) {
     const { itemCount, listKey, pagination, setPagination } = props;
     const paginationProps = useListPagination({ pagination, setPagination });
 
     return (
         <Stack h="100%">
             <ListWrapper listKey={listKey}>
-                <PaginatedTrackTableContent {...props} />
+                <PaginatedArtistTableContent {...props} />
             </ListWrapper>
             <Paper>
                 <Pagination
@@ -37,7 +38,7 @@ export function PaginatedTrackTable(props: PaginatedTrackTableProps) {
     );
 }
 
-function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
+function PaginatedArtistTableContent(props: PaginatedArtistTableProps) {
     const { libraryId, listKey, params, pagination } = props;
 
     const { data } = usePaginatedListData({
@@ -45,18 +46,18 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
         listKey,
         pagination,
         params,
-        type: LibraryItemType.TRACK,
+        type: LibraryItemType.ALBUM_ARTIST,
     });
 
     const { onRowClick } = useMultiRowSelection<string>();
 
-    const columnOrder = useTrackListStore.use.columnOrder();
-    const setColumnOrder = useTrackListStore.use.setColumnOrder();
+    const columnOrder = useArtistListStore.use.columnOrder();
+    const setColumnOrder = useArtistListStore.use.setColumnOrder();
     const { columns } = useItemTable<string>(columnOrder, setColumnOrder);
 
     return (
         <ItemTable<string>
-            ItemComponent={TrackTableServerItem}
+            ItemComponent={AlbumArtistTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
             context={{ libraryId, listKey }}
@@ -64,7 +65,7 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
             enableHeader={true}
             enableMultiRowSelection={true}
             itemCount={data.length || pagination.itemsPerPage}
-            itemType={LibraryItemType.TRACK}
+            itemType={LibraryItemType.ALBUM_ARTIST}
             rowsKey={listKey}
             onChangeColumnOrder={setColumnOrder}
             onRowClick={onRowClick}

@@ -6,8 +6,8 @@ import styles from './column.module.scss';
 
 export function yearColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
-        cell: ({ row }) => {
-            const item = row.original;
+        cell: ({ row, context }) => {
+            const item = context.data || row.original;
 
             if (typeof item === 'object' && item) {
                 if ('year' in item && typeof item.year === 'number') {

@@ -1,28 +1,33 @@
 import { Suspense } from 'react';
-import { ArtistListContent } from '@/features/artists/list/artist-list-content.tsx';
-import { ArtistListHeader } from '@/features/artists/list/artist-list-header.tsx';
-import { useArtistListStore } from '@/features/artists/stores/artist-list-store.ts';
+import { LibraryItemType } from '@repo/shared-types';
+import { useParams } from 'react-router';
+import { AlbumArtistListContent } from '@/features/artists/list/album-artist-list-content.tsx';
+import { AlbumArtistListHeader } from '@/features/artists/list/album-artist-list-header.tsx';
 import { AnimatedContainer } from '@/features/shared/animated-container/animated-container.tsx';
 import { ComponentErrorBoundary } from '@/features/shared/error-boundary/component-error-boundary.tsx';
 import { FullPageSpinner } from '@/features/shared/full-page-spinner/full-page-spinner.tsx';
 import { PageContainer } from '@/features/shared/page-container/page-container.tsx';
 import { useDelayedRender } from '@/hooks/use-delayed-render.ts';
-import { useListInitialize } from '@/hooks/use-list.ts';
+import { useRefreshList } from '@/hooks/use-list.ts';
 
-export function ArtistListRoute() {
-    const setListId = useArtistListStore.use.setListId();
-    useListInitialize({ setListId });
-
+export function AlbumArtistListRoute() {
+    const { libraryId } = useParams() as { libraryId: string };
     const { show } = useDelayedRender(300);
 
+    const { handleRefresh } = useRefreshList({
+        itemType: LibraryItemType.ALBUM_ARTIST,
+        libraryId,
+        queryKey: [`/api/${libraryId}/album-artists`],
+    });
+
     return (
-        <PageContainer id="artist-list-route">
-            <ArtistListHeader />
+        <PageContainer id="album-artist-list-route">
+            <AlbumArtistListHeader handleRefresh={handleRefresh} />
             {show && (
                 <AnimatedContainer>
                     <Suspense fallback={<FullPageSpinner />}>
                         <ComponentErrorBoundary>
-                            <ArtistListContent />
+                            <AlbumArtistListContent />
                         </ComponentErrorBoundary>
                     </Suspense>
                 </AnimatedContainer>

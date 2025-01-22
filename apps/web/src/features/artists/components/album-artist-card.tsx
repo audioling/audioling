@@ -1,21 +1,27 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
+import type { AlbumArtistItem } from '@/api/api-types.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import type { BaseCardProps, LoadedCardProps, LoadingCardProps } from '@/features/ui/card/card.tsx';
 import { Card } from '@/features/ui/card/card.tsx';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 
-type BaseArtistCardProps = BaseCardProps & {
+type BaseAlbumArtistCardProps = BaseCardProps & {
     className?: string;
 };
 
-type LoadingArtistCardProps = LoadingCardProps & BaseArtistCardProps;
+type LoadingAlbumArtistCardProps = LoadingCardProps & BaseAlbumArtistCardProps;
 
-type LoadedArtistCardProps = Omit<LoadedCardProps, 'controls'> & BaseArtistCardProps;
+type LoadedAlbumArtistCardProps = BaseAlbumArtistCardProps & {
+    albumArtist: AlbumArtistItem;
+    componentState: 'loaded';
+    id: string;
+    libraryId: string;
+};
 
-type ArtistCardProps = LoadingArtistCardProps | LoadedArtistCardProps;
+type AlbumArtistCardProps = LoadingAlbumArtistCardProps | LoadedAlbumArtistCardProps;
 
-export function ArtistCard(props: ArtistCardProps) {
+export function AlbumArtistCard(props: AlbumArtistCardProps) {
     if (props.componentState !== 'loaded') {
         return (
             <Card
@@ -28,6 +34,8 @@ export function ArtistCard(props: ArtistCardProps) {
         );
     }
 
+    const { albumArtist } = props;
+
     const controls: LoadedCardProps['controls'] = {
         onDragInitialData: () => {
             return dndUtils.generateDragData(
@@ -36,7 +44,7 @@ export function ArtistCard(props: ArtistCardProps) {
                     operation: [DragOperation.ADD],
                     type: DragTarget.ALBUM_ARTIST,
                 },
-                { image: props.image, title: props.titledata.text },
+                { image: albumArtist.imageUrl, title: albumArtist.name },
             );
         },
         onDragStart: () => {
@@ -71,12 +79,13 @@ export function ArtistCard(props: ArtistCardProps) {
             componentState={props.componentState}
             controls={controls}
             id={props.id}
-            image={props.image}
+            image={albumArtist.imageUrl}
             isCircle={true}
             itemType={LibraryItemType.ALBUM_ARTIST}
-            metadata={props.metadata}
+            libraryId={props.libraryId}
+            metadata={[]}
             metadataLines={props.metadataLines ?? 1}
-            titledata={props.titledata}
+            titledata={{ path: '/', text: albumArtist.name }}
         />
     );
 }

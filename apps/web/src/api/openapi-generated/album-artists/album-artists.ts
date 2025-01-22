@@ -121,15 +121,11 @@ export const getGetApiLibraryIdAlbumArtistsQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtists(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdAlbumArtistsQueryResult = NonNullable<
@@ -276,7 +272,7 @@ export const getGetApiLibraryIdAlbumArtistsSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtists(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtists>>,
         TError,
         TData
@@ -453,13 +449,7 @@ export const getGetApiLibraryIdAlbumArtistsCountQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtistsCount(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsCount>>,
         TError,
         TData
@@ -630,7 +620,7 @@ export const getGetApiLibraryIdAlbumArtistsCountSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtistsCount(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsCount>>,
         TError,
         TData
@@ -886,13 +876,7 @@ export const getGetApiLibraryIdAlbumArtistsIdQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtistsId(libraryId, id, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
         TError,
         TData
@@ -1059,7 +1043,7 @@ export const getGetApiLibraryIdAlbumArtistsIdSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdAlbumArtistsId(libraryId, id, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsId>>,
         TError,
         TData
@@ -1242,13 +1226,7 @@ export const getGetApiLibraryIdAlbumArtistsIdAlbumsQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdAlbumArtistsIdAlbums(libraryId, id, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
         TError,
         TData
@@ -1433,7 +1411,7 @@ export const getGetApiLibraryIdAlbumArtistsIdAlbumsSuspenseQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdAlbumArtistsIdAlbums(libraryId, id, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdAlbums>>,
         TError,
         TData
@@ -1626,13 +1604,7 @@ export const getGetApiLibraryIdAlbumArtistsIdTracksQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdAlbumArtistsIdTracks(libraryId, id, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
         TError,
         TData
@@ -1817,7 +1789,7 @@ export const getGetApiLibraryIdAlbumArtistsIdTracksSuspenseQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdAlbumArtistsIdTracks(libraryId, id, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdAlbumArtistsIdTracks>>,
         TError,
         TData

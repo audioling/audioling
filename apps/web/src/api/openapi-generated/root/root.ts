@@ -48,7 +48,7 @@ export const getGetPingQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
         getPing(requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getPing>>,
         TError,
         TData
@@ -123,7 +123,7 @@ export const getGetPingSuspenseQueryOptions = <
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getPing>>> = ({ signal }) =>
         getPing(requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getPing>>,
         TError,
         TData

@@ -15,9 +15,6 @@ module.exports = {
                     useSuspenseInfiniteQuery: false,
                     useMutation: true,
                     signal: true,
-                    options: {
-                        staleTime: 1000 * 10,
-                    },
                 },
                 mutator: {
                     path: './src/api/api-instance.ts',

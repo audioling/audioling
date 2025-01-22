@@ -134,15 +134,11 @@ export const getGetApiLibraryIdTracksQueryOptions = <
         signal,
     }) => getApiLibraryIdTracks(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracks>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdTracksQueryResult = NonNullable<
@@ -288,7 +284,7 @@ export const getGetApiLibraryIdTracksSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracks(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracks>>,
         TError,
         TData
@@ -457,15 +453,11 @@ export const getGetApiLibraryIdTracksCountQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksCount(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksCount>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracksCount>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdTracksCountQueryResult = NonNullable<
@@ -612,7 +604,7 @@ export const getGetApiLibraryIdTracksCountSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksCount(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksCount>>,
         TError,
         TData
@@ -1077,15 +1069,11 @@ export const getGetApiLibraryIdTracksQueryQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksQuery(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdTracksQueryQueryResult = NonNullable<
@@ -1232,7 +1220,7 @@ export const getGetApiLibraryIdTracksQuerySuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksQuery(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksQuery>>,
         TError,
         TData
@@ -1404,13 +1392,7 @@ export const getGetApiLibraryIdTracksQueryStatusQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksQueryStatus(libraryId, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
         TError,
         TData
@@ -1572,7 +1554,7 @@ export const getGetApiLibraryIdTracksQueryStatusSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksQueryStatus(libraryId, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksQueryStatus>>,
         TError,
         TData
@@ -1899,15 +1881,11 @@ export const getGetApiLibraryIdTracksIdQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksId(libraryId, id, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdTracksId>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdTracksIdQueryResult = NonNullable<
@@ -2053,7 +2031,7 @@ export const getGetApiLibraryIdTracksIdSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksId(libraryId, id, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksId>>,
         TError,
         TData
@@ -2223,13 +2201,7 @@ export const getGetApiLibraryIdTracksIdStreamQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksIdStream(libraryId, id, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksIdStream>>,
         TError,
         TData
@@ -2396,7 +2368,7 @@ export const getGetApiLibraryIdTracksIdStreamSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdTracksIdStream(libraryId, id, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdTracksIdStream>>,
         TError,
         TData

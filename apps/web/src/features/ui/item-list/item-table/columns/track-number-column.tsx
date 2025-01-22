@@ -6,8 +6,8 @@ import styles from './column.module.scss';
 
 export function trackNumberColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
-        cell: ({ row }) => {
-            const item = row.original;
+        cell: ({ row, context }) => {
+            const item = context.data || row.original;
 
             if (typeof item === 'object' && item) {
                 if ('trackNumber' in item && typeof item.trackNumber === 'number') {

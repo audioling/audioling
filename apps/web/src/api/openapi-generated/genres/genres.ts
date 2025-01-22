@@ -94,15 +94,11 @@ export const getGetApiLibraryIdGenresQueryOptions = <
         signal,
     }) => getApiLibraryIdGenres(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenres>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdGenresQueryResult = NonNullable<
@@ -248,7 +244,7 @@ export const getGetApiLibraryIdGenresSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdGenres(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenres>>,
         TError,
         TData
@@ -417,15 +413,11 @@ export const getGetApiLibraryIdGenresCountQueryOptions = <
         signal,
     }) => getApiLibraryIdGenresCount(libraryId, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!libraryId,
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>, TError, TData> & {
-        queryKey: DataTag<QueryKey, TData, TError>;
-    };
+    return { queryKey, queryFn, enabled: !!libraryId, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiLibraryIdGenresCountQueryResult = NonNullable<
@@ -572,7 +564,7 @@ export const getGetApiLibraryIdGenresCountSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdGenresCount(libraryId, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresCount>>,
         TError,
         TData
@@ -752,13 +744,7 @@ export const getGetApiLibraryIdGenresIdTracksQueryOptions = <
         signal,
     }) => getApiLibraryIdGenresIdTracks(libraryId, id, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
         TError,
         TData
@@ -935,7 +921,7 @@ export const getGetApiLibraryIdGenresIdTracksSuspenseQueryOptions = <
         signal,
     }) => getApiLibraryIdGenresIdTracks(libraryId, id, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracks>>,
         TError,
         TData
@@ -1122,13 +1108,7 @@ export const getGetApiLibraryIdGenresIdTracksCountQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdGenresIdTracksCount(libraryId, id, params, requestOptions, signal);
 
-    return {
-        queryKey,
-        queryFn,
-        enabled: !!(libraryId && id),
-        staleTime: 10000,
-        ...queryOptions,
-    } as UseQueryOptions<
+    return { queryKey, queryFn, enabled: !!(libraryId && id), ...queryOptions } as UseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
         TError,
         TData
@@ -1307,7 +1287,7 @@ export const getGetApiLibraryIdGenresIdTracksCountSuspenseQueryOptions = <
     > = ({ signal }) =>
         getApiLibraryIdGenresIdTracksCount(libraryId, id, params, requestOptions, signal);
 
-    return { queryKey, queryFn, staleTime: 10000, ...queryOptions } as UseSuspenseQueryOptions<
+    return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
         Awaited<ReturnType<typeof getApiLibraryIdGenresIdTracksCount>>,
         TError,
         TData

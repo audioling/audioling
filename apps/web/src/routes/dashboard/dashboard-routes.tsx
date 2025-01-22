@@ -1,6 +1,6 @@
 import { type RouteObject } from 'react-router';
 import { AlbumListRoute } from '@/features/albums/list/album-list-route.tsx';
-import { ArtistListRoute } from '@/features/artists/list/artist-list-route.jsx';
+import { AlbumArtistListRoute } from '@/features/artists/list/album-artist-list-route.tsx';
 import { HomeRoute } from '@/features/dashboard/home/home-route.tsx';
 import { GenreListRoute } from '@/features/genres/list/genre-list-route.tsx';
 import { AuthLibraryEditRoute } from '@/features/library/auth-library-edit/auth-library-edit-route.tsx';
@@ -15,7 +15,7 @@ import { DashboardLayout } from '@/layouts/dashboard-layout.tsx';
 
 const artistRoutes: RouteObject[] = [
     {
-        element: <ArtistListRoute />,
+        element: <AlbumArtistListRoute />,
         path: 'artists',
     },
 ];

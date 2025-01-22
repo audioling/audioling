@@ -27,7 +27,7 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                 listId: {},
                 pagination: {
                     currentPage: 1,
-                    itemsPerPage: 100,
+                    itemsPerPage: 500,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
                 setColumnOrder: (columnOrder) => {
@@ -80,8 +80,15 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                         state.sortOrder = sortOrder;
                     });
                 },
+                setState: (key, listState) => {
+                    set((state) => {
+                        state.state[key] = listState;
+                    });
+                },
                 sortBy: TrackListSortOptions.NAME,
+
                 sortOrder: ListSortOrder.ASC,
+                state: {},
             })),
         ),
         { name: 'track-list-store', version: 1 },
