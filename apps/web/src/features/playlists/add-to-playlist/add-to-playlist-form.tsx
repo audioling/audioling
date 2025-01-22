@@ -16,7 +16,7 @@ import {
     useGetApiLibraryIdPlaylistsIdTracksSuspense,
     usePostApiLibraryIdPlaylistsIdTracksAdd,
 } from '@/api/openapi-generated/playlists/playlists.ts';
-import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
+import { TrackTableItem } from '@/features/tracks/list/track-table-item.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -52,7 +52,6 @@ export function AddToPlaylistForm({
     tracks,
 }: AddToPlaylistFormProps) {
     const queryClient = useQueryClient();
-    const baseUrl = useAuthBaseUrl();
 
     const { data: playlistTracks } = useGetApiLibraryIdPlaylistsIdTracksSuspense(
         libraryId,
@@ -209,9 +208,7 @@ export function AddToPlaylistForm({
                                 {duplicateSkippedCount} of {duplicateCount} duplicates skipped
                             </Text>
                         </Stack>
-
                         <Switch
-                            // label="Skip duplicates"
                             value={form.watch('skipDuplicates')}
                             onChange={() =>
                                 form.setValue('skipDuplicates', !form.watch('skipDuplicates'))
@@ -222,9 +219,10 @@ export function AddToPlaylistForm({
                 <div style={{ height: '250px' }}>
                     <ItemTable
                         disableAutoScroll
+                        ItemComponent={TrackTableItem}
                         columnOrder={columnOrder}
                         columns={columns}
-                        context={{ baseUrl, libraryId }}
+                        context={{ libraryId, listKey: 'add-to-playlist' }}
                         data={processedTracks}
                         enableHeader={false}
                         enableMultiRowSelection={false}

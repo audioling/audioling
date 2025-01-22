@@ -77,8 +77,14 @@ export const useArtistListStoreBase = create<ArtistListStore>()(
                         state.sortOrder = sortOrder;
                     });
                 },
+                setState: (key, listState) => {
+                    set((state) => {
+                        state.state[key] = listState;
+                    });
+                },
                 sortBy: ArtistListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
+                state: {},
             })),
         ),
         { name: 'artist-list-store', version: 1 },

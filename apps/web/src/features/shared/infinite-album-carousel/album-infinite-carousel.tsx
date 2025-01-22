@@ -36,6 +36,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                             componentState="loaded"
                             id={album.id}
                             itemType={LibraryItemType.ALBUM}
+                            libraryId={libraryId}
                             metadataLines={1}
                         />
                     ),
@@ -59,7 +60,7 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
                     }),
                 ];
             }),
-        [albums.pages],
+        [albums.pages, libraryId],
     );
 
     const handleNextPage = useCallback(() => {}, []);
