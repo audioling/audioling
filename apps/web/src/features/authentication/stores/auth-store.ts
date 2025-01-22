@@ -165,6 +165,10 @@ export const useAuthBaseUrl = () => {
     return useAuthStore((state) => state.baseUrl) || '';
 };
 
+export const useAuthToken = () => {
+    return useAuthStore((state) => state.user?.token);
+};
+
 export const useLibraryFeatures = (id: string) => {
     const library = useAuthStore((state) => state.libraries[id]);
 
