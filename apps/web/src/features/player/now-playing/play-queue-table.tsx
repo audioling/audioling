@@ -30,12 +30,6 @@ import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './play-queue-table.module.scss';
 
-interface SidePlayQueueTableItemContext {
-    baseUrl: string;
-    currentTrack: PlayQueueItem | undefined;
-    libraryId: string;
-}
-
 interface PlayQueueTableProps {
     baseUrl: string;
     groupBy: QueueGroupingProperty | undefined;
@@ -87,7 +81,7 @@ export function PlayQueueTable({ baseUrl, groupBy, libraryId, itemTableRef }: Pl
     const { track } = useCurrentTrack();
 
     const tableContext = useMemo(
-        () => ({ baseUrl, currentTrack: track, libraryId }),
+        () => ({ baseUrl, currentTrack: track, libraryId, listKey: 'queue' }),
         [baseUrl, track, libraryId],
     );
 
@@ -238,7 +232,7 @@ export function PlayQueueTable({ baseUrl, groupBy, libraryId, itemTableRef }: Pl
     }
 
     return (
-        <GroupedItemTable<PlayQueueItem, SidePlayQueueTableItemContext>
+        <GroupedItemTable<PlayQueueItem>
             columnOrder={columnOrder}
             columns={columns}
             context={tableContext}

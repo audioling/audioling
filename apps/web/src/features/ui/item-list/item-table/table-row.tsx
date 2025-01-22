@@ -7,13 +7,12 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
-import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import {
     attachClosestEdge,
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { LibraryItemType } from '@repo/shared-types';
-import { useQuery } from '@tanstack/react-query';
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import type { LibraryItemType } from '@repo/shared-types';
 import type { Row, Table } from '@tanstack/react-table';
 import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
@@ -21,33 +20,22 @@ import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { ItemTableRowDrop } from '@/features/ui/item-list/item-table/item-table.tsx';
+import type {
+    ItemTableContext,
+    ItemTableRowDrop,
+} from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
-import type { ItemListQueryData } from '@/hooks/use-list.ts';
-import type { DragData } from '@/utils/drag-drop.ts';
 import {
     dndUtils,
     DragOperation,
     DragTarget,
     libraryItemTypeToDragTarget,
 } from '@/utils/drag-drop.ts';
+import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './table-row.module.scss';
 
-interface TableRowProps<
-    T,
-    C extends {
-        columnStyles: {
-            sizes: string[];
-            styles: {
-                gridTemplateColumns: string;
-            };
-        };
-        libraryId: string;
-    },
-> {
-    context: C;
-    data: T;
+interface TableRowProps<T> {
+    context: ItemTableContext;
     disableRowDrag?: boolean;
     enableExpanded: boolean;
     enableRowDrag?: boolean;
@@ -76,38 +64,14 @@ interface TableRowProps<
     tableId: string;
 }
 
-export function TableRow<
-    T,
-    C extends {
-        columnStyles: {
-            sizes: string[];
-            styles: {
-                gridTemplateColumns: string;
-            };
-        };
-        currentTrack?: PlayQueueItem;
-        libraryId: string;
-        listKey: string;
-    },
->(props: TableRowProps<T, C>) {
+export function TableRow<T>(props: TableRowProps<T>) {
     return <InnerTableRow {...props} />;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InnerTableRow = <
-    T,
-    C extends {
-        columnStyles: { sizes: string[]; styles: { gridTemplateColumns: string } };
-        currentTrack?: PlayQueueItem;
-        libraryId: string;
-        listKey: string;
-    },
->(
-    props: TableRowProps<T, C>,
-) => {
+const InnerTableRow = <T,>(props: TableRowProps<T>) => {
     const {
         context,
-        data: uniqueId,
         enableExpanded,
         index,
         itemType,
@@ -132,15 +96,6 @@ const InnerTableRow = <
     const isExpanded = row?.getIsExpanded();
 
     const [isDraggedOver, setIsDraggedOver] = useState<Edge | null>(null);
-
-    const { data: list } = useQuery<ItemListQueryData>({
-        enabled: false,
-        queryKey: itemListHelpers.getQueryKey(
-            context.libraryId,
-            context.listKey,
-            LibraryItemType.ALBUM,
-        ),
-    });
 
     useEffect(() => {
         if (!ref.current) return;
@@ -277,8 +232,6 @@ const InnerTableRow = <
         return combine(...fns);
     }, [enableRowDrag, index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
 
-    const data = list?.data[list.uniqueIdToId[uniqueId as string]];
-
     if (enableExpanded && !isExpanded) {
         return null;
     }
@@ -294,7 +247,7 @@ const InnerTableRow = <
                     [styles.draggedOverBottom]: isDraggedOver === 'bottom',
                     [styles.draggedOverTop]: isDraggedOver === 'top',
                 })}
-                style={context.columnStyles.styles}
+                style={context.columnStyles?.styles}
                 onClick={(e) => onRowClick?.(e, row, table)}
                 onContextMenu={(e) => onRowContextMenu?.(e, row, table)}
                 onDoubleClick={(e) => onRowDoubleClick?.(e, row, table)}
@@ -305,10 +258,7 @@ const InnerTableRow = <
                             {flexRender(cell.column.columnDef.cell, {
                                 ...cell.getContext(),
                                 context: {
-                                    currentTrack: context.currentTrack,
-                                    data: data,
-                                    libraryId: context.libraryId!,
-                                    listKey: context.listKey,
+                                    ...context,
                                 },
                             })}
                         </Fragment>

@@ -20,8 +20,7 @@ import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx
 import { TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
 import styles from './item-table.module.scss';
 
-interface GroupedItemTableProps<T, C extends { baseUrl: string; libraryId: string }>
-    extends ItemTableProps<T, C> {
+interface GroupedItemTableProps<T> extends Omit<ItemTableProps<T>, 'ItemComponent'> {
     groups: ItemTableGroup[];
     onGroupClick?: (
         e: MouseEvent<HTMLDivElement>,
@@ -33,11 +32,8 @@ interface GroupedItemTableProps<T, C extends { baseUrl: string; libraryId: strin
 
 export type ItemTableGroup = { count: number; name: string };
 
-export const GroupedItemTable = <
-    T extends { _uniqueId: string; id: string },
-    C extends { baseUrl: string; libraryId: string },
->(
-    props: GroupedItemTableProps<T, C>,
+export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
+    props: GroupedItemTableProps<T>,
 ) => {
     const {
         columns,
