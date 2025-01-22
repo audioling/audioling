@@ -53,7 +53,7 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
         queryKey: itemListHelpers.getQueryKey(
             context.libraryId,
             context.listKey,
-            LibraryItemType.ALBUM,
+            LibraryItemType.GENRE,
         ),
     });
 
