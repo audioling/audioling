@@ -12,7 +12,7 @@ export const fetchTracksByGenreId = async (
     id: string,
     params: GetApiLibraryIdGenresIdTracksParams,
 ) => {
-    return queryClient.fetchQuery({
+    return queryClient.ensureQueryData({
         queryFn: () => {
             return apiInstance<GetApiLibraryIdGenresIdTracks200>({
                 method: 'GET',

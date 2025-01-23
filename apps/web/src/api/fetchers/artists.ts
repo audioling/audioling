@@ -12,7 +12,7 @@ export const fetchTracksByAlbumArtistId = async (
     id: string,
     params: GetApiLibraryIdAlbumArtistsIdTracksParams,
 ) => {
-    return queryClient.fetchQuery({
+    return queryClient.ensureQueryData({
         queryFn: () => {
             return apiInstance<GetApiLibraryIdAlbumArtistsIdTracks200>({
                 method: 'GET',
