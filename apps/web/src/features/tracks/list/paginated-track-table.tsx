@@ -1,7 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
+import { ListTableServerItem } from '@/features/shared/list/list-table-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
-import { TrackTableServerItem } from '@/features/tracks/list/track-table-item.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -56,7 +56,7 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
 
     return (
         <ItemTable<string>
-            ItemComponent={TrackTableServerItem}
+            ItemComponent={ListTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
             context={{

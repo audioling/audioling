@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import type { ColumnHelper, Row } from '@tanstack/react-table';
 import clsx from 'clsx';
 import type { PlayQueueItem } from '@/api/api-types.ts';
@@ -10,7 +9,7 @@ import styles from './column.module.scss';
 
 export function rowIndexColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
-        cell: MemoizedCell,
+        cell: Cell,
         header: '#',
         id: 'rowIndex',
         size: itemListHelpers.table.numberToColumnSize(60, 'px'),
@@ -48,5 +47,3 @@ function Cell<T>({
         </Text>
     );
 }
-
-const MemoizedCell = memo(Cell);

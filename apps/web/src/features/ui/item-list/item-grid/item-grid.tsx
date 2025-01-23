@@ -10,6 +10,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
+import type { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
@@ -143,6 +144,7 @@ export interface InfiniteGridItemProps<
     data: T | undefined;
     index: number;
     isExpanded?: boolean;
+    itemType: LibraryItemType;
 }
 
 interface InfiniteItemGridProps<
@@ -156,6 +158,7 @@ interface InfiniteItemGridProps<
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
+    itemType: LibraryItemType;
     onEndReached?: (index: number) => void;
     onRangeChanged?: (args: { endIndex: number; startIndex: number }) => void;
     onScroll?: (event: SyntheticEvent) => void;
@@ -177,6 +180,7 @@ export function InfiniteItemGrid<
         initialScrollIndex,
         isScrolling,
         itemCount = 0,
+        itemType,
         onEndReached,
         onRangeChanged,
         onScroll,
@@ -254,7 +258,12 @@ export function InfiniteItemGrid<
                 initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={(index, data) => (
-                    <ItemComponent context={context} data={data} index={index} />
+                    <ItemComponent
+                        context={context}
+                        data={data}
+                        index={index}
+                        itemType={itemType}
+                    />
                 )}
                 overscan={50}
                 rangeChanged={onRangeChanged}

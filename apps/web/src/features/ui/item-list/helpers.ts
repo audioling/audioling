@@ -89,8 +89,14 @@ export const itemListHelpers = {
     generateListId(libraryId: string, pathname: string) {
         return `${libraryId}-${pathname}-${nanoid()}`;
     },
+    getDataQueryKey(libraryId: string, type: LibraryItemType) {
+        return [libraryId, 'data', type];
+    },
     getInitialData(itemCount: number) {
         return Array.from({ length: itemCount }, () => undefined);
+    },
+    getListQueryKey(libraryId: string, listKey: string, type: LibraryItemType) {
+        return [libraryId, 'list', type, listKey];
     },
     getPageMap(itemCount: number, pageSize: number) {
         const pageCount = Math.ceil(itemCount / pageSize);
@@ -136,9 +142,6 @@ export const itemListHelpers = {
         }
 
         return pagesToLoad;
-    },
-    getQueryKey(libraryId: string, listKey: string, type: LibraryItemType) {
-        return [libraryId, 'list', type, listKey];
     },
     table: {
         columnSizeToStyle(columnSize: number) {

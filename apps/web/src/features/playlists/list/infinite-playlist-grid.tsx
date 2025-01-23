@@ -1,6 +1,6 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { PlaylistGridItem } from '@/features/playlists/list/playlist-grid-item.tsx';
+import { ListGridServerItem } from '@/features/shared/list/list-grid-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { InfiniteItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
@@ -36,10 +36,11 @@ export function InfinitePlaylistGridContent({
 
     return (
         <InfiniteItemGrid<string>
-            ItemComponent={PlaylistGridItem}
+            ItemComponent={ListGridServerItem}
             context={{ libraryId, listKey }}
             data={data}
             itemCount={itemCount}
+            itemType={LibraryItemType.PLAYLIST}
             onRangeChanged={handleRangeChanged}
         />
     );

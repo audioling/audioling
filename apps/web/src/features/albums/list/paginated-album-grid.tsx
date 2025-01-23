@@ -1,6 +1,6 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { AlbumGridItem } from '@/features/albums/list/album-grid-item.tsx';
+import { ListGridServerItem } from '@/features/shared/list/list-grid-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
@@ -48,13 +48,14 @@ function PaginatedAlbumGridContent(props: PaginatedAlbumGridProps) {
     return (
         <InfiniteItemGrid<string>
             enableExpanded
-            ItemComponent={AlbumGridItem}
+            ItemComponent={ListGridServerItem}
             context={{
                 libraryId,
                 listKey,
             }}
             data={data}
             itemCount={itemCount}
+            itemType={LibraryItemType.ALBUM}
         />
     );
 }

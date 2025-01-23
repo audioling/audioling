@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
@@ -13,15 +13,15 @@ import { PrefetchController } from '@/features/controllers/prefetch-controller.t
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableItemProps } from '@/features/ui/item-list/item-table/item-table.tsx';
-import styles from '@/features/ui/item-list/item-table/table-row.module.scss';
-import type { ItemListQueryData } from '@/hooks/use-list.ts';
-import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
+import type { ItemQueryData, ListQueryData } from '@/hooks/use-list.ts';
+import { dndUtils, DragOperation, DragTarget, DragTargetMap } from '@/utils/drag-drop.ts';
+import styles from './list-item.module.scss';
 
-export function AlbumArtistTableServerItem(props: ItemTableItemProps<string>) {
-    return <InnerTableServerItem {...props} />;
+export function ListTableServerItem(props: ItemTableItemProps<string>) {
+    return <MemoizedListTableServerItem {...props} />;
 }
 
-const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
+function InnerContent<T>(props: ItemTableItemProps<string>) {
     const {
         context,
         data: uniqueId,
@@ -48,13 +48,14 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
     const isSelected = row?.getIsSelected();
     const isExpanded = row?.getIsExpanded();
 
-    const { data: list } = useQuery<ItemListQueryData>({
+    const { data: list } = useQuery<ListQueryData>({
         enabled: false,
-        queryKey: itemListHelpers.getQueryKey(
-            context.libraryId,
-            context.listKey,
-            LibraryItemType.ALBUM_ARTIST,
-        ),
+        queryKey: itemListHelpers.getListQueryKey(context.libraryId, context.listKey, itemType),
+    });
+
+    const { data: itemData } = useQuery<ItemQueryData>({
+        enabled: false,
+        queryKey: itemListHelpers.getDataQueryKey(context.libraryId, itemType),
     });
 
     useEffect(() => {
@@ -69,6 +70,10 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                     getInitialData: () => {
                         const isSelfSelected = row.getIsSelected();
 
+                        const dragTarget = DragTargetMap[itemType as keyof typeof DragTargetMap] as
+                            | DragTarget
+                            | undefined;
+
                         if (isSelfSelected) {
                             const selectedRowUniqueIds = table
                                 .getSelectedRowModel()
@@ -76,24 +81,22 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                                 .filter((id): id is string => id !== undefined);
 
                             const ids = selectedRowUniqueIds
-                                .map((uniqueId) => {
-                                    return list?.uniqueIdToId[uniqueId];
-                                })
+                                .map((uniqueId) => list?.[uniqueId])
                                 .filter((id): id is string => id !== undefined);
 
                             return dndUtils.generateDragData({
                                 id: ids,
                                 operation: [DragOperation.ADD],
-                                type: DragTarget.ALBUM_ARTIST,
+                                type: dragTarget ?? DragTarget.UNKNOWN,
                             });
                         }
 
-                        const id = list?.uniqueIdToId[uniqueId as string] as string;
+                        const id = list?.[uniqueId as string] as string;
 
                         return dndUtils.generateDragData({
                             id: [id],
                             operation: [DragOperation.ADD],
-                            type: DragTarget.ALBUM_ARTIST,
+                            type: dragTarget ?? DragTarget.UNKNOWN,
                         });
                     },
                     onDragStart: () => {
@@ -105,36 +108,50 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                             row.toggleSelected(true);
                         }
 
+                        const ids: string[] = [];
+
                         if (isSelfSelected) {
                             const selectedRowUniqueIds = table
                                 .getSelectedRowModel()
                                 .rows.map((row) => row.original)
                                 .filter((id): id is string => id !== undefined);
 
-                            const ids = selectedRowUniqueIds
-                                .map((uniqueId) => {
-                                    return list?.uniqueIdToId[uniqueId];
-                                })
-                                .filter((id): id is string => id !== undefined);
-
-                            return PrefetchController.call({
-                                cmd: {
-                                    tracksByAlbumId: {
-                                        id: ids,
-                                    },
-                                },
-                            });
+                            selectedRowUniqueIds
+                                .map((uniqueId) => list?.[uniqueId])
+                                .filter((id): id is string => id !== undefined)
+                                .forEach((id) => {
+                                    ids.push(id);
+                                });
+                        } else {
+                            ids.push(list?.[uniqueId as string] as string);
                         }
 
-                        const id = list?.uniqueIdToId[uniqueId as string] as string;
-
-                        return PrefetchController.call({
-                            cmd: {
-                                tracksByAlbumId: {
-                                    id: [id],
-                                },
-                            },
-                        });
+                        switch (itemType) {
+                            case LibraryItemType.ALBUM:
+                                PrefetchController.call({
+                                    cmd: { tracksByAlbumId: { id: ids } },
+                                });
+                                break;
+                            case LibraryItemType.ALBUM_ARTIST:
+                                PrefetchController.call({
+                                    cmd: { tracksByAlbumArtistId: { id: ids } },
+                                });
+                                break;
+                            case LibraryItemType.ARTIST:
+                                break;
+                            case LibraryItemType.GENRE:
+                                PrefetchController.call({
+                                    cmd: { tracksByGenreId: { id: ids } },
+                                });
+                                break;
+                            case LibraryItemType.PLAYLIST:
+                                PrefetchController.call({
+                                    cmd: { tracksByPlaylistId: { id: ids } },
+                                });
+                                break;
+                            case LibraryItemType.TRACK:
+                                break;
+                        }
                     },
                     onDrop: () => {},
                     onGenerateDragPreview: (data) => {
@@ -157,7 +174,7 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
         enableRowDrag,
         index,
         itemType,
-        list?.uniqueIdToId,
+        list,
         onRowDrag,
         onRowDragData,
         onRowDrop,
@@ -167,7 +184,7 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
         uniqueId,
     ]);
 
-    const data = list?.data[list.uniqueIdToId[uniqueId as string]];
+    const data = itemData?.[list?.[uniqueId as string] as string] as T | undefined;
 
     if (enableExpanded && !isExpanded) {
         return null;
@@ -202,4 +219,12 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
             </div>
         </div>
     );
-};
+}
+
+const MemoizedListTableServerItem = memo(InnerContent, (prev, next) => {
+    const isSelectionDifferent =
+        prev.table.getSelectedRowModel().rows.length !==
+        next.table.getSelectedRowModel().rows.length;
+
+    return isSelectionDifferent;
+});

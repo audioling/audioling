@@ -1,7 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { PlaylistTableServerItem } from '@/features/playlists/list/playlist-table-item.tsx';
 import { usePlaylistListStore } from '@/features/playlists/stores/playlist-list-store.ts';
+import { ListTableServerItem } from '@/features/shared/list/list-table-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -57,7 +57,7 @@ function PaginatedPlaylistTableContent(props: PaginatedPlaylistTableProps) {
 
     return (
         <ItemTable<string>
-            ItemComponent={PlaylistTableServerItem}
+            ItemComponent={ListTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
             context={{

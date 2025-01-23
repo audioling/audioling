@@ -1,82 +1,24 @@
-import { memo, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
-import { useQuery } from '@tanstack/react-query';
 import type { Row, Table } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import type { AlbumItem, TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdAlbumsIdTracksSuspense } from '@/api/openapi-generated/albums/albums.ts';
-import { AlbumCard } from '@/features/albums/components/album-card.tsx';
 import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { TrackTableItem } from '@/features/tracks/list/track-table-item.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { ItemListColumn, itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
+import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 import { useImageColor } from '@/hooks/use-image-color.ts';
-import type { ItemListQueryData } from '@/hooks/use-list.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './album-grid-item.module.scss';
 
-const InnerAlbumGridItem = memo(
-    (props: InfiniteGridItemProps<string>) => {
-        const { context, data: uniqueId, index, isExpanded } = props;
-
-        const { data: list } = useQuery<ItemListQueryData>({
-            enabled: false,
-            queryKey: itemListHelpers.getQueryKey(
-                context.libraryId,
-                context.listKey,
-                LibraryItemType.ALBUM,
-            ),
-        });
-
-        if (!uniqueId || !list) {
-            return <AlbumCard componentState="loading" id={index.toString()} metadataLines={1} />;
-        }
-
-        const data = list.data[list.uniqueIdToId[uniqueId]] as AlbumItem | undefined;
-
-        if (!data) {
-            return <AlbumCard componentState="loading" id={index.toString()} metadataLines={1} />;
-        }
-
-        if (isExpanded) {
-            return (
-                <ExpandedAlbumGridItemContent
-                    context={context}
-                    data={data}
-                    libraryId={context.libraryId}
-                />
-            );
-        }
-
-        return (
-            <AlbumCard
-                album={data}
-                componentState="loaded"
-                id={data.id}
-                libraryId={context.libraryId}
-                metadataLines={1}
-            />
-        );
-    },
-    (prev, next) => {
-        return prev.data === next.data;
-    },
-);
-
-InnerAlbumGridItem.displayName = 'InnerAlbumGridItem';
-
-export function AlbumGridItem(props: InfiniteGridItemProps<string>) {
-    return <InnerAlbumGridItem {...props} />;
-}
-
-function ExpandedAlbumGridItemContent({
+export function ExpandedAlbumGridItemContent({
     libraryId,
     data,
     context,

@@ -1,7 +1,8 @@
 import { LibraryItemType } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { usePostApiLibraryIdAlbumsUnfavorite } from '@/api/openapi-generated/albums/albums.ts';
-import type { ItemListQueryData } from '@/hooks/use-list.ts';
+import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { ItemQueryData } from '@/hooks/use-list.ts';
 import { useChangeStoreBase } from '@/store/change-store.ts';
 
 export function useUnfavoriteAlbum() {
@@ -16,20 +17,22 @@ export function useUnfavoriteAlbum() {
                 queryClient.invalidateQueries();
 
                 // Update all list queries
-                queryClient.setQueriesData<ItemListQueryData>(
+                queryClient.setQueriesData<ItemQueryData>(
                     {
-                        exact: false,
-                        queryKey: [variables.libraryId, 'list', LibraryItemType.ALBUM],
+                        exact: true,
+                        queryKey: itemListHelpers.getDataQueryKey(
+                            variables.libraryId,
+                            LibraryItemType.ALBUM,
+                        ),
                     },
                     (prev) => {
-                        const updates: ItemListQueryData = {
-                            data: { ...prev?.data },
-                            uniqueIdToId: { ...prev?.uniqueIdToId },
+                        const updates: ItemQueryData = {
+                            ...prev,
                         };
 
                         for (const id of albumIds) {
-                            if (!prev?.data[id]) continue;
-                            updates.data[id] = { ...prev.data[id], userFavorite: false };
+                            if (!prev?.[id]) continue;
+                            updates[id] = { ...prev[id], userFavorite: false };
                         }
 
                         return updates;

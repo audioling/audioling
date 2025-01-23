@@ -1,7 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdAlbumArtistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { AlbumArtistTableServerItem } from '@/features/artists/list/album-artist-table-item.tsx';
 import { useArtistListStore } from '@/features/artists/stores/artist-list-store.ts';
+import { ListTableServerItem } from '@/features/shared/list/list-table-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -57,7 +57,7 @@ function PaginatedArtistTableContent(props: PaginatedArtistTableProps) {
 
     return (
         <ItemTable<string>
-            ItemComponent={AlbumArtistTableServerItem}
+            ItemComponent={ListTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
             context={{

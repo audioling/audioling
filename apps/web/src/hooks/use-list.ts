@@ -18,6 +18,7 @@ import type {
     GetApiLibraryIdAlbumArtistsParams,
     GetApiLibraryIdAlbumsParams,
     GetApiLibraryIdGenresParams,
+    GetApiLibraryIdPlaylistsIdTracksParams,
     GetApiLibraryIdPlaylistsParams,
     GetApiLibraryIdTracksParams,
 } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
@@ -27,6 +28,8 @@ import {
 } from '@/api/openapi-generated/genres/genres.ts';
 import {
     getApiLibraryIdPlaylists,
+    getApiLibraryIdPlaylistsIdTracks,
+    getGetApiLibraryIdPlaylistsIdTracksQueryKey,
     getGetApiLibraryIdPlaylistsQueryKey,
     usePostApiLibraryIdPlaylistsCountInvalidate,
 } from '@/api/openapi-generated/playlists/playlists.ts';
@@ -152,10 +155,9 @@ export function useListPagination({ pagination, setPagination }: UseListPaginati
     return { onFirstPage, onLastPage, onNextPage, onPageChange, onPreviousPage };
 }
 
-export type ItemListQueryData = {
-    data: Record<string, unknown>;
-    uniqueIdToId: Record<string, string>;
-};
+export type ListQueryData = Record<string, string>;
+
+export type ItemQueryData = Record<string, unknown>;
 
 export function usePaginatedListData(args: {
     libraryId: string;
@@ -252,7 +254,8 @@ export function usePaginatedListData(args: {
                 queryKey: query.queryKey,
             });
 
-            const listQueryKey = itemListHelpers.getQueryKey(libraryId, listKey, type);
+            const dataQueryKey = itemListHelpers.getDataQueryKey(libraryId, type);
+            const listQueryKey = itemListHelpers.getListQueryKey(libraryId, listKey, type);
 
             const dataWithUniqueId = data.map((item: { id: string }) => ({
                 data: item,
@@ -260,15 +263,24 @@ export function usePaginatedListData(args: {
                 uniqueId: nanoid(),
             }));
 
-            queryClient.setQueryData(listQueryKey, (prev: ItemListQueryData | undefined) => {
-                const updates: ItemListQueryData = {
-                    data: { ...prev?.data },
-                    uniqueIdToId: { ...prev?.uniqueIdToId },
+            queryClient.setQueryData(dataQueryKey, (prev: ItemQueryData | undefined) => {
+                const updates: ItemQueryData = {
+                    ...prev,
                 };
 
                 for (const item of dataWithUniqueId) {
-                    updates.data[item.id] = item.data;
-                    updates.uniqueIdToId[item.uniqueId] = item.id;
+                    updates[item.id] = item.data;
+                }
+                return updates;
+            });
+
+            queryClient.setQueryData(listQueryKey, (prev: ListQueryData | undefined) => {
+                const updates: ListQueryData = {
+                    ...prev,
+                };
+
+                for (const item of dataWithUniqueId) {
+                    updates[item.uniqueId] = item.id;
                 }
                 return updates;
             });
@@ -297,9 +309,10 @@ export function useInfiniteListData(args: {
     listKey: string;
     pagination: ItemListPaginationState;
     params: Record<string, unknown>;
+    pathParams?: Record<string, unknown>;
     type: LibraryItemType;
 }) {
-    const { itemCount, libraryId, listKey, pagination, params, type } = args;
+    const { itemCount, libraryId, listKey, pagination, params, type, pathParams } = args;
 
     const queryClient = useQueryClient();
 
@@ -316,43 +329,67 @@ export function useInfiniteListData(args: {
     const query = useMemo(() => {
         if (type === LibraryItemType.ALBUM) {
             return {
-                queryFn: getApiLibraryIdAlbums,
-                queryKey: getGetApiLibraryIdAlbumsQueryKey,
+                queryFn: (params: GetApiLibraryIdAlbumsParams) => () =>
+                    getApiLibraryIdAlbums(libraryId, params),
+                queryKey: (params: GetApiLibraryIdAlbumsParams) =>
+                    getGetApiLibraryIdAlbumsQueryKey(libraryId, params),
             };
         }
 
         if (type === LibraryItemType.ALBUM_ARTIST) {
             return {
-                queryFn: getApiLibraryIdAlbumArtists,
-                queryKey: getGetApiLibraryIdAlbumArtistsQueryKey,
+                queryFn: (params: GetApiLibraryIdAlbumArtistsParams) => () =>
+                    getApiLibraryIdAlbumArtists(libraryId, params),
+                queryKey: (params: GetApiLibraryIdAlbumArtistsParams) =>
+                    getGetApiLibraryIdAlbumArtistsQueryKey(libraryId, params),
             };
         }
 
         if (type === LibraryItemType.GENRE) {
             return {
-                queryFn: getApiLibraryIdGenres,
-                queryKey: getGetApiLibraryIdGenresQueryKey,
+                queryFn: (params: GetApiLibraryIdGenresParams) => () =>
+                    getApiLibraryIdGenres(libraryId, params),
+                queryKey: (params: GetApiLibraryIdGenresParams) =>
+                    getGetApiLibraryIdGenresQueryKey(libraryId, params),
             };
         }
 
         if (type === LibraryItemType.PLAYLIST) {
             return {
-                queryFn: getApiLibraryIdPlaylists,
-                queryKey: getGetApiLibraryIdPlaylistsQueryKey,
+                queryFn: (params: GetApiLibraryIdPlaylistsParams) => () =>
+                    getApiLibraryIdPlaylists(libraryId, params),
+                queryKey: (params: GetApiLibraryIdPlaylistsParams) =>
+                    getGetApiLibraryIdPlaylistsQueryKey(libraryId, params),
             };
         }
 
         if (type === LibraryItemType.TRACK) {
             return {
-                queryFn: getApiLibraryIdTracks,
-                queryKey: getGetApiLibraryIdTracksQueryKey,
+                queryFn: (params: GetApiLibraryIdTracksParams) => () =>
+                    getApiLibraryIdTracks(libraryId, params),
+                queryKey: (params: GetApiLibraryIdTracksParams) =>
+                    getGetApiLibraryIdTracksQueryKey(libraryId, params),
+            };
+        }
+
+        if (type === LibraryItemType.PLAYLIST_TRACK) {
+            return {
+                queryFn: (params: GetApiLibraryIdPlaylistsIdTracksParams) => () =>
+                    getApiLibraryIdPlaylistsIdTracks(libraryId, pathParams?.id as string, params),
+                queryKey: (params: GetApiLibraryIdPlaylistsIdTracksParams) =>
+                    getGetApiLibraryIdPlaylistsIdTracksQueryKey(
+                        libraryId,
+                        pathParams?.id as string,
+                        params,
+                    ),
             };
         }
 
         return null;
-    }, [type]);
+    }, [libraryId, pathParams?.id, type]);
 
-    const listQueryKey = itemListHelpers.getQueryKey(libraryId, listKey, type);
+    const listQueryKey = itemListHelpers.getListQueryKey(libraryId, listKey, type);
+    const dataQueryKey = itemListHelpers.getDataQueryKey(libraryId, type);
 
     const handleRangeChanged = useCallback(
         async (event: { endIndex: number; startIndex: number }) => {
@@ -381,12 +418,13 @@ export function useInfiniteListData(args: {
                     };
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const queryKey = query.queryKey(libraryId, fetchParams as any);
+                    const fn = query.queryFn(fetchParams as any);
 
                     const { data } = await queryClient.fetchQuery({
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        queryFn: () => query.queryFn(libraryId, fetchParams as any) as any,
-                        queryKey,
+                        queryFn: fn as QueryFunction<any, any>,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        queryKey: query.queryKey(fetchParams as any),
                     });
 
                     const dataWithUniqueId = data.map((item: { id: string }) => ({
@@ -395,22 +433,28 @@ export function useInfiniteListData(args: {
                         uniqueId: nanoid(),
                     }));
 
-                    queryClient.setQueryData(
-                        listQueryKey,
-                        (prev: ItemListQueryData | undefined) => {
-                            const updates: ItemListQueryData = {
-                                data: { ...prev?.data },
-                                uniqueIdToId: { ...prev?.uniqueIdToId },
-                            };
+                    queryClient.setQueryData(listQueryKey, (prev: ListQueryData | undefined) => {
+                        const updates: ListQueryData = {
+                            ...prev,
+                        };
 
-                            for (const item of dataWithUniqueId) {
-                                updates.data[item.id] = item.data;
-                                updates.uniqueIdToId[item.uniqueId] = item.id;
-                            }
+                        for (const item of dataWithUniqueId) {
+                            updates[item.uniqueId] = item.id;
+                        }
 
-                            return updates;
-                        },
-                    );
+                        return updates;
+                    });
+
+                    queryClient.setQueryData(dataQueryKey, (prev: ItemQueryData | undefined) => {
+                        const updates: ItemQueryData = {
+                            ...prev,
+                        };
+
+                        for (const item of dataWithUniqueId) {
+                            updates[item.id] = item.data;
+                        }
+                        return updates;
+                    });
 
                     setData((prevData) => {
                         const newData = [...prevData];
@@ -423,7 +467,7 @@ export function useInfiniteListData(args: {
                 }
             }
         },
-        [libraryId, listQueryKey, pagination.itemsPerPage, params, query, queryClient],
+        [dataQueryKey, listQueryKey, pagination.itemsPerPage, params, query, queryClient],
     );
 
     return { data, handleRangeChanged, setData };

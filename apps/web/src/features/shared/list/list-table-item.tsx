@@ -1,27 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
-import { LibraryItemType } from '@repo/shared-types';
-import { useQuery } from '@tanstack/react-query';
 import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
-import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableItemProps } from '@/features/ui/item-list/item-table/item-table.tsx';
-import styles from '@/features/ui/item-list/item-table/table-row.module.scss';
-import type { ItemListQueryData } from '@/hooks/use-list.ts';
-import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
+import { dndUtils, DragOperation, DragTarget, DragTargetMap } from '@/utils/drag-drop.ts';
+import styles from './list-item.module.scss';
 
-export function AlbumTableServerItem(props: ItemTableItemProps<string>) {
-    return <InnerTableServerItem {...props} />;
+export function ListTableItem(props: ItemTableItemProps<string>) {
+    return <MemoizedListTableItem {...props} />;
 }
 
-const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
+function InnerContent(props: ItemTableItemProps<string>) {
     const {
         context,
         data: uniqueId,
@@ -48,15 +43,6 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
     const isSelected = row?.getIsSelected();
     const isExpanded = row?.getIsExpanded();
 
-    const { data: list } = useQuery<ItemListQueryData>({
-        enabled: false,
-        queryKey: itemListHelpers.getQueryKey(
-            context.libraryId,
-            context.listKey,
-            LibraryItemType.ALBUM,
-        ),
-    });
-
     useEffect(() => {
         if (!ref.current) return;
 
@@ -69,31 +55,34 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                     getInitialData: () => {
                         const isSelfSelected = row.getIsSelected();
 
-                        if (isSelfSelected) {
-                            const selectedRowUniqueIds = table
-                                .getSelectedRowModel()
-                                .rows.map((row) => row.original)
-                                .filter((id): id is string => id !== undefined);
+                        const dragTarget = DragTargetMap[itemType as keyof typeof DragTargetMap] as
+                            | DragTarget
+                            | undefined;
 
-                            const ids = selectedRowUniqueIds
-                                .map((uniqueId) => {
-                                    return list?.uniqueIdToId[uniqueId];
-                                })
-                                .filter((id): id is string => id !== undefined);
+                        if (isSelfSelected) {
+                            const selectedRows = table.getSelectedRowModel().rows;
+
+                            const selectedRowIds = [];
+                            const selectedItems = [];
+
+                            for (const row of selectedRows) {
+                                selectedRowIds.push(row.id);
+                                selectedItems.push(row.original);
+                            }
 
                             return dndUtils.generateDragData({
-                                id: ids,
+                                id: selectedRowIds,
+                                item: selectedItems,
                                 operation: [DragOperation.ADD],
-                                type: DragTarget.ALBUM,
+                                type: dragTarget ?? DragTarget.UNKNOWN,
                             });
                         }
 
-                        const id = list?.uniqueIdToId[uniqueId as string] as string;
-
                         return dndUtils.generateDragData({
-                            id: [id],
+                            id: [row.id],
+                            item: [row.original],
                             operation: [DragOperation.ADD],
-                            type: DragTarget.ALBUM,
+                            type: dragTarget ?? DragTarget.UNKNOWN,
                         });
                     },
                     onDragStart: () => {
@@ -104,37 +93,6 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                             table.resetRowSelection();
                             row.toggleSelected(true);
                         }
-
-                        if (isSelfSelected) {
-                            const selectedRowUniqueIds = table
-                                .getSelectedRowModel()
-                                .rows.map((row) => row.original)
-                                .filter((id): id is string => id !== undefined);
-
-                            const ids = selectedRowUniqueIds
-                                .map((uniqueId) => {
-                                    return list?.uniqueIdToId[uniqueId];
-                                })
-                                .filter((id): id is string => id !== undefined);
-
-                            return PrefetchController.call({
-                                cmd: {
-                                    tracksByAlbumId: {
-                                        id: ids,
-                                    },
-                                },
-                            });
-                        }
-
-                        const id = list?.uniqueIdToId[uniqueId as string] as string;
-
-                        return PrefetchController.call({
-                            cmd: {
-                                tracksByAlbumId: {
-                                    id: [id],
-                                },
-                            },
-                        });
                     },
                     onDrop: () => {},
                     onGenerateDragPreview: (data) => {
@@ -157,7 +115,6 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
         enableRowDrag,
         index,
         itemType,
-        list?.uniqueIdToId,
         onRowDrag,
         onRowDragData,
         onRowDrop,
@@ -166,8 +123,6 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
         table,
         uniqueId,
     ]);
-
-    const data = list?.data[list.uniqueIdToId[uniqueId as string]];
 
     if (enableExpanded && !isExpanded) {
         return null;
@@ -192,8 +147,9 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
                             {flexRender(cell.column.columnDef.cell, {
                                 ...cell.getContext(),
                                 context: {
-                                    ...context,
-                                    data,
+                                    currentTrack: context.currentTrack,
+                                    libraryId: context.libraryId!,
+                                    listKey: context.listKey,
                                 },
                             })}
                         </Fragment>
@@ -202,4 +158,12 @@ const InnerTableServerItem = (props: ItemTableItemProps<string>) => {
             </div>
         </div>
     );
-};
+}
+
+const MemoizedListTableItem = memo(InnerContent, (prev, next) => {
+    const isSelectionDifferent =
+        prev.table.getSelectedRowModel().rows.length !==
+        next.table.getSelectedRowModel().rows.length;
+
+    return isSelectionDifferent;
+});

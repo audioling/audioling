@@ -11,7 +11,17 @@ export enum DragTarget {
     TABLE_COLUMN = 'tableColumn',
     QUERY_BUILDER_ROW = 'queryBuilderRow',
     QUERY_BUILDER_GROUP = 'queryBuilderGroup',
+    UNKNOWN = 'unknown',
 }
+
+export const DragTargetMap = {
+    [LibraryItemType.ALBUM]: DragTarget.ALBUM,
+    [LibraryItemType.PLAYLIST]: DragTarget.PLAYLIST,
+    [LibraryItemType.TRACK]: DragTarget.TRACK,
+    [LibraryItemType.ARTIST]: DragTarget.ARTIST,
+    [LibraryItemType.GENRE]: DragTarget.GENRE,
+    [LibraryItemType.ALBUM_ARTIST]: DragTarget.ALBUM_ARTIST,
+};
 
 export enum DragOperation {
     ADD = 'add',

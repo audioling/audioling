@@ -1,0 +1,137 @@
+@use '@/styles/base';
+
+.row {
+    position: relative;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--table-row-config-comfortable-height);
+    padding: base.$gap-xs;
+    font-size: base.$font-size-md;
+    font-weight: base.$font-weight-md;
+    color: var(--table-row-font-color);
+    user-select: none;
+    background-color: var(--table-row-background-color);
+    border-bottom: 1px solid var(--table-row-border-color);
+
+    &:hover {
+        &::before {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            content: '';
+            background-color: var(--table-row-hover-background-color);
+        }
+
+        transition: background-color 0.2s ease-in-out;
+    }
+}
+
+.row.dragging {
+    opacity: 0.5;
+}
+
+.row-condensed {
+    height: var(--table-row-config-condensed-height);
+}
+
+.row-normal {
+    height: var(--table-row-config-normal-height);
+}
+
+.row-comfortable {
+    height: var(--table-row-config-comfortable-height);
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.dragged-over-left {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -1px;
+        width: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-right {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        right: -1px;
+        bottom: 0;
+        width: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-top {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: -1px;
+        right: 0;
+        left: 0;
+        height: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.dragged-over-bottom {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        right: 0;
+        bottom: -1px;
+        left: 0;
+        height: 2px;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.can-select {
+    cursor: pointer;
+}
+
+.selected {
+    color: var(--table-row-selected-font-color);
+    background-color: var(--table-row-selected-background-color);
+    border-color: var(--table-row-selected-border-color);
+}
+
+.row-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.group-header {
+    @include base.text-ellipsis;
+
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: base.$gap-sm;
+}
+
+.loader-row {
+    padding: base.$gap-sm;
+}

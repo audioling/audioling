@@ -1,7 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdGenresParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { GenreTableServerItem } from '@/features/genres/list/genre-table-item.tsx';
 import { useGenreListStore } from '@/features/genres/stores/genre-list-store.ts';
+import { ListTableServerItem } from '@/features/shared/list/list-table-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -56,7 +56,7 @@ function PaginatedGenreTableContent(props: PaginatedGenreTableProps) {
 
     return (
         <ItemTable<string>
-            ItemComponent={GenreTableServerItem}
+            ItemComponent={ListTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
             context={{ libraryId, listKey }}

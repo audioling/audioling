@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdAlbumArtistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { AlbumArtistGridItem } from '@/features/artists/list/album-artist-grid-item.tsx';
 import { FullPageSpinner } from '@/features/shared/full-page-spinner/full-page-spinner.tsx';
+import { ListGridServerItem } from '@/features/shared/list/list-grid-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { InfiniteItemGrid } from '@/features/ui/item-list/item-grid/item-grid.tsx';
@@ -53,10 +53,11 @@ function PaginatedAlbumArtistGridContent(props: PaginatedAlbumArtistGridProps) {
     return (
         <InfiniteItemGrid<string>
             enableExpanded
-            ItemComponent={AlbumArtistGridItem}
+            ItemComponent={ListGridServerItem}
             context={{ libraryId, listKey }}
             data={data}
             itemCount={itemCount}
+            itemType={LibraryItemType.ALBUM_ARTIST}
         />
     );
 }

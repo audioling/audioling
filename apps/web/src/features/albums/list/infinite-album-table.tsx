@@ -1,7 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
 import type { GetApiLibraryIdAlbumsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
-import { AlbumTableServerItem } from '@/features/albums/list/album-table-item.tsx';
 import { useAlbumListStore } from '@/features/albums/stores/album-list-store.ts';
+import { ListTableServerItem } from '@/features/shared/list/list-table-server-item.tsx';
 import type { InfiniteItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
@@ -31,7 +31,7 @@ export function InfiniteAlbumTable(props: InfiniteAlbumTableProps) {
 
     return (
         <ItemTable<string>
-            ItemComponent={AlbumTableServerItem}
+            ItemComponent={ListTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
             context={{ libraryId, listKey }}

@@ -1,6 +1,5 @@
 import { useParams, useSearchParams } from 'react-router';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
-import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
 import { PaginatedTrackTable } from '@/features/tracks/list/paginated-track-table.tsx';
@@ -34,8 +33,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     const displayType = useTrackListStore.use.displayType();
     const paginationType = useTrackListStore.use.paginationType();
     const setPagination = useTrackListStore.use.setPagination();
-
-    const baseUrl = useAuthBaseUrl();
 
     const listKey = useListKey({
         displayType,
@@ -79,7 +76,6 @@ function ListComponent({ itemCount }: { itemCount: number }) {
             return (
                 <ListWrapper listKey={listKey}>
                     <InfiniteTrackTable
-                        baseUrl={baseUrl}
                         itemCount={itemCount}
                         libraryId={libraryId}
                         listKey={listKey}
