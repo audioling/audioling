@@ -37,21 +37,21 @@ export function AlbumArtistCard(props: AlbumArtistCardProps) {
     const { albumArtist } = props;
 
     const controls: LoadedCardProps['controls'] = {
-        onDragInitialData: () => {
+        onDragInitialData: (id) => {
             return dndUtils.generateDragData(
                 {
-                    id: [albumArtist.id],
+                    id: [id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.ALBUM_ARTIST,
                 },
                 { image: albumArtist.imageUrl, title: albumArtist.name },
             );
         },
-        onDragStart: () => {
+        onDragStart: (id) => {
             PrefetchController.call({
                 cmd: {
                     tracksByAlbumArtistId: {
-                        id: [albumArtist.id],
+                        id: [id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,

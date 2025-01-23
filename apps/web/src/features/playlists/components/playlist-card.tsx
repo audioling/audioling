@@ -36,21 +36,21 @@ export function PlaylistCard(props: PlaylistCardProps) {
     const { playlist } = props;
 
     const controls: LoadedCardProps['controls'] = {
-        onDragInitialData: () => {
+        onDragInitialData: (id) => {
             return dndUtils.generateDragData(
                 {
-                    id: [playlist.id],
+                    id: [id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.PLAYLIST,
                 },
                 { image: playlist.imageUrl, title: playlist.name },
             );
         },
-        onDragStart: () => {
+        onDragStart: (id) => {
             PrefetchController.call({
                 cmd: {
                     tracksByPlaylistId: {
-                        id: [playlist.id],
+                        id: [id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,

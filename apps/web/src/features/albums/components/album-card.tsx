@@ -41,21 +41,21 @@ export function AlbumCard(props: AlbumCardProps) {
     const { album } = props;
 
     const controls: LoadedCardProps['controls'] = {
-        onDragInitialData: () => {
+        onDragInitialData: (id) => {
             return dndUtils.generateDragData(
                 {
-                    id: [album.id],
+                    id: [id],
                     operation: [DragOperation.ADD],
                     type: DragTarget.ALBUM,
                 },
                 { image: album.imageUrl, title: album.name },
             );
         },
-        onDragStart: () => {
+        onDragStart: (id) => {
             PrefetchController.call({
                 cmd: {
                     tracksByAlbumId: {
-                        id: [album.id],
+                        id: [id],
                         params: {
                             sortBy: TrackListSortOptions.ID,
                             sortOrder: ListSortOrder.ASC,
