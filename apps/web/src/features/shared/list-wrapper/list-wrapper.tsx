@@ -19,7 +19,7 @@ export function ListWrapper(props: ListWrapperProps) {
                 className={styles.container}
                 initial="hidden"
                 transition={{ duration: 0.3 }}
-                variants={animationVariants.blurIn}
+                variants={animationVariants.fadeIn}
             >
                 {children}
             </motion.div>

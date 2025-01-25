@@ -6,6 +6,7 @@ interface TitleProps extends React.ComponentPropsWithoutRef<'div'> {
     isNoSelect?: boolean;
     isSecondary?: boolean;
     isUnderlined?: boolean;
+    lineClamp?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
     order: number;
     size?: Sizes;
     weight?: Sizes;
@@ -21,6 +22,7 @@ export const Title = (props: TitleProps) => {
         isNoSelect,
         isSecondary,
         isUnderlined,
+        lineClamp,
         ...htmlProps
     } = props;
 
@@ -32,6 +34,7 @@ export const Title = (props: TitleProps) => {
         [styles.secondary]: isSecondary,
         [styles.underlined]: isUnderlined,
         [styles.noSelect]: isNoSelect,
+        [styles[`lineClamp${lineClamp}`]]: lineClamp,
     });
 
     return (

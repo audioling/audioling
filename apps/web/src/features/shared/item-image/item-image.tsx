@@ -3,6 +3,7 @@ import { Image } from '@/features/ui/image/image.tsx';
 
 export function ItemImage(props: {
     className?: string;
+    containerClassName?: string;
     size: 'table' | 'card';
     src: string[] | string;
 }) {
@@ -12,5 +13,11 @@ export function ItemImage(props: {
         (url) => `${baseUrl}${url}&size=${props.size === 'card' ? 300 : 100}`,
     );
 
-    return <Image className={props.className} src={imageUrl} />;
+    return (
+        <Image
+            className={props.className}
+            containerClassName={props.containerClassName}
+            src={imageUrl}
+        />
+    );
 }

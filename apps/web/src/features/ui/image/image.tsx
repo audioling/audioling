@@ -5,18 +5,21 @@ import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './image.module.scss';
 
 interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
+    containerClassName?: string;
     src: string | string[];
     thumbHash?: string;
 }
 
 export function Image(props: ImageProps) {
-    const { src } = props;
+    const { src, containerClassName } = props;
 
     if (src) {
         return (
             <Img
                 className={clsx(styles.image, props.className)}
-                container={(children) => <ImageContainer>{children}</ImageContainer>}
+                container={(children) => (
+                    <ImageContainer className={containerClassName}>{children}</ImageContainer>
+                )}
                 loader={<ImageLoader className={props.className} />}
                 loading="eager"
                 src={src}
@@ -40,6 +43,6 @@ function ImageUnloader(props: { className?: string }) {
     return <div className={clsx(styles.unloader, props.className)}></div>;
 }
 
-function ImageContainer(props: { children: React.ReactNode }) {
-    return <div className={styles.imageContainer}>{props.children}</div>;
+function ImageContainer(props: { children: React.ReactNode; className?: string }) {
+    return <div className={clsx(styles.imageContainer, props.className)}>{props.children}</div>;
 }

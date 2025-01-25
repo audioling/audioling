@@ -7,6 +7,7 @@ interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
     isEllipsis?: boolean;
     isNoSelect?: boolean;
     isSecondary?: boolean;
+    lineClamp?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
     size?: Sizes;
     weight?: Sizes;
 }
@@ -18,6 +19,7 @@ export const Text = (props: TextProps) => {
         isEllipsis,
         isNoSelect,
         isSecondary,
+        lineClamp,
         size,
         weight,
         className,
@@ -31,6 +33,7 @@ export const Text = (props: TextProps) => {
         [styles.ellipsis]: isEllipsis,
         [styles.centered]: isCentered,
         [styles.noSelect]: isNoSelect,
+        [styles[`lineClamp${lineClamp}`]]: lineClamp,
     });
 
     return (

@@ -39,7 +39,7 @@
 
 .size-md {
     padding: 0.5rem 0.75rem;
-    font-size: base.$font-size-sm;
+    font-size: base.$font-size-md;
 }
 
 .size-md.compact {
@@ -48,7 +48,7 @@
 
 .size-lg {
     padding: 0.5rem 1rem;
-    font-size: base.$font-size-md;
+    font-size: base.$font-size-lg;
 }
 
 .size-lg.compact {
@@ -57,7 +57,7 @@
 
 .size-xl {
     padding: 0.5rem 1rem;
-    font-size: base.$font-size-md;
+    font-size: base.$font-size-lg;
 }
 
 .size-xl.compact {
