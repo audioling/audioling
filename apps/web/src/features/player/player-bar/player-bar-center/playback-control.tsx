@@ -2,13 +2,13 @@ import clsx from 'clsx';
 import {
     PlayerStatus,
     usePlayerActions,
-    usePlayerStore,
+    usePlayerStatus,
 } from '@/features/player/stores/player-store.tsx';
 import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import styles from './playback-control.module.scss';
 
 export function PlayPauseButton() {
-    const status = usePlayerStore.use.player().status;
+    const status = usePlayerStatus();
     const { mediaPlay, mediaPause } = usePlayerActions();
 
     const handleClick = () => {

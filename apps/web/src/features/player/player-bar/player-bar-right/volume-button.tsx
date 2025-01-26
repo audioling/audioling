@@ -1,5 +1,9 @@
 import { type WheelEvent } from 'react';
-import { usePlayerStore } from '@/features/player/stores/player-store.tsx';
+import {
+    usePlayerMuted,
+    usePlayerStore,
+    usePlayerVolume,
+} from '@/features/player/stores/player-store.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import type { AppIcon } from '@/features/ui/icon/icon.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
@@ -13,8 +17,8 @@ export function VolumeButton() {
     const increaseVolume = usePlayerStore.use.increaseVolume();
     const decreaseVolume = usePlayerStore.use.decreaseVolume();
     const toggleMute = usePlayerStore.use.mediaToggleMute();
-    const volume = usePlayerStore.use.player().volume;
-    const isMuted = usePlayerStore.use.player().muted;
+    const volume = usePlayerVolume();
+    const isMuted = usePlayerMuted();
 
     const handleScroll = (e: WheelEvent) => {
         if (e.deltaY > 0) {
@@ -72,7 +76,7 @@ interface VolumeSliderProps {
 
 function VolumeSlider(props: VolumeSliderProps) {
     const { containerClassName, onWheel, orientation } = props;
-    const volume = usePlayerStore.use.player().volume;
+    const volume = usePlayerVolume();
     const setVolume = usePlayerStore.use.setVolume();
 
     return (

@@ -1185,3 +1185,15 @@ function uniqueSeekToTimestamp(timestamp: number) {
 function parseUniqueSeekToTimestamp(timestamp: string) {
     return Number(timestamp.split('-')[0]);
 }
+
+export function usePlayerStatus() {
+    return usePlayerStoreBase((state) => state.player.status);
+}
+
+export function usePlayerVolume() {
+    return usePlayerStoreBase((state) => state.player.volume);
+}
+
+export function usePlayerMuted() {
+    return usePlayerStoreBase((state) => state.player.muted);
+}
