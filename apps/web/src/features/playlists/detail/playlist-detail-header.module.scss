@@ -1,0 +1,101 @@
+@use '@/styles/base';
+
+.header {
+    container-name: playlist-detail-header;
+    container-type: inline-size;
+}
+
+.grid {
+    display: grid;
+    grid-template-areas:
+        'image-area'
+        'content-area';
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--base-gap-md);
+    padding: var(--base-gap-md) 0;
+    user-select: none;
+    border-radius: var(--base-border-radius-lg);
+
+    .image-area {
+        display: flex;
+        grid-area: image-area;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .image-container {
+        width: auto;
+    }
+
+    .image {
+        width: 250px;
+        max-width: 100cqw;
+        max-height: 250px;
+        aspect-ratio: 1 / 1;
+        border-radius: var(--base-border-radius-lg);
+    }
+
+    .content-area {
+        display: flex;
+        flex-direction: column;
+        grid-area: content-area;
+        gap: var(--base-gap-md);
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .metadata {
+        display: flex;
+        flex-direction: column;
+        gap: var(--base-gap-md);
+        align-items: center;
+        justify-content: center;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .metadata-group {
+        justify-content: center;
+    }
+
+    .controls {
+        display: flex;
+        flex-direction: column;
+        gap: var(--base-gap-sm);
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    @include base.container-larger-than-sm {
+        grid-template-areas: 'image-area content-area';
+        grid-template-columns: 200px minmax(0, 1fr);
+
+        .image {
+            width: 200px;
+            max-height: 200px;
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: var(--base-gap-md);
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .metadata {
+            align-items: flex-start;
+        }
+
+        .metadata-group {
+            justify-content: flex-start;
+        }
+
+        .controls {
+            flex-flow: row wrap;
+            justify-content: space-between;
+        }
+    }
+}

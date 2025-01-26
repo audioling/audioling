@@ -4,6 +4,7 @@ import { LibraryItemType } from '@repo/shared-types';
 export enum DragTarget {
     ALBUM = LibraryItemType.ALBUM,
     PLAYLIST = LibraryItemType.PLAYLIST,
+    PLAYLIST_TRACK = LibraryItemType.PLAYLIST_TRACK,
     TRACK = LibraryItemType.TRACK,
     ARTIST = LibraryItemType.ARTIST,
     GENRE = LibraryItemType.GENRE,
@@ -18,6 +19,7 @@ export const DragTargetMap = {
     [LibraryItemType.ALBUM]: DragTarget.ALBUM,
     [LibraryItemType.PLAYLIST]: DragTarget.PLAYLIST,
     [LibraryItemType.TRACK]: DragTarget.TRACK,
+    [LibraryItemType.PLAYLIST_TRACK]: DragTarget.PLAYLIST_TRACK,
     [LibraryItemType.ARTIST]: DragTarget.ARTIST,
     [LibraryItemType.GENRE]: DragTarget.GENRE,
     [LibraryItemType.ALBUM_ARTIST]: DragTarget.ALBUM_ARTIST,
@@ -27,15 +29,6 @@ export enum DragOperation {
     ADD = 'add',
     REORDER = 'reorder',
 }
-
-export const libraryItemTypeToDragTarget = {
-    [LibraryItemType.ALBUM]: DragTarget.ALBUM,
-    [LibraryItemType.PLAYLIST]: DragTarget.PLAYLIST,
-    [LibraryItemType.TRACK]: DragTarget.TRACK,
-    [LibraryItemType.ARTIST]: DragTarget.ARTIST,
-    [LibraryItemType.GENRE]: DragTarget.GENRE,
-    [LibraryItemType.ALBUM_ARTIST]: DragTarget.ALBUM_ARTIST,
-};
 
 export type AlbumDragMetadata = {
     image: string;

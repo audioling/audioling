@@ -12,7 +12,10 @@ import { createRoot } from 'react-dom/client';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { ItemTableItemProps } from '@/features/ui/item-list/item-table/item-table.tsx';
+import {
+    ItemTableHeader,
+    type ItemTableItemProps,
+} from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemQueryData, ListQueryData } from '@/hooks/use-list.ts';
 import { dndUtils, DragOperation, DragTarget, DragTargetMap } from '@/utils/drag-drop.ts';
 import styles from './list-item.module.scss';
@@ -35,14 +38,13 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
         onRowDrag,
         onRowDragData,
         enableRowDrag,
-        rowId,
         table,
         tableId,
     } = props;
 
     const ref = useRef<HTMLDivElement>(null);
 
-    const row = table.getRow(rowId);
+    const row = table.getRow(index.toString());
 
     const canSelect = row?.getCanSelect();
     const isSelected = row?.getIsSelected();
@@ -84,17 +86,24 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
                                 .map((uniqueId) => list?.[uniqueId])
                                 .filter((id): id is string => id !== undefined);
 
+                            const items = ids
+                                .map((id) => itemData?.[id])
+                                .filter((item): item is T => item !== undefined);
+
                             return dndUtils.generateDragData({
                                 id: ids,
+                                item: items,
                                 operation: [DragOperation.ADD],
                                 type: dragTarget ?? DragTarget.UNKNOWN,
                             });
                         }
 
                         const id = list?.[uniqueId as string] as string;
+                        const item = itemData?.[id];
 
                         return dndUtils.generateDragData({
                             id: [id],
+                            item: item ? [item] : [],
                             operation: [DragOperation.ADD],
                             type: dragTarget ?? DragTarget.UNKNOWN,
                         });
@@ -173,6 +182,7 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
     }, [
         enableRowDrag,
         index,
+        itemData,
         itemType,
         list,
         onRowDrag,
@@ -184,7 +194,19 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
         uniqueId,
     ]);
 
-    const data = itemData?.[list?.[uniqueId as string] as string] as T | undefined;
+    if (context.componentProps.enableStickyHeader && index === 0) {
+        return (
+            <ItemTableHeader
+                columnOrder={context.columnOrder}
+                columnStyles={context.columnStyles}
+                headers={context.headers}
+                tableId={tableId}
+                onChangeColumnOrder={context.onChangeColumnOrder}
+            />
+        );
+    }
+
+    const item = itemData?.[list?.[uniqueId as string] as string] as T | undefined;
 
     if (enableExpanded && !isExpanded) {
         return null;
@@ -210,7 +232,7 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
                                 ...cell.getContext(),
                                 context: {
                                     ...context,
-                                    data,
+                                    data: item,
                                 },
                             })}
                         </Fragment>

@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { type ColumnHelper, type Row } from '@tanstack/react-table';
 import { ItemImage } from '@/features/shared/item-image/item-image.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { ItemTableContext } from '@/features/ui/item-list/item-table/item-table.tsx';
+import type { TableContext } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './column.module.scss';
 
@@ -16,7 +16,7 @@ export function imageColumn<T>(columnHelper: ColumnHelper<T>) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Cell<T>({ row, context }: { context: ItemTableContext; row: Row<T | any> }) {
+function Cell<T>({ row, context }: { context: TableContext; row: Row<T | any> }) {
     const item = context.data || row.original;
 
     if (typeof item === 'object' && item) {

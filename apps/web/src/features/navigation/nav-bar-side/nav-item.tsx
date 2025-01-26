@@ -14,6 +14,7 @@ interface NavItemProps {
 export function NavItem(props: NavItemProps) {
     return (
         <NavLink
+            end
             viewTransition
             className={({ isActive }) => {
                 return clsx(styles.container, {

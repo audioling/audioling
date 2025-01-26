@@ -18,6 +18,8 @@ import type { ItemTableProps } from '@/features/ui/item-list/item-table/item-tab
 import { TableGroup } from '@/features/ui/item-list/item-table/table-group.tsx';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
 import { TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
+import type { DragData } from '@/utils/drag-drop.ts';
+import { DragTarget } from '@/utils/drag-drop.ts';
 import styles from './item-table.module.scss';
 
 interface GroupedItemTableProps<T> extends Omit<ItemTableProps<T>, 'ItemComponent'> {
@@ -97,6 +99,11 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
             });
 
             autoScrollForElements({
+                canScroll: (args) => {
+                    const data = args.source.data as DragData<unknown>;
+                    if (data.type === DragTarget.TABLE_COLUMN) return false;
+                    return true;
+                },
                 element: scroller as HTMLElement,
                 getAllowedAxis: () => 'vertical',
                 getConfiguration: () => ({ maxScrollSpeed: 'fast' }),

@@ -80,7 +80,7 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
     );
 }
 
-const trackSortLabelMap = {
+export const trackSortLabelMap = {
     [TrackListSortOptions.ALBUM]: 'Album',
     [TrackListSortOptions.ALBUM_ARTIST]: 'Album Artist',
     [TrackListSortOptions.ARTIST]: 'Artist',

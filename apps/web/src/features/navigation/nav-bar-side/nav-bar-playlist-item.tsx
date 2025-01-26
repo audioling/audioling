@@ -32,6 +32,7 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                     DragTarget.ALBUM_ARTIST,
                     DragTarget.ARTIST,
                     DragTarget.PLAYLIST,
+                    DragTarget.PLAYLIST_TRACK,
                     DragTarget.TRACK,
                     DragTarget.GENRE,
                 ]);
@@ -55,6 +56,7 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                         });
                         break;
                     case DragTarget.TRACK:
+                    case DragTarget.PLAYLIST_TRACK:
                         AddToPlaylistModal.call({
                             libraryId,
                             playlistId,
@@ -99,7 +101,12 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
     return (
         <NavLink
             ref={ref}
-            className={clsx(styles.container, { [styles.draggedOver]: isDraggedOver })}
+            className={({ isActive }) =>
+                clsx(styles.container, {
+                    [styles.draggedOver]: isDraggedOver,
+                    [styles.active]: isActive,
+                })
+            }
             to={generatePath(APP_ROUTE.DASHBOARD_PLAYLISTS_DETAIL, {
                 libraryId: libraryId,
                 playlistId: playlistId,

@@ -23,7 +23,7 @@ interface TableHeaderProps<T> {
     columnOrder: ItemListColumn[];
     columnStyles: CSSProperties;
     header: Header<T | undefined, unknown>;
-    setColumnOrder: (columnOrder: ItemListColumn[]) => void;
+    setColumnOrder?: (columnOrder: ItemListColumn[]) => void;
     tableId: string;
 }
 
@@ -95,7 +95,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
                         list: columnOrder,
                     });
 
-                    setColumnOrder(newColumnOrder as ItemListColumn[]);
+                    setColumnOrder?.(newColumnOrder as ItemListColumn[]);
                     setIsDraggedOver(null);
                 },
             }),

@@ -16,6 +16,7 @@
     font-size: base.$font-size-md;
     color: var(--table-header-font-color);
     background-color: var(--table-header-background-color);
+    border-radius: var(--base-border-radius-md);
     box-shadow: 2px 2px 10px 2px rgb(0 0 0 / 20%);
 }
 

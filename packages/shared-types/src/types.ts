@@ -11,6 +11,7 @@ export enum LibraryItemType {
     GENRE = 'genre',
     LIBRARY = 'library',
     PLAYLIST = 'playlist',
+    PLAYLIST_TRACK = 'playlistTrack',
     TRACK = 'track',
     USER = 'user',
 }

@@ -13,7 +13,7 @@
 .image {
     display: block;
     height: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
     margin: auto;
     object-fit: cover;
     border-radius: base.$border-radius-md;

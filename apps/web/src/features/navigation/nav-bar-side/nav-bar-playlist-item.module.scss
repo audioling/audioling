@@ -11,11 +11,17 @@
     cursor: default;
     background-color: var(--side-nav-item-background-color);
     border-radius: var(--side-nav-item-border-radius);
+    transition: all 0.3s ease-in-out;
 
     &:hover {
         color: var(--side-nav-item-font-hover-color);
         background-color: var(--side-nav-item-background-hover-color);
     }
+}
+
+.container.active {
+    color: var(--side-nav-item-active-font-color);
+    background-color: var(--side-nav-item-active-background-color);
 }
 
 .dragged-over {

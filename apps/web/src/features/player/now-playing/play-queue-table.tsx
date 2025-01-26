@@ -133,6 +133,7 @@ export function PlayQueueTable({ baseUrl, groupBy, libraryId, itemTableRef }: Pl
                     });
                     break;
                 case DragTarget.TRACK:
+                case DragTarget.PLAYLIST_TRACK:
                     PlayerController.call({
                         cmd: {
                             addToQueueByData: {
@@ -272,6 +273,7 @@ function EmptyQueue() {
                     DragTarget.ARTIST,
                     DragTarget.PLAYLIST,
                     DragTarget.TRACK,
+                    DragTarget.PLAYLIST_TRACK,
                     DragTarget.GENRE,
                 ]);
             },
@@ -298,6 +300,7 @@ function EmptyQueue() {
                         });
                         break;
                     case DragTarget.TRACK:
+                    case DragTarget.PLAYLIST_TRACK:
                         PlayerController.call({
                             cmd: {
                                 addToQueueByData: {

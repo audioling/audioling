@@ -6,6 +6,7 @@ import type { LibraryItemType } from '@repo/shared-types';
 import type {
     DisplayColumnDef,
     ExpandedState,
+    Header,
     Row,
     RowSelectionState,
     Table,
@@ -25,20 +26,30 @@ import { ComponentErrorBoundary } from '@/features/shared/error-boundary/compone
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
-import type { DragData } from '@/utils/drag-drop.ts';
+import { type DragData, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './item-table.module.scss';
 
-export interface ItemTableContext {
+export interface TableContext {
+    columnOrder?: ItemListColumn[];
     columnStyles?: { sizes: string[]; styles: { gridTemplateColumns: string } };
     currentTrack?: PlayQueueItem;
     data?: unknown;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    headers?: Header<any, any>[];
     libraryId: string;
     listKey: string;
+    onChangeColumnOrder?: (columnOrder: ItemListColumn[]) => void;
     startIndex?: number;
 }
 
+type ItemComponentContext<T> = Omit<ItemTableItemProps<T>, 'context' | 'data' | 'index'>;
+
+export interface ItemTableContext<T> extends TableContext {
+    componentProps: ItemComponentContext<T>;
+}
+
 export interface TableItemProps<T> {
-    context?: ItemTableContext;
+    context?: TableContext;
     data: T | undefined;
     index: number;
 }
@@ -62,11 +73,13 @@ export type ItemTableRowDragData<T> = {
 };
 
 export interface ItemTableItemProps<T> {
-    context: ItemTableContext;
+    context: ItemTableContext<T>;
     data: T;
     disableRowDrag?: boolean;
     enableExpanded: boolean;
     enableRowDrag?: boolean;
+    enableStickyHeader?: boolean;
+    headers?: Header<unknown, unknown>;
     index: number;
     itemType: LibraryItemType;
     onRowClick?: (
@@ -87,7 +100,7 @@ export interface ItemTableItemProps<T> {
     onRowDrag?: (row: Row<T>, table: Table<T | undefined>) => void;
     onRowDragData?: (row: Row<T>, table: Table<T | undefined>) => DragData;
     onRowDrop?: (row: Row<T>, table: Table<T | undefined>, args: ItemTableRowDrop<T>) => void;
-    rowId: string;
+    rowIdProperty?: string;
     table: Table<T | undefined>;
     tableId: string;
 }
@@ -97,13 +110,14 @@ export interface ItemTableProps<T> {
     ItemComponent: React.ComponentType<ItemTableItemProps<T>>;
     columnOrder: ItemListColumn[];
     columns: DisplayColumnDef<T | undefined>[];
-    context: ItemTableContext;
+    context: TableContext;
     data: (T | undefined)[];
     disableAutoScroll?: boolean;
     enableHeader?: boolean;
     enableMultiRowSelection?: boolean;
     enableRowDrag?: boolean;
     enableRowSelection?: boolean;
+    enableStickyHeader?: boolean;
     getRowId?: (
         originalRow: T | undefined,
         index: number,
@@ -157,6 +171,7 @@ export function ItemTable<T>(props: ItemTableProps<T>) {
         enableMultiRowSelection,
         enableRowDrag = true,
         enableRowSelection,
+        enableStickyHeader,
         HeaderComponent,
         getRowId,
         initialScrollIndex,
@@ -212,6 +227,11 @@ export function ItemTable<T>(props: ItemTableProps<T>) {
 
             if (!disableAutoScroll) {
                 autoScrollForElements({
+                    canScroll: (args) => {
+                        const data = args.source.data as DragData<unknown>;
+                        if (data.type === DragTarget.TABLE_COLUMN) return false;
+                        return true;
+                    },
                     element: scroller as HTMLElement,
                     getAllowedAxis: () => 'vertical',
                     getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
@@ -270,7 +290,50 @@ export function ItemTable<T>(props: ItemTableProps<T>) {
         return { sizes, styles };
     }, [headers]);
 
-    const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
+    const tableContext = useMemo(() => {
+        const componentProps: ItemComponentContext<T> = {
+            enableExpanded: false,
+            enableRowDrag,
+            enableStickyHeader,
+            itemType,
+            onRowClick,
+            onRowContextMenu,
+            onRowDoubleClick,
+            onRowDrag,
+            onRowDragData,
+            onRowDrop,
+            rowIdProperty,
+            table,
+            tableId,
+        };
+
+        return {
+            ...context,
+            columnOrder,
+            columnStyles,
+            componentProps,
+            headers,
+            onChangeColumnOrder,
+        };
+    }, [
+        enableRowDrag,
+        enableStickyHeader,
+        itemType,
+        onRowClick,
+        onRowContextMenu,
+        onRowDoubleClick,
+        onRowDrag,
+        onRowDragData,
+        onRowDrop,
+        rowIdProperty,
+        table,
+        tableId,
+        context,
+        columnOrder,
+        columnStyles,
+        headers,
+        onChangeColumnOrder,
+    ]);
 
     useImperativeHandle(virtuosoRef, () => ({
         autoscrollToBottom: () => {
@@ -329,28 +392,13 @@ export function ItemTable<T>(props: ItemTableProps<T>) {
                         increaseViewportBy={100}
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
-                        itemContent={(index, d, context) => {
+                        itemContent={(i, d, c) => {
                             return (
                                 <ItemComponent
-                                    context={context}
+                                    context={c}
                                     data={d as T}
-                                    enableExpanded={false}
-                                    enableRowDrag={enableRowDrag}
-                                    index={index}
-                                    itemType={itemType}
-                                    rowId={
-                                        getRowId && rowIdProperty
-                                            ? (data[index]?.[rowIdProperty as keyof T] as string)
-                                            : index.toString()
-                                    }
-                                    table={table}
-                                    tableId={tableId}
-                                    onRowClick={onRowClick}
-                                    onRowContextMenu={onRowContextMenu}
-                                    onRowDoubleClick={onRowDoubleClick}
-                                    onRowDrag={onRowDrag}
-                                    onRowDragData={onRowDragData}
-                                    onRowDrop={onRowDrop}
+                                    index={i}
+                                    {...c.componentProps}
                                 />
                             );
                         }}
@@ -359,11 +407,39 @@ export function ItemTable<T>(props: ItemTableProps<T>) {
                         scrollerRef={setScroller}
                         startReached={onStartReached}
                         style={{ overflow: 'hidden' }}
+                        topItemCount={enableStickyHeader ? 1 : 0}
                         totalCount={itemCount}
                         onScroll={onScroll}
                     />
                 </div>
             </ComponentErrorBoundary>
+        </div>
+    );
+}
+
+export function ItemTableHeader<T>(props: {
+    columnOrder?: ItemListColumn[];
+    columnStyles?: ItemTableContext<T>['columnStyles'];
+    headers?: Header<unknown, unknown>[];
+    onChangeColumnOrder?: (columnOrder: ItemListColumn[]) => void;
+    tableId: string;
+}) {
+    const { columnStyles, headers, columnOrder, onChangeColumnOrder, tableId } = props;
+
+    if (!columnOrder) return null;
+
+    return (
+        <div className={styles.header} style={columnStyles?.styles}>
+            {headers?.map((header) => (
+                <TableHeader
+                    key={`header-${header.id}`}
+                    columnOrder={columnOrder}
+                    columnStyles={columnStyles?.styles || {}}
+                    header={header}
+                    setColumnOrder={onChangeColumnOrder}
+                    tableId={tableId}
+                />
+            ))}
         </div>
     );
 }

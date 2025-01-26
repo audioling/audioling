@@ -8,6 +8,7 @@ import { LibraryAddRoute } from '@/features/library/library-add/library-add-rout
 import { LibraryEditRoute } from '@/features/library/library-edit/library-edit-route.tsx';
 import { LibrarySelectionRoute } from '@/features/library/library-selection/library-selection-route.tsx';
 import { NowPlayingRoute } from '@/features/player/now-playing/now-playing-route.tsx';
+import { PlaylistDetailRoute } from '@/features/playlists/detail/playlist-detail-route.tsx';
 import { PlaylistListRoute } from '@/features/playlists/list/playlist-list-route.tsx';
 import { TrackListRoute } from '@/features/tracks/list/track-list-route.tsx';
 import { AuthProtectedLayout } from '@/layouts/auth-protected-layout.tsx';
@@ -49,6 +50,10 @@ const playlistRoutes: RouteObject[] = [
     {
         element: <PlaylistListRoute />,
         path: 'playlists',
+    },
+    {
+        element: <PlaylistDetailRoute />,
+        path: 'playlists/:playlistId',
     },
 ];
 

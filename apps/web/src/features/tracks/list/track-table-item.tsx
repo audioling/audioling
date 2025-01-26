@@ -16,7 +16,7 @@ import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 const InnerTrackTableItem = (props: ItemTableItemProps<TrackItem>) => {
     const {
         context,
-        data: uniqueId,
+        data,
         enableExpanded,
         index,
         itemType,
@@ -26,13 +26,17 @@ const InnerTrackTableItem = (props: ItemTableItemProps<TrackItem>) => {
         onRowDrop,
         onRowDrag,
         onRowDragData,
+        rowIdProperty,
         enableRowDrag,
-        rowId,
         table,
         tableId,
     } = props;
 
     const ref = useRef<HTMLDivElement>(null);
+
+    const rowId = rowIdProperty
+        ? (data[rowIdProperty as keyof TrackItem] as string)
+        : index.toString();
 
     const row = table.getRow(rowId);
 
@@ -104,18 +108,7 @@ const InnerTrackTableItem = (props: ItemTableItemProps<TrackItem>) => {
         }
 
         return combine(...fns);
-    }, [
-        enableRowDrag,
-        index,
-        itemType,
-        onRowDrag,
-        onRowDragData,
-        onRowDrop,
-        row,
-        row.id,
-        table,
-        uniqueId,
-    ]);
+    }, [enableRowDrag, index, itemType, onRowDrag, onRowDragData, onRowDrop, row, row.id, table]);
 
     if (enableExpanded && !isExpanded) {
         return null;

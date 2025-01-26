@@ -30,14 +30,13 @@ function InnerContent(props: ItemTableItemProps<string>) {
         onRowDrag,
         onRowDragData,
         enableRowDrag,
-        rowId,
         table,
         tableId,
     } = props;
 
     const ref = useRef<HTMLDivElement>(null);
 
-    const row = table.getRow(rowId);
+    const row = table.getRow(index.toString());
 
     const canSelect = row?.getCanSelect();
     const isSelected = row?.getIsSelected();

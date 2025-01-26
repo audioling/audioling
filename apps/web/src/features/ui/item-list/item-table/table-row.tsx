@@ -21,21 +21,16 @@ import { createRoot } from 'react-dom/client';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import type {
-    ItemTableContext,
     ItemTableRowDrop,
+    TableContext,
 } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
-import {
-    dndUtils,
-    DragOperation,
-    DragTarget,
-    libraryItemTypeToDragTarget,
-} from '@/utils/drag-drop.ts';
+import { dndUtils, DragOperation, DragTarget, DragTargetMap } from '@/utils/drag-drop.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './table-row.module.scss';
 
 interface TableRowProps<T> {
-    context: ItemTableContext;
+    context: TableContext;
     disableRowDrag?: boolean;
     enableExpanded: boolean;
     enableRowDrag?: boolean;
@@ -128,9 +123,7 @@ const InnerTableRow = <T,>(props: TableRowProps<T>) => {
                                 id: selectedRowIds,
                                 item: selectedItems,
                                 operation: [DragOperation.REORDER, DragOperation.ADD],
-                                type: libraryItemTypeToDragTarget[
-                                    itemType as keyof typeof libraryItemTypeToDragTarget
-                                ],
+                                type: DragTargetMap[itemType as keyof typeof DragTargetMap],
                             });
                         }
 
@@ -138,9 +131,7 @@ const InnerTableRow = <T,>(props: TableRowProps<T>) => {
                             id: [row.id],
                             item: [row.original],
                             operation: [DragOperation.REORDER, DragOperation.ADD],
-                            type: libraryItemTypeToDragTarget[
-                                itemType as keyof typeof libraryItemTypeToDragTarget
-                            ],
+                            type: DragTargetMap[itemType as keyof typeof DragTargetMap],
                         });
                     },
                     onDragStart: () => {
@@ -184,6 +175,7 @@ const InnerTableRow = <T,>(props: TableRowProps<T>) => {
                             DragTarget.ALBUM_ARTIST,
                             DragTarget.ARTIST,
                             DragTarget.PLAYLIST,
+                            DragTarget.PLAYLIST_TRACK,
                             DragTarget.TRACK,
                             DragTarget.GENRE,
                         ]);
