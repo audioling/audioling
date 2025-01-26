@@ -103,7 +103,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'button-filled-background-color': 'rgb(235, 235, 235)',
     'button-filled-border': '1px solid rgba(0, 0, 0, 0)',
     'button-filled-font-color': 'rgb(25, 25, 25)',
-    'button-filled-hover-background-color': 'rgb(200, 200, 200)',
+    'button-filled-hover-background-color': 'rgb(150, 150, 150)',
     'button-filled-hover-border': '1px solid rgba(0, 0, 0, 0)',
     'button-filled-hover-font-color': 'rgb(25, 25, 25)',
     'button-outline-background-color': 'rgba(0, 0, 0, 0)',
