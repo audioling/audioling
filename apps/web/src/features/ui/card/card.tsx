@@ -55,7 +55,7 @@ export type LoadedCardProps = BaseCardProps & {
 export type CardProps = LoadingCardProps | LoadedCardProps;
 
 export function Card(props: CardProps) {
-    const { componentState, metadataLines, className, ...htmlProps } = props;
+    const { componentState, metadataLines, className, isCircle, ...htmlProps } = props;
 
     const ref = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -133,7 +133,7 @@ export function Card(props: CardProps) {
                     >
                         <ItemImage
                             className={clsx(styles.image, {
-                                [styles.circle]: props.isCircle,
+                                [styles.circle]: isCircle,
                             })}
                             size="card"
                             src={[loadedProps.image]}
