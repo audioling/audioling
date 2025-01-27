@@ -104,11 +104,11 @@ function getSortOptions(
     features: LibraryFeatures,
 ): { label: string; value: ArtistListSortOptions }[] {
     const artistSortFeatures = Object.keys(features)
-        .filter((key) => key.includes('artist:list:filter'))
+        .filter((key) => key.includes('albumArtist:list:filter'))
         .filter((key) => features[key as keyof LibraryFeatures]);
 
     return artistSortFeatures.map((feature) => {
-        const option = feature.replace('artist:list:filter:', '') as ArtistListSortOptions;
+        const option = feature.replace('albumArtist:list:filter:', '') as ArtistListSortOptions;
         return {
             label: artistSortLabelMap[option as keyof typeof artistSortLabelMap],
             value: option,
