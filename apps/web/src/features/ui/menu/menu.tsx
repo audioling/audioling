@@ -10,6 +10,7 @@ import styles from './menu.module.scss';
 
 interface MenuContext {
     align: 'start' | 'center' | 'end';
+    closeOnSelect?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
     side: 'top' | 'right' | 'bottom' | 'left';
@@ -20,14 +21,18 @@ export const MenuContext = createContext<MenuContext | null>(null);
 interface MenuProps {
     align?: 'start' | 'center' | 'end';
     children: ReactNode;
+    closeOnSelect?: boolean;
     side?: 'top' | 'right' | 'bottom' | 'left';
 }
 
 export function Menu(props: MenuProps) {
-    const { children, align = 'center', side = 'bottom' } = props;
+    const { children, align = 'center', closeOnSelect = true, side = 'bottom' } = props;
     const [open, setOpen] = useState(false);
 
-    const context = useMemo(() => ({ align, open, setOpen, side }), [align, open, side]);
+    const context = useMemo(
+        () => ({ align, closeOnSelect, open, setOpen, side }),
+        [align, closeOnSelect, open, side],
+    );
 
     return (
         <DropdownMenu.Root open={open} onOpenChange={setOpen}>
@@ -121,6 +126,16 @@ interface ItemProps {
 function Item(props: ItemProps) {
     const { children, disabled, leftIcon, onSelect, rightIcon, isSelected } = props;
 
+    const { closeOnSelect } = useContext(MenuContext) as MenuContext;
+
+    const handleSelect = (e: Event) => {
+        if (!closeOnSelect) {
+            e.preventDefault();
+        }
+
+        onSelect?.(e);
+    };
+
     return (
         <DropdownMenu.Item
             className={clsx(styles.item, {
@@ -128,7 +143,7 @@ function Item(props: ItemProps) {
                 [styles.disabled]: disabled,
             })}
             disabled={disabled}
-            onSelect={onSelect}
+            onSelect={handleSelect}
         >
             {leftIcon && <Icon className={styles.leftIcon} icon={leftIcon} />}
             {children}
