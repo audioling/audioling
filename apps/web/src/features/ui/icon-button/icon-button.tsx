@@ -7,7 +7,7 @@ import type { TooltipProps } from '@/features/ui/tooltip/tooltip.tsx';
 import { Tooltip } from '@/features/ui/tooltip/tooltip.tsx';
 import styles from './icon-button.module.scss';
 
-interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children?: React.ReactNode;
     icon: keyof typeof AppIcon;
     iconFill?: boolean;

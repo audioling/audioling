@@ -1201,6 +1201,7 @@ export const GetApiLibraryIdImagesIdType = {
     genre: 'genre',
     library: 'library',
     playlist: 'playlist',
+    playlistTrack: 'playlistTrack',
     track: 'track',
     user: 'user',
 } as const;
@@ -1562,11 +1563,6 @@ export type GetApiLibraryIdGenres200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraryIdGenres200 = {
-    data: GetApiLibraryIdGenres200DataItem[];
-    meta: GetApiLibraryIdGenres200Meta;
-};
-
 export type GetApiLibraryIdGenres200DataItemItemType =
     (typeof GetApiLibraryIdGenres200DataItemItemType)[keyof typeof GetApiLibraryIdGenres200DataItemItemType];
 
@@ -1584,6 +1580,11 @@ export type GetApiLibraryIdGenres200DataItem = {
     name: string;
     /** @nullable */
     trackCount: number | null;
+};
+
+export type GetApiLibraryIdGenres200 = {
+    data: GetApiLibraryIdGenres200DataItem[];
+    meta: GetApiLibraryIdGenres200Meta;
 };
 
 export type GetApiLibraryIdGenresSortOrder =
@@ -1614,7 +1615,7 @@ export type GetApiLibraryIdGenresParams = {
     sortOrder: GetApiLibraryIdGenresSortOrder;
 };
 
-export type DeleteApiLibraryIdAlbumArtistsIdFavorite500 = {
+export type PostApiLibraryIdAlbumArtistsUnfavorite500 = {
     cause?: string;
     message: string;
     name: string;
@@ -1622,7 +1623,7 @@ export type DeleteApiLibraryIdAlbumArtistsIdFavorite500 = {
     status: number;
 };
 
-export type DeleteApiLibraryIdAlbumArtistsIdFavorite404 = {
+export type PostApiLibraryIdAlbumArtistsUnfavorite404 = {
     cause?: string;
     message: string;
     name: string;
@@ -1630,7 +1631,7 @@ export type DeleteApiLibraryIdAlbumArtistsIdFavorite404 = {
     status: number;
 };
 
-export type DeleteApiLibraryIdAlbumArtistsIdFavorite403 = {
+export type PostApiLibraryIdAlbumArtistsUnfavorite403 = {
     cause?: string;
     message: string;
     name: string;
@@ -1638,44 +1639,7 @@ export type DeleteApiLibraryIdAlbumArtistsIdFavorite403 = {
     status: number;
 };
 
-export type DeleteApiLibraryIdAlbumArtistsIdFavorite401 = {
-    cause?: string;
-    message: string;
-    name: string;
-    stack?: string;
-    status: number;
-};
-
-/**
- * @nullable
- */
-export type DeleteApiLibraryIdAlbumArtistsIdFavorite204 = unknown | null;
-
-export type PostApiLibraryIdAlbumArtistsIdFavorite500 = {
-    cause?: string;
-    message: string;
-    name: string;
-    stack?: string;
-    status: number;
-};
-
-export type PostApiLibraryIdAlbumArtistsIdFavorite404 = {
-    cause?: string;
-    message: string;
-    name: string;
-    stack?: string;
-    status: number;
-};
-
-export type PostApiLibraryIdAlbumArtistsIdFavorite403 = {
-    cause?: string;
-    message: string;
-    name: string;
-    stack?: string;
-    status: number;
-};
-
-export type PostApiLibraryIdAlbumArtistsIdFavorite401 = {
+export type PostApiLibraryIdAlbumArtistsUnfavorite401 = {
     cause?: string;
     message: string;
     name: string;
@@ -1686,7 +1650,52 @@ export type PostApiLibraryIdAlbumArtistsIdFavorite401 = {
 /**
  * @nullable
  */
-export type PostApiLibraryIdAlbumArtistsIdFavorite204 = unknown | null;
+export type PostApiLibraryIdAlbumArtistsUnfavorite204 = unknown | null;
+
+export type PostApiLibraryIdAlbumArtistsUnfavoriteBody = {
+    ids: string[];
+};
+
+export type PostApiLibraryIdAlbumArtistsFavorite500 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibraryIdAlbumArtistsFavorite404 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibraryIdAlbumArtistsFavorite403 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+export type PostApiLibraryIdAlbumArtistsFavorite401 = {
+    cause?: string;
+    message: string;
+    name: string;
+    stack?: string;
+    status: number;
+};
+
+/**
+ * @nullable
+ */
+export type PostApiLibraryIdAlbumArtistsFavorite204 = unknown | null;
+
+export type PostApiLibraryIdAlbumArtistsFavoriteBody = {
+    ids: string[];
+};
 
 export type GetApiLibraryIdAlbumArtistsIdTracks500 = {
     cause?: string;
@@ -1931,11 +1940,6 @@ export type GetApiLibraryIdAlbumArtistsIdAlbums200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraryIdAlbumArtistsIdAlbums200 = {
-    data: GetApiLibraryIdAlbumArtistsIdAlbums200DataItem[];
-    meta: GetApiLibraryIdAlbumArtistsIdAlbums200Meta;
-};
-
 export type GetApiLibraryIdAlbumArtistsIdAlbums200DataItemReleaseTypesItem = {
     id: string;
     name: string;
@@ -2029,6 +2033,11 @@ export type GetApiLibraryIdAlbumArtistsIdAlbums200DataItem = {
     userRating: number | null;
     /** @nullable */
     userRatingDate: string | null;
+};
+
+export type GetApiLibraryIdAlbumArtistsIdAlbums200 = {
+    data: GetApiLibraryIdAlbumArtistsIdAlbums200DataItem[];
+    meta: GetApiLibraryIdAlbumArtistsIdAlbums200Meta;
 };
 
 export type GetApiLibraryIdAlbumArtistsIdAlbumsSortOrder =
@@ -3346,6 +3355,11 @@ export type GetApiLibraryIdAlbumsIdTracks200Meta = {
     totalRecordCount: number;
 };
 
+export type GetApiLibraryIdAlbumsIdTracks200 = {
+    data: GetApiLibraryIdAlbumsIdTracks200DataItem[];
+    meta: GetApiLibraryIdAlbumsIdTracks200Meta;
+};
+
 export type GetApiLibraryIdAlbumsIdTracks200DataItemItemType =
     (typeof GetApiLibraryIdAlbumsIdTracks200DataItemItemType)[keyof typeof GetApiLibraryIdAlbumsIdTracks200DataItemItemType];
 
@@ -3445,11 +3459,6 @@ export type GetApiLibraryIdAlbumsIdTracks200DataItem = {
     userPlayCount: number;
     /** @nullable */
     userRating: number | null;
-};
-
-export type GetApiLibraryIdAlbumsIdTracks200 = {
-    data: GetApiLibraryIdAlbumsIdTracks200DataItem[];
-    meta: GetApiLibraryIdAlbumsIdTracks200Meta;
 };
 
 export type GetApiLibraryIdAlbumsIdTracksSortOrder =
@@ -3774,11 +3783,6 @@ export type GetApiLibraryIdAlbums200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraryIdAlbums200 = {
-    data: GetApiLibraryIdAlbums200DataItem[];
-    meta: GetApiLibraryIdAlbums200Meta;
-};
-
 export type GetApiLibraryIdAlbums200DataItemReleaseTypesItem = {
     id: string;
     name: string;
@@ -3872,6 +3876,11 @@ export type GetApiLibraryIdAlbums200DataItem = {
     userRating: number | null;
     /** @nullable */
     userRatingDate: string | null;
+};
+
+export type GetApiLibraryIdAlbums200 = {
+    data: GetApiLibraryIdAlbums200DataItem[];
+    meta: GetApiLibraryIdAlbums200Meta;
 };
 
 export type GetApiLibraryIdAlbumsSortOrder =
@@ -4242,11 +4251,6 @@ export type PostApiLibraries400 = {
 
 export type PostApiLibraries201Meta = { [key: string]: unknown };
 
-export type PostApiLibraries201 = {
-    data: PostApiLibraries201Data;
-    meta: PostApiLibraries201Meta;
-};
-
 export type PostApiLibraries201DataType =
     (typeof PostApiLibraries201DataType)[keyof typeof PostApiLibraries201DataType];
 
@@ -4270,6 +4274,11 @@ export type PostApiLibraries201Data = {
     id: string;
     type: PostApiLibraries201DataType;
     updatedAt: string;
+};
+
+export type PostApiLibraries201 = {
+    data: PostApiLibraries201Data;
+    meta: PostApiLibraries201Meta;
 };
 
 export type PostApiLibrariesBodyType =
@@ -4337,11 +4346,6 @@ export type GetApiLibraries200Meta = {
     totalRecordCount: number;
 };
 
-export type GetApiLibraries200 = {
-    data: GetApiLibraries200DataItem[];
-    meta: GetApiLibraries200Meta;
-};
-
 export type GetApiLibraries200DataItemType =
     (typeof GetApiLibraries200DataItemType)[keyof typeof GetApiLibraries200DataItemType];
 
@@ -4365,6 +4369,11 @@ export type GetApiLibraries200DataItem = {
     id: string;
     type: GetApiLibraries200DataItemType;
     updatedAt: string;
+};
+
+export type GetApiLibraries200 = {
+    data: GetApiLibraries200DataItem[];
+    meta: GetApiLibraries200Meta;
 };
 
 export type GetApiLibrariesSortOrder =

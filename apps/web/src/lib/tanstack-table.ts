@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { LibraryItemType } from '@repo/shared-types';
 import type { RowData } from '@tanstack/react-table';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 
@@ -7,6 +8,7 @@ declare module '@tanstack/react-table' {
         context: {
             currentTrack?: PlayQueueItem;
             data?: unknown;
+            itemType?: LibraryItemType;
             libraryId: string;
             listKey: string;
             startIndex?: number;

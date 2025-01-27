@@ -313,6 +313,7 @@ export function ItemTable<T>(props: ItemTableProps<T>) {
             columnStyles,
             componentProps,
             headers,
+            itemType,
             onChangeColumnOrder,
         };
     }, [

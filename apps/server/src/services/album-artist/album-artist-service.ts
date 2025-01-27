@@ -106,10 +106,10 @@ export const initAlbumArtistService = (modules: { db: AppDatabase }) => {
             };
         },
 
-        // ANCHOR - Favorite by id
-        favoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        // ANCHOR - Favorite
+        favorite: async (adapter: AdapterApi, args: { ids: string[] }) => {
             const [err, result] = await adapter.setFavorite({
-                body: { entry: [{ favorite: true, id: args.id, type: 'artist' }] },
+                body: { entry: args.ids.map((id) => ({ favorite: true, id, type: 'artist' })) },
                 query: null,
             });
 
@@ -178,10 +178,10 @@ export const initAlbumArtistService = (modules: { db: AppDatabase }) => {
             return result;
         },
 
-        // ANCHOR - Unfavorite by id
-        unfavoriteById: async (adapter: AdapterApi, args: FindByIdServiceArgs) => {
+        // ANCHOR - Unfavorite
+        unfavorite: async (adapter: AdapterApi, args: { ids: string[] }) => {
             const [err, result] = await adapter.setFavorite({
-                body: { entry: [{ favorite: false, id: args.id, type: 'artist' }] },
+                body: { entry: args.ids.map((id) => ({ favorite: false, id, type: 'artist' })) },
                 query: null,
             });
 

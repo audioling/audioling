@@ -1,6 +1,7 @@
 @use '@/styles/base';
 
 .root {
+    position: relative;
     cursor: pointer;
     user-select: none;
     transition: all 0.15s ease-in-out;

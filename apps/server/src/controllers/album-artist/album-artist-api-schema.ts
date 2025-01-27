@@ -67,6 +67,51 @@ export const albumArtistApiSchema = {
             ),
         },
     },
+    '/favorite': {
+        post: {
+            request: {
+                body: {
+                    content: {
+                        'application/json': {
+                            schema: z.object({ ids: z.array(z.string()) }),
+                        },
+                    },
+                },
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Add album artist favorites',
+                    schema: EmptyResponseSchema,
+                    status: 204,
+                },
+                [401, 403, 404, 500],
+            ),
+            security: [{ Bearer: [] }],
+        },
+    },
+    '/unfavorite': {
+        post: {
+            request: {
+                body: {
+                    content: {
+                        'application/json': {
+                            schema: z.object({ ids: z.array(z.string()) }),
+                        },
+                    },
+                },
+                params: z.object({ libraryId: z.string() }),
+            },
+            responses: schemaResponse(
+                {
+                    description: 'Remove album artist favorites',
+                    schema: EmptyResponseSchema,
+                    status: 204,
+                },
+                [401, 403, 404, 500],
+            ),
+        },
+    },
     '/{id}': {
         get: {
             request: {
@@ -97,36 +142,6 @@ export const albumArtistApiSchema = {
                 },
                 [401, 403, 404, 422, 500],
             ),
-        },
-    },
-    '/{id}/favorite': {
-        delete: {
-            request: {
-                params: z.object({ id: z.string(), libraryId: z.string() }),
-            },
-            responses: schemaResponse(
-                {
-                    description: 'Remove album artist from favorites',
-                    schema: EmptyResponseSchema,
-                    status: 204,
-                },
-                [401, 403, 404, 500],
-            ),
-            security: [{ Bearer: [] }],
-        },
-        post: {
-            request: {
-                params: z.object({ id: z.string(), libraryId: z.string() }),
-            },
-            responses: schemaResponse(
-                {
-                    description: 'Add album artist to favorites',
-                    schema: EmptyResponseSchema,
-                    status: 204,
-                },
-                [401, 403, 404, 500],
-            ),
-            security: [{ Bearer: [] }],
         },
     },
     '/{id}/tracks': {
