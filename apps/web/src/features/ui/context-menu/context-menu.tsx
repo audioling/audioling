@@ -39,10 +39,11 @@ interface ContentProps {
     onEscapeKeyDown?: (event: KeyboardEvent) => void;
     onFocusOutside?: (event: FocusEvent) => void;
     onPointerDownOutside?: (event: PointerEvent) => void;
+    stickyContent?: ReactNode;
 }
 
 function Content(props: ContentProps) {
-    const { children } = props;
+    const { children, stickyContent } = props;
     const { open } = useContext(ContextMenuContext) as ContextMenuContext;
 
     return (
@@ -51,7 +52,8 @@ function Content(props: ContentProps) {
                 <RadixContextMenu.Portal forceMount>
                     <RadixContextMenu.Content asChild className={styles.content}>
                         <motion.div animate="show" exit="hidden" initial="hidden">
-                            {children}
+                            {stickyContent}
+                            <ScrollArea className={styles.maxHeight}>{children}</ScrollArea>
                         </motion.div>
                     </RadixContextMenu.Content>
                 </RadixContextMenu.Portal>
@@ -202,7 +204,7 @@ function SubmenuContent(props: SubmenuContentProps) {
                             variants={animationVariants.fadeIn}
                         >
                             {stickyContent}
-                            <ScrollArea className={styles.submenuContent}>{children}</ScrollArea>
+                            <ScrollArea className={styles.maxHeight}>{children}</ScrollArea>
                         </motion.div>
                     </RadixContextMenu.SubContent>
                 </RadixContextMenu.Portal>

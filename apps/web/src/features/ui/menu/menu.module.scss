@@ -73,14 +73,14 @@
     border-top: var(--menu-divider-border-top);
 }
 
-.submenu-content {
-    max-height: 18rem;
-}
-
 .label {
     padding: var(--menu-item-padding);
     font-size: var(--menu-item-font-size);
     font-weight: var(--menu-item-font-weight);
     color: var(--menu-item-font-color);
     user-select: none;
+}
+
+.max-height {
+    max-height: 24rem;
 }

@@ -18,7 +18,7 @@ interface MenuContext {
 
 export const MenuContext = createContext<MenuContext | null>(null);
 
-interface MenuProps {
+export interface MenuProps {
     align?: 'start' | 'center' | 'end';
     children: ReactNode;
     closeOnSelect?: boolean;
@@ -59,10 +59,11 @@ export function Menu(props: MenuProps) {
 interface ContentProps {
     children: ReactNode;
     isInPortal?: boolean;
+    stickyContent?: ReactNode;
 }
 
 function Content(props: ContentProps) {
-    const { children, isInPortal = true } = props;
+    const { children, isInPortal = true, stickyContent } = props;
     const { align, open, side } = useContext(MenuContext) as MenuContext;
 
     return (
@@ -85,7 +86,8 @@ function Content(props: ContentProps) {
                                     initial="hidden"
                                     variants={animationVariants.fadeIn}
                                 >
-                                    <ScrollArea>{children}</ScrollArea>
+                                    {stickyContent}
+                                    <ScrollArea className={styles.maxHeight}>{children}</ScrollArea>
                                 </motion.div>
                             </DropdownMenu.Content>
                         </DropdownMenu.Portal>
@@ -104,6 +106,7 @@ function Content(props: ContentProps) {
                                 initial="hidden"
                                 variants={animationVariants.fadeIn}
                             >
+                                {stickyContent}
                                 <ScrollArea>{children}</ScrollArea>
                             </motion.div>
                         </DropdownMenu.Content>
@@ -238,10 +241,11 @@ function SubmenuTarget(props: SubmenuTargetProps) {
 
 interface SubmenuContentProps {
     children: ReactNode;
+    stickyContent?: ReactNode;
 }
 
 function SubmenuContent(props: SubmenuContentProps) {
-    const { children } = props;
+    const { children, stickyContent } = props;
     const { open, setOpen } = useContext(SubmenuContext) as SubmenuContext;
 
     return (
@@ -258,7 +262,8 @@ function SubmenuContent(props: SubmenuContentProps) {
                             initial="hidden"
                             variants={animationVariants.fadeIn}
                         >
-                            <ScrollArea className={styles.submenuContent}>{children}</ScrollArea>
+                            {stickyContent}
+                            <ScrollArea className={styles.maxHeight}>{children}</ScrollArea>
                         </motion.div>
                     </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
