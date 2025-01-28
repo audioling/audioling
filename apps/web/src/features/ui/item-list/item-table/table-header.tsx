@@ -88,10 +88,13 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
                 onDrop: (args) => {
                     const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
 
+                    const from = args.source.data.id as string[];
+                    const to = args.self.data.id as string[];
+
                     const newColumnOrder = dndUtils.reorderById({
                         edge: closestEdgeOfTarget,
-                        idFrom: args.source.data.id as string,
-                        idTo: args.self.data.id as string,
+                        idFrom: from[0],
+                        idTo: to[0],
                         list: columnOrder,
                     });
 
