@@ -39,7 +39,7 @@ export function standaloneCombinedColumn<T>(columnHelper: ColumnHelper<T>) {
 
             return <Skeleton height="100%" />;
         },
-        header: 'Combined',
+        header: 'Name',
         id: 'combined',
         size: itemListHelpers.table.numberToColumnSize(1, 'fr'),
     });

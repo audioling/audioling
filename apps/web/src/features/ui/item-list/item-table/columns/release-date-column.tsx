@@ -9,6 +9,8 @@ export function releaseDateColumn<T>(columnHelper: ColumnHelper<T>) {
         cell: ({ row, context }) => {
             const item = context.data || row.original;
 
+            if (!item) return <Skeleton height={20} width={100} />;
+
             if (typeof item === 'object' && item) {
                 if ('releaseDate' in item && typeof item.releaseDate === 'string') {
                     return (
@@ -19,7 +21,7 @@ export function releaseDateColumn<T>(columnHelper: ColumnHelper<T>) {
                 }
             }
 
-            return <Skeleton height={20} width={100} />;
+            return <div className={styles.cell}>&nbsp;</div>;
         },
         header: 'Release Date',
         id: 'releaseDate',

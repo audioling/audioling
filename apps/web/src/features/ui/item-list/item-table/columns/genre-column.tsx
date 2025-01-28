@@ -9,17 +9,23 @@ export function genreColumn<T>(columnHelper: ColumnHelper<T>) {
         cell: ({ row, context }) => {
             const item = context.data || row.original;
 
+            if (!item) {
+                return <Skeleton height={20} width={100} />;
+            }
+
             if (typeof item === 'object' && item) {
                 if ('genres' in item && Array.isArray(item.genres)) {
                     return (
-                        <Text isSecondary className={styles.cell}>
-                            {item.genres.join(', ')}
-                        </Text>
+                        <div className={styles.cell}>
+                            <Text isSecondary lineClamp={2}>
+                                {item.genres.map((genre) => genre.name).join(', ')}
+                            </Text>
+                        </div>
                     );
                 }
             }
 
-            return <Skeleton height={20} width={100} />;
+            return <div className={styles.cell}>&nbsp;</div>;
         },
         header: 'Genre',
         id: 'genre',

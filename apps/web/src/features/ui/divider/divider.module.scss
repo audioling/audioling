@@ -3,6 +3,16 @@
 .root {
     height: var(--layout-divider-height);
     background-color: var(--layout-divider-color);
+
+    &[data-orientation='horizontal'] {
+        width: 100%;
+        height: 1px;
+    }
+
+    &[data-orientation='vertical'] {
+        width: 1px;
+        height: 100%;
+    }
 }
 
 .top-xs {

@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
@@ -49,6 +49,7 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
     const canSelect = row?.getCanSelect();
     const isSelected = row?.getIsSelected();
     const isExpanded = row?.getIsExpanded();
+    const [isHovered, setIsHovered] = useState(false);
 
     const { data: list } = useQuery<ListQueryData>({
         enabled: false,
@@ -233,6 +234,7 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
                                 context: {
                                     ...context,
                                     data: item,
+                                    isHovered,
                                 },
                             })}
                         </Fragment>

@@ -10,6 +10,10 @@
     @include base.text-ellipsis;
 }
 
+.skeleton {
+    display: flex;
+}
+
 .image {
     display: block;
     height: 100%;

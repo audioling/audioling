@@ -11,6 +11,10 @@ export function nameColumn<T>(columnHelper: ColumnHelper<T>) {
             const item = context.data || row.original;
             const isPlaying = row.id === context?.currentTrack?._uniqueId;
 
+            if (!item) {
+                return <Skeleton height={20} width={100} />;
+            }
+
             if (typeof item === 'object' && item) {
                 if ('name' in item && typeof item.name === 'string') {
                     return (
@@ -25,7 +29,7 @@ export function nameColumn<T>(columnHelper: ColumnHelper<T>) {
                 }
             }
 
-            return <Skeleton height={20} width={100} />;
+            return <div className={styles.cell}>&nbsp;</div>;
         },
         header: 'Name',
         id: 'name',

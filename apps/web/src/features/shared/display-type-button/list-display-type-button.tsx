@@ -1,12 +1,15 @@
+import type { IconButtonProps } from '@/features/ui/icon-button/icon-button.tsx';
 import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import { ItemListDisplayType } from '@/features/ui/item-list/types.ts';
 
 interface ListDisplayTypeButtonProps {
+    buttonProps?: Partial<IconButtonProps>;
     displayType: ItemListDisplayType;
     onChangeDisplayType: (displayType: ItemListDisplayType) => void;
 }
 
 export function ListDisplayTypeButton({
+    buttonProps,
     displayType,
     onChangeDisplayType,
 }: ListDisplayTypeButtonProps) {
@@ -18,9 +21,10 @@ export function ListDisplayTypeButton({
                 size="lg"
                 tooltipProps={{
                     label: 'Grid',
-                    position: 'bottom',
+                    position: 'top',
                 }}
                 onClick={() => onChangeDisplayType(ItemListDisplayType.GRID)}
+                {...buttonProps}
             />
         );
     }
@@ -32,9 +36,10 @@ export function ListDisplayTypeButton({
             size="lg"
             tooltipProps={{
                 label: 'Table',
-                position: 'bottom',
+                position: 'top',
             }}
             onClick={() => onChangeDisplayType(ItemListDisplayType.TABLE)}
+            {...buttonProps}
         />
     );
 }

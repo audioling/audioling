@@ -9,17 +9,21 @@ export function lastPlayedColumn<T>(columnHelper: ColumnHelper<T>) {
         cell: ({ row, context }) => {
             const item = context.data || row.original;
 
+            if (!item) {
+                return <Skeleton height={20} width={100} />;
+            }
+
             if (typeof item === 'object' && item) {
-                if ('lastPlayed' in item && typeof item.lastPlayed === 'string') {
+                if ('userLastPlayedDate' in item && typeof item.userLastPlayedDate === 'string') {
                     return (
                         <Text isSecondary className={styles.cell}>
-                            {item.lastPlayed}
+                            {item.userLastPlayedDate}
                         </Text>
                     );
                 }
             }
 
-            return <Skeleton height={20} width={100} />;
+            return <div className={styles.cell}>&nbsp;</div>;
         },
         header: 'Last Played',
         id: 'lastPlayed',

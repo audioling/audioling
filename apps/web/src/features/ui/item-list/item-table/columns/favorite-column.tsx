@@ -5,43 +5,47 @@ import { AlbumArtistFavoriteButton } from '@/features/shared/favorites/album-art
 import { AlbumFavoriteButton } from '@/features/shared/favorites/album-favorite-button.tsx';
 import { TrackFavoriteButton } from '@/features/shared/favorites/track-favorite-button.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import styles from './column.module.scss';
 
 export function favoriteColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
         cell: ({ row, context }) => {
             const item = context.data || row.original;
 
-            if (!item) return <>&nbsp;</>;
+            if (!item) {
+                return <>&nbsp;</>;
+            }
+
+            if (
+                typeof item === 'object' &&
+                'userFavorite' in item &&
+                !item.userFavorite &&
+                !context.isHovered
+            ) {
+                return <>&nbsp;</>;
+            }
 
             switch (context.itemType) {
                 case LibraryItemType.ALBUM:
                     return (
-                        <div className={styles.cell}>
-                            <AlbumFavoriteButton
-                                buttonProps={{ size: 'md' }}
-                                data={item as AlbumItem}
-                            />
-                        </div>
+                        <AlbumFavoriteButton
+                            buttonProps={{ size: 'md' }}
+                            data={item as AlbumItem}
+                        />
                     );
                 case LibraryItemType.ALBUM_ARTIST:
                     return (
-                        <div className={styles.cell}>
-                            <AlbumArtistFavoriteButton
-                                buttonProps={{ size: 'md' }}
-                                data={item as AlbumArtistItem}
-                            />
-                        </div>
+                        <AlbumArtistFavoriteButton
+                            buttonProps={{ size: 'md' }}
+                            data={item as AlbumArtistItem}
+                        />
                     );
                 case LibraryItemType.TRACK:
                 case LibraryItemType.PLAYLIST_TRACK:
                     return (
-                        <div className={styles.cell}>
-                            <TrackFavoriteButton
-                                buttonProps={{ size: 'md' }}
-                                data={item as TrackItem}
-                            />
-                        </div>
+                        <TrackFavoriteButton
+                            buttonProps={{ size: 'md' }}
+                            data={item as TrackItem}
+                        />
                     );
             }
 
@@ -49,6 +53,6 @@ export function favoriteColumn<T>(columnHelper: ColumnHelper<T>) {
         },
         header: '',
         id: 'favorite',
-        size: itemListHelpers.table.numberToColumnSize(50, 'px'),
+        size: itemListHelpers.table.numberToColumnSize(30, 'px'),
     });
 }

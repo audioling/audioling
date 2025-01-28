@@ -8,6 +8,7 @@ declare module '@tanstack/react-table' {
         context: {
             currentTrack?: PlayQueueItem;
             data?: unknown;
+            isHovered?: boolean;
             itemType?: LibraryItemType;
             libraryId: string;
             listKey: string;

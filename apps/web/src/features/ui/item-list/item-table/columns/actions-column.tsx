@@ -1,29 +1,29 @@
 import type { ColumnHelper } from '@tanstack/react-table';
-import { Button } from '@/features/ui/button/button.tsx';
-import { Icon } from '@/features/ui/icon/icon.tsx';
+import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import styles from './column.module.scss';
 
 export function actionsColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
-        cell: () => {
+        cell: ({ row, context }) => {
+            const item = context.data || row.original;
+
+            if (!item || !context.isHovered) {
+                return <>&nbsp;</>;
+            }
+
             return (
-                <div className={styles.cell}>
-                    <Button
-                        isCompact
-                        variant="default"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            console.log('hello');
-                        }}
-                    >
-                        <Icon icon="ellipsisHorizontal" />
-                    </Button>
-                </div>
+                <IconButton
+                    isCompact
+                    icon="ellipsisHorizontal"
+                    variant="default"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                />
             );
         },
         header: '',
         id: 'actions',
-        size: itemListHelpers.table.numberToColumnSize(50, 'px'),
+        size: itemListHelpers.table.numberToColumnSize(30, 'px'),
     });
 }

@@ -5,6 +5,7 @@ import type { ColumnHelper, Row } from '@tanstack/react-table';
 import { nanoid } from 'nanoid';
 import { actionsColumn } from '@/features/ui/item-list/item-table/columns/actions-column.tsx';
 import { addToPlaylistColumn } from '@/features/ui/item-list/item-table/columns/add-to-playlist-column.tsx';
+import { albumArtistsColumn } from '@/features/ui/item-list/item-table/columns/album-artists.column.tsx';
 import { albumColumn } from '@/features/ui/item-list/item-table/columns/album-column.tsx';
 import { albumCountColumn } from '@/features/ui/item-list/item-table/columns/album-count-column.tsx';
 import { artistsColumn } from '@/features/ui/item-list/item-table/columns/artists-column.tsx';
@@ -29,6 +30,7 @@ export enum ItemListColumn {
     ACTIONS = 'actions',
     ADD_TO_PLAYLIST = 'addToPlaylist',
     ALBUM = 'album',
+    ALBUM_ARTISTS = 'albumArtists',
     ALBUM_COUNT = 'albumCount',
     ARTISTS = 'artists',
     DATE_ADDED = 'dateAdded',
@@ -67,6 +69,7 @@ const columnMap = {
     [ItemListColumn.NAME]: nameColumn,
     [ItemListColumn.STANDALONE_COMBINED]: standaloneCombinedColumn,
     [ItemListColumn.ALBUM]: albumColumn,
+    [ItemListColumn.ALBUM_ARTISTS]: albumArtistsColumn,
     [ItemListColumn.ARTISTS]: artistsColumn,
     [ItemListColumn.DATE_ADDED]: dateAddedColumn,
     [ItemListColumn.DURATION]: durationColumn,

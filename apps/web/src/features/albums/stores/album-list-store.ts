@@ -18,6 +18,8 @@ export const useAlbumListStoreBase = create<AlbumListStore>()(
                     ItemListColumn.IMAGE,
                     ItemListColumn.NAME,
                     ItemListColumn.ARTISTS,
+                    ItemListColumn.YEAR,
+                    ItemListColumn.FAVORITE,
                     ItemListColumn.ACTIONS,
                 ],
                 displayType: ItemListDisplayType.GRID,

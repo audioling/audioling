@@ -17,8 +17,9 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                 columnOrder: [
                     ItemListColumn.ROW_INDEX,
                     ItemListColumn.IMAGE,
-                    ItemListColumn.NAME,
-                    ItemListColumn.ARTISTS,
+                    ItemListColumn.STANDALONE_COMBINED,
+                    ItemListColumn.ALBUM,
+                    ItemListColumn.FAVORITE,
                     ItemListColumn.ACTIONS,
                 ],
                 displayType: ItemListDisplayType.TABLE,

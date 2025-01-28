@@ -2,6 +2,7 @@ import type { ColumnHelper, Row } from '@tanstack/react-table';
 import clsx from 'clsx';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { PlayerStatus, usePlayerStatus } from '@/features/player/stores/player-store.tsx';
+import { Icon } from '@/features/ui/icon/icon.tsx';
 import { SoundBars } from '@/features/ui/icon/sound-bars.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -10,7 +11,7 @@ import styles from './column.module.scss';
 export function rowIndexColumn<T>(columnHelper: ColumnHelper<T>) {
     return columnHelper.display({
         cell: Cell,
-        header: '#',
+        header: () => <Icon icon="hash" />,
         id: 'rowIndex',
         size: itemListHelpers.table.numberToColumnSize(60, 'px'),
     });

@@ -1,6 +1,5 @@
 import type { ColumnHelper } from '@tanstack/react-table';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './column.module.scss';
 
 export function ratingColumn<T>(columnHelper: ColumnHelper<T>) {
@@ -14,7 +13,7 @@ export function ratingColumn<T>(columnHelper: ColumnHelper<T>) {
                 }
             }
 
-            return <Skeleton height={20} width={100} />;
+            return <div className={styles.cell}>&nbsp;</div>;
         },
         header: 'Rating',
         id: 'rating',

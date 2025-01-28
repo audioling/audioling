@@ -4,15 +4,15 @@ import { useParams, useSearchParams } from 'react-router';
 import { getGetApiLibraryIdAlbumArtistsCountQueryKey } from '@/api/openapi-generated/album-artists/album-artists.ts';
 import { useArtistListStore } from '@/features/artists/stores/artist-list-store.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
-import { ListDisplayTypeButton } from '@/features/shared/display-type-button/list-display-type-button.tsx';
 import { ListFolderFilterButton } from '@/features/shared/list-folder-filter-button/list-folder-filter-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
-import { ListPaginationTypeButton } from '@/features/shared/list-pagination-type-button/list-pagination-type-button.tsx';
+import { ListOptionsButton } from '@/features/shared/list-options-button/list-options-button.tsx';
 import { ListSortByButton } from '@/features/shared/list-sort-by-button/list-sort-by-button.tsx';
 import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
 import { SearchButton } from '@/features/shared/search-button/search-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
+import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 
 export function AlbumArtistListHeader({ handleRefresh }: { handleRefresh: () => void }) {
     const { libraryId } = useParams() as { libraryId: string };
@@ -26,12 +26,13 @@ export function AlbumArtistListHeader({ handleRefresh }: { handleRefresh: () => 
     const displayType = useArtistListStore.use.displayType();
     const paginationType = useArtistListStore.use.paginationType();
     const folderId = useArtistListStore.use.folderId();
-
+    const columnOrder = useArtistListStore.use.columnOrder();
     const setSortBy = useArtistListStore.use.setSortBy();
     const setSortOrder = useArtistListStore.use.setSortOrder();
     const setDisplayType = useArtistListStore.use.setDisplayType();
     const setPaginationType = useArtistListStore.use.setPaginationType();
     const setFolderId = useArtistListStore.use.setFolderId();
+    const setColumnOrder = useArtistListStore.use.setColumnOrder();
 
     const [searchParams] = useSearchParams();
     const itemCountQueryKey = getGetApiLibraryIdAlbumArtistsCountQueryKey(libraryId, {
@@ -74,21 +75,32 @@ export function AlbumArtistListHeader({ handleRefresh }: { handleRefresh: () => 
                     </Group>
                 </ListHeader.Left>
                 <ListHeader.Right>
-                    <Group gap="xs" wrap="nowrap">
-                        <ListDisplayTypeButton
-                            displayType={displayType}
-                            onChangeDisplayType={setDisplayType}
-                        />
-                        <ListPaginationTypeButton
-                            paginationType={paginationType}
-                            onChangePaginationType={setPaginationType}
-                        />
-                    </Group>
+                    <ListOptionsButton
+                        columnOptions={artistColumnOptions}
+                        columns={columnOrder}
+                        displayType={displayType}
+                        paginationType={paginationType}
+                        onChangeColumns={setColumnOrder}
+                        onChangeDisplayType={setDisplayType}
+                        onChangePaginationType={setPaginationType}
+                    />
                 </ListHeader.Right>
             </ListHeader.Footer>
         </ListHeader>
     );
 }
+
+export const artistColumnOptions = [
+    { label: 'Row Index', value: ItemListColumn.ROW_INDEX },
+    { label: 'Name', value: ItemListColumn.NAME },
+    { label: 'Image', value: ItemListColumn.IMAGE },
+    { label: 'Album Count', value: ItemListColumn.ALBUM_COUNT },
+    { label: 'Track Count', value: ItemListColumn.TRACK_COUNT },
+    { label: 'Duration', value: ItemListColumn.DURATION },
+    { label: 'Rating', value: ItemListColumn.RATING },
+    { label: 'Favorite', value: ItemListColumn.FAVORITE },
+    { label: 'Actions', value: ItemListColumn.ACTIONS },
+];
 
 const artistSortLabelMap = {
     [ArtistListSortOptions.ALBUM_COUNT]: 'Album Count',
