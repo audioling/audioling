@@ -21,7 +21,7 @@ export interface AdapterArtist {
     id: string;
     imageUrl: string;
     name: string;
-    songCount: number | null;
+    trackCount: number | null;
     updatedDate: string | null;
     userFavorite: boolean;
     userFavoriteDate: string | null;

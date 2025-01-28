@@ -41,8 +41,8 @@ export interface AdapterAlbum {
     }[];
     releaseYear: number | null;
     size: number | null;
-    songCount: number | null;
     sortName: string;
+    trackCount: number | null;
     updatedDate: string | null;
     userFavorite: boolean;
     userFavoriteDate: string | null;

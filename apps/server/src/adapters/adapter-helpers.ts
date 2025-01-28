@@ -227,7 +227,7 @@ const sortBy = {
                 break;
             }
             case AlbumListSortOptions.TRACK_COUNT: {
-                value = orderBy(value, ['songCount'], [order]);
+                value = orderBy(value, ['trackCount'], [order]);
                 break;
             }
             case AlbumListSortOptions.YEAR: {

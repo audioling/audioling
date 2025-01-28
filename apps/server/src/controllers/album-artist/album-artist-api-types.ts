@@ -21,7 +21,7 @@ export const albumArtistAttributes = z.object({
     itemType: z.literal(LibraryItemType.ALBUM_ARTIST),
     libraryId: z.string(),
     name: z.string(),
-    songCount: z.number().nullable(),
+    trackCount: z.number().nullable(),
     updatedDate: z.string().nullable(),
     userFavorite: z.boolean(),
     userFavoriteDate: z.string().nullable(),
