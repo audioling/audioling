@@ -9,6 +9,14 @@ import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
+import type {
+    AlbumArtistItem,
+    AlbumItem,
+    GenreItem,
+    PlaylistItem,
+    TrackItem,
+} from '@/api/api-types.ts';
+import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
@@ -195,6 +203,88 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
         uniqueId,
     ]);
 
+    const handleRowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isSelfSelected = row.getIsSelected();
+
+        // If attempting to drag a row that is not selected, select it
+        if (!isSelfSelected) {
+            table.resetRowSelection();
+            row.toggleSelected(true);
+        }
+
+        const ids: string[] = [];
+        const items: unknown[] = [];
+
+        if (isSelfSelected) {
+            table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original)
+                .filter((id): id is string => id !== undefined)
+                .forEach((id) => {
+                    ids.push(id);
+                    items.push(itemData?.[list?.[id] as string] as string) as T;
+                });
+        } else {
+            ids.push(list?.[uniqueId as string] as string);
+            items.push(itemData?.[list?.[uniqueId as string] as string] as T);
+        }
+
+        switch (itemType) {
+            case LibraryItemType.ALBUM:
+                ContextMenuController.call({
+                    cmd: {
+                        items: items as AlbumItem[],
+                        type: 'album',
+                    },
+                    event: e,
+                });
+                break;
+            case LibraryItemType.ALBUM_ARTIST:
+                ContextMenuController.call({
+                    cmd: {
+                        items: items as AlbumArtistItem[],
+                        type: 'albumArtist',
+                    },
+                    event: e,
+                });
+                break;
+            case LibraryItemType.ARTIST:
+                break;
+            case LibraryItemType.GENRE:
+                ContextMenuController.call({
+                    cmd: {
+                        items: items as GenreItem[],
+                        type: 'genre',
+                    },
+                    event: e,
+                });
+                break;
+            case LibraryItemType.PLAYLIST:
+                ContextMenuController.call({
+                    cmd: {
+                        items: items as PlaylistItem[],
+                        type: 'playlist',
+                    },
+                    event: e,
+                });
+                break;
+            case LibraryItemType.TRACK:
+                ContextMenuController.call({
+                    cmd: {
+                        items: items as TrackItem[],
+                        type: 'track',
+                    },
+                    event: e,
+                });
+                break;
+        }
+
+        onRowContextMenu?.(e, row, table, []);
+    };
+
     if (context.componentProps.enableStickyHeader && index === 0) {
         return (
             <ItemTableHeader
@@ -223,8 +313,10 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
                 })}
                 style={context.columnStyles?.styles}
                 onClick={(e) => onRowClick?.(e, row, table)}
-                onContextMenu={(e) => onRowContextMenu?.(e, row, table)}
+                onContextMenu={handleRowContextMenu}
                 onDoubleClick={(e) => onRowDoubleClick?.(e, row, table)}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
             >
                 {row?.getVisibleCells()?.map((cell) => {
                     return (

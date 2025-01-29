@@ -45,6 +45,7 @@ interface TableRowProps<T> {
         e: MouseEvent<HTMLDivElement>,
         row: Row<T | undefined>,
         table: Table<T | undefined>,
+        selectedItems: unknown[],
     ) => void;
     onRowDoubleClick?: (
         e: MouseEvent<HTMLDivElement>,
@@ -241,7 +242,7 @@ const InnerTableRow = <T,>(props: TableRowProps<T>) => {
                 })}
                 style={context.columnStyles?.styles}
                 onClick={(e) => onRowClick?.(e, row, table)}
-                onContextMenu={(e) => onRowContextMenu?.(e, row, table)}
+                onContextMenu={(e) => onRowContextMenu?.(e, row, table, [])}
                 onDoubleClick={(e) => onRowDoubleClick?.(e, row, table)}
             >
                 {row?.getVisibleCells()?.map((cell) => {

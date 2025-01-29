@@ -91,6 +91,7 @@ export interface ItemTableItemProps<T> {
         e: MouseEvent<HTMLDivElement>,
         row: Row<T | undefined>,
         table: Table<T | undefined>,
+        selectedItems: unknown[],
     ) => void;
     onRowDoubleClick?: (
         e: MouseEvent<HTMLDivElement>,
@@ -139,6 +140,7 @@ export interface ItemTableProps<T> {
         e: MouseEvent<HTMLDivElement>,
         row: Row<T | undefined>,
         table: Table<T | undefined>,
+        selectedItems: unknown[],
     ) => void;
     onRowDoubleClick?: (
         e: MouseEvent<HTMLDivElement>,

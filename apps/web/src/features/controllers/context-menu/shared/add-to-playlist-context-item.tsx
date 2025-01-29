@@ -1,19 +1,22 @@
 import { Suspense, useState } from 'react';
 import { ListSortOrder, PlaylistListSortOptions } from '@repo/shared-types';
-import type { Table } from '@tanstack/react-table';
 import { useParams } from 'react-router';
-import type { PlayQueueItem } from '@/api/api-types.ts';
+import type { TrackItem } from '@/api/api-types.ts';
 import { useGetApiLibraryIdPlaylistsSuspense } from '@/api/openapi-generated/playlists/playlists.ts';
 import { AddToPlaylistModal } from '@/features/playlists/add-to-playlist/add-to-playlist-modal.tsx';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 
-interface QueueAddToPlaylistProps {
-    table: Table<PlayQueueItem | undefined>;
+interface AddToPlaylistContextItemProps {
+    albums?: string[];
+    artists?: string[];
+    genres?: string[];
+    playlists?: string[];
+    tracks?: TrackItem[];
 }
 
-export function QueueAddToPlaylist({ table }: QueueAddToPlaylistProps) {
+export function AddToPlaylistContextItem(props: AddToPlaylistContextItemProps) {
     const { libraryId } = useParams() as { libraryId: string };
 
     const [search, setSearch] = useState('');
@@ -54,7 +57,11 @@ export function QueueAddToPlaylist({ table }: QueueAddToPlaylistProps) {
                             </ContextMenu.Item>
                         }
                     >
-                        <PlaylistItems libraryId={libraryId} search={search} table={table} />
+                        <ContextMenuPlaylistItems
+                            libraryId={libraryId}
+                            search={search}
+                            {...props}
+                        />
                     </Suspense>
                 </ContextMenu.SubmenuContent>
             </ContextMenu.Submenu>
@@ -62,21 +69,29 @@ export function QueueAddToPlaylist({ table }: QueueAddToPlaylistProps) {
     );
 }
 
-function PlaylistItems({
+export function ContextMenuPlaylistItems({
     libraryId,
     search,
-    table,
+    albums,
+    artists,
+    genres,
+    playlists,
+    tracks,
 }: {
+    albums?: string[];
+    artists?: string[];
+    genres?: string[];
     libraryId: string;
+    playlists?: string[];
     search: string;
-    table: Table<PlayQueueItem | undefined>;
+    tracks?: TrackItem[];
 }) {
-    const { data: playlists } = useGetApiLibraryIdPlaylistsSuspense(libraryId, {
+    const { data: playlistList } = useGetApiLibraryIdPlaylistsSuspense(libraryId, {
         sortBy: PlaylistListSortOptions.NAME,
         sortOrder: ListSortOrder.ASC,
     });
 
-    const filteredPlaylists = playlists.data.filter((playlist) =>
+    const filteredPlaylists = playlistList.data.filter((playlist) =>
         playlist.name.toLowerCase().includes(search.toLowerCase()),
     );
 
@@ -85,15 +100,14 @@ function PlaylistItems({
     }
 
     const handleSelect = (playlistId: string) => {
-        const items = table
-            .getSelectedRowModel()
-            .rows.map((row) => row.original)
-            .filter((item): item is PlayQueueItem => item !== undefined);
-
         AddToPlaylistModal.call({
+            albums,
+            artists,
+            genres,
             libraryId,
             playlistId,
-            tracks: items,
+            playlists,
+            tracks,
         });
     };
 
