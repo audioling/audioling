@@ -64,6 +64,7 @@ function Content(props: ContentProps) {
 
 interface ItemProps {
     children: ReactNode;
+    className?: string;
     disabled?: boolean;
     isSelected?: boolean;
     leftIcon?: keyof typeof AppIcon;
@@ -72,11 +73,11 @@ interface ItemProps {
 }
 
 function Item(props: ItemProps) {
-    const { children, disabled, leftIcon, onSelect, rightIcon, isSelected } = props;
+    const { children, className, disabled, leftIcon, onSelect, rightIcon, isSelected } = props;
 
     return (
         <RadixContextMenu.Item
-            className={clsx(styles.item, {
+            className={clsx(styles.item, className, {
                 [styles.selected]: isSelected,
                 [styles.disabled]: disabled,
             })}
