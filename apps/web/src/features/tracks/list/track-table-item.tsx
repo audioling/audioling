@@ -124,7 +124,14 @@ const InnerTrackTableItem = (props: ItemTableItemProps<TrackItem>) => {
                 })}
                 style={context.columnStyles?.styles}
                 onClick={(e) => onRowClick?.(e, row, table)}
-                onContextMenu={(e) => onRowContextMenu?.(e, row, table)}
+                onContextMenu={(e) =>
+                    onRowContextMenu?.(
+                        e,
+                        row,
+                        table,
+                        table.getSelectedRowModel().rows.map((r) => r.original),
+                    )
+                }
                 onDoubleClick={(e) => onRowDoubleClick?.(e, row, table)}
             >
                 {row?.getVisibleCells()?.map((cell) => {
