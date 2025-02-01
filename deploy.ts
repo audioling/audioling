@@ -27,8 +27,6 @@ async function renameSidecar() {
                 console.error('Failed to determine platform target triple');
             }
 
-            fs.mkdirSync(`./apps/web/src-tauri/target/external`, { recursive: true });
-
             fs.renameSync(
                 `./apps/server/dist/audioling-server${extension}`,
                 `./apps/web/src-tauri/target/external/audioling-server-${targetTriple}${extension}`,

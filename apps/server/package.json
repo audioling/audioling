@@ -7,7 +7,7 @@
     "author": "",
     "type": "module",
     "scripts": {
-        "build": "tsc -p tsconfig.cjs.json && tsc-alias -p tsconfig.cjs.json",
+        "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
         "build:desktop": "bun build --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server",
         "db:init": "pwsh -c 'Remove-Item ./app.db' && pnpm run db:push",
         "dev": "cross-env NODE_ENV=development APP_LOG_LEVEL=debug bun --watch run ./src/index.ts",

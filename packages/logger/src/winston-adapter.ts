@@ -1,15 +1,15 @@
 import { createLogger, format, transports } from 'winston';
 import { type CreateLoggerInstanceOptions, type LoggerInstance } from './types.js';
 
-const { combine, timestamp, json, printf } = format;
+const { combine, timestamp, printf } = format;
 
-const errorFilter = format((info) => {
-    return info.level === 'error' ? info : false;
-});
+// const errorFilter = format((info) => {
+//     return info.level === 'error' ? info : false;
+// });
 
-const infoFilter = format((info) => {
-    return info.level === 'info' ? info : false;
-});
+// const infoFilter = format((info) => {
+//     return info.level === 'info' ? info : false;
+// });
 
 const logFormat = printf((props) => {
     return `${props.timestamp} [${props.level.toUpperCase().padEnd(5)}]: ${props.message}`;
@@ -29,19 +29,19 @@ export const createWinstonLogger = (options: CreateLoggerInstanceOptions) => {
         },
         transports: [
             new transports.Console(),
-            new transports.File({
-                filename: 'combined.log',
-            }),
-            new transports.File({
-                filename: 'app-error.log',
-                format: combine(errorFilter(), timestamp(), json()),
-                level: 'error',
-            }),
-            new transports.File({
-                filename: 'app-info.log',
-                format: combine(infoFilter(), timestamp(), json()),
-                level: 'info',
-            }),
+            // new transports.File({
+            //     filename: 'combined.log',
+            // }),
+            // new transports.File({
+            //     filename: 'app-error.log',
+            //     format: combine(errorFilter(), timestamp(), json()),
+            //     level: 'error',
+            // }),
+            // new transports.File({
+            //     filename: 'app-info.log',
+            //     format: combine(infoFilter(), timestamp(), json()),
+            //     level: 'info',
+            // }),
         ],
     });
 
