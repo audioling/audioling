@@ -20,12 +20,12 @@
         "@paralleldrive/cuid2": "^2.2.2",
         "@repo/logger": "workspace:*",
         "@repo/shared-types": "workspace:*",
-        "@scalar/hono-api-reference": "^0.5.165",
+        "@scalar/hono-api-reference": "^0.5.170",
         "axios": "^1.7.9",
         "bcryptjs": "^2.4.3",
         "configstore": "^7.0.0",
         "dayjs": "^1.11.13",
-        "hono": "^4.6.14",
+        "hono": "^4.6.20",
         "jsonata": "^2.0.6",
         "lodash": "^4.17.21",
         "md5": "^2.3.0",
@@ -38,11 +38,11 @@
         "@repo/eslint-config-internal": "workspace:*",
         "@types/bcryptjs": "^2.4.6",
         "@types/configstore": "^6.0.2",
-        "@types/lodash": "^4.17.13",
+        "@types/lodash": "^4.17.15",
         "@types/md5": "^2.3.5",
-        "@types/node": "^22.10.2",
+        "@types/node": "^22.13.0",
         "cross-env": "^7.0.3",
         "tsc-alias": "^1.8.10",
-        "typescript": "^5.7.2"
+        "typescript": "^5.7.3"
     }
 }
