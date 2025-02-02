@@ -40,6 +40,7 @@ import {
 } from '@/api/openapi-generated/tracks/tracks.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
+import { debounce } from '@/utils/debounce.ts';
 import { randomString } from '@/utils/random-string.ts';
 import { safeStringify } from '@/utils/stringify.ts';
 
@@ -435,7 +436,9 @@ export function useInfiniteListData(args: {
         [dataQueryKey, pagination.itemsPerPage, params, query, queryClient],
     );
 
-    return { data, handleRangeChanged, setData };
+    const debouncedHandleRangeChanged = debounce(handleRangeChanged, 100);
+
+    return { data, handleRangeChanged: debouncedHandleRangeChanged, setData };
 }
 
 export type ItemListInternalReducers = {
