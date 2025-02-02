@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import path from 'path';
 import type { LogLevel } from '@repo/logger';
 import { createWinstonLogger, initLogger } from '@repo/logger';
@@ -28,9 +29,10 @@ const db = initDatabase({ idFactory });
 export const imageWorker =
     Bun.env.NODE_ENV === 'development'
         ? new Worker(new URL('./image-worker.ts', import.meta.url), {
+              smol: true,
               type: 'module',
-          })
-        : new Worker('./image-worker.ts');
+          } as any)
+        : new Worker('./image-worker.ts', { smol: true } as any);
 
 initApplication({
     config,

@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import type { LibraryItemType } from '@repo/shared-types';
 import type { AdapterApi } from '@/adapters/types/index.js';
@@ -25,13 +25,13 @@ export const initImageService = (modules: { db: AppDatabase; imageModule: ImageM
             );
 
             if (cache) {
-                if (fs.existsSync(imagePath)) {
-                    const { buffer } = await imageModule.getBufferFromPath(imagePath);
+                if (await fs.exists(imagePath)) {
+                    const buffer = await imageModule.getBufferFromPath(imagePath);
                     return buffer;
                 }
             }
 
-            const { buffer } = await imageModule.getBufferFromUrl(adapter._getCoverArtUrl(args));
+            const buffer = await imageModule.getBufferFromUrl(adapter._getCoverArtUrl(args));
             // const avifBuffer = await imageModule.convertToAvif(buffer);
 
             // Cache image in the worker
@@ -39,8 +39,6 @@ export const initImageService = (modules: { db: AppDatabase; imageModule: ImageM
                 payload: { buffer: buffer, imagePath, shouldCache: cache },
                 type: 'processImage',
             });
-
-            // cacheImage(imagePath, buffer);
 
             return buffer;
         },

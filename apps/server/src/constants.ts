@@ -25,7 +25,7 @@ const ENV = {
     PRODUCTION: 'production',
 };
 
-const NODE_ENV = process.env.NODE_ENV || ENV.DEVELOPMENT;
+const NODE_ENV = Bun.env.NODE_ENV || ENV.DEVELOPMENT;
 
 export const CONSTANTS = {
     APP_DIR,

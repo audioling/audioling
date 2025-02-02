@@ -39,9 +39,54 @@ type ApplicationOptions = {
     };
 };
 
+const initGarbageCollection = () => {
+    let lastActivityTimestamp = Date.now();
+    let gcInterval: Timer | null = null;
+    const IDLE_TIMEOUT = 10 * 60 * 1000;
+
+    const startGcInterval = () => {
+        if (gcInterval) return;
+        gcInterval = setInterval(
+            () => {
+                Bun.gc(true);
+            },
+            1 * 60 * 1000,
+        );
+    };
+
+    const stopGcInterval = () => {
+        if (gcInterval) {
+            clearInterval(gcInterval);
+            gcInterval = null;
+        }
+    };
+
+    setInterval(
+        () => {
+            const isIdle = Date.now() - lastActivityTimestamp > IDLE_TIMEOUT;
+            if (isIdle) {
+                stopGcInterval();
+            } else {
+                startGcInterval();
+            }
+        },
+        5 * 60 * 1000,
+    );
+
+    startGcInterval();
+
+    return {
+        updateLastActivity: () => {
+            lastActivityTimestamp = Date.now();
+        },
+    };
+};
+
 export const initApplication = async (options: ApplicationOptions) => {
     const { modules } = options;
     const { db, idFactory, imageModule, queryModule } = modules;
+
+    const gc = initGarbageCollection();
 
     const config = initConfig({
         name: CONSTANTS.APP_NAME,
@@ -65,11 +110,17 @@ export const initApplication = async (options: ApplicationOptions) => {
 
     app.use('/*', authMiddleware(config.get('tokenSecret'), { db }));
 
+    app.use('/*', async (_c, next) => {
+        gc.updateLastActivity();
+        await next();
+    });
+
     app.use(loggerMiddleware());
 
     const server = Bun.serve({
         fetch: app.fetch,
         idleTimeout: 60,
+        lowMemoryMode: true,
         port: config.get('port') || 4544,
     });
 

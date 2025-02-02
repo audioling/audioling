@@ -21,19 +21,10 @@ export const initImageModule = () => {
         //     return base64ThumbHash;
         // },
         getBufferFromPath: async (path: string) => {
-            const imageBuffer = await fs.readFile(path);
-            return {
-                arrayBuffer: imageBuffer,
-                buffer: Buffer.from(imageBuffer),
-            };
+            return Buffer.from(await fs.readFile(path));
         },
         getBufferFromUrl: async (url: string) => {
-            const imageResponse = await fetch(url);
-            const imageBuffer = await imageResponse.arrayBuffer();
-            return {
-                arrayBuffer: imageBuffer,
-                buffer: Buffer.from(imageBuffer),
-            };
+            return Buffer.from(await (await fetch(url)).arrayBuffer());
         },
         getCacheLocation: (id: string, libraryId: string, mimetype: string) => {
             return path.join(CONSTANTS.IMAGE_DIR(libraryId), `${id}.${mimetype}`);
