@@ -16,7 +16,7 @@ import {
     useGetApiLibraryIdPlaylistsIdTracksSuspense,
     usePostApiLibraryIdPlaylistsIdTracksAdd,
 } from '@/api/openapi-generated/playlists/playlists.ts';
-import { TrackTableItem } from '@/features/tracks/list/track-table-item.tsx';
+import { ListTableItem } from '@/features/shared/list/list-table-item.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
@@ -170,12 +170,16 @@ export function AddToPlaylistForm({
                 libraryId,
             },
             {
-                onSuccess: () => {
-                    queryClient.invalidateQueries({
+                onSuccess: async () => {
+                    await queryClient.invalidateQueries({
                         queryKey: [`/api/${libraryId}/playlists`],
                     });
 
-                    queryClient.invalidateQueries({
+                    await queryClient.invalidateQueries({
+                        queryKey: [`/api/${libraryId}/playlists/${playlistId}`],
+                    });
+
+                    await queryClient.invalidateQueries({
                         queryKey: [`/api/${libraryId}/playlists/${playlistId}/tracks`],
                     });
 
@@ -190,7 +194,7 @@ export function AddToPlaylistForm({
         ItemListColumn.IMAGE,
         ItemListColumn.ADD_TO_PLAYLIST,
     ];
-    const { columns } = useItemTable<TrackItem>(columnOrder, () => {});
+    const { columns } = useItemTable(columnOrder);
 
     const duplicateCount = processedTracks.filter((t) => t.name.includes('__duplicate')).length;
     const duplicateSkippedCount = processedTracks.filter((t) =>
@@ -219,15 +223,13 @@ export function AddToPlaylistForm({
                 <div style={{ height: '250px' }}>
                     <ItemTable
                         disableAutoScroll
-                        ItemComponent={TrackTableItem}
+                        ItemComponent={ListTableItem}
                         columnOrder={columnOrder}
                         columns={columns}
                         context={{ libraryId, listKey: 'add-to-playlist' }}
                         data={processedTracks}
+                        enableDragItem={false}
                         enableHeader={false}
-                        enableMultiRowSelection={false}
-                        enableRowDrag={false}
-                        enableRowSelection={false}
                         itemCount={processedTracks.length}
                         itemType={LibraryItemType.TRACK}
                         onChangeColumnOrder={() => {}}

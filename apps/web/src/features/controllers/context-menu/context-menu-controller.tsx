@@ -1,7 +1,6 @@
 import type { MouseEvent } from 'react';
 import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import type { Table } from '@tanstack/react-table';
 import { createCallable } from 'react-call';
 import { useParams } from 'react-router';
 import type {
@@ -73,7 +72,7 @@ export const ContextMenuController = createCallable<ContextMenuControllerProps, 
                         }}
                     />
                 </ContextMenu.Target>
-                {cmd.type === 'queue' && <QueueContextMenu table={cmd.table} />}
+                {cmd.type === 'queue' && <QueueContextMenu {...cmd} />}
                 {cmd.type === 'album' && <AlbumContextMenu {...cmd} />}
                 {cmd.type === 'albumArtist' && <AlbumArtistContextMenu {...cmd} />}
                 {cmd.type === 'genre' && <GenreContextMenu {...cmd} />}
@@ -93,7 +92,7 @@ export type ContextMenuCommand =
     | PlaylistContextMenuProps;
 
 export type QueueContextMenuProps = {
-    table: Table<PlayQueueItem | undefined>;
+    items: PlayQueueItem[];
     type: 'queue';
 };
 

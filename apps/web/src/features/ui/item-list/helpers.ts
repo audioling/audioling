@@ -1,7 +1,6 @@
-import type { MutableRefObject } from 'react';
+import { type MutableRefObject } from 'react';
 import type { LibraryItemType } from '@repo/shared-types';
 import { type QueryClient, type QueryKey } from '@tanstack/react-query';
-import type { ColumnHelper, Row } from '@tanstack/react-table';
 import { nanoid } from 'nanoid';
 import { actionsColumn } from '@/features/ui/item-list/item-table/columns/actions-column.tsx';
 import { addToPlaylistColumn } from '@/features/ui/item-list/item-table/columns/add-to-playlist-column.tsx';
@@ -24,6 +23,7 @@ import { standaloneCombinedColumn } from '@/features/ui/item-list/item-table/col
 import { trackCountColumn } from '@/features/ui/item-list/item-table/columns/track-count-column.tsx';
 import { trackNumberColumn } from '@/features/ui/item-list/item-table/columns/track-number-column.tsx';
 import { yearColumn } from '@/features/ui/item-list/item-table/columns/year-column.tsx';
+import type { TableContext } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { ItemListPaginationState } from '@/features/ui/item-list/types.ts';
 
 export enum ItemListColumn {
@@ -50,21 +50,16 @@ export enum ItemListColumn {
     YEAR = 'year',
 }
 
-export type ItemListColumnOrder = (typeof ItemListColumn)[keyof typeof ItemListColumn][];
+export type ItemListColumnDefinition = {
+    cell: React.ComponentType<ItemListCellProps>;
+    header: React.ComponentType;
+    id: ItemListColumn;
+    size: number;
+};
 
-export interface InfiniteItemListProps<T> {
-    itemCount: number;
-    libraryId: string;
-    listKey: string;
-    pagination: ItemListPaginationState;
-    params: T;
-}
+export type ItemListColumnDefinitions = ItemListColumnDefinition[];
 
-export interface PaginatedItemListProps<T> extends InfiniteItemListProps<T> {
-    setPagination: (pagination: ItemListPaginationState) => void;
-}
-
-const columnMap = {
+export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDefinition>> = {
     [ItemListColumn.ROW_INDEX]: rowIndexColumn,
     [ItemListColumn.NAME]: nameColumn,
     [ItemListColumn.STANDALONE_COMBINED]: standaloneCombinedColumn,
@@ -87,6 +82,34 @@ const columnMap = {
     [ItemListColumn.ACTIONS]: actionsColumn,
     [ItemListColumn.ADD_TO_PLAYLIST]: addToPlaylistColumn,
 };
+
+export interface ItemListCellProps {
+    context?: TableContext;
+    index: number;
+    isHovered?: boolean;
+    item: unknown | undefined;
+    itemType: LibraryItemType;
+    startIndex?: number;
+}
+
+export type ItemListColumnOrder = (typeof ItemListColumn)[keyof typeof ItemListColumn][];
+
+export interface InfiniteItemListProps<T> {
+    itemCount: number;
+    libraryId: string;
+    listKey: string;
+    pagination: ItemListPaginationState;
+    params: T;
+}
+
+export interface PaginatedItemListProps<T> extends InfiniteItemListProps<T> {
+    setPagination: (pagination: ItemListPaginationState) => void;
+}
+
+export function numberToColumnSize(size: number, unit: 'px' | 'fr') {
+    if (unit === 'px') return size;
+    return size + 100000;
+}
 
 export const itemListHelpers = {
     generateListId(libraryId: string, pathname: string) {
@@ -112,23 +135,13 @@ export const itemListHelpers = {
 
         return pageMap;
     },
-    getPagesToLoad(
-        queryClient: QueryClient,
-        args: {
-            endIndex: number;
-            listQueryKey: QueryKey;
-            loadedPages: MutableRefObject<Record<number, boolean>>;
-            pageSize: number;
-            startIndex: number;
-        },
-    ): number[] {
-        const { endIndex, loadedPages, listQueryKey, pageSize, startIndex } = args;
-
-        const listQueryState = queryClient.getQueryState(listQueryKey);
-
-        if (!listQueryState || !listQueryState.data || listQueryState.isInvalidated) {
-            loadedPages.current = {};
-        }
+    getPagesToLoad(args: {
+        endIndex: number;
+        loadedPages: MutableRefObject<Record<number, boolean>>;
+        pageSize: number;
+        startIndex: number;
+    }): number[] {
+        const { endIndex, loadedPages, pageSize, startIndex } = args;
 
         // Calculate the start and end pages for the visible range
         const startPage = Math.floor(startIndex / pageSize);
@@ -148,22 +161,26 @@ export const itemListHelpers = {
     },
     table: {
         columnSizeToStyle(columnSize: number) {
-            if (columnSize > 100000) return `${columnSize - 100000}fr`;
+            if (columnSize > 100000) return `minmax(0px, ${columnSize - 100000}fr)`;
             return `${columnSize}px`;
         },
-        getColumns<T>(columnHelper: ColumnHelper<T>, columns: ItemListColumn[]) {
+        getColumns(columnOrder: ItemListColumnOrder) {
             const listColumns = [];
 
-            for (const column of columns) {
-                listColumns.push(columnMap[column](columnHelper));
+            for (const column of columnOrder) {
+                listColumns.push(itemListColumnMap[column]);
             }
 
             return listColumns;
         },
-        getRowRange<T>(rows: Row<T>[], currentIndex: number, selectedIndex: number): Row<T>[] {
+        getItemRange<T>(
+            items: (T | undefined)[],
+            currentIndex: number,
+            selectedIndex: number,
+        ): (T | undefined)[] {
             const rangeStart = selectedIndex > currentIndex ? currentIndex : selectedIndex;
             const rangeEnd = rangeStart === currentIndex ? selectedIndex : currentIndex;
-            return rows.slice(rangeStart, rangeEnd + 1);
+            return items.slice(rangeStart, rangeEnd + 1);
         },
         numberToColumnSize(size: number, unit: 'px' | 'fr') {
             if (unit === 'px') return size;

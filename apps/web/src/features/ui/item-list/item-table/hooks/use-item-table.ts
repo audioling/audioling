@@ -1,23 +1,22 @@
 import { useMemo } from 'react';
-import type { DisplayColumnDef } from '@tanstack/react-table';
-import { createColumnHelper } from '@tanstack/react-table';
-import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
-import { type ItemListColumnOrder, itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { ItemListColumnDefinitions } from '@/features/ui/item-list/helpers.ts';
+import { itemListColumnMap, type ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 
-export function useItemTable<T>(
-    columnOrder: ItemListColumnOrder,
-    setColumnOrder: (columnOrder: ItemListColumnOrder) => void,
-) {
-    const columnHelper = createColumnHelper<T | undefined>();
+export function useItemTable(columnOrder: ItemListColumnOrder) {
+    const columns = useMemo(() => {
+        const listColumns: ItemListColumnDefinitions = [];
 
-    const columns: DisplayColumnDef<T | undefined>[] = useMemo(
-        () => itemListHelpers.table.getColumns(columnHelper, columnOrder as ItemListColumn[]),
-        [columnHelper, columnOrder],
-    );
+        for (const column of columnOrder) {
+            const columnDefinition = itemListColumnMap[column];
+            if (columnDefinition) {
+                listColumns.push(columnDefinition);
+            }
+        }
+
+        return listColumns;
+    }, [columnOrder]);
 
     return {
-        columnOrder,
         columns,
-        setColumnOrder,
     };
 }

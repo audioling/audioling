@@ -7,19 +7,14 @@ import { AlbumArtistCard } from '@/features/artists/components/album-artist-card
 import { PlaylistCard } from '@/features/playlists/components/playlist-card.tsx';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { InfiniteGridItemProps } from '@/features/ui/item-list/item-grid/item-grid.tsx';
-import type { ItemQueryData, ListQueryData } from '@/hooks/use-list.ts';
+import type { ItemQueryData } from '@/hooks/use-list.ts';
 
 export function ListGridServerItem(props: InfiniteGridItemProps<string>) {
-    return <MemoizedListGridServerItem {...props} />;
+    return <InnerContent {...props} />;
 }
 
 function InnerContent(props: InfiniteGridItemProps<string>) {
-    const { context, data: uniqueId, isExpanded, itemType } = props;
-
-    const { data: list } = useQuery<ListQueryData>({
-        enabled: false,
-        queryKey: itemListHelpers.getListQueryKey(context.libraryId, context.listKey, itemType),
-    });
+    const { context, data: id, isExpanded, itemType } = props;
 
     const { data: itemData } = useQuery<ItemQueryData>({
         enabled: false,
@@ -30,11 +25,11 @@ function InnerContent(props: InfiniteGridItemProps<string>) {
 
     switch (itemType) {
         case LibraryItemType.ALBUM_ARTIST:
-            if (!uniqueId || !list) {
+            if (!id) {
                 return <AlbumArtistCard componentState="loading" metadataLines={0} />;
             }
 
-            data = itemData?.[list?.[uniqueId]] as AlbumArtistItem | undefined;
+            data = itemData?.[id] as AlbumArtistItem | undefined;
 
             if (!data) {
                 return <AlbumArtistCard componentState="loading" metadataLines={0} />;
@@ -44,17 +39,17 @@ function InnerContent(props: InfiniteGridItemProps<string>) {
                 <AlbumArtistCard
                     albumArtist={data}
                     componentState="loaded"
-                    id={uniqueId}
+                    id={id}
                     libraryId={context.libraryId}
                     metadataLines={0}
                 />
             );
         case LibraryItemType.ALBUM:
-            if (!uniqueId || !list) {
+            if (!id) {
                 return <AlbumCard componentState="loading" metadataLines={1} />;
             }
 
-            data = itemData?.[list?.[uniqueId]] as AlbumItem | undefined;
+            data = itemData?.[id] as AlbumItem | undefined;
 
             if (!data) {
                 return <AlbumCard componentState="loading" metadataLines={1} />;
@@ -80,11 +75,11 @@ function InnerContent(props: InfiniteGridItemProps<string>) {
                 />
             );
         case LibraryItemType.PLAYLIST:
-            if (!uniqueId || !list) {
+            if (!id) {
                 return <PlaylistCard componentState="loading" metadataLines={0} />;
             }
 
-            data = itemData?.[list?.[uniqueId]] as PlaylistItem | undefined;
+            data = itemData?.[id] as PlaylistItem | undefined;
 
             if (!data) {
                 return <PlaylistCard componentState="loading" metadataLines={0} />;
@@ -93,7 +88,7 @@ function InnerContent(props: InfiniteGridItemProps<string>) {
             return (
                 <PlaylistCard
                     componentState="loaded"
-                    id={uniqueId}
+                    id={id}
                     itemType={LibraryItemType.PLAYLIST}
                     libraryId={context.libraryId}
                     metadataLines={0}
@@ -105,6 +100,6 @@ function InnerContent(props: InfiniteGridItemProps<string>) {
     }
 }
 
-function MemoizedListGridServerItem(props: InfiniteGridItemProps<string>) {
-    return <InnerContent {...props} />;
-}
+// function MemoizedListGridServerItem(props: InfiniteGridItemProps<string>) {
+//     return <InnerContent {...props} />;
+// }

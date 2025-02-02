@@ -13,25 +13,26 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
+import type { PlayQueueItem } from '@/api/api-types.ts';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
 import type { ItemTableItemProps } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './list-item.module.scss';
 
-export function ListTableItem<T>(props: ItemTableItemProps<T, T>) {
+export function PlayQueueTableItem(props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) {
     return <InnerContent {...props} />;
 }
 
-const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
+const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) => {
     const {
         columnStyles,
+        // columnOrder,
         columns,
+        // enableExpanded,
         index,
         data: itemData,
-        enableDropItem,
         enableSelection,
-        getItemId,
         isSelected,
         itemType,
         listReducers,
@@ -49,10 +50,10 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isDraggedOver, setIsDraggedOver] = useState<Edge | null>(null);
 
-    const id = getItemId?.(index, itemData);
+    const id = itemData._uniqueId;
 
     useEffect(() => {
-        if (!ref.current || !id) return;
+        if (!ref.current) return;
 
         const fns = [];
 
@@ -114,60 +115,67 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
             );
         }
 
-        if (enableDropItem) {
-            fns.push(
-                dropTargetForElements({
-                    canDrop: (args) => {
-                        const data = args.source.data as DragData;
-                        return enableDropItem({ dragData: data });
-                    },
-                    element: ref.current,
-                    getData: ({ input, element }) => {
-                        const data = dndUtils.generateDragData({
-                            id: [id],
-                            operation: [DragOperation.REORDER],
-                            type: DragTarget.TRACK,
-                        });
+        fns.push(
+            dropTargetForElements({
+                canDrop: (args) => {
+                    const data = args.source.data as DragData;
+                    const isTarget = dndUtils.isDropTarget(data.type, [
+                        DragTarget.ALBUM,
+                        DragTarget.ALBUM_ARTIST,
+                        DragTarget.ARTIST,
+                        DragTarget.PLAYLIST,
+                        DragTarget.PLAYLIST_TRACK,
+                        DragTarget.TRACK,
+                        DragTarget.GENRE,
+                    ]);
 
-                        return attachClosestEdge(data, {
-                            allowedEdges: ['bottom', 'top'],
-                            element,
-                            input,
-                        });
-                    },
-                    onDrag: (args) => {
-                        const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
-                        setIsDraggedOver(closestEdgeOfTarget);
-                    },
-                    onDragLeave: () => {
-                        setIsDraggedOver(null);
-                    },
-                    onDrop: (args) => {
-                        const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+                    return isTarget;
+                },
+                element: ref.current,
+                getData: ({ input, element }) => {
+                    const data = dndUtils.generateDragData({
+                        id: [itemData._uniqueId],
+                        operation: [DragOperation.REORDER],
+                        type: DragTarget.TRACK,
+                    });
 
-                        const data = args.source.data as DragData;
-                        const edge = closestEdgeOfTarget;
+                    return attachClosestEdge(data, {
+                        allowedEdges: ['bottom', 'top'],
+                        element,
+                        input,
+                    });
+                },
+                onDrag: (args) => {
+                    const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
+                    setIsDraggedOver(closestEdgeOfTarget);
+                },
+                onDragLeave: () => {
+                    setIsDraggedOver(null);
+                },
+                onDrop: (args) => {
+                    const closestEdgeOfTarget: Edge | null = extractClosestEdge(args.self.data);
 
-                        const selectedIds = Object.keys(listReducers.getSelection());
+                    const data = args.source.data as DragData;
+                    const edge = closestEdgeOfTarget;
 
-                        onItemDrop?.({
-                            dragData: data,
-                            edge,
-                            id,
-                            index,
-                            item: itemData,
-                            selectedIds: selectedIds,
-                        });
-                        setIsDraggedOver(null);
-                    },
-                }),
-            );
-        }
+                    const selectedIds = Object.keys(listReducers.getSelection());
+
+                    onItemDrop?.({
+                        dragData: data,
+                        edge,
+                        id,
+                        index,
+                        item: itemData,
+                        selectedIds: selectedIds,
+                    });
+                    setIsDraggedOver(null);
+                },
+            }),
+        );
 
         return combine(...fns);
     }, [
         enableDragItem,
-        enableDropItem,
         id,
         index,
         itemData,
@@ -181,8 +189,6 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
     const handleItemContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (!id) return;
 
         const isSelfSelected = listReducers.getSelectionById(id);
 
@@ -210,15 +216,18 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                     [styles.draggedOverTop]: isDraggedOver === 'top',
                 })}
                 style={columnStyles?.styles}
-                onClick={(e) => {
-                    if (!id) return;
-                    onItemClick?.({ id, index, item: itemData }, e);
-                }}
+                onClick={(e) =>
+                    onItemClick?.(
+                        {
+                            id: itemData._uniqueId,
+                            index,
+                            item: itemData,
+                        },
+                        e,
+                    )
+                }
                 onContextMenu={handleItemContextMenu}
-                onDoubleClick={(e) => {
-                    if (!id) return;
-                    onItemDoubleClick?.({ id, index, item: itemData }, e);
-                }}
+                onDoubleClick={(e) => onItemDoubleClick?.({ id, index, item: itemData }, e)}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >

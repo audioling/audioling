@@ -1,38 +1,92 @@
-import type { ColumnHelper } from '@tanstack/react-table';
+import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
+import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
+import { useCurrentTrack } from '@/features/player/stores/player-store.tsx';
+import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
+import { CellSkeleton, EmptyCell } from '@/features/ui/item-list/item-table/columns/shared.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './column.module.scss';
 
-export function nameColumn<T>(columnHelper: ColumnHelper<T>) {
-    return columnHelper.display({
-        cell: ({ row, context }) => {
-            const item = context.data || row.original;
-            const isPlaying = row.id === context?.currentTrack?._uniqueId;
+function Cell(props: ItemListCellProps) {
+    if (!props.item) {
+        return <CellSkeleton height={20} width={100} />;
+    }
 
-            if (!item) {
-                return <Skeleton height={20} width={100} />;
-            }
-
-            if (typeof item === 'object' && item) {
-                if ('name' in item && typeof item.name === 'string') {
-                    return (
-                        <Text
-                            className={clsx(styles.cell, {
-                                [styles.playing]: isPlaying,
-                            })}
-                        >
-                            {item.name}
-                        </Text>
-                    );
-                }
-            }
-
-            return <div className={styles.cell}>&nbsp;</div>;
-        },
-        header: 'Name',
-        id: 'name',
-        size: itemListHelpers.table.numberToColumnSize(1, 'fr'),
-    });
+    switch (props.itemType) {
+        case LibraryItemType.TRACK:
+        case LibraryItemType.PLAYLIST_TRACK:
+            return <TrackCell {...props} />;
+        case LibraryItemType.QUEUE_TRACK:
+            return <QueueTrackCell {...props} />;
+        default:
+            return <DefaultCell {...props} />;
+    }
 }
+
+function DefaultCell({ item }: ItemListCellProps) {
+    if (typeof item === 'object' && item) {
+        if ('name' in item && typeof item.name === 'string') {
+            return (
+                <div
+                    style={{ display: 'flex', flexDirection: 'column', gap: 'var(--base-gap-sm)' }}
+                >
+                    <Text className={styles.cell}>{item.name}</Text>
+                </div>
+            );
+        }
+    }
+
+    return <EmptyCell />;
+}
+
+function TrackCell({ item }: ItemListCellProps) {
+    const { track } = useCurrentTrack();
+    const cellItem = item as TrackItem | undefined;
+    const isPlaying = track !== undefined && cellItem?.id === track?.id;
+
+    if (typeof item === 'object' && item) {
+        if ('name' in item && typeof item.name === 'string') {
+            return (
+                <Text
+                    className={clsx(styles.cell, {
+                        [styles.playing]: isPlaying,
+                    })}
+                >
+                    {item.name}
+                </Text>
+            );
+        }
+    }
+
+    return <EmptyCell />;
+}
+
+function QueueTrackCell({ item }: ItemListCellProps) {
+    const { track } = useCurrentTrack();
+    const cellItem = item as PlayQueueItem | undefined;
+    const isPlaying = track !== undefined && cellItem?._uniqueId === track?._uniqueId;
+
+    if (typeof item === 'object' && item) {
+        if ('name' in item && typeof item.name === 'string') {
+            return (
+                <Text
+                    className={clsx(styles.cell, {
+                        [styles.playing]: isPlaying,
+                    })}
+                >
+                    {item.name}
+                </Text>
+            );
+        }
+    }
+
+    return <EmptyCell />;
+}
+
+export const nameColumn = {
+    cell: Cell,
+    header: () => <Text isUppercase>Name</Text>,
+    id: 'name' as ItemListColumn.NAME,
+    size: numberToColumnSize(1, 'fr'),
+};

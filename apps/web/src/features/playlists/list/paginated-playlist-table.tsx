@@ -1,11 +1,11 @@
 import { LibraryItemType } from '@repo/shared-types';
+import type { PlaylistItem } from '@/api/api-types.ts';
 import type { GetApiLibraryIdPlaylistsParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { usePlaylistListStore } from '@/features/playlists/stores/playlist-list-store.ts';
 import { ListTableServerItem } from '@/features/shared/list/list-table-server-item.tsx';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
-import { useMultiRowSelection } from '@/features/ui/item-list/item-table/hooks/use-table-row-selection.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Pagination } from '@/features/ui/pagination/pagination.tsx';
 import { Paper } from '@/features/ui/paper/paper.tsx';
@@ -49,14 +49,12 @@ function PaginatedPlaylistTableContent(props: PaginatedPlaylistTableProps) {
         type: LibraryItemType.PLAYLIST,
     });
 
-    const { onRowClick } = useMultiRowSelection<string>();
-
     const columnOrder = usePlaylistListStore().columnOrder;
     const setColumnOrder = usePlaylistListStore().setColumnOrder;
-    const { columns } = useItemTable<string>(columnOrder, setColumnOrder);
+    const { columns } = useItemTable(columnOrder);
 
     return (
-        <ItemTable<string>
+        <ItemTable<string, PlaylistItem>
             ItemComponent={ListTableServerItem}
             columnOrder={columnOrder}
             columns={columns}
@@ -72,7 +70,6 @@ function PaginatedPlaylistTableContent(props: PaginatedPlaylistTableProps) {
             itemType={LibraryItemType.PLAYLIST}
             rowsKey={props.listKey}
             onChangeColumnOrder={setColumnOrder}
-            onRowClick={onRowClick}
         />
     );
 }

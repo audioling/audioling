@@ -1,29 +1,27 @@
-import type { ColumnHelper } from '@tanstack/react-table';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
 
-export function actionsColumn<T>(columnHelper: ColumnHelper<T>) {
-    return columnHelper.display({
-        cell: ({ row, context }) => {
-            const item = context.data || row.original;
+function Cell({ item, isHovered }: ItemListCellProps) {
+    if (!item || !isHovered) {
+        return <>&nbsp;</>;
+    }
 
-            if (!item || !context.isHovered) {
-                return <>&nbsp;</>;
-            }
-
-            return (
-                <IconButton
-                    isCompact
-                    icon="ellipsisHorizontal"
-                    variant="default"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                    }}
-                />
-            );
-        },
-        header: '',
-        id: 'actions',
-        size: itemListHelpers.table.numberToColumnSize(30, 'px'),
-    });
+    return (
+        <IconButton
+            isCompact
+            icon="ellipsisHorizontal"
+            variant="default"
+            onClick={(e) => {
+                e.stopPropagation();
+            }}
+        />
+    );
 }
+
+export const actionsColumn = {
+    cell: Cell,
+    header: () => '',
+    id: 'actions' as ItemListColumn.ACTIONS,
+    size: numberToColumnSize(30, 'px'),
+};

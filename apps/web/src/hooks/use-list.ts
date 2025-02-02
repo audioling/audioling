@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { Dispatch, MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { QueryFunction, QueryKey } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
-import { nanoid } from 'nanoid/non-secure';
 import { useLocation } from 'react-router';
 import {
     getApiLibraryIdAlbumArtists,
@@ -255,37 +255,19 @@ export function usePaginatedListData(args: {
             });
 
             const dataQueryKey = itemListHelpers.getDataQueryKey(libraryId, type);
-            const listQueryKey = itemListHelpers.getListQueryKey(libraryId, listKey, type);
-
-            const dataWithUniqueId = data.map((item: { id: string }) => ({
-                data: item,
-                id: item.id,
-                uniqueId: nanoid(),
-            }));
 
             queryClient.setQueryData(dataQueryKey, (prev: ItemQueryData | undefined) => {
                 const updates: ItemQueryData = {
                     ...prev,
                 };
 
-                for (const item of dataWithUniqueId) {
-                    updates[item.id] = item.data;
+                for (const item of data) {
+                    updates[item.id] = item;
                 }
                 return updates;
             });
 
-            queryClient.setQueryData(listQueryKey, (prev: ListQueryData | undefined) => {
-                const updates: ListQueryData = {
-                    ...prev,
-                };
-
-                for (const item of dataWithUniqueId) {
-                    updates[item.uniqueId] = item.id;
-                }
-                return updates;
-            });
-
-            setData(dataWithUniqueId.map((item: { uniqueId: string }) => item.uniqueId));
+            setData(data.map((item: { id: string }) => item.id));
         };
 
         fetchData();
@@ -306,13 +288,13 @@ export function usePaginatedListData(args: {
 export function useInfiniteListData(args: {
     itemCount: number;
     libraryId: string;
-    listKey: string;
+    listKey?: string;
     pagination: ItemListPaginationState;
     params: Record<string, unknown>;
     pathParams?: Record<string, unknown>;
     type: LibraryItemType;
 }) {
-    const { itemCount, libraryId, listKey, pagination, params, type, pathParams } = args;
+    const { itemCount, libraryId, pagination, params, type, pathParams } = args;
 
     const queryClient = useQueryClient();
 
@@ -388,7 +370,6 @@ export function useInfiniteListData(args: {
         return null;
     }, [libraryId, pathParams?.id, type]);
 
-    const listQueryKey = itemListHelpers.getListQueryKey(libraryId, listKey, type);
     const dataQueryKey = itemListHelpers.getDataQueryKey(libraryId, type);
 
     const handleRangeChanged = useCallback(
@@ -397,9 +378,8 @@ export function useInfiniteListData(args: {
 
             if (!query) return;
 
-            const pagesToLoad = itemListHelpers.getPagesToLoad(queryClient, {
+            const pagesToLoad = itemListHelpers.getPagesToLoad({
                 endIndex,
-                listQueryKey,
                 loadedPages: loadedPages,
                 pageSize: pagination.itemsPerPage,
                 startIndex,
@@ -421,28 +401,12 @@ export function useInfiniteListData(args: {
                     const fn = query.queryFn(fetchParams as any);
 
                     const { data } = await queryClient.fetchQuery({
+                        gcTime: 0,
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         queryFn: fn as QueryFunction<any, any>,
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         queryKey: query.queryKey(fetchParams as any),
-                    });
-
-                    const dataWithUniqueId = data.map((item: { id: string }) => ({
-                        data: item,
-                        id: item.id,
-                        uniqueId: nanoid(),
-                    }));
-
-                    queryClient.setQueryData(listQueryKey, (prev: ListQueryData | undefined) => {
-                        const updates: ListQueryData = {
-                            ...prev,
-                        };
-
-                        for (const item of dataWithUniqueId) {
-                            updates[item.uniqueId] = item.id;
-                        }
-
-                        return updates;
+                        staleTime: 0,
                     });
 
                     queryClient.setQueryData(dataQueryKey, (prev: ItemQueryData | undefined) => {
@@ -450,25 +414,238 @@ export function useInfiniteListData(args: {
                             ...prev,
                         };
 
-                        for (const item of dataWithUniqueId) {
-                            updates[item.id] = item.data;
+                        for (const item of data) {
+                            updates[item.id] = item;
                         }
+
                         return updates;
                     });
 
                     setData((prevData) => {
                         const newData = [...prevData];
                         const startIndex = currentOffset;
-                        dataWithUniqueId.forEach((item: { uniqueId: string }, index: number) => {
-                            newData[startIndex + index] = item.uniqueId;
+                        data.forEach((item: { id: string }, index: number) => {
+                            newData[startIndex + index] = item.id;
                         });
                         return newData;
                     });
                 }
             }
         },
-        [dataQueryKey, listQueryKey, pagination.itemsPerPage, params, query, queryClient],
+        [dataQueryKey, pagination.itemsPerPage, params, query, queryClient],
     );
 
     return { data, handleRangeChanged, setData };
+}
+
+export type ItemListInternalReducers = {
+    _itemExpandedReducer: Dispatch<SelectionStateAction>;
+    _itemSelectionReducer: Dispatch<SelectionStateAction>;
+    addSelection: (id: string) => void;
+    clearAndSetSelectionById: (id: string) => void;
+    clearSelection: () => void;
+    getSelection: () => Record<string, boolean>;
+    getSelectionById: (id: string) => boolean;
+    removeSelectionById: (id: string) => void;
+    setSelection: (values: Record<string, boolean>) => void;
+    setSelectionById: (id: string, selected: boolean) => void;
+    toggleSelectionById: (id: string) => void;
+};
+
+export interface ItemListInternalState {
+    _onMultiSelectionClick: (
+        id: string,
+        dataIds: string[],
+        index: number,
+        e: MouseEvent<HTMLDivElement>,
+    ) => void;
+    _onSingleSelectionClick: (id: string, e: MouseEvent<HTMLDivElement>) => void;
+    itemExpanded: Record<string, boolean>;
+    itemSelection: Record<string, boolean>;
+    reducers: ItemListInternalReducers;
+}
+
+type SelectionStateAction =
+    | {
+          id: string;
+          type: 'addById';
+      }
+    | {
+          type: 'clear';
+      }
+    | {
+          id: string;
+          type: 'clearAndSetById';
+      }
+    | {
+          id: string;
+          type: 'removeById';
+      }
+    | {
+          type: 'set';
+          values: Record<string, boolean>;
+      }
+    | {
+          id: string;
+          type: 'setById';
+          value: boolean;
+      }
+    | {
+          id: string;
+          type: 'toggleById';
+      };
+
+function selectionStateReducer(
+    state: Record<string, boolean>,
+    action: SelectionStateAction,
+): Record<string, boolean> {
+    switch (action.type) {
+        case 'addById': {
+            return { ...state, [action.id]: true };
+        }
+
+        case 'clear': {
+            return {};
+        }
+
+        case 'clearAndSetById': {
+            return { [action.id]: true };
+        }
+
+        case 'set': {
+            return { ...state, ...action.values };
+        }
+
+        case 'setById': {
+            return { ...state, [action.id]: action.value };
+        }
+
+        case 'removeById': {
+            const newState = { ...state };
+            delete newState[action.id];
+            return newState;
+        }
+
+        case 'toggleById': {
+            return { ...state, [action.id]: !state[action.id] };
+        }
+    }
+}
+
+export function useItemListInternalState(): ItemListInternalState {
+    const [itemSelection, dispatchItemSelection] = useReducer(selectionStateReducer, {});
+    const [itemExpanded, dispatchItemExpanded] = useReducer(selectionStateReducer, {});
+    const lastSelectedIndex = useRef<number | null>(null);
+
+    const _onMultiSelectionClick = (
+        id: string,
+        dataIds: string[],
+        index: number,
+        e: MouseEvent<HTMLDivElement>,
+    ) => {
+        // If SHIFT is pressed, toggle the range selection
+        if (e.shiftKey) {
+            const currentIndex = index;
+
+            if (currentIndex === -1) return;
+
+            const itemsToToggle = itemListHelpers.table.getItemRange(
+                dataIds,
+                currentIndex,
+                Number(lastSelectedIndex.current),
+            );
+
+            if (itemsToToggle.length > 0) {
+                dispatchItemSelection({
+                    type: 'set',
+                    values: itemsToToggle.reduce(
+                        (acc, item) => {
+                            acc[item as string] = true;
+                            return acc;
+                        },
+                        {} as Record<string, boolean>,
+                    ),
+                });
+            }
+
+            // If CTRL is pressed, toggle the selection
+        } else if (e.ctrlKey) {
+            dispatchItemSelection({
+                id,
+                type: 'toggleById',
+            });
+
+            // If no modifier key is pressed, replace the selection with the new item or toggle if already selected
+        } else {
+            const isSelfSelected = itemSelection[id];
+
+            if (isSelfSelected && Object.keys(itemSelection).length === 1) {
+                dispatchItemSelection({
+                    type: 'clear',
+                });
+            } else {
+                dispatchItemSelection({
+                    id,
+                    type: 'clearAndSetById',
+                });
+            }
+        }
+
+        lastSelectedIndex.current = index;
+    };
+
+    const _onSingleSelectionClick = (id: string) => {
+        const isSelfSelected = itemSelection[id];
+
+        if (isSelfSelected && Object.keys(itemSelection).length === 1) {
+            dispatchItemSelection({
+                type: 'clear',
+            });
+        } else {
+            dispatchItemSelection({
+                id,
+                type: 'clearAndSetById',
+            });
+        }
+    };
+
+    const reducers = {
+        _itemExpandedReducer: dispatchItemExpanded,
+        _itemSelectionReducer: dispatchItemSelection,
+        addSelection: (id: string) => {
+            dispatchItemSelection({ id, type: 'addById' });
+        },
+        clearAndSetSelectionById: (id: string) => {
+            dispatchItemSelection({ id, type: 'clearAndSetById' });
+        },
+        clearSelection: () => {
+            dispatchItemSelection({ type: 'clear' });
+        },
+        getSelection: () => {
+            return itemSelection;
+        },
+        getSelectionById: (id: string) => {
+            return itemSelection[id];
+        },
+        removeSelectionById: (id: string) => {
+            dispatchItemSelection({ id, type: 'removeById' });
+        },
+        setSelection: (values: Record<string, boolean>) => {
+            dispatchItemSelection({ type: 'set', values });
+        },
+        setSelectionById: (id: string, selected: boolean) => {
+            dispatchItemSelection({ id, type: 'setById', value: selected });
+        },
+        toggleSelectionById: (id: string) => {
+            dispatchItemSelection({ id, type: 'toggleById' });
+        },
+    };
+
+    return {
+        _onMultiSelectionClick,
+        _onSingleSelectionClick,
+        itemExpanded,
+        itemSelection,
+        reducers,
+    };
 }

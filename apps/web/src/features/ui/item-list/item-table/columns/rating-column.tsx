@@ -1,22 +1,38 @@
-import type { ColumnHelper } from '@tanstack/react-table';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
+import { EmptyCell } from '@/features/ui/item-list/item-table/columns/shared.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
 import styles from './column.module.scss';
 
-export function ratingColumn<T>(columnHelper: ColumnHelper<T>) {
-    return columnHelper.display({
-        cell: ({ row, context }) => {
-            const item = context.data || row.original;
+function Cell({ item }: ItemListCellProps) {
+    if (!item) {
+        return <EmptyCell />;
+    }
 
-            if (typeof item === 'object' && item) {
-                if ('userRating' in item && typeof item.userRating === 'number') {
-                    return <div className={styles.cell}>{item.userRating}</div>;
-                }
-            }
+    if (typeof item === 'object' && 'userRating' in item && !item.userRating) {
+        return <EmptyCell />;
+    }
 
-            return <div className={styles.cell}>&nbsp;</div>;
-        },
-        header: 'Rating',
-        id: 'rating',
-        size: itemListHelpers.table.numberToColumnSize(100, 'px'),
-    });
+    if (typeof item === 'object' && item) {
+        if ('userRating' in item && typeof item.userRating === 'number') {
+            return (
+                <Text isCentered isSecondary className={styles.cell}>
+                    {item.userRating}
+                </Text>
+            );
+        }
+    }
+
+    return <EmptyCell />;
 }
+
+export const ratingColumn = {
+    cell: Cell,
+    header: () => (
+        <Text isCentered isUppercase>
+            Rating
+        </Text>
+    ),
+    id: 'rating' as ItemListColumn.RATING,
+    size: numberToColumnSize(100, 'px'),
+};

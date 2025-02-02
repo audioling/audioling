@@ -1,5 +1,5 @@
+import type { MutableRefObject } from 'react';
 import { useCallback, useRef, useState } from 'react';
-import type { Table } from '@tanstack/react-table';
 import { useParams } from 'react-router';
 import { initSimpleImg } from 'react-simple-img';
 import type { PlayQueueItem } from '@/api/api-types.ts';
@@ -20,7 +20,7 @@ export function SidePlayQueue() {
     const baseUrl = useAuthBaseUrl();
     const { libraryId } = useParams() as { libraryId: string };
 
-    const itemTableRef = useRef<ItemTableHandle<PlayQueueItem> | undefined>(undefined);
+    const itemTableRef = useRef<ItemTableHandle | undefined>(undefined);
     const [groupBy, setGroupBy] = useState<QueueGroupingProperty | undefined>(undefined);
 
     return (
@@ -29,7 +29,8 @@ export function SidePlayQueue() {
                 <Text isNoSelect>Queue</Text>
                 <QueueControls
                     groupBy={groupBy}
-                    table={itemTableRef.current?.getTable() ?? undefined}
+                    itemTableRef={itemTableRef}
+                    items={[]}
                     onGroupBy={setGroupBy}
                 />
             </Group>
@@ -48,101 +49,63 @@ export function SidePlayQueue() {
 SidePlayQueue.displayName = 'SidePlayQueue';
 
 export function QueueControls({
-    table,
-    onGroupBy,
     groupBy,
+    itemTableRef,
+    items,
+    onGroupBy,
 }: {
     groupBy: QueueGroupingProperty | undefined;
+    itemTableRef: MutableRefObject<ItemTableHandle | undefined>;
+    items: PlayQueueItem[];
     onGroupBy: (value: QueueGroupingProperty | undefined) => void;
-    table?: Table<PlayQueueItem | undefined>;
 }) {
     const handleClear = useCallback(() => {
         PlayerController.call({ cmd: { clearQueue: null } });
     }, []);
 
     const handleClearSelected = useCallback(() => {
-        if (!table) {
-            return;
-        }
-
         PlayerController.call({
             cmd: {
                 clearSelected: {
-                    items: table
-                        .getSelectedRowModel()
-                        .rows.map((row) => row.original)
-                        .filter((item): item is PlayQueueItem => item !== undefined),
+                    items,
                 },
             },
         });
-    }, [table]);
+    }, [items]);
 
-    const handleSelect = useCallback(
-        (value: boolean) => {
-            if (!table) {
-                return;
-            }
-
-            table.getRowModel().rows.forEach((row) => {
-                row.toggleSelected(value);
-            });
-        },
-        [table],
-    );
+    const handleSelectAll = useCallback(() => {
+        itemTableRef.current?.selectAll();
+    }, [itemTableRef]);
 
     const handleMoveToTop = useCallback(() => {
-        if (!table) {
-            return;
-        }
-
-        const rows = table.getSelectedRowModel().rows;
-
         PlayerController.call({
             cmd: {
                 moveSelectedToTop: {
-                    items: rows
-                        .map((row) => row.original)
-                        .filter((item): item is PlayQueueItem => item !== undefined),
+                    items,
                 },
             },
         });
-    }, [table]);
+    }, [items]);
 
     const handleMoveToBottom = useCallback(() => {
-        if (!table) {
-            return;
-        }
-
-        const rows = table.getSelectedRowModel().rows;
-
         PlayerController.call({
             cmd: {
                 moveSelectedToBottom: {
-                    items: rows
-                        .map((row) => row.original)
-                        .filter((item): item is PlayQueueItem => item !== undefined),
+                    items,
                 },
             },
         });
-    }, [table]);
+    }, [items]);
 
     const handleMoveToNext = useCallback(() => {
-        if (!table) {
-            return;
-        }
-
-        const rows = table.getSelectedRowModel().rows;
-
         PlayerController.call({
             cmd: {
                 moveSelectedToNext: {
-                    items: rows
-                        .map((row) => row.original)
-                        .filter((item): item is PlayQueueItem => item !== undefined),
+                    items,
                 },
             },
         });
-    }, [table]);
+    }, [items]);
 
     const handleGroupBy = useCallback(
         (value: QueueGroupingProperty | undefined) => {
@@ -158,8 +121,7 @@ export function QueueControls({
                     <IconButton icon="ellipsisHorizontal" size="sm" />
                 </Menu.Target>
                 <Menu.Content>
-                    <Menu.Item onSelect={() => handleSelect(true)}>Select all</Menu.Item>
-                    <Menu.Item onSelect={() => handleSelect(false)}>Select none</Menu.Item>
+                    <Menu.Item onSelect={handleSelectAll}>Select all</Menu.Item>
                     <Menu.Divider />
                     <Menu.Submenu>
                         <Menu.SubmenuTarget>

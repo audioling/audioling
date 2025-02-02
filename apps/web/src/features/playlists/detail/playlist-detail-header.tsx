@@ -71,11 +71,23 @@ export function PlaylistDetailHeader({ playlist }: { playlist: PlaylistItem }) {
                 </div>
                 <div className={styles.contentArea}>
                     <div className={styles.metadata}>
-                        <Title isNoSelect lineClamp={2} order={1} size="lg" weight="lg">
+                        <Title
+                            isNoSelect
+                            className={styles.title}
+                            lineClamp={2}
+                            order={1}
+                            size="lg"
+                            weight="lg"
+                        >
                             {playlist.name}
                         </Title>
                         {playlist.description && (
-                            <Text isSecondary lineClamp={1} weight="lg">
+                            <Text
+                                isSecondary
+                                className={styles.description}
+                                lineClamp={2}
+                                weight="lg"
+                            >
                                 {playlist.description}
                             </Text>
                         )}
@@ -214,18 +226,7 @@ function PlaylistMenu({ playlist }: { playlist: PlaylistItem }) {
                 });
 
                 await queryClient.invalidateQueries({
-                    queryKey: itemListHelpers.getListQueryKey(
-                        playlist.libraryId,
-                        'playlists',
-                        LibraryItemType.PLAYLIST,
-                    ),
-                });
-
-                await queryClient.invalidateQueries({
-                    queryKey: itemListHelpers.getDataQueryKey(
-                        playlist.libraryId,
-                        LibraryItemType.PLAYLIST,
-                    ),
+                    queryKey: [`/api/${playlist.libraryId}/playlists/${playlist.id}`],
                 });
             },
         });

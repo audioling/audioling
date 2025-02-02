@@ -1,13 +1,11 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { LibraryItemType } from '@repo/shared-types';
 import { useQuery } from '@tanstack/react-query';
-import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { Fragment } from 'react/jsx-runtime';
 import { createRoot } from 'react-dom/client';
 import type {
     AlbumArtistItem,
@@ -24,124 +22,94 @@ import {
     ItemTableHeader,
     type ItemTableItemProps,
 } from '@/features/ui/item-list/item-table/item-table.tsx';
-import type { ItemQueryData, ListQueryData } from '@/hooks/use-list.ts';
+import type { ItemQueryData } from '@/hooks/use-list.ts';
 import { dndUtils, DragOperation, DragTarget, DragTargetMap } from '@/utils/drag-drop.ts';
 import styles from './list-item.module.scss';
 
-export function ListTableServerItem(props: ItemTableItemProps<string>) {
-    return <MemoizedListTableServerItem {...props} />;
+export function ListTableServerItem<TItemType>(props: ItemTableItemProps<string, TItemType>) {
+    return <InnerContent {...props} />;
 }
 
-function InnerContent<T>(props: ItemTableItemProps<string>) {
+function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
     const {
-        context,
-        data: uniqueId,
-        enableExpanded,
+        columnOrder,
+        columnStyles,
+        columns,
+        data: id,
+        enableDragItem,
+        enableSelection,
+        enableStickyHeader,
+        libraryId,
+        listReducers,
         index,
+        isSelected,
         itemType,
-        onRowClick,
-        onRowDoubleClick,
-        onRowContextMenu,
-        onRowDrop,
-        onRowDrag,
-        onRowDragData,
-        enableRowDrag,
-        table,
+        onChangeColumnOrder,
+        onItemClick,
+        onItemDoubleClick,
+        onItemContextMenu,
+        startIndex,
         tableId,
     } = props;
 
     const ref = useRef<HTMLDivElement>(null);
 
-    const row = table.getRow(index.toString());
-
-    const canSelect = row?.getCanSelect();
-    const isSelected = row?.getIsSelected();
-    const isExpanded = row?.getIsExpanded();
     const [isHovered, setIsHovered] = useState(false);
-
-    const { data: list } = useQuery<ListQueryData>({
-        enabled: false,
-        queryKey: itemListHelpers.getListQueryKey(context.libraryId, context.listKey, itemType),
-    });
 
     const { data: itemData } = useQuery<ItemQueryData>({
         enabled: false,
-        queryKey: itemListHelpers.getDataQueryKey(context.libraryId, itemType),
+        queryKey: itemListHelpers.getDataQueryKey(libraryId, itemType),
     });
+
+    const item = itemData?.[id as string] as TItemType | undefined;
 
     useEffect(() => {
         if (!ref.current) return;
 
         const fns = [];
 
-        if (enableRowDrag) {
+        if (enableDragItem) {
             fns.push(
                 draggable({
                     element: ref.current,
                     getInitialData: () => {
-                        const isSelfSelected = row.getIsSelected();
+                        const isSelfSelected = listReducers.getSelectionById(id);
+
+                        const ids: string[] = [];
+
+                        if (!isSelfSelected) {
+                            ids.push(id);
+                        } else {
+                            const selected = listReducers.getSelection();
+                            ids.push(...Object.keys(selected));
+                        }
 
                         const dragTarget = DragTargetMap[itemType as keyof typeof DragTargetMap] as
                             | DragTarget
                             | undefined;
 
-                        if (isSelfSelected) {
-                            const selectedRowUniqueIds = table
-                                .getSelectedRowModel()
-                                .rows.map((row) => row.original)
-                                .filter((id): id is string => id !== undefined);
-
-                            const ids = selectedRowUniqueIds
-                                .map((uniqueId) => list?.[uniqueId])
-                                .filter((id): id is string => id !== undefined);
-
-                            const items = ids
-                                .map((id) => itemData?.[id])
-                                .filter((item): item is T => item !== undefined);
-
-                            return dndUtils.generateDragData({
-                                id: ids,
-                                item: items,
-                                operation: [DragOperation.ADD],
-                                type: dragTarget ?? DragTarget.UNKNOWN,
-                            });
-                        }
-
-                        const id = list?.[uniqueId as string] as string;
-                        const item = itemData?.[id];
+                        const items = ids
+                            .map((id) => itemData?.[id])
+                            .filter((item): item is TItemType => item !== undefined);
 
                         return dndUtils.generateDragData({
-                            id: [id],
-                            item: item ? [item] : [],
+                            id: ids,
+                            item: items,
                             operation: [DragOperation.ADD],
                             type: dragTarget ?? DragTarget.UNKNOWN,
                         });
                     },
                     onDragStart: () => {
-                        const isSelfSelected = row.getIsSelected();
-
-                        // If attempting to drag a row that is not selected, select it
-                        if (!isSelfSelected) {
-                            table.resetRowSelection();
-                            row.toggleSelected(true);
-                        }
+                        const isSelfSelected = listReducers.getSelectionById(id);
 
                         const ids: string[] = [];
 
-                        if (isSelfSelected) {
-                            const selectedRowUniqueIds = table
-                                .getSelectedRowModel()
-                                .rows.map((row) => row.original)
-                                .filter((id): id is string => id !== undefined);
-
-                            selectedRowUniqueIds
-                                .map((uniqueId) => list?.[uniqueId])
-                                .filter((id): id is string => id !== undefined)
-                                .forEach((id) => {
-                                    ids.push(id);
-                                });
+                        if (!isSelfSelected) {
+                            listReducers.clearAndSetSelectionById(id);
+                            ids.push(id);
                         } else {
-                            ids.push(list?.[uniqueId as string] as string);
+                            const selected = listReducers.getSelection();
+                            ids.push(...Object.keys(selected));
                         }
 
                         switch (itemType) {
@@ -178,7 +146,18 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
                             nativeSetDragImage: data.nativeSetDragImage,
                             render: ({ container }) => {
                                 const root = createRoot(container);
-                                const selectedCount = table.getSelectedRowModel().rows.length || 1;
+
+                                const isSelfSelected = listReducers.getSelectionById(id);
+
+                                let selectedCount = 0;
+
+                                if (!isSelfSelected) {
+                                    selectedCount = 1;
+                                } else {
+                                    const selected = listReducers.getSelection();
+                                    selectedCount = Object.keys(selected).length;
+                                }
+
                                 root.render(<DragPreview itemCount={selectedCount} />);
                             },
                         });
@@ -188,49 +167,29 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
         }
 
         return combine(...fns);
-    }, [
-        enableRowDrag,
-        index,
-        itemData,
-        itemType,
-        list,
-        onRowDrag,
-        onRowDragData,
-        onRowDrop,
-        row,
-        row.id,
-        table,
-        uniqueId,
-    ]);
+    }, [enableDragItem, id, index, itemData, itemType, listReducers]);
 
-    const handleRowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleItemContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
-        const isSelfSelected = row.getIsSelected();
-
-        // If attempting to drag a row that is not selected, select it
-        if (!isSelfSelected) {
-            table.resetRowSelection();
-            row.toggleSelected(true);
-        }
+        const isSelfSelected = listReducers.getSelectionById(id);
 
         const ids: string[] = [];
-        const items: unknown[] = [];
 
-        if (isSelfSelected) {
-            table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original)
-                .filter((id): id is string => id !== undefined)
-                .forEach((id) => {
-                    ids.push(id);
-                    items.push(itemData?.[list?.[id] as string] as string) as T;
-                });
+        if (!isSelfSelected) {
+            listReducers.clearAndSetSelectionById(id);
+            ids.push(id);
         } else {
-            ids.push(list?.[uniqueId as string] as string);
-            items.push(itemData?.[list?.[uniqueId as string] as string] as T);
+            const selected = listReducers.getSelection();
+            ids.push(...Object.keys(selected));
         }
+
+        const items = ids
+            .map((id) => itemData?.[id] as TItemType)
+            .filter((item): item is TItemType => item !== undefined);
+
+        onItemContextMenu?.({ id, index, item: item as TItemType, selectedIds: ids }, e);
 
         switch (itemType) {
             case LibraryItemType.ALBUM:
@@ -281,26 +240,18 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
                 });
                 break;
         }
-
-        onRowContextMenu?.(e, row, table, []);
     };
 
-    if (context.componentProps.enableStickyHeader && index === 0) {
+    if (enableStickyHeader && index === 0) {
         return (
             <ItemTableHeader
-                columnOrder={context.columnOrder}
-                columnStyles={context.columnStyles}
-                headers={context.headers}
+                columnOrder={columnOrder}
+                columnStyles={columnStyles}
+                columns={columns}
                 tableId={tableId}
-                onChangeColumnOrder={context.onChangeColumnOrder}
+                onChangeColumnOrder={onChangeColumnOrder}
             />
         );
-    }
-
-    const item = itemData?.[list?.[uniqueId as string] as string] as T | undefined;
-
-    if (enableExpanded && !isExpanded) {
-        return null;
     }
 
     return (
@@ -308,39 +259,31 @@ function InnerContent<T>(props: ItemTableItemProps<string>) {
             <div
                 ref={ref}
                 className={clsx(styles.row, {
-                    [styles.canSelect]: canSelect,
+                    [styles.canSelect]: enableSelection,
                     [styles.selected]: isSelected,
                 })}
-                style={context.columnStyles?.styles}
-                onClick={(e) => onRowClick?.(e, row, table)}
-                onContextMenu={handleRowContextMenu}
-                onDoubleClick={(e) => onRowDoubleClick?.(e, row, table)}
+                style={columnStyles?.styles}
+                onClick={(e) => onItemClick?.({ id, index, item: item as TItemType }, e)}
+                onContextMenu={handleItemContextMenu}
+                onDoubleClick={(e) =>
+                    onItemDoubleClick?.({ id, index, item: item as TItemType }, e)
+                }
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {row?.getVisibleCells()?.map((cell) => {
+                {columns.map((column) => {
                     return (
-                        <Fragment key={`${tableId}-cell-${cell.id}`}>
-                            {flexRender(cell.column.columnDef.cell, {
-                                ...cell.getContext(),
-                                context: {
-                                    ...context,
-                                    data: item,
-                                    isHovered,
-                                },
-                            })}
-                        </Fragment>
+                        <column.cell
+                            key={column.id}
+                            index={index}
+                            isHovered={isHovered}
+                            item={item as TItemType | undefined}
+                            itemType={itemType}
+                            startIndex={startIndex}
+                        />
                     );
                 })}
             </div>
         </div>
     );
 }
-
-const MemoizedListTableServerItem = memo(InnerContent, (prev, next) => {
-    const isSelectionDifferent =
-        prev.table.getSelectedRowModel().rows.length !==
-        next.table.getSelectedRowModel().rows.length;
-
-    return isSelectionDifferent;
-});

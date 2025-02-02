@@ -12,6 +12,23 @@
 
 .skeleton {
     display: flex;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 base.$gap-sm;
+    font-size: base.$font-size-md;
+
+    @include base.text-ellipsis;
+}
+
+.skeleton-image {
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.centered {
+    align-items: center;
+    justify-content: center;
 }
 
 .image {

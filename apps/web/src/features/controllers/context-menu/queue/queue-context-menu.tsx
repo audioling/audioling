@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import type { Table } from '@tanstack/react-table';
 import { useParams } from 'react-router';
 import type { PlayQueueItem } from '@/api/api-types.ts';
 import { QueueCache } from '@/features/controllers/context-menu/queue/queue-cache.tsx';
@@ -15,25 +14,19 @@ import { RatingContextItem } from '@/features/controllers/context-menu/shared/ra
 import { useFavoriteTrack } from '@/features/favorites/hooks/use-favorite-track.ts';
 import { useUnfavoriteTrack } from '@/features/favorites/hooks/use-unfavorite-track.ts';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
-import { Divider } from '@/features/ui/divider/divider.tsx';
 
 interface QueueContextMenuProps {
-    table: Table<PlayQueueItem | undefined>;
+    items: PlayQueueItem[];
 }
 
-export function QueueContextMenu({ table }: QueueContextMenuProps) {
+export function QueueContextMenu({ items }: QueueContextMenuProps) {
     const { libraryId } = useParams() as { libraryId: string };
 
     const { ids, tracks } = useMemo(() => {
-        const tracks = table
-            .getSelectedRowModel()
-            .rows.map((row) => row.original)
-            .filter((item): item is PlayQueueItem => item !== undefined);
-
+        const tracks = items.filter((item): item is PlayQueueItem => item !== undefined);
         const ids = tracks.map((track) => track.id);
-
         return { ids, tracks };
-    }, [table]);
+    }, [items]);
 
     const { mutate: favoriteTrack } = useFavoriteTrack();
     const { mutate: unfavoriteTrack } = useUnfavoriteTrack();
@@ -48,19 +41,20 @@ export function QueueContextMenu({ table }: QueueContextMenuProps) {
 
     return (
         <ContextMenu.Content>
-            <QueueRemove table={table} />
-            <QueueShuffle table={table} />
-            <QueueMove table={table} />
-            <Divider />
+            <QueueRemove items={items} />
+            <ContextMenu.Divider />
             <AddToPlaylistContextItem tracks={tracks} />
             <RatingContextItem />
             <FavoritesContextItem onFavorite={handleFavorite} onUnfavorite={handleUnfavorite} />
-            <Divider />
+            <ContextMenu.Divider />
+            <QueueShuffle items={items} />
+            <QueueMove items={items} />
+            <ContextMenu.Divider />
             <QueueDownload />
             <QueueCache />
-            <Divider />
+            <ContextMenu.Divider />
             <QueueShare />
-            <Divider />
+            <ContextMenu.Divider />
             <QueueInfo />
         </ContextMenu.Content>
     );

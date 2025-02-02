@@ -1,40 +1,43 @@
-import type { ColumnHelper, Row } from '@tanstack/react-table';
+import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
-import type { PlayQueueItem } from '@/api/api-types.ts';
-import { PlayerStatus, usePlayerStatus } from '@/features/player/stores/player-store.tsx';
+import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
+import {
+    PlayerStatus,
+    useCurrentTrack,
+    usePlayerStatus,
+} from '@/features/player/stores/player-store.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
 import { SoundBars } from '@/features/ui/icon/sound-bars.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { type ItemListCellProps, numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './column.module.scss';
 
-export function rowIndexColumn<T>(columnHelper: ColumnHelper<T>) {
-    return columnHelper.display({
-        cell: Cell,
-        header: () => <Icon icon="hash" />,
-        id: 'rowIndex',
-        size: itemListHelpers.table.numberToColumnSize(60, 'px'),
-    });
+function Cell(props: ItemListCellProps) {
+    switch (props.itemType) {
+        case LibraryItemType.TRACK:
+        case LibraryItemType.PLAYLIST_TRACK:
+            return <TrackCell {...props} />;
+        case LibraryItemType.QUEUE_TRACK:
+            return <QueueTrackCell {...props} />;
+        default:
+            return <DefaultCell {...props} />;
+    }
 }
 
-function Cell<T>({
-    row,
-    context,
-}: {
-    context: {
-        componentProps?: { enableStickyHeader?: boolean };
-        currentTrack?: PlayQueueItem;
-        startIndex?: number;
-    };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    row: Row<T | any>;
-}) {
-    const isPlaying = row.id === context?.currentTrack?._uniqueId;
-    const bpm = context?.currentTrack?.bpm || undefined;
-    const status = usePlayerStatus();
+function DefaultCell({ index, startIndex }: ItemListCellProps) {
+    return (
+        <Text isCentered isSecondary className={styles.cell}>
+            {index + (startIndex ?? 0) + 1}
+        </Text>
+    );
+}
 
-    const diff = !context.componentProps?.enableStickyHeader ? 1 : 0;
-    const rowIndex = (context.startIndex || 0) + row.index + diff;
+function TrackCell({ index, startIndex, item }: ItemListCellProps) {
+    const { track } = useCurrentTrack();
+    const cellItem = item as TrackItem | undefined;
+    const isPlaying = track !== undefined && cellItem?.id === track?.id;
+    const status = usePlayerStatus();
 
     return (
         <Text
@@ -45,10 +48,36 @@ function Cell<T>({
             })}
         >
             {!isPlaying ? (
-                rowIndex
+                index + (startIndex ?? 0) + 1
             ) : (
-                <SoundBars bpm={bpm} isPlaying={status === PlayerStatus.PLAYING} />
+                <SoundBars isPlaying={status === PlayerStatus.PLAYING} />
             )}
         </Text>
     );
 }
+
+function QueueTrackCell({ index, item }: ItemListCellProps) {
+    const { track } = useCurrentTrack();
+    const cellItem = item as PlayQueueItem | undefined;
+    const isPlaying = track !== undefined && cellItem?._uniqueId === track?._uniqueId;
+    const status = usePlayerStatus();
+
+    return (
+        <Text
+            isCentered
+            isSecondary
+            className={clsx(styles.cell, {
+                [styles.playing]: isPlaying,
+            })}
+        >
+            {!isPlaying ? index + 1 : <SoundBars isPlaying={status === PlayerStatus.PLAYING} />}
+        </Text>
+    );
+}
+
+export const rowIndexColumn = {
+    cell: Cell,
+    header: () => <Icon icon="hash" />,
+    id: 'rowIndex' as ItemListColumn.ROW_INDEX,
+    size: numberToColumnSize(60, 'px'),
+};

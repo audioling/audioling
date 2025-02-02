@@ -14,6 +14,7 @@ interface SkeletonProps {
     enableAnimation?: boolean;
     height?: string | number;
     inline?: boolean;
+    isCentered?: boolean;
     style?: CSSProperties;
     width?: string | number;
 }
@@ -23,7 +24,9 @@ export function Skeleton(props: SkeletonProps) {
         <RSkeleton
             {...props}
             className={clsx(styles.skeleton, props.className)}
-            containerClassName={styles.skeletonContainer}
+            containerClassName={clsx(styles.skeletonContainer, props.containerClassName, {
+                [styles.centered]: props.isCentered,
+            })}
         />
     );
 }

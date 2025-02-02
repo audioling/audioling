@@ -1,46 +1,39 @@
 import { type MouseEvent } from 'react';
-import type { Row, Table } from '@tanstack/react-table';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import type { ItemTableGroup } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
 import styles from './table-group.module.scss';
 
-interface TableGroupProps<T> {
+interface TableGroupProps {
     groups: ItemTableGroup[];
     index: number;
-    onGroupClick?: (
-        e: MouseEvent<HTMLDivElement>,
-        items: Row<T | undefined>[],
-        group: ItemTableGroup,
-        table: Table<T | undefined>,
-    ) => void;
-    table: Table<T | undefined>;
+    onGroupClick?: (e: MouseEvent<HTMLDivElement>, group: ItemTableGroup) => void;
 }
 
-export function TableGroup<T>({ groups, index, onGroupClick, table }: TableGroupProps<T>) {
+export function TableGroup({ groups, index }: TableGroupProps) {
     const handleGroupClick = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
-        const rows = getGroupRows(table, groups, index);
-        const isSomeSelected = rows.some((row) => row.getIsSelected());
+        // const rows = getGroupRows(table, groups, index);
+        // const isSomeSelected = rows.some((row) => row.getIsSelected());
 
-        if (!e.ctrlKey) {
-            table.resetRowSelection();
-        }
+        // if (!e.ctrlKey) {
+        //     table.resetRowSelection();
+        // }
 
-        rows.forEach((row) => {
-            row.toggleSelected(isSomeSelected ? false : true);
-        });
+        // rows.forEach((row) => {
+        //     row.toggleSelected(isSomeSelected ? false : true);
+        // });
 
-        onGroupClick?.(e, rows, groups[index], table);
+        // onGroupClick?.(e, rows, groups[index], table);
     };
 
     const handleToggleExpand = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
 
-        const rows = getGroupRows(table, groups, index);
+        // const rows = getGroupRows(table, groups, index);
 
-        rows.forEach((row) => {
-            row.toggleExpanded();
-        });
+        // rows.forEach((row) => {
+        //     row.toggleExpanded();
+        // });
     };
 
     return (
@@ -56,13 +49,13 @@ export function TableGroup<T>({ groups, index, onGroupClick, table }: TableGroup
     );
 }
 
-function getGroupRows<T>(table: Table<T | undefined>, groups: ItemTableGroup[], index: number) {
-    let itemCountBeforeGroup = 0;
-    for (let i = 0; i < index; i++) {
-        itemCountBeforeGroup += groups[i].count;
-    }
+// function getGroupRows<T>(table: Table<T | undefined>, groups: ItemTableGroup[], index: number) {
+//     let itemCountBeforeGroup = 0;
+//     for (let i = 0; i < index; i++) {
+//         itemCountBeforeGroup += groups[i].count;
+//     }
 
-    return table
-        .getRowModel()
-        .rows.slice(itemCountBeforeGroup, itemCountBeforeGroup + groups[index].count);
-}
+//     return table
+//         .getRowModel()
+//         .rows.slice(itemCountBeforeGroup, itemCountBeforeGroup + groups[index].count);
+// }

@@ -20,10 +20,18 @@ export function Image(props: ImageProps) {
                 container={(children) => (
                     <ImageContainer className={containerClassName}>{children}</ImageContainer>
                 )}
-                loader={<ImageLoader className={props.className} />}
+                loader={
+                    <ImageContainer className={containerClassName}>
+                        <ImageLoader className={props.className} />
+                    </ImageContainer>
+                }
                 loading="eager"
                 src={src}
-                unloader={<ImageUnloader className={props.className} />}
+                unloader={
+                    <ImageContainer className={containerClassName}>
+                        <ImageUnloader className={props.className} />
+                    </ImageContainer>
+                }
             />
         );
     }

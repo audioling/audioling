@@ -6,29 +6,27 @@ import {
     dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import {
     attachClosestEdge,
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import type { Header } from '@tanstack/react-table';
-import { flexRender } from '@tanstack/react-table';
 import clsx from 'clsx';
-import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
-import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
+import type { ItemListColumn, ItemListColumnDefinition } from '@/features/ui/item-list/helpers.ts';
 import type { DragData } from '@/utils/drag-drop.ts';
+import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
 import styles from './table-header.module.scss';
 
-interface TableHeaderProps<T> {
+interface TableHeaderProps {
+    column: ItemListColumnDefinition;
     columnOrder: ItemListColumn[];
     columnStyles: CSSProperties;
-    header: Header<T | undefined, unknown>;
     setColumnOrder?: (columnOrder: ItemListColumn[]) => void;
     tableId: string;
 }
 
-export function TableHeader<T>(props: TableHeaderProps<T>) {
-    const { columnOrder, header, columnStyles, setColumnOrder, tableId } = props;
+export function TableHeader(props: TableHeaderProps) {
+    const { columnOrder, columnStyles, column, setColumnOrder, tableId } = props;
     const ref = useRef(null);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -42,7 +40,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
                 element: ref.current,
                 getInitialData: () => {
                     const data = dndUtils.generateDragData({
-                        id: [header.id],
+                        id: [column.id],
                         operation: [DragOperation.REORDER],
                         type: DragTarget.TABLE_COLUMN,
                     });
@@ -61,13 +59,13 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
             dropTargetForElements({
                 canDrop: (args) => {
                     const data = args.source.data as DragData;
-                    const isSelf = args.source.data.id === header.id;
+                    const isSelf = args.source.data.id === column.id;
                     return dndUtils.isDropTarget(data.type, [DragTarget.TABLE_COLUMN]) && !isSelf;
                 },
                 element: ref.current,
                 getData: ({ input, element }) => {
                     const data = dndUtils.generateDragData({
-                        id: [header.id],
+                        id: [column.id],
                         operation: [DragOperation.REORDER],
                         type: DragTarget.TABLE_COLUMN,
                     });
@@ -103,7 +101,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
                 },
             }),
         );
-    }, [columnOrder, header.id, setColumnOrder, tableId]);
+    }, [columnOrder, column.id, setColumnOrder, tableId]);
 
     return (
         <div
@@ -115,7 +113,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
             })}
             style={columnStyles}
         >
-            {flexRender(header.column.columnDef.header, header.getContext())}
+            <column.header />
         </div>
     );
 }

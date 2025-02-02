@@ -70,7 +70,6 @@
         "@repo/shared-types": "workspace:*",
         "@tanstack/react-query": "^5.62.7",
         "@tanstack/react-query-persist-client": "^5.62.7",
-        "@tanstack/react-table": "^8.20.6",
         "@tauri-apps/api": ">=2.1.1",
         "@tauri-apps/plugin-shell": ">=2.2.0",
         "allotment": "^1.20.2",
@@ -647,10 +646,6 @@
     "@tanstack/react-query-devtools": ["@tanstack/react-query-devtools@5.64.1", "", { "dependencies": { "@tanstack/query-devtools": "5.62.16" }, "peerDependencies": { "@tanstack/react-query": "^5.64.1", "react": "^18 || ^19" } }, "sha512-8ajcGE3wXYlb4KuJnkFYkJwJKc/qmPNTpQD7YTgLRMBPTGGp1xk7VMzxL87DoXuweO8luplUUblJJ3noVs/luQ=="],
 
     "@tanstack/react-query-persist-client": ["@tanstack/react-query-persist-client@5.64.1", "", { "dependencies": { "@tanstack/query-persist-client-core": "5.64.1" }, "peerDependencies": { "@tanstack/react-query": "^5.64.1", "react": "^18 || ^19" } }, "sha512-2GmjTFU/QGF3p56UwnFW+N+WsKnzuNry3RQsyDtJ6/AQvy5nd567Mf58hc4bAj35nvI8MkuKCrzegRmHC8Wjxw=="],
-
-    "@tanstack/react-table": ["@tanstack/react-table@8.20.6", "", { "dependencies": { "@tanstack/table-core": "8.20.5" }, "peerDependencies": { "react": ">=16.8", "react-dom": ">=16.8" } }, "sha512-w0jluT718MrOKthRcr2xsjqzx+oEM7B7s/XXyfs19ll++hlId3fjTm+B2zrR3ijpANpkzBAr15j1XGVOMxpggQ=="],
-
-    "@tanstack/table-core": ["@tanstack/table-core@8.20.5", "", {}, "sha512-P9dF7XbibHph2PFRz8gfBKEXEY/HJPOhym8CHmjF8y3q5mWpKx9xtZapXQUWCgkqvsK0R46Azuz+VaxD4Xl+Tg=="],
 
     "@tauri-apps/api": ["@tauri-apps/api@2.2.0", "", {}, "sha512-R8epOeZl1eJEl603aUMIGb4RXlhPjpgxbGVEaqY+0G5JG9vzV/clNlzTeqc+NLYXVqXcn8mb4c5b9pJIUDEyAg=="],
 

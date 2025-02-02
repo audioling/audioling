@@ -1,8 +1,14 @@
 import type { MouseEvent, MutableRefObject } from 'react';
-import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useId,
+    useImperativeHandle,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
-import type { ExpandedState, Row, Table } from '@tanstack/react-table';
-import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import type {
@@ -17,25 +23,20 @@ import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableProps } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { TableGroup } from '@/features/ui/item-list/item-table/table-group.tsx';
 import { TableHeader } from '@/features/ui/item-list/item-table/table-header.tsx';
-import { TableRow } from '@/features/ui/item-list/item-table/table-row.tsx';
-import type { DragData } from '@/utils/drag-drop.ts';
+import { useItemListInternalState } from '@/hooks/use-list.ts';
 import { DragTarget } from '@/utils/drag-drop.ts';
+import type { DragData } from '@/utils/drag-drop.ts';
 import styles from './item-table.module.scss';
 
-interface GroupedItemTableProps<T> extends Omit<ItemTableProps<T>, 'ItemComponent'> {
+interface GroupedItemTableProps<TDataType, TItemType> extends ItemTableProps<TDataType, TItemType> {
     groups: ItemTableGroup[];
-    onGroupClick?: (
-        e: MouseEvent<HTMLDivElement>,
-        items: Row<T | undefined>[],
-        group: ItemTableGroup,
-        table: Table<T | undefined>,
-    ) => void;
+    onGroupClick?: (e: MouseEvent<HTMLDivElement>, group: ItemTableGroup) => void;
 }
 
 export type ItemTableGroup = { count: number; name: string };
 
-export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
-    props: GroupedItemTableProps<T>,
+export const GroupedItemTable = <TDataType, TItemType>(
+    props: GroupedItemTableProps<TDataType, TItemType>,
 ) => {
     const {
         columns,
@@ -43,28 +44,29 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
         onChangeColumnOrder,
         context,
         data,
+        disableAutoScroll,
         enableMultiRowSelection,
-        enableRowDrag = true,
-        enableRowSelection,
-        getRowId,
+        enableSingleRowSelection,
+        enableDragItem,
+        getItemId,
         groups,
         HeaderComponent,
         initialScrollIndex,
-        enableHeader = true,
+        enableHeader,
         isScrolling,
+        ItemComponent,
         itemCount,
         itemType,
         onEndReached,
         onRangeChanged,
-        onRowClick,
-        onRowContextMenu,
-        onRowDoubleClick,
-        onRowDrag,
-        onRowDragData,
-        onRowDrop,
+        onItemClick,
+        onItemContextMenu,
+        onItemDoubleClick,
+        onItemDrag,
+        onItemDragData,
+        onItemDrop,
         onScroll,
         onStartReached,
-        rowIdProperty,
         virtuosoRef,
     } = props;
 
@@ -98,50 +100,28 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
                 target: root,
             });
 
-            autoScrollForElements({
-                canScroll: (args) => {
-                    const data = args.source.data as DragData<unknown>;
-                    if (data.type === DragTarget.TABLE_COLUMN) return false;
-                    return true;
-                },
-                element: scroller as HTMLElement,
-                getAllowedAxis: () => 'vertical',
-                getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
-            });
+            if (!disableAutoScroll) {
+                autoScrollForElements({
+                    canScroll: (args) => {
+                        const data = args.source.data as DragData<unknown>;
+                        if (data.type === DragTarget.TABLE_COLUMN) return false;
+                        return true;
+                    },
+                    element: scroller as HTMLElement,
+                    getAllowedAxis: () => 'vertical',
+                    getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
+                });
+            }
         }
 
         return () => osInstance()?.destroy();
-    }, [scroller, initialize, osInstance]);
-
-    const [expanded, setExpanded] = useState<ExpandedState>(true);
-
-    const tableData = useMemo(() => {
-        setExpanded(true);
-        return data;
-    }, [data]);
-
-    const table = useReactTable({
-        columns,
-        data: tableData,
-        enableMultiRowSelection: enableMultiRowSelection ?? false,
-        enableRowSelection: enableRowSelection ?? false,
-        getCoreRowModel: getCoreRowModel(),
-        getRowId: getRowId ?? ((_, index) => index.toString()),
-        getSortedRowModel: getSortedRowModel(),
-        onExpandedChange: setExpanded,
-        state: {
-            columnOrder,
-            expanded,
-        },
-    });
-
-    const headers = table.getFlatHeaders();
+    }, [scroller, initialize, osInstance, disableAutoScroll]);
 
     const columnStyles = useMemo(() => {
-        const headerSizes = headers.map((header) => header.getSize());
+        const headerSizes = columns.map((column) => column.size);
 
         const sizes: string[] = [];
-        const columns = headerSizes.map((size) => {
+        const columnsStyles = headerSizes.map((size) => {
             if (size > 100000) {
                 sizes.push(itemListHelpers.table.columnSizeToStyle(size));
                 return itemListHelpers.table.columnSizeToStyle(size);
@@ -152,22 +132,22 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
         });
 
         const styles = {
-            gridTemplateColumns: columns.join(' '),
+            gridTemplateColumns: columnsStyles.join(' '),
         };
 
         return { sizes, styles };
-    }, [headers]);
-
-    const tableContext = useMemo(() => ({ ...context, columnStyles }), [context, columnStyles]);
+    }, [columns]);
 
     useImperativeHandle(virtuosoRef, () => ({
         autoscrollToBottom: () => {
             ref?.current?.autoscrollToBottom();
         },
+        deselectAll: () => {
+            reducers.setSelection({});
+        },
         getState: (stateCb: StateCallback) => {
             ref?.current?.getState(stateCb);
         },
-        getTable: () => table,
         scrollBy: (location: ScrollToOptions) => {
             ref?.current?.scrollBy(location);
         },
@@ -180,7 +160,77 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
         scrollToIndex: (location: number | FlatIndexLocationWithAlign) => {
             ref?.current?.scrollToIndex(location);
         },
+        selectAll: () => {
+            const selection: Record<string, boolean> = {};
+
+            for (const [index, item] of data.entries()) {
+                const id = getItemId ? getItemId(index, item as TItemType) : undefined;
+                if (id) {
+                    selection[id] = true;
+                }
+            }
+
+            reducers.setSelection(selection);
+        },
     }));
+
+    const { _onMultiSelectionClick, _onSingleSelectionClick, itemSelection, reducers } =
+        useItemListInternalState();
+
+    const handleItemClick = useCallback(
+        (args: { id: string; index: number; item: TItemType }, e: MouseEvent<HTMLDivElement>) => {
+            const { id, index, item } = args;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (enableMultiRowSelection) {
+                _onMultiSelectionClick(
+                    id,
+                    data.map((d) => getItemId?.(index, d as TItemType) || ''),
+                    index,
+                    e,
+                );
+            } else if (enableSingleRowSelection) {
+                _onSingleSelectionClick(id, e);
+            }
+
+            onItemClick?.({ data, id, index, item, reducers }, e);
+        },
+        [
+            _onMultiSelectionClick,
+            _onSingleSelectionClick,
+            data,
+            enableMultiRowSelection,
+            enableSingleRowSelection,
+            getItemId,
+            onItemClick,
+            reducers,
+        ],
+    );
+
+    const handleItemDoubleClick = useCallback(
+        (args: { id: string; index: number; item: TItemType }, e: MouseEvent<HTMLDivElement>) => {
+            const { id, index, item } = args;
+
+            onItemDoubleClick?.({ data, id, index, item, reducers }, e);
+        },
+        [data, onItemDoubleClick, reducers],
+    );
+
+    const handleItemContextMenu = useCallback(
+        (
+            args: { id: string; index: number; item: TItemType; selectedIds: string[] },
+            e: MouseEvent<HTMLDivElement>,
+        ) => {
+            const { id, index, item, selectedIds } = args;
+
+            onItemContextMenu?.({ data, id, index, item, reducers, selectedIds }, e);
+        },
+        [data, onItemContextMenu, reducers],
+    );
+
+    const groupCounts = useMemo(() => groups.map((group) => group.count), [groups]);
 
     return (
         <div
@@ -190,12 +240,12 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
         >
             {enableHeader && (
                 <div className={styles.header} style={columnStyles.styles}>
-                    {headers.map((header) => (
+                    {columns.map((column) => (
                         <TableHeader
-                            key={`header-${header.id}`}
+                            key={`header-${column.id}`}
+                            column={column}
                             columnOrder={columnOrder}
                             columnStyles={columnStyles.styles}
-                            header={header}
                             setColumnOrder={onChangeColumnOrder}
                             tableId={tableId}
                         />
@@ -211,39 +261,43 @@ export const GroupedItemTable = <T extends { _uniqueId: string; id: string }>(
                                 ? (props) => <HeaderComponent {...props} />
                                 : undefined,
                         }}
-                        context={tableContext}
                         endReached={onEndReached}
-                        groupContent={(index) => (
-                            <TableGroup groups={groups} index={index} table={table} />
-                        )}
-                        groupCounts={groups.map((group) => group.count)}
+                        groupContent={(index) => <TableGroup groups={groups} index={index} />}
+                        groupCounts={groupCounts}
                         increaseViewportBy={100}
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
-                        itemContent={(index) => {
-                            if (index < itemCount) {
+                        itemContent={(i) => {
+                            if (i < itemCount) {
+                                const itemId = getItemId?.(i, data[i] as TItemType) || '';
+
                                 return (
-                                    <TableRow
-                                        context={tableContext}
-                                        enableExpanded={true}
-                                        enableRowDrag={enableRowDrag}
-                                        index={index}
+                                    <ItemComponent
+                                        columnOrder={columnOrder}
+                                        columnStyles={columnStyles}
+                                        columns={columns}
+                                        data={data[i] as TDataType}
+                                        enableDragItem={enableDragItem}
+                                        enableExpanded={false}
+                                        enableSelection={Boolean(
+                                            enableMultiRowSelection || enableSingleRowSelection,
+                                        )}
+                                        index={i}
+                                        isSelected={Boolean(
+                                            itemSelection[itemId as keyof typeof itemSelection],
+                                        )}
                                         itemType={itemType}
-                                        rowId={
-                                            getRowId && rowIdProperty
-                                                ? (data[index]?.[
-                                                      rowIdProperty as keyof T
-                                                  ] as string)
-                                                : index.toString()
-                                        }
-                                        table={table}
+                                        libraryId={context.libraryId}
+                                        listKey={context.listKey}
+                                        listReducers={reducers}
                                         tableId={tableId}
-                                        onRowClick={onRowClick}
-                                        onRowContextMenu={onRowContextMenu}
-                                        onRowDoubleClick={onRowDoubleClick}
-                                        onRowDrag={onRowDrag}
-                                        onRowDragData={onRowDragData}
-                                        onRowDrop={onRowDrop}
+                                        onChangeColumnOrder={onChangeColumnOrder}
+                                        onItemClick={handleItemClick}
+                                        onItemContextMenu={handleItemContextMenu}
+                                        onItemDoubleClick={handleItemDoubleClick}
+                                        onItemDrag={onItemDrag}
+                                        onItemDragData={onItemDragData}
+                                        onItemDrop={onItemDrop}
                                     />
                                 );
                             }

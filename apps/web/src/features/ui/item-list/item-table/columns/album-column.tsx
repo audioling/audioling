@@ -1,28 +1,30 @@
-import type { ColumnHelper } from '@tanstack/react-table';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
+import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
+import { CellSkeleton, EmptyCell } from '@/features/ui/item-list/item-table/columns/shared.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './column.module.scss';
 
-export function albumColumn<T>(columnHelper: ColumnHelper<T>) {
-    return columnHelper.display({
-        cell: ({ row, context }) => {
-            const item = context.data || row.original;
+function Cell({ item }: ItemListCellProps) {
+    if (!item) {
+        return <CellSkeleton height={20} width={100} />;
+    }
 
-            if (typeof item === 'object' && item) {
-                if ('album' in item && typeof item.album === 'string') {
-                    return (
-                        <Text isSecondary className={styles.cell}>
-                            {item.album}
-                        </Text>
-                    );
-                }
-            }
+    if (typeof item === 'object' && item) {
+        if ('album' in item && typeof item.album === 'string') {
+            return (
+                <Text isSecondary className={styles.cell}>
+                    {item.album}
+                </Text>
+            );
+        }
+    }
 
-            return <Skeleton height={20} width={100} />;
-        },
-        header: 'Album',
-        id: 'album',
-        size: itemListHelpers.table.numberToColumnSize(1, 'fr'),
-    });
+    return <EmptyCell />;
 }
+
+export const albumColumn = {
+    cell: Cell,
+    header: () => <Text isUppercase>Album</Text>,
+    id: 'album' as ItemListColumn.ALBUM,
+    size: numberToColumnSize(1, 'fr'),
+};

@@ -51,8 +51,13 @@
         gap: var(--base-gap-md);
         align-items: center;
         justify-content: center;
+        padding: var(--base-gap-md);
         margin-top: auto;
         margin-bottom: auto;
+    }
+
+    .description {
+        text-align: center;
     }
 
     .metadata-group {
@@ -87,6 +92,11 @@
 
         .metadata {
             align-items: flex-start;
+            padding: inherit;
+        }
+
+        .description {
+            text-align: left;
         }
 
         .metadata-group {

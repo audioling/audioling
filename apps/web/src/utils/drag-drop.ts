@@ -6,6 +6,7 @@ export enum DragTarget {
     PLAYLIST = LibraryItemType.PLAYLIST,
     PLAYLIST_TRACK = LibraryItemType.PLAYLIST_TRACK,
     TRACK = LibraryItemType.TRACK,
+    QUEUE_TRACK = LibraryItemType.QUEUE_TRACK,
     ARTIST = LibraryItemType.ARTIST,
     GENRE = LibraryItemType.GENRE,
     ALBUM_ARTIST = LibraryItemType.ALBUM_ARTIST,
@@ -23,6 +24,7 @@ export const DragTargetMap = {
     [LibraryItemType.ARTIST]: DragTarget.ARTIST,
     [LibraryItemType.GENRE]: DragTarget.GENRE,
     [LibraryItemType.ALBUM_ARTIST]: DragTarget.ALBUM_ARTIST,
+    [LibraryItemType.QUEUE_TRACK]: DragTarget.QUEUE_TRACK,
 };
 
 export enum DragOperation {

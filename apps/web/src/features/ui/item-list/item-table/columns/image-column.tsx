@@ -1,24 +1,10 @@
-import { memo } from 'react';
-import { type ColumnHelper, type Row } from '@tanstack/react-table';
 import { ItemImage } from '@/features/shared/item-image/item-image.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
-import type { TableContext } from '@/features/ui/item-list/item-table/item-table.tsx';
+import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/helpers.ts';
+import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './column.module.scss';
 
-export function imageColumn<T>(columnHelper: ColumnHelper<T>) {
-    return columnHelper.display({
-        cell: MemoizedCell,
-        header: '',
-        id: 'image',
-        size: itemListHelpers.table.numberToColumnSize(60, 'px'),
-    });
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Cell<T>({ row, context }: { context: TableContext; row: Row<T | any> }) {
-    const item = context.data || row.original;
-
+function Cell({ item }: ItemListCellProps) {
     if (typeof item === 'object' && item) {
         if ('imageUrl' in item) {
             return (
@@ -35,9 +21,14 @@ function Cell<T>({ row, context }: { context: TableContext; row: Row<T | any> })
 
     return (
         <div className={styles.cell}>
-            <Skeleton height="100%" />
+            <Skeleton containerClassName={styles.skeletonImage} height="100%" />
         </div>
     );
 }
 
-export const MemoizedCell = memo(Cell);
+export const imageColumn = {
+    cell: Cell,
+    header: () => '',
+    id: 'image' as ItemListColumn.IMAGE,
+    size: numberToColumnSize(60, 'px'),
+};
