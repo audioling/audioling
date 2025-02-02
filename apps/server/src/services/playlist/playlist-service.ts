@@ -369,8 +369,9 @@ export const initPlaylistService = (modules: { db: AppDatabase; idFactory: IdFac
         update: async (adapter: AdapterApi, args: UpdateByIdServiceArgs<UpdatePlaylistRequest>) => {
             const [err] = await adapter.updatePlaylist({
                 body: {
-                    ...args.values,
+                    comment: args.values.description ?? '',
                     name: args.values.name ?? '',
+                    public: args.values.isPublic ?? false,
                 },
                 query: { id: args.id },
             });

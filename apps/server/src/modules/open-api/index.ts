@@ -1,9 +1,9 @@
 import type { OpenAPIHono } from '@hono/zod-openapi';
 import { apiReference } from '@scalar/hono-api-reference';
-import type { RootContext } from '@/application.js';
+import type { AuthVariables } from '@/middlewares/auth-middleware.js';
 import packageJson from '../../../package.json';
 
-export const initOpenApiUI = async (app: OpenAPIHono<RootContext>) => {
+export const initOpenApiUI = async (app: OpenAPIHono<{ Variables: AuthVariables }>) => {
     const openApiDocument = app.getOpenAPI31Document({
         info: { title: 'Audioling API', version: packageJson.version },
         openapi: '3.1.0',

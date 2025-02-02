@@ -1,5 +1,5 @@
 import type { AdapterAlbum } from '@/adapters/types/adapter-album-types.js';
-import type { AdapterAlbumArtist } from '@/adapters/types/adapter-artist-types.js';
+import type { AdapterArtist } from '@/adapters/types/adapter-artist-types.js';
 import type { AdapterTrack } from '@/adapters/types/adapter-track-types.js';
 import type { QueryRequest } from '@/adapters/types/shared-types.js';
 
@@ -39,6 +39,6 @@ export type AdapterSearchRequest = QueryRequest<AdapterSearchQuery>;
 
 export type AdapterSearchResponse = {
     albums: AdapterAlbum[];
-    artists: AdapterAlbumArtist[];
+    artists: AdapterArtist[];
     songs: AdapterTrack[];
 };

@@ -58,17 +58,3 @@ export const initImageService = (modules: { db: AppDatabase; imageModule: ImageM
 };
 
 export type ImageService = ReturnType<typeof initImageService>;
-
-// async function isCached(imagePath: string) {
-//     return fs.exists(imagePath);
-// }
-
-// async function cacheImage(imagePath: string, buffer: Buffer) {
-//     // Check if image directory exists, if not create it
-//     const imageDir = path.dirname(imagePath);
-//     if (!fs.existsSync(imageDir)) {
-//         fs.mkdirSync(imageDir, { recursive: true });
-//     }
-
-//     fs.writeFileSync(imagePath, buffer);
-// }
