@@ -1,6 +1,7 @@
 @use '@/styles/base';
 
 .cell {
+    position: relative;
     display: block;
     align-content: center;
     height: 100%;
@@ -60,4 +61,22 @@
 
 .playing {
     color: var(--global-primary-color);
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 60%;
+    border-radius: 50%;
+    opacity: 0.5;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &:active {
+        transform: translate(-50%, -50%) scale(0.9);
+    }
 }
