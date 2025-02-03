@@ -129,3 +129,7 @@
 .uppercase {
     text-transform: uppercase;
 }
+
+.monospace {
+    font-family: var(--global-font-monospace-family);
+}

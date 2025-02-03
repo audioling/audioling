@@ -5,6 +5,7 @@ import styles from './text.module.scss';
 interface TextProps extends React.ComponentPropsWithoutRef<'div'> {
     isCentered?: boolean;
     isEllipsis?: boolean;
+    isMonospace?: boolean;
     isNoSelect?: boolean;
     isSecondary?: boolean;
     isUppercase?: boolean;
@@ -21,6 +22,7 @@ export const Text = (props: TextProps) => {
         isNoSelect,
         isSecondary,
         isUppercase,
+        isMonospace,
         lineClamp,
         size,
         weight,
@@ -37,6 +39,7 @@ export const Text = (props: TextProps) => {
         [styles.noSelect]: isNoSelect,
         [styles[`lineClamp${lineClamp}`]]: lineClamp,
         [styles.uppercase]: isUppercase,
+        [styles.monospace]: isMonospace,
     });
 
     return (

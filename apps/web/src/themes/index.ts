@@ -112,6 +112,7 @@ export type AppThemeConfiguration = {
         'global-danger-color': CSSProperties['color'];
         'global-font-color': CSSProperties['color'];
         'global-font-family': CSSProperties['fontFamily'];
+        'global-font-monospace-family': CSSProperties['fontFamily'];
         'global-font-secondary-color': CSSProperties['color'];
         'global-font-size': CSSProperties['fontSize'];
         'global-info-color': CSSProperties['color'];
