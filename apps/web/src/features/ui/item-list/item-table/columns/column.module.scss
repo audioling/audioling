@@ -41,6 +41,12 @@
     border-radius: base.$border-radius-md;
 }
 
+.name {
+    display: -webkit-box;
+    text-overflow: none;
+    white-space: normal;
+}
+
 .standalone-combined {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

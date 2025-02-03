@@ -31,7 +31,9 @@ function DefaultCell({ item }: ItemListCellProps) {
                 <div
                     style={{ display: 'flex', flexDirection: 'column', gap: 'var(--base-gap-sm)' }}
                 >
-                    <Text className={styles.cell}>{item.name}</Text>
+                    <Text className={clsx(styles.cell, styles.name)} lineClamp={2}>
+                        {item.name}
+                    </Text>
                 </div>
             );
         }
