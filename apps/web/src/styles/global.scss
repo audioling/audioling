@@ -100,54 +100,63 @@ a {
     font-weight: 100 900;
     src: url('../fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype-variations');
     font-display: swap;
+    unicode-range: U+3000-9FFF, U+FF00-FFEF; /* Japanese characters */
 }
 
 @font-face {
     font-family: Archivo;
     font-weight: 100 1000;
     src: url('../fonts/Archivo-VariableFont_wdth,wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: Raleway;
     font-weight: 100 1000;
     src: url('../fonts/Raleway-VariableFont_wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: Fredoka;
     font-weight: 100 1000;
     src: url('../fonts/Fredoka-VariableFont_wdth,wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: 'League Spartan';
     font-weight: 100 1000;
     src: url('../fonts/LeagueSpartan-VariableFont_wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: Lexend;
     font-weight: 100 1000;
     src: url('../fonts/Lexend-VariableFont_wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: Inter;
     font-weight: 100 1000;
     src: url('../fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: Sora;
     font-weight: 100 1000;
     src: url('../fonts/Sora-VariableFont_wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: 'Work Sans';
     font-weight: 100 1000;
     src: url('../fonts/WorkSans-VariableFont_wght.ttf') format('truetype-variations');
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
@@ -156,6 +165,7 @@ a {
     font-weight: 400;
     src: url('../fonts/Poppins-Regular.ttf') format('truetype');
     font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
@@ -164,6 +174,7 @@ a {
     font-weight: 600;
     src: url('../fonts/Poppins-SemiBold.ttf') format('truetype');
     font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
@@ -172,6 +183,7 @@ a {
     font-weight: 700;
     src: url('../fonts/Poppins-Bold.ttf') format('truetype');
     font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
@@ -180,6 +192,7 @@ a {
     font-weight: 800;
     src: url('../fonts/Poppins-ExtraBold.ttf') format('truetype');
     font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
@@ -188,26 +201,14 @@ a {
     font-weight: 900;
     src: url('../fonts/Poppins-Black.ttf') format('truetype');
     font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @font-face {
     font-family: Raleway;
     font-weight: 100 1000;
     src: url('../fonts/Raleway-VariableFont_wght.ttf') format('truetype-variations');
-}
-
-@font-face {
-    font-family: DroidSerif;
-    src: url('https://rawgit.com/google/fonts/master/ufl/ubuntumono/UbuntuMono-Italic.ttf')
-        format('truetype');
-    unicode-range: U+000-5FF; /* Latin glyphs */
-}
-
-@font-face {
-    font-family: DroidSerif;
-    src: url('https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Regular.woff2')
-        format('truetype');
-    unicode-range: U+3000-9FFF, U+ff??; /* Japanese glyphs */
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
 @keyframes spin {
