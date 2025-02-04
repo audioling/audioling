@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import { useState } from 'react';
 import clsx from 'clsx';
 import { Fragment } from 'react/jsx-runtime';
@@ -6,19 +7,25 @@ import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { NumberInput } from '@/features/ui/number-input/number-input.tsx';
 import { Popover } from '@/features/ui/popover/popover.tsx';
+import { SelectInput } from '@/features/ui/select-input/select-input.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
 import { useContainerBreakpoints } from '@/hooks/use-container-query.ts';
 import type { Sizes } from '@/themes/index.ts';
 import type { Breakpoints } from '@/types.ts';
 import styles from './pagination.module.scss';
 
 interface PaginationProps {
+    containerBreakpoints?: Breakpoints;
+    containerRef?: RefObject<HTMLDivElement>;
     currentPage: number;
     hasControls?: boolean;
     hasEdges?: boolean;
+    hasItemsPerPage?: boolean;
     itemCount: number;
     itemsPerPage: number;
     justify?: 'start' | 'center' | 'end' | 'between';
     onFirstPage: () => void;
+    onItemsPerPageChange?: (e: string) => void;
     onLastPage: () => void;
     onNextPage: () => void;
     onPageChange: (page: number) => void;
@@ -29,8 +36,18 @@ interface PaginationProps {
     variant?: 'filled' | 'default' | 'danger' | 'primary' | 'subtle' | 'transparent' | 'outline';
 }
 
+const itemsPerPageOptions = [
+    { label: '50', value: '50' },
+    { label: '100', value: '100' },
+    { label: '200', value: '200' },
+    { label: '250', value: '250' },
+    { label: '500', value: '500' },
+];
+
 export function Pagination(props: PaginationProps) {
     const {
+        containerBreakpoints,
+        containerRef,
         currentPage,
         itemCount,
         itemsPerPage,
@@ -39,12 +56,14 @@ export function Pagination(props: PaginationProps) {
         onNextPage,
         onPageChange,
         onPreviousPage,
+        onItemsPerPageChange,
         justify = 'end',
         size = 'md',
         variant = 'default',
         radius = 'md',
         hasControls = true,
         hasEdges = false,
+        hasItemsPerPage = false,
         pageSiblings,
     } = props;
 
@@ -57,14 +76,16 @@ export function Pagination(props: PaginationProps) {
 
     const { ref, breakpoints } = useContainerBreakpoints();
 
-    const paginationProps = getResponsePaginationProps(breakpoints, {
+    const componentBreakpoints = containerBreakpoints ?? breakpoints;
+
+    const paginationProps = getResponsePaginationProps(componentBreakpoints, {
         siblings: pageSiblings,
         withControls: hasControls,
         withEdges: hasEdges,
     });
 
     return (
-        <div ref={ref} className={rootClassNames}>
+        <div ref={containerRef ?? ref} className={rootClassNames}>
             {hasEdges && (
                 <IconButton
                     aria-label="First page"
@@ -198,6 +219,18 @@ export function Pagination(props: PaginationProps) {
                     onClick={onLastPage}
                 />
             )}
+
+            {hasItemsPerPage && componentBreakpoints.isLargerThanSm && (
+                <SelectInput
+                    data={itemsPerPageOptions}
+                    size="sm"
+                    value={itemsPerPage.toString()}
+                    onChange={(e) => {
+                        if (!e) return;
+                        onItemsPerPageChange?.(e);
+                    }}
+                />
+            )}
         </div>
     );
 }
@@ -209,7 +242,7 @@ function getResponsePaginationProps(
     return {
         siblings:
             defaults.siblings ||
-            (!breakpoints.isLargerThanSm ? 0 : !breakpoints.isLargerThanMd ? 1 : 2),
+            (breakpoints.isLargerThanLg ? 2 : breakpoints.isLargerThanMd ? 1 : 0),
     };
 }
 
@@ -261,5 +294,38 @@ function GoToPageButton(props: {
                 </form>
             </Popover.Content>
         </Popover>
+    );
+}
+
+export function PaginationWithCount(props: PaginationProps) {
+    const { itemsPerPage, ...rest } = props;
+
+    const start = (props.currentPage - 1) * itemsPerPage + 1;
+    const end = Math.min(props.currentPage * itemsPerPage, props.itemCount);
+
+    const { ref: containerRef, breakpoints } = useContainerBreakpoints();
+
+    return (
+        <Group
+            ref={containerRef}
+            align="center"
+            justify={breakpoints.isLargerThanSm ? 'between' : 'center'}
+        >
+            {breakpoints.isLargerThanSm && (
+                <Group>
+                    <Text isNoSelect>
+                        {start} - {end} of {props.itemCount}
+                    </Text>
+                </Group>
+            )}
+
+            <Pagination
+                hasItemsPerPage={true}
+                {...rest}
+                containerBreakpoints={breakpoints}
+                containerRef={containerRef}
+                itemsPerPage={itemsPerPage}
+            />
+        </Group>
     );
 }

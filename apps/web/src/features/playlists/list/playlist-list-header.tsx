@@ -50,18 +50,19 @@ export function PlaylistListHeader({ handleRefresh }: { handleRefresh: () => voi
     return (
         <ListHeader>
             <ListHeader.Left>
-                <IconButtonWithTooltip
-                    icon="add"
-                    tooltipProps={{ label: 'Create Playlist', openDelay: 500 }}
-                    variant="filled"
-                    onClick={() => CreatePlaylistModal.call({ libraryId })}
-                />
                 <ListHeader.Title>Playlists</ListHeader.Title>
                 <ListHeader.ItemCount value={isFetchingItemCount ? 0 : (itemCount ?? 0)} />
             </ListHeader.Left>
             <ListHeader.Right>
                 <Group gap="xs">
                     <SearchButton />
+                    <IconButtonWithTooltip
+                        isCompact
+                        icon="add"
+                        size="lg"
+                        tooltipProps={{ label: 'Create Playlist', openDelay: 500 }}
+                        onClick={() => CreatePlaylistModal.call({ libraryId })}
+                    />
                 </Group>
             </ListHeader.Right>
             <ListHeader.Footer>

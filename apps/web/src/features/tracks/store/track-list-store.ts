@@ -28,7 +28,7 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                 listId: {},
                 pagination: {
                     currentPage: 1,
-                    itemsPerPage: 500,
+                    itemsPerPage: 100,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
                 setColumnOrder: (columnOrder) => {

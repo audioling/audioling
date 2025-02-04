@@ -7,7 +7,7 @@ import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
 import type { PaginatedItemListProps } from '@/features/ui/item-list/helpers.ts';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import { ItemTable } from '@/features/ui/item-list/item-table/item-table.tsx';
-import { Pagination } from '@/features/ui/pagination/pagination.tsx';
+import { PaginationWithCount } from '@/features/ui/pagination/pagination.tsx';
 import { Paper } from '@/features/ui/paper/paper.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { useListPagination, usePaginatedListData } from '@/hooks/use-list.ts';
@@ -22,12 +22,18 @@ export function PaginatedAlbumTable(props: PaginatedAlbumTableProps) {
         <Stack h="100%">
             <PaginatedAlbumTableContent {...props} />
             <Paper>
-                <Pagination
+                <PaginationWithCount
                     currentPage={pagination.currentPage}
                     itemCount={itemCount}
                     itemsPerPage={pagination.itemsPerPage}
                     justify="end"
                     variant="outline"
+                    onItemsPerPageChange={(e) => {
+                        setPagination({
+                            ...pagination,
+                            itemsPerPage: parseInt(e),
+                        });
+                    }}
                     {...paginationProps}
                 />
             </Paper>

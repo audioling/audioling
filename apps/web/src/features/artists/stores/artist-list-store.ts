@@ -25,7 +25,7 @@ export const useArtistListStoreBase = create<ArtistListStore>()(
                 listId: {},
                 pagination: {
                     currentPage: 1,
-                    itemsPerPage: 100,
+                    itemsPerPage: 500,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
                 setColumnOrder: (columnOrder) => {
