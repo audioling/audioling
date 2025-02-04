@@ -373,11 +373,16 @@ export function useInfiniteListData(args: {
 
     const dataQueryKey = itemListHelpers.getDataQueryKey(libraryId, type);
 
+    const lastStartIndex = useRef(0);
+
     const handleRangeChanged = useCallback(
         async (event: { endIndex: number; startIndex: number }) => {
             const { startIndex, endIndex } = event;
 
             if (!query) return;
+
+            const scrollingUp = startIndex < lastStartIndex.current;
+            lastStartIndex.current = startIndex;
 
             const pagesToLoad = itemListHelpers.getPagesToLoad({
                 endIndex,
@@ -387,49 +392,53 @@ export function useInfiniteListData(args: {
             });
 
             if (pagesToLoad.length > 0) {
-                // Check if we need to unload pages
                 const currentLoadedPages = Object.entries(loadedPages.current)
                     .filter(([, isLoaded]) => isLoaded)
                     .map(([page]) => Number(page));
 
                 if (currentLoadedPages.length + pagesToLoad.length > maxLoadedPages) {
-                    // Calculate which pages to keep based on the current viewport
                     const currentPageRange = {
                         end: Math.ceil(endIndex / pagination.itemsPerPage),
                         start: Math.floor(startIndex / pagination.itemsPerPage),
                     };
 
-                    // Sort pages by distance from current viewport
                     const sortedPages = currentLoadedPages.sort((a, b) => {
-                        const distA = Math.min(
-                            Math.abs(a - currentPageRange.start),
-                            Math.abs(a - currentPageRange.end),
-                        );
-                        const distB = Math.min(
-                            Math.abs(b - currentPageRange.start),
-                            Math.abs(b - currentPageRange.end),
-                        );
-                        return distB - distA;
+                        // Calculate distances from both edges of viewport
+                        const aStartDist = Math.abs(a - currentPageRange.start);
+                        const aEndDist = Math.abs(a - currentPageRange.end);
+                        const bStartDist = Math.abs(b - currentPageRange.start);
+                        const bEndDist = Math.abs(b - currentPageRange.end);
+
+                        // Get the minimum distance for each page
+                        const aMinDist = Math.min(aStartDist, aEndDist);
+                        const bMinDist = Math.min(bStartDist, bEndDist);
+
+                        if (aMinDist !== bMinDist) {
+                            return bMinDist - aMinDist; // Sort by distance, furthest first
+                        }
+
+                        // If distances are equal, use scroll direction to break tie
+                        if (scrollingUp) {
+                            return b - a; // When scrolling up, prefer unloading higher numbered pages
+                        } else {
+                            return a - b; // When scrolling down, prefer unloading lower numbered pages
+                        }
                     });
 
-                    // Calculate how many pages we need to unload
                     const pagesToUnloadCount =
                         currentLoadedPages.length + pagesToLoad.length - maxLoadedPages;
                     const pagesToUnload = sortedPages.slice(0, pagesToUnloadCount);
 
-                    // Queue the cleanup work in a microtask to not block the event loop
                     queueMicrotask(() => {
                         pagesToUnload.forEach((page) => {
                             delete loadedPages.current[page];
                             const startIdx = page * pagination.itemsPerPage;
                             const endIdx = startIdx + pagination.itemsPerPage;
 
-                            // Get the IDs that are being unloaded
                             const unloadedIds = data
                                 .slice(startIdx, endIdx)
                                 .filter((id): id is string => id !== undefined);
 
-                            // Remove the items from the query cache
                             queryClient.setQueryData(
                                 dataQueryKey,
                                 (prev: ItemQueryData | undefined) => {
