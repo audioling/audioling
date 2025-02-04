@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import { useParams } from 'react-router';
 import type { AlbumArtistContextMenuProps } from '@/features/controllers/context-menu/context-menu-controller.tsx';
@@ -21,10 +21,8 @@ import { PlayType } from '@/features/player/stores/player-store.tsx';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 
-export function AlbumArtistContextMenu({ items }: AlbumArtistContextMenuProps) {
+export function AlbumArtistContextMenu({ ids }: AlbumArtistContextMenuProps) {
     const { libraryId } = useParams() as { libraryId: string };
-
-    const ids = useMemo(() => items.map((item) => item.id), [items]);
 
     const handlePlay = useCallback(
         (type: PlayType) => {

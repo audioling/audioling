@@ -99,3 +99,14 @@ export function initAppDb(opts: { libraryId: string }) {
 export function setAppDb(db: ReturnType<typeof initAppDb> | undefined) {
     appDb = db;
 }
+
+export const appDbTypeMap = {
+    [LibraryItemType.ALBUM_ARTIST]: LibraryItemType.ALBUM_ARTIST,
+    [LibraryItemType.ALBUM]: LibraryItemType.ALBUM,
+    [LibraryItemType.ARTIST]: LibraryItemType.ARTIST,
+    [LibraryItemType.GENRE]: LibraryItemType.GENRE,
+    [LibraryItemType.PLAYLIST]: LibraryItemType.PLAYLIST,
+    [LibraryItemType.TRACK]: LibraryItemType.TRACK,
+    [LibraryItemType.QUEUE_TRACK]: LibraryItemType.TRACK,
+    [LibraryItemType.PLAYLIST_TRACK]: LibraryItemType.TRACK,
+};

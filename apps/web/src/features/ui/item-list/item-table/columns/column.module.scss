@@ -22,19 +22,41 @@
     @include base.text-ellipsis;
 }
 
-.skeleton-image {
-    height: auto;
-    aspect-ratio: 1 / 1;
-}
-
 .centered {
     align-items: center;
     justify-content: center;
 }
 
+.skeleton-image-container {
+    display: block;
+    width: auto;
+    height: 100%;
+    max-height: 95% !important;
+    aspect-ratio: 1 / 1;
+    margin: auto;
+    line-height: 0;
+    object-fit: contain;
+    border-radius: base.$border-radius-md;
+}
+
+.skeleton-image {
+    display: block;
+    width: auto;
+    height: 100%;
+}
+
+.image-cell {
+    position: relative;
+    display: block;
+    align-content: center;
+    height: 100%;
+    max-height: 95% !important;
+    padding: 0 base.$gap-sm;
+}
+
 .image {
     display: block;
-    height: 100%;
+    width: auto !important;
     aspect-ratio: 1 / 1;
     margin: auto;
     object-fit: cover;

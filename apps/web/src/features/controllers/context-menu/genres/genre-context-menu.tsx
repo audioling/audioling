@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { GenreContextMenuProps } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { QueueInfo } from '@/features/controllers/context-menu/queue/queue-info.tsx';
@@ -12,9 +12,7 @@ import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PlayType } from '@/features/player/stores/player-store.tsx';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 
-export function GenreContextMenu({ items }: GenreContextMenuProps) {
-    const ids = useMemo(() => items.map((item) => item.id), [items]);
-
+export function GenreContextMenu({ ids }: GenreContextMenuProps) {
     const handlePlay = useCallback(
         (type: PlayType) => {
             PlayerController.call({

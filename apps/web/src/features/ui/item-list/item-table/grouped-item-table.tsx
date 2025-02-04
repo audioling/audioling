@@ -221,7 +221,7 @@ export const GroupedItemTable = <TDataType, TItemType>(
     const handleItemContextMenu = useCallback(
         (
             args: { id: string; index: number; item: TItemType; selectedIds: string[] },
-            e: MouseEvent<HTMLDivElement>,
+            e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
         ) => {
             const { id, index, item, selectedIds } = args;
 

@@ -86,7 +86,7 @@ export interface ItemTableProps<TDataType, TItemType> {
             reducers: ItemListInternalReducers;
             selectedIds: string[];
         },
-        e: MouseEvent<HTMLDivElement>,
+        e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
     ) => void;
     onItemDoubleClick?: (
         args: {
@@ -315,7 +315,7 @@ export function ItemTable<TDataType, TItemType>(props: ItemTableProps<TDataType,
     const handleItemContextMenu = useCallback(
         (
             args: { id: string; index: number; item: TItemType; selectedIds: string[] },
-            e: MouseEvent<HTMLDivElement>,
+            e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
         ) => {
             const { id, index, item, selectedIds } = args;
 
@@ -464,7 +464,7 @@ export interface ItemTableItemProps<TDataType, TItemType> {
     ) => void;
     onItemContextMenu?: (
         args: { id: string; index: number; item: TItemType; selectedIds: string[] },
-        e: MouseEvent<HTMLDivElement>,
+        e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
     ) => void;
     onItemDoubleClick?: (
         args: { id: string; index: number; item: TItemType },

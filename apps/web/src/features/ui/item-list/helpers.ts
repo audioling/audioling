@@ -85,6 +85,9 @@ export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDef
 
 export interface ItemListCellProps {
     context?: TableContext;
+    handlers?: {
+        onItemContextMenu?: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    };
     index: number;
     isHovered?: boolean;
     item: unknown | undefined;

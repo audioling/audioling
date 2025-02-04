@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { LibraryItemType } from '@repo/shared-types';
 import type { PlaylistContextMenuProps } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { QueueCache } from '@/features/controllers/context-menu/queue/queue-cache.tsx';
@@ -16,9 +16,7 @@ import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PlayType } from '@/features/player/stores/player-store.tsx';
 import { ContextMenu } from '@/features/ui/context-menu/context-menu.tsx';
 
-export function PlaylistContextMenu({ items }: PlaylistContextMenuProps) {
-    const ids = useMemo(() => items.map((item) => item.id), [items]);
-
+export function PlaylistContextMenu({ ids }: PlaylistContextMenuProps) {
     const handlePlay = useCallback(
         (type: PlayType) => {
             PlayerController.call({

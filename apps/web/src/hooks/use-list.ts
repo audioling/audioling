@@ -5,7 +5,7 @@ import type { QueryFunction, QueryKey } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router';
 import type { AppDbType } from '@/api/db/app-db.ts';
-import { appDb } from '@/api/db/app-db.ts';
+import { appDb, appDbTypeMap } from '@/api/db/app-db.ts';
 import {
     getApiLibraryIdAlbumArtists,
     getGetApiLibraryIdAlbumArtistsQueryKey,
@@ -494,7 +494,7 @@ export function useInfiniteListData(args: {
                         });
 
                         appDb?.setBatch(
-                            type as AppDbType,
+                            appDbTypeMap[type as keyof typeof appDbTypeMap] as AppDbType,
                             pageData.map((item: { id: string }) => ({
                                 key: item.id,
                                 value: item,

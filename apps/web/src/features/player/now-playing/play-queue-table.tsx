@@ -5,6 +5,7 @@ import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/dist/ty
 import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
+import { getDbItems } from '@/api/db/app-db-api.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import type { QueueGroupingProperty } from '@/features/player/stores/player-store.tsx';
@@ -83,7 +84,7 @@ export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTa
     const { columns } = useItemTable(columnOrder);
 
     const handleItemDrop = useCallback(
-        (args: {
+        async (args: {
             dragData: DragData;
             edge: Edge | null;
             id: string;
@@ -132,11 +133,14 @@ export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTa
                         });
                         break;
                     case DragTarget.TRACK:
-                    case DragTarget.PLAYLIST_TRACK:
+                    case DragTarget.PLAYLIST_TRACK: {
+                        const ids = dragData.id;
+                        const items = await getDbItems(LibraryItemType.TRACK, ids);
+
                         PlayerController.call({
                             cmd: {
                                 addToQueueByData: {
-                                    data: (dragData?.item as TrackItem[]) || [],
+                                    data: items as TrackItem[],
                                     type: {
                                         edge,
                                         uniqueId: id,
@@ -145,6 +149,7 @@ export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTa
                             },
                         });
                         break;
+                    }
                     case DragTarget.PLAYLIST:
                         PlayerController.call({
                             cmd: {
@@ -199,7 +204,7 @@ export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTa
                 id: args.selectedIds,
                 item: items,
                 operation: [DragOperation.REORDER],
-                type: DragTarget.TRACK,
+                type: DragTarget.QUEUE_TRACK,
             });
         },
         [data],
@@ -213,7 +218,7 @@ export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTa
                 item: PlayQueueItem;
                 selectedIds: string[];
             },
-            e: MouseEvent<HTMLDivElement>,
+            e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
         ) => {
             const items: PlayQueueItem[] = [];
 
@@ -303,7 +308,7 @@ function EmptyQueue() {
             element: ref.current,
             onDragEnter: () => setIsDraggedOver(true),
             onDragLeave: () => setIsDraggedOver(false),
-            onDrop: (args) => {
+            onDrop: async (args) => {
                 const type = dndUtils.dropType({
                     data: args.source.data as DragData<unknown>,
                 });
@@ -323,16 +328,22 @@ function EmptyQueue() {
                         });
                         break;
                     case DragTarget.TRACK:
-                    case DragTarget.PLAYLIST_TRACK:
+                    case DragTarget.PLAYLIST_TRACK: {
+                        const ids = dragData.id;
+                        const items = await getDbItems(LibraryItemType.TRACK, ids);
+
                         PlayerController.call({
                             cmd: {
                                 addToQueueByData: {
-                                    data: (dragData?.item as TrackItem[]) || [],
+                                    data: (items as (TrackItem | undefined)[]).filter(
+                                        (item) => item !== undefined,
+                                    ) as TrackItem[],
                                     type: PlayType.NOW,
                                 },
                             },
                         });
                         break;
+                    }
                     case DragTarget.PLAYLIST:
                         PlayerController.call({
                             cmd: {

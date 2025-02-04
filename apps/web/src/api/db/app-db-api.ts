@@ -17,10 +17,30 @@ export function useAppDbItem(type: AppDbType, id: string) {
     return query;
 }
 
-export function getDbItem(type: AppDbType, id: string) {
+export async function getDbItem(type: AppDbType, id: string, cb?: (item: unknown) => void) {
     if (!appDb) {
         throw new Error('AppDb is not initialized');
     }
 
+    if (cb) {
+        return appDb.get(type, id).then((item) => {
+            cb(item);
+            return item;
+        });
+    }
+
     return appDb.get(type, id);
+}
+
+export async function getDbItems(type: AppDbType, ids: string[], cb?: (items: unknown[]) => void) {
+    if (!appDb) {
+        throw new Error('AppDb is not initialized');
+    }
+
+    if (cb) {
+        const items = await Promise.all(ids.map((id) => appDb!.get(type, id)));
+        return cb(items);
+    }
+
+    return Promise.all(ids.map((id) => appDb!.get(type, id)));
 }

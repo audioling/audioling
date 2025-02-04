@@ -3,14 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createCallable } from 'react-call';
 import { useParams } from 'react-router';
-import type {
-    AlbumArtistItem,
-    AlbumItem,
-    GenreItem,
-    PlaylistItem,
-    PlayQueueItem,
-    TrackItem,
-} from '@/api/api-types.ts';
+import type { PlayQueueItem } from '@/api/api-types.ts';
 import { AlbumArtistContextMenu } from '@/features/controllers/context-menu/album-artists/album-artist-context-menu.tsx';
 import { AlbumContextMenu } from '@/features/controllers/context-menu/albums/album-context-menu.tsx';
 import { GenreContextMenu } from '@/features/controllers/context-menu/genres/genre-context-menu.tsx';
@@ -97,26 +90,26 @@ export type QueueContextMenuProps = {
 };
 
 export type AlbumContextMenuProps = {
-    items: AlbumItem[];
+    ids: string[];
     type: 'album';
 };
 
 export type TrackContextMenuProps = {
-    items: TrackItem[];
+    ids: string[];
     type: 'track';
 };
 
 export type AlbumArtistContextMenuProps = {
-    items: AlbumArtistItem[];
+    ids: string[];
     type: 'albumArtist';
 };
 
 export type GenreContextMenuProps = {
-    items: GenreItem[];
+    ids: string[];
     type: 'genre';
 };
 
 export type PlaylistContextMenuProps = {
-    items: PlaylistItem[];
+    ids: string[];
     type: 'playlist';
 };

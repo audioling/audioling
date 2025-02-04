@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import { generatePath, NavLink } from 'react-router';
 import type { TrackItem } from '@/api/api-types.ts';
+import { getDbItems } from '@/api/db/app-db-api.ts';
 import { AddToPlaylistModal } from '@/features/playlists/add-to-playlist/add-to-playlist-modal.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
@@ -34,13 +36,14 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                     DragTarget.PLAYLIST,
                     DragTarget.PLAYLIST_TRACK,
                     DragTarget.TRACK,
+                    DragTarget.QUEUE_TRACK,
                     DragTarget.GENRE,
                 ]);
             },
             element: ref.current,
             onDragEnter: () => setIsDraggedOver(true),
             onDragLeave: () => setIsDraggedOver(false),
-            onDrop: (args) => {
+            onDrop: async (args) => {
                 const type = dndUtils.dropType({
                     data: args.source.data as DragData<unknown>,
                 });
@@ -56,11 +59,22 @@ export function NavBarPlaylistItem(props: NavBarPlaylistItemProps) {
                         });
                         break;
                     case DragTarget.TRACK:
-                    case DragTarget.PLAYLIST_TRACK:
+                    case DragTarget.PLAYLIST_TRACK: {
+                        const ids = dragData.id;
+                        const items = await getDbItems(LibraryItemType.TRACK, ids);
+
                         AddToPlaylistModal.call({
                             libraryId,
                             playlistId,
-                            tracks: args.source.data.item as TrackItem[],
+                            tracks: items as TrackItem[],
+                        });
+                        break;
+                    }
+                    case DragTarget.QUEUE_TRACK:
+                        AddToPlaylistModal.call({
+                            libraryId,
+                            playlistId,
+                            tracks: dragData.item as TrackItem[],
                         });
                         break;
                     case DragTarget.ALBUM:

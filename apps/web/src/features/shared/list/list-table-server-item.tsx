@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview';
@@ -7,19 +8,11 @@ import { LibraryItemType } from '@repo/shared-types';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
-import type {
-    AlbumArtistItem,
-    AlbumItem,
-    GenreItem,
-    PlaylistItem,
-    TrackItem,
-} from '@/api/api-types.ts';
-import { getDbItem } from '@/api/db/app-db-api.ts';
-import type { AppDbType } from '@/api/db/app-db.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
-import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
+import type { ItemListColumnDefinition } from '@/features/ui/item-list/helpers.ts';
+import { ItemListColumn, itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import {
     ItemTableHeader,
     type ItemTableItemProps,
@@ -90,13 +83,9 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
                             | DragTarget
                             | undefined;
 
-                        const items = ids.map((id) =>
-                            getDbItem(itemType as AppDbType, id),
-                        ) as TItemType[];
-
                         return dndUtils.generateDragData({
                             id: ids,
-                            item: items,
+                            item: [],
                             operation: [DragOperation.ADD],
                             type: dragTarget ?? DragTarget.UNKNOWN,
                         });
@@ -171,76 +160,90 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
         return combine(...fns);
     }, [enableDragItem, id, index, itemData, itemType, listReducers]);
 
-    const handleItemContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const handleItemContextMenu = useCallback(
+        async (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+            e.preventDefault();
+            e.stopPropagation();
 
-        const isSelfSelected = listReducers.getSelectionById(id);
+            const isSelfSelected = listReducers.getSelectionById(id);
 
-        const ids: string[] = [];
+            const ids: string[] = [];
 
-        if (!isSelfSelected) {
-            listReducers.clearAndSetSelectionById(id);
-            ids.push(id);
-        } else {
-            const selected = listReducers.getSelection();
-            ids.push(...Object.keys(selected));
-        }
+            if (!isSelfSelected) {
+                listReducers.clearAndSetSelectionById(id);
+                ids.push(id);
+            } else {
+                const selected = listReducers.getSelection();
+                ids.push(...Object.keys(selected));
+            }
 
-        const items = ids.map((id) => getDbItem(itemType as AppDbType, id)) as TItemType[];
+            onItemContextMenu?.({ id, index, item: item as TItemType, selectedIds: ids }, e);
 
-        onItemContextMenu?.({ id, index, item: item as TItemType, selectedIds: ids }, e);
+            switch (itemType) {
+                case LibraryItemType.ALBUM:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'album',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.ALBUM_ARTIST:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'albumArtist',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.ARTIST:
+                    break;
+                case LibraryItemType.GENRE:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'genre',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.PLAYLIST:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'playlist',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.TRACK:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'track',
+                        },
+                        event: e,
+                    });
+                    break;
+            }
+        },
+        [id, index, item, itemType, listReducers, onItemContextMenu],
+    );
 
-        switch (itemType) {
-            case LibraryItemType.ALBUM:
-                ContextMenuController.call({
-                    cmd: {
-                        items: items as AlbumItem[],
-                        type: 'album',
-                    },
-                    event: e,
-                });
-                break;
-            case LibraryItemType.ALBUM_ARTIST:
-                ContextMenuController.call({
-                    cmd: {
-                        items: items as AlbumArtistItem[],
-                        type: 'albumArtist',
-                    },
-                    event: e,
-                });
-                break;
-            case LibraryItemType.ARTIST:
-                break;
-            case LibraryItemType.GENRE:
-                ContextMenuController.call({
-                    cmd: {
-                        items: items as GenreItem[],
-                        type: 'genre',
-                    },
-                    event: e,
-                });
-                break;
-            case LibraryItemType.PLAYLIST:
-                ContextMenuController.call({
-                    cmd: {
-                        items: items as PlaylistItem[],
-                        type: 'playlist',
-                    },
-                    event: e,
-                });
-                break;
-            case LibraryItemType.TRACK:
-                ContextMenuController.call({
-                    cmd: {
-                        items: items as TrackItem[],
-                        type: 'track',
-                    },
-                    event: e,
-                });
-                break;
-        }
-    };
+    const cellHandlers = useCallback(
+        (column: ItemListColumnDefinition) => {
+            if (column.id === ItemListColumn.ACTIONS) {
+                return {
+                    onItemContextMenu: handleItemContextMenu,
+                };
+            }
+
+            return {};
+        },
+        [handleItemContextMenu],
+    );
 
     if (enableStickyHeader && index === 0) {
         return (
@@ -275,6 +278,7 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
                     return (
                         <column.cell
                             key={column.id}
+                            handlers={cellHandlers(column)}
                             index={index}
                             isHovered={isHovered}
                             item={item as TItemType | undefined}

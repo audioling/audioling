@@ -105,7 +105,7 @@ function Cell({ item, itemType, isHovered }: ItemListCellProps) {
             };
 
             return (
-                <div className={styles.cell}>
+                <div className={styles.imageCell}>
                     <ItemImage
                         className={styles.image}
                         size="table"
@@ -127,8 +127,11 @@ function Cell({ item, itemType, isHovered }: ItemListCellProps) {
     }
 
     return (
-        <div className={styles.cell}>
-            <Skeleton containerClassName={styles.skeletonImage} height="100%" />
+        <div className={styles.imageCell}>
+            <Skeleton
+                className={styles.skeletonImage}
+                containerClassName={styles.skeletonImageContainer}
+            />
         </div>
     );
 }

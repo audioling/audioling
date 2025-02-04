@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--table-row-config-comfortable-height);
+    height: var(--table-row-config-normal-height);
     color: var(--table-row-font-color);
     user-select: none;
     background-color: var(--table-row-background-color);
@@ -34,10 +34,6 @@
 
 .row-condensed {
     height: var(--table-row-config-condensed-height);
-}
-
-.row-normal {
-    height: var(--table-row-config-normal-height);
 }
 
 .row-comfortable {
