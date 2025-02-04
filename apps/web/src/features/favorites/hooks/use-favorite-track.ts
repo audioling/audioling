@@ -20,13 +20,36 @@ export function useFavoriteTrack() {
                 // Update all changed tracks in the player queue
                 updateQueueFavorites(trackIds, true);
 
-                // Update all list queries
+                // Update all track queries
                 queryClient.setQueriesData<ItemQueryData>(
                     {
                         exact: true,
                         queryKey: itemListHelpers.getDataQueryKey(
                             variables.libraryId,
                             LibraryItemType.TRACK,
+                        ),
+                    },
+                    (prev) => {
+                        const updates: ItemQueryData = {
+                            ...prev,
+                        };
+
+                        for (const id of trackIds) {
+                            if (!prev?.[id]) continue;
+                            updates[id] = { ...prev[id], userFavorite: true };
+                        }
+
+                        return updates;
+                    },
+                );
+
+                // Update all playlist track queries
+                queryClient.setQueriesData<ItemQueryData>(
+                    {
+                        exact: true,
+                        queryKey: itemListHelpers.getDataQueryKey(
+                            variables.libraryId,
+                            LibraryItemType.PLAYLIST_TRACK,
                         ),
                     },
                     (prev) => {
