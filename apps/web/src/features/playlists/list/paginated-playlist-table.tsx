@@ -43,7 +43,6 @@ function PaginatedPlaylistTableContent(props: PaginatedPlaylistTableProps) {
 
     const { data } = usePaginatedListData({
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.PLAYLIST,

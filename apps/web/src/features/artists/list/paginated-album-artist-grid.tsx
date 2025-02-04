@@ -44,7 +44,6 @@ function PaginatedAlbumArtistGridContent(props: PaginatedAlbumArtistGridProps) {
 
     const { data } = usePaginatedListData({
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.ALBUM_ARTIST,

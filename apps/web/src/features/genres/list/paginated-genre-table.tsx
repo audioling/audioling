@@ -42,7 +42,6 @@ function PaginatedGenreTableContent(props: PaginatedGenreTableProps) {
 
     const { data } = usePaginatedListData({
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.GENRE,

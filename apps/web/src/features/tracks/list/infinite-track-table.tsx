@@ -20,7 +20,6 @@ export function InfiniteTrackTable({
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.TRACK,

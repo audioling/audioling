@@ -40,6 +40,7 @@
         "deepmerge": "^4.3.1",
         "fast-average-color": "^9.4.0",
         "i18next": "^24.2.2",
+        "idb": "^8.0.2",
         "js-cookie": "^3.0.5",
         "motion": "^11.18.2",
         "nanoid": "^5.0.9",

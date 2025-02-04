@@ -40,7 +40,6 @@ function PaginatedAlbumTableContent(props: PaginatedAlbumTableProps) {
 
     const { data } = usePaginatedListData({
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.ALBUM,

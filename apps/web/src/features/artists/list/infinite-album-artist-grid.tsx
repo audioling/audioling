@@ -29,7 +29,6 @@ export function InfiniteAlbumArtistGridContent({
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.ALBUM_ARTIST,

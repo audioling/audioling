@@ -22,7 +22,6 @@ export function InfinitePlaylistTable({
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.PLAYLIST,

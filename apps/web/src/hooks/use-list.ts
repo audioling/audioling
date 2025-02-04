@@ -4,6 +4,8 @@ import { LibraryItemType } from '@repo/shared-types';
 import type { QueryFunction, QueryKey } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router';
+import type { AppDbType } from '@/api/db/app-db.ts';
+import { appDb } from '@/api/db/app-db.ts';
 import {
     getApiLibraryIdAlbumArtists,
     getGetApiLibraryIdAlbumArtistsQueryKey,
@@ -162,12 +164,11 @@ export type ItemQueryData = Record<string, unknown>;
 
 export function usePaginatedListData(args: {
     libraryId: string;
-    listKey: string;
     pagination: ItemListPaginationState;
     params: Record<string, unknown>;
     type: LibraryItemType;
 }) {
-    const { libraryId, listKey, pagination, params, type } = args;
+    const { libraryId, pagination, params, type } = args;
 
     const queryClient = useQueryClient();
     const [data, setData] = useState<(string | undefined)[]>(
@@ -274,7 +275,6 @@ export function usePaginatedListData(args: {
         fetchData();
     }, [
         libraryId,
-        listKey,
         pagination.currentPage,
         pagination.itemsPerPage,
         params,
@@ -289,13 +289,13 @@ export function usePaginatedListData(args: {
 export function useInfiniteListData(args: {
     itemCount: number;
     libraryId: string;
-    listKey?: string;
+    maxLoadedPages?: number;
     pagination: ItemListPaginationState;
     params: Record<string, unknown>;
     pathParams?: Record<string, unknown>;
     type: LibraryItemType;
 }) {
-    const { itemCount, libraryId, pagination, params, type, pathParams } = args;
+    const { itemCount, libraryId, pagination, params, type, pathParams, maxLoadedPages = 3 } = args;
 
     const queryClient = useQueryClient();
 
@@ -387,11 +387,68 @@ export function useInfiniteListData(args: {
             });
 
             if (pagesToLoad.length > 0) {
+                // Check if we need to unload pages
+                const currentLoadedPages = Object.entries(loadedPages.current)
+                    .filter(([, isLoaded]) => isLoaded)
+                    .map(([page]) => Number(page));
+
+                if (currentLoadedPages.length + pagesToLoad.length > maxLoadedPages) {
+                    // Calculate which pages to keep based on the current viewport
+                    const currentPageRange = {
+                        end: Math.ceil(endIndex / pagination.itemsPerPage),
+                        start: Math.floor(startIndex / pagination.itemsPerPage),
+                    };
+
+                    // Sort pages by distance from current viewport
+                    const sortedPages = currentLoadedPages.sort((a, b) => {
+                        const distA = Math.min(
+                            Math.abs(a - currentPageRange.start),
+                            Math.abs(a - currentPageRange.end),
+                        );
+                        const distB = Math.min(
+                            Math.abs(b - currentPageRange.start),
+                            Math.abs(b - currentPageRange.end),
+                        );
+                        return distB - distA;
+                    });
+
+                    // Calculate how many pages we need to unload
+                    const pagesToUnloadCount =
+                        currentLoadedPages.length + pagesToLoad.length - maxLoadedPages;
+                    const pagesToUnload = sortedPages.slice(0, pagesToUnloadCount);
+
+                    // Queue the cleanup work in a microtask to not block the event loop
+                    queueMicrotask(() => {
+                        pagesToUnload.forEach((page) => {
+                            delete loadedPages.current[page];
+                            const startIdx = page * pagination.itemsPerPage;
+                            const endIdx = startIdx + pagination.itemsPerPage;
+
+                            // Get the IDs that are being unloaded
+                            const unloadedIds = data
+                                .slice(startIdx, endIdx)
+                                .filter((id): id is string => id !== undefined);
+
+                            // Remove the items from the query cache
+                            queryClient.setQueryData(
+                                dataQueryKey,
+                                (prev: ItemQueryData | undefined) => {
+                                    if (!prev) return prev;
+                                    const updates = { ...prev };
+                                    unloadedIds.forEach((id) => {
+                                        delete updates[id];
+                                    });
+                                    return updates;
+                                },
+                            );
+                        });
+                    });
+                }
+
                 for (const page of pagesToLoad) {
                     loadedPages.current[page] = true;
 
                     const currentOffset = page * pagination.itemsPerPage;
-
                     const fetchParams = {
                         ...params,
                         limit: pagination.itemsPerPage.toString(),
@@ -401,7 +458,7 @@ export function useInfiniteListData(args: {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const fn = query.queryFn(fetchParams as any);
 
-                    const { data } = await queryClient.fetchQuery({
+                    const { data: pageData } = await queryClient.fetchQuery({
                         gcTime: 0,
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         queryFn: fn as QueryFunction<any, any>,
@@ -410,30 +467,53 @@ export function useInfiniteListData(args: {
                         staleTime: 0,
                     });
 
-                    queryClient.setQueryData(dataQueryKey, (prev: ItemQueryData | undefined) => {
-                        const updates: ItemQueryData = {
-                            ...prev,
-                        };
+                    // Queue the data updates in a microtask
+                    queueMicrotask(() => {
+                        queryClient.setQueryData(
+                            dataQueryKey,
+                            (prev: ItemQueryData | undefined) => {
+                                const updates: ItemQueryData = {
+                                    ...prev,
+                                };
 
-                        for (const item of data) {
-                            updates[item.id] = item;
-                        }
+                                for (const item of pageData) {
+                                    updates[item.id] = item;
+                                }
 
-                        return updates;
-                    });
+                                return updates;
+                            },
+                        );
 
-                    setData((prevData) => {
-                        const newData = [...prevData];
-                        const startIndex = currentOffset;
-                        data.forEach((item: { id: string }, index: number) => {
-                            newData[startIndex + index] = item.id;
+                        setData((prevData) => {
+                            const newData = [...prevData];
+                            const startIndex = currentOffset;
+                            pageData.forEach((item: { id: string }, index: number) => {
+                                newData[startIndex + index] = item.id;
+                            });
+                            return newData;
                         });
-                        return newData;
+
+                        appDb?.setBatch(
+                            type as AppDbType,
+                            pageData.map((item: { id: string }) => ({
+                                key: item.id,
+                                value: item,
+                            })),
+                        );
                     });
                 }
             }
         },
-        [dataQueryKey, pagination.itemsPerPage, params, query, queryClient],
+        [
+            query,
+            pagination.itemsPerPage,
+            maxLoadedPages,
+            data,
+            queryClient,
+            dataQueryKey,
+            params,
+            type,
+        ],
     );
 
     const debouncedHandleRangeChanged = debounce(handleRangeChanged, 100);

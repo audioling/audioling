@@ -27,7 +27,6 @@ export function ReadOnlyPlaylistTrackTable({
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
-        listKey,
         pagination,
         params,
         pathParams: {

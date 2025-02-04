@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type { PanInfo } from 'motion/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Navigate, Outlet } from 'react-router';
+import { initAppDb, setAppDb } from '@/api/db/app-db.ts';
 import { useSelectedLibraryId } from '@/features/authentication/stores/auth-store.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
@@ -27,6 +28,19 @@ export function DashboardLayout() {
     const isLargerThanSm = useIsLargerThanSm();
 
     const selectedLibraryId = useSelectedLibraryId();
+
+    useEffect(() => {
+        if (selectedLibraryId === null) {
+            setAppDb(undefined);
+            return;
+        }
+
+        setAppDb(initAppDb({ libraryId: selectedLibraryId }));
+
+        return () => {
+            setAppDb(undefined);
+        };
+    }, [selectedLibraryId]);
 
     if (selectedLibraryId === null) {
         return <Navigate to={APP_ROUTE.DASHBOARD_LIBRARY_SELECT} />;

@@ -28,7 +28,6 @@ export function InfinitePlaylistGridContent({
     const { data, handleRangeChanged } = useInfiniteListData({
         itemCount,
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.PLAYLIST,

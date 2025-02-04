@@ -42,7 +42,6 @@ function PaginatedTrackTableContent(props: PaginatedTrackTableProps) {
 
     const { data } = usePaginatedListData({
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.TRACK,

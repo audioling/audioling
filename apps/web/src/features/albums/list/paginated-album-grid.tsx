@@ -39,7 +39,6 @@ function PaginatedAlbumGridContent(props: PaginatedAlbumGridProps) {
 
     const { data } = usePaginatedListData({
         libraryId,
-        listKey,
         pagination,
         params,
         type: LibraryItemType.ALBUM,
