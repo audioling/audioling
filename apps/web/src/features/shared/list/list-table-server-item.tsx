@@ -14,6 +14,8 @@ import type {
     PlaylistItem,
     TrackItem,
 } from '@/api/api-types.ts';
+import { getDbItem } from '@/api/db/app-db-api.ts';
+import type { AppDbType } from '@/api/db/app-db.ts';
 import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
@@ -88,9 +90,9 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
                             | DragTarget
                             | undefined;
 
-                        const items = ids
-                            .map((id) => itemData?.[id])
-                            .filter((item): item is TItemType => item !== undefined);
+                        const items = ids.map((id) =>
+                            getDbItem(itemType as AppDbType, id),
+                        ) as TItemType[];
 
                         return dndUtils.generateDragData({
                             id: ids,
@@ -185,9 +187,7 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
             ids.push(...Object.keys(selected));
         }
 
-        const items = ids
-            .map((id) => itemData?.[id] as TItemType)
-            .filter((item): item is TItemType => item !== undefined);
+        const items = ids.map((id) => getDbItem(itemType as AppDbType, id)) as TItemType[];
 
         onItemContextMenu?.({ id, index, item: item as TItemType, selectedIds: ids }, e);
 

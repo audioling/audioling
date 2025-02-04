@@ -16,3 +16,11 @@ export function useAppDbItem(type: AppDbType, id: string) {
 
     return query;
 }
+
+export function getDbItem(type: AppDbType, id: string) {
+    if (!appDb) {
+        throw new Error('AppDb is not initialized');
+    }
+
+    return appDb.get(type, id);
+}
