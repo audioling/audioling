@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { LibraryFeatures } from '@repo/shared-types';
 import { LibraryItemType, TrackListSortOptions } from '@repo/shared-types';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
@@ -123,7 +123,7 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
     );
 }
 
-function OfflineItemCount() {
+function OfflineItemCountInner() {
     const { libraryId } = useParams() as { libraryId: string };
     const query = useTrackListStore.use.queryBuilder?.();
 
@@ -144,6 +144,14 @@ function OfflineItemCount() {
     return <ListHeader.ItemCount value={itemCount ?? 0} />;
 }
 
+function OfflineItemCount() {
+    return (
+        <Suspense fallback={<></>}>
+            <OfflineItemCountInner />
+        </Suspense>
+    );
+}
+
 function OfflineLeftHeader({
     itemCount,
     onFilterSubmit,
@@ -157,6 +165,8 @@ function OfflineLeftHeader({
     const sortBy = useTrackListStore.use.sortBy();
     const sortOrder = useTrackListStore.use.sortOrder();
     const [indexing, setIndexing] = useState<boolean | number>(false);
+
+    const [queryError, setQueryError] = useState<Error | null>(null);
 
     const handleIndexTracks = async () => {
         if (indexing) {
@@ -203,6 +213,8 @@ function OfflineLeftHeader({
             return;
         }
 
+        setQueryError(null);
+
         const filter = onFilterSubmit();
 
         if (!filter) {
@@ -211,32 +223,38 @@ function OfflineLeftHeader({
 
         setIsQuerying(options.force ? 'force' : 'query');
 
-        const now = performance.now();
+        try {
+            const now = performance.now();
 
-        await libraryIndex.runQuery(LibraryItemType.TRACK, filter, {
-            force: options.force,
-        });
+            await libraryIndex.runQuery(LibraryItemType.TRACK, filter, {
+                force: options.force,
+            });
 
-        setIsQuerying(false);
+            setIsQuerying(false);
 
-        const offlineListItemCountQueryKey = libraryIndex.getCountQueryKey(
-            libraryId,
-            LibraryItemType.TRACK,
-            stringify(serializeFilter(filter)),
-        );
+            const offlineListItemCountQueryKey = libraryIndex.getCountQueryKey(
+                libraryId,
+                LibraryItemType.TRACK,
+                stringify(serializeFilter(filter)),
+            );
 
-        const offlineListDataQueryKey = itemListHelpers.getDataQueryKey(
-            libraryId,
-            LibraryItemType.TRACK,
-            true,
-        );
+            const offlineListDataQueryKey = itemListHelpers.getDataQueryKey(
+                libraryId,
+                LibraryItemType.TRACK,
+                true,
+            );
 
-        await queryClient.invalidateQueries({ queryKey: offlineListItemCountQueryKey });
-        await queryClient.invalidateQueries({ queryKey: offlineListDataQueryKey });
-        setQueryBuilder?.(filter);
+            await queryClient.invalidateQueries({ queryKey: offlineListItemCountQueryKey });
+            await queryClient.invalidateQueries({ queryKey: offlineListDataQueryKey });
+            setQueryBuilder?.(filter);
 
-        const end = performance.now();
-        console.log(`Time taken: ${(end - now) / 1000} seconds`);
+            const end = performance.now();
+            console.log(`Time taken: ${(end - now) / 1000} seconds`);
+        } catch (error) {
+            setIsQuerying(false);
+            setQueryError(error as Error);
+            console.error(error);
+        }
     };
 
     const { data: indexStatus } = useIndexStatus({ type: LibraryItemType.TRACK });
@@ -245,14 +263,21 @@ function OfflineLeftHeader({
 
     return (
         <Group gap="xs">
-            <Button
-                disabled={isQuerying === 'force' || isQueryingDisabled}
-                isLoading={isQuerying === 'query'}
-                variant="outline"
-                onClick={() => handleQuery({ force: false })}
+            <Tooltip
+                isOpen={Boolean(queryError)}
+                label={queryError?.message ?? ''}
+                openDelay={0}
+                position="bottom"
             >
-                Submit
-            </Button>
+                <Button
+                    disabled={isQuerying === 'force' || isQueryingDisabled}
+                    isLoading={isQuerying === 'query'}
+                    variant="outline"
+                    onClick={() => handleQuery({ force: false })}
+                >
+                    Submit
+                </Button>
+            </Tooltip>
             <Tooltip label="Force the query to be refetched" openDelay={0} position="bottom">
                 <IconButton
                     disabled={isQuerying === 'query' || isQueryingDisabled}
