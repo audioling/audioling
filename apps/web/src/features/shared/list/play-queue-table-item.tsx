@@ -126,6 +126,7 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
                         DragTarget.PLAYLIST,
                         DragTarget.PLAYLIST_TRACK,
                         DragTarget.TRACK,
+                        DragTarget.QUEUE_TRACK,
                         DragTarget.GENRE,
                     ]);
 
