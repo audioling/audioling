@@ -122,33 +122,38 @@ export const trackQueryOperators = {
     ],
 };
 
-export function TrackQueryBuilder() {
-    const [filter, setFilter] = useState<QueryFilter>({
-        limit: undefined,
-        rules: {
-            conditions: [
+interface TrackQueryBuilderProps {
+    defaultFilter?: QueryFilter;
+    onFilterChange?: (filter: QueryFilter) => void;
+}
+
+export function TrackQueryBuilder({ defaultFilter, onFilterChange }: TrackQueryBuilderProps) {
+    const [filter, setFilter] = useState<QueryFilter>(
+        defaultFilter || {
+            limit: undefined,
+            rules: {
+                conditions: [
+                    {
+                        condition: { contains: '' },
+                        conditionId: nanoid(),
+                        field: 'name',
+                    },
+                ],
+                groupId: 'root',
+                operator: 'AND',
+            },
+            sortBy: [
                 {
-                    condition: { is: 'true' },
-                    conditionId: nanoid(),
-                    field: 'isCompilation',
+                    direction: 'asc',
+                    field: 'albumId',
                 },
                 {
-                    conditions: [
-                        {
-                            condition: { is: '' },
-                            conditionId: nanoid(),
-                            field: 'albumId',
-                        },
-                    ],
-                    groupId: nanoid(),
-                    operator: 'OR',
+                    direction: 'asc',
+                    field: 'trackNumber',
                 },
             ],
-            groupId: 'root',
-            operator: 'AND',
         },
-        sortBy: [],
-    });
+    );
 
     const fields = useMemo(() => {
         return getFields({ fields: trackQueryFields, operators: trackQueryOperators });
@@ -183,6 +188,8 @@ export function TrackQueryBuilder() {
             rules: sortConditions(filter.rules),
             sortBy: filter.sortBy,
         });
+
+        onFilterChange?.(filter);
     };
 
     return (

@@ -452,6 +452,7 @@ export interface ItemTableItemProps<TDataType, TItemType> {
     enableStickyHeader?: boolean;
     getItemId?: (index: number, item: TItemType) => string;
     index: number;
+    isOffline?: boolean;
     isSelected?: boolean;
     itemType: LibraryItemType;
     libraryId: string;

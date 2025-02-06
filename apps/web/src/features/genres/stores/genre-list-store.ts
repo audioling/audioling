@@ -25,6 +25,7 @@ export const useGenreListStoreBase = create<GenreListStore>()(
                 folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
+                mode: 'online',
                 pagination: {
                     currentPage: 1,
                     itemsPerPage: 500,
@@ -87,6 +88,11 @@ export const useGenreListStoreBase = create<GenreListStore>()(
                 sortBy: GenreListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
                 state: {},
+                toggleMode: () => {
+                    set((state) => {
+                        state.mode = state.mode === 'online' ? 'offline' : 'online';
+                    });
+                },
             })),
         ),
         { name: 'genre-list-store', version: 1 },

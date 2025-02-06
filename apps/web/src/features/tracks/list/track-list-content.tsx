@@ -1,7 +1,10 @@
 import { useParams, useSearchParams } from 'react-router';
+import stringify from 'safe-stable-stringify';
 import { useGetApiLibraryIdTracksCountSuspense } from '@/api/openapi-generated/tracks/tracks.ts';
 import { ListWrapper } from '@/features/shared/list-wrapper/list-wrapper.tsx';
+import { InfiniteOfflineTrackTable } from '@/features/tracks/list/infinite-offline-track-table.tsx';
 import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.tsx';
+import { PaginatedOfflineTrackTable } from '@/features/tracks/list/paginated-offline-track-table.tsx';
 import { PaginatedTrackTable } from '@/features/tracks/list/paginated-track-table.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
@@ -29,6 +32,9 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     const folderId = useTrackListStore.use.folderId();
     const sortBy = useTrackListStore.use.sortBy();
     const sortOrder = useTrackListStore.use.sortOrder();
+    const mode = useTrackListStore.use.mode();
+    const query = useTrackListStore.use.queryBuilder?.();
+
     const pagination = useTrackListStore.use.pagination();
     const displayType = useTrackListStore.use.displayType();
     const paginationType = useTrackListStore.use.paginationType();
@@ -50,6 +56,38 @@ function ListComponent({ itemCount }: { itemCount: number }) {
         sortBy,
         sortOrder,
     };
+
+    if (mode === 'offline') {
+        const offlineListKey = stringify(query);
+
+        if (!offlineListKey || !query) {
+            return null;
+        }
+
+        switch (paginationType) {
+            case ItemListPaginationType.PAGINATED:
+                return (
+                    <PaginatedOfflineTrackTable
+                        libraryId={libraryId}
+                        listKey={offlineListKey}
+                        pagination={pagination}
+                        query={query}
+                        setPagination={setPagination}
+                    />
+                );
+            case ItemListPaginationType.INFINITE:
+                return (
+                    <ListWrapper listKey={offlineListKey}>
+                        <InfiniteOfflineTrackTable
+                            libraryId={libraryId}
+                            listKey={offlineListKey}
+                            pagination={pagination}
+                            query={query}
+                        />
+                    </ListWrapper>
+                );
+        }
+    }
 
     if (displayType === ItemListDisplayType.GRID) {
         switch (paginationType) {

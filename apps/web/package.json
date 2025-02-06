@@ -42,6 +42,8 @@
         "i18next": "^24.2.2",
         "idb": "^8.0.2",
         "js-cookie": "^3.0.5",
+        "jsonata": "^2.0.6",
+        "lodash": "^4.17.21",
         "motion": "^11.18.2",
         "nanoid": "^5.0.9",
         "overlayscrollbars": "^2.10.1",

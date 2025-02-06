@@ -19,6 +19,7 @@ export const usePlaylistListStoreBase = create<PlaylistListStore>()(
                 folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
+                mode: 'online',
                 pagination: {
                     currentPage: 1,
                     itemsPerPage: 500,
@@ -81,6 +82,11 @@ export const usePlaylistListStoreBase = create<PlaylistListStore>()(
                 sortBy: PlaylistListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
                 state: {},
+                toggleMode: () => {
+                    set((state) => {
+                        state.mode = state.mode === 'online' ? 'offline' : 'online';
+                    });
+                },
             })),
         ),
         { name: 'playlist-list-store', version: 1 },

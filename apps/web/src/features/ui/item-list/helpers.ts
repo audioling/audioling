@@ -118,8 +118,8 @@ export const itemListHelpers = {
     generateListId(libraryId: string, pathname: string) {
         return `${libraryId}-${pathname}-${nanoid()}`;
     },
-    getDataQueryKey(libraryId: string, type: LibraryItemType) {
-        return [libraryId, 'data', type];
+    getDataQueryKey(libraryId: string, type: LibraryItemType, offline?: boolean) {
+        return offline ? [libraryId, 'data', type, 'offline'] : [libraryId, 'data', type];
     },
     getInitialData(itemCount: number) {
         return Array.from({ length: itemCount }, () => undefined);

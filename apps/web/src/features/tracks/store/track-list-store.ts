@@ -1,5 +1,6 @@
 import { TrackListSortOptions } from '@repo/shared-types';
 import { ListSortOrder } from '@repo/shared-types';
+import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -26,11 +27,27 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                 folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
+                mode: 'offline',
                 pagination: {
                     currentPage: 1,
                     itemsPerPage: 100,
                 },
                 paginationType: ItemListPaginationType.PAGINATED,
+                queryBuilder: {
+                    limit: undefined,
+                    rules: {
+                        conditions: [
+                            {
+                                condition: { contains: '' },
+                                conditionId: nanoid(),
+                                field: 'name',
+                            },
+                        ],
+                        groupId: 'root',
+                        operator: 'AND',
+                    },
+                    sortBy: [],
+                },
                 setColumnOrder: (columnOrder) => {
                     set((state) => {
                         state.columnOrder = columnOrder;
@@ -63,11 +80,15 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                         state.pagination = pagination;
                     });
                 },
-
                 setPaginationType: (paginationType) => {
                     set((state) => {
                         state.paginationType = paginationType;
                         state.pagination.currentPage = 1;
+                    });
+                },
+                setQueryBuilder: (queryBuilder) => {
+                    set((state) => {
+                        state.queryBuilder = queryBuilder;
                     });
                 },
                 setSortBy: (sortBy) => {
@@ -87,9 +108,13 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                     });
                 },
                 sortBy: TrackListSortOptions.NAME,
-
                 sortOrder: ListSortOrder.ASC,
                 state: {},
+                toggleMode: () => {
+                    set((state) => {
+                        state.mode = state.mode === 'offline' ? 'online' : 'offline';
+                    });
+                },
             })),
         ),
         { name: 'track-list-store', version: 1 },

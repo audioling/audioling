@@ -26,6 +26,7 @@ export const useAlbumListStoreBase = create<AlbumListStore>()(
                 folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
+                mode: 'online',
                 pagination: {
                     currentPage: 1,
                     itemsPerPage: 100,
@@ -88,6 +89,11 @@ export const useAlbumListStoreBase = create<AlbumListStore>()(
                 sortBy: AlbumListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
                 state: {},
+                toggleMode: () => {
+                    set((state) => {
+                        state.mode = state.mode === 'online' ? 'offline' : 'online';
+                    });
+                },
             })),
         ),
         { name: 'album-list-store', version: 1 },

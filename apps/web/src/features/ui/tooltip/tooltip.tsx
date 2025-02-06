@@ -6,17 +6,18 @@ import styles from './tooltip.module.scss';
 
 export interface TooltipProps {
     children: ReactNode;
+    isOpen?: boolean;
     label: string;
     openDelay?: number;
     position?: 'top' | 'right' | 'bottom' | 'left';
 }
 
 export function Tooltip(props: TooltipProps) {
-    const { children, label, openDelay = 0, position = 'top' } = props;
+    const { children, isOpen, label, openDelay = 0, position = 'top' } = props;
 
     return (
         <RTooltip.Provider disableHoverableContent delayDuration={openDelay}>
-            <RTooltip.Root>
+            <RTooltip.Root open={isOpen}>
                 <RTooltip.Trigger asChild>{children}</RTooltip.Trigger>
                 <RTooltip.Portal>
                     <RTooltip.Content

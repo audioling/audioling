@@ -2,6 +2,7 @@ import { LibraryItemType } from '@repo/shared-types';
 import type { DBSchema } from 'idb';
 import { openDB } from 'idb';
 import type { AlbumItem, ArtistItem, GenreItem, PlaylistItem, TrackItem } from '@/api/api-types.ts';
+import type { IndexStatus } from '@/features/shared/offline-filters/offline-filter-utils.ts';
 
 interface AppDb extends DBSchema {
     [LibraryItemType.ALBUM_ARTIST]: {
@@ -32,6 +33,10 @@ interface AppDb extends DBSchema {
         key: string;
         value: TrackItem;
     };
+    indexes: {
+        key: string;
+        value: IndexStatus;
+    };
 }
 
 type AppDbTypeValue = ArtistItem | AlbumItem | ArtistItem | GenreItem | PlaylistItem | TrackItem;
@@ -44,7 +49,8 @@ export type AppDbType =
     | LibraryItemType.ARTIST
     | LibraryItemType.GENRE
     | LibraryItemType.PLAYLIST
-    | LibraryItemType.TRACK;
+    | LibraryItemType.TRACK
+    | 'indexes';
 
 export function initAppDb(opts: { libraryId: string }) {
     const { libraryId } = opts;
@@ -58,6 +64,7 @@ export function initAppDb(opts: { libraryId: string }) {
             db.createObjectStore(LibraryItemType.PLAYLIST);
             db.createObjectStore(LibraryItemType.TRACK);
             db.createObjectStore(LibraryItemType.QUEUE_TRACK);
+            db.createObjectStore('indexes');
         },
     });
 
@@ -68,8 +75,49 @@ export function initAppDb(opts: { libraryId: string }) {
         delete: async (db: AppDbType, key: string) => {
             return (await dbPromise).delete(db, key);
         },
+        exists: async (db: AppDbType, key: string) => {
+            return (await dbPromise).getKey(db, key) !== undefined;
+        },
         get: async (db: AppDbType, key: string) => {
             return (await dbPromise).get(db, key);
+        },
+        iterate: async (
+            db: AppDbType,
+            handlers: {
+                onFinish?: () => void;
+                onProgress: (items: unknown[]) => Promise<void>;
+            },
+            options?: {
+                batchSize?: number;
+            },
+        ) => {
+            const { onFinish, onProgress } = handlers;
+            const { batchSize = 500 } = options ?? {};
+
+            const tx = (await dbPromise).transaction(db, 'readwrite');
+            const store = tx.store;
+            let cursor = await store.openCursor();
+            let batch: unknown[] = [];
+
+            while (cursor) {
+                batch.push(cursor.value);
+
+                if (batch.length >= batchSize) {
+                    await onProgress(batch);
+                    batch = [];
+                }
+
+                cursor = await cursor.continue();
+            }
+
+            // Process any remaining items
+            if (batch.length > 0) {
+                await onProgress(batch);
+            }
+
+            if (onFinish) {
+                onFinish();
+            }
         },
         set: async (
             db: AppDbType,
@@ -109,4 +157,5 @@ export const appDbTypeMap = {
     [LibraryItemType.TRACK]: LibraryItemType.TRACK,
     [LibraryItemType.QUEUE_TRACK]: LibraryItemType.TRACK,
     [LibraryItemType.PLAYLIST_TRACK]: LibraryItemType.TRACK,
+    'track-index': 'track-index',
 };

@@ -32,6 +32,8 @@
 }
 
 .loading {
+    cursor: not-allowed;
+
     svg {
         display: inline-block;
         animation: spin 1s linear infinite;
@@ -46,6 +48,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    font-weight: base.$font-weight-lg;
 }
 
 .spinner {

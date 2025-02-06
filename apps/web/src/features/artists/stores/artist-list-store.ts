@@ -23,6 +23,7 @@ export const useArtistListStoreBase = create<ArtistListStore>()(
                 folderId: [],
                 initialScrollIndex: 0,
                 listId: {},
+                mode: 'online',
                 pagination: {
                     currentPage: 1,
                     itemsPerPage: 500,
@@ -85,6 +86,11 @@ export const useArtistListStoreBase = create<ArtistListStore>()(
                 sortBy: ArtistListSortOptions.NAME,
                 sortOrder: ListSortOrder.ASC,
                 state: {},
+                toggleMode: () => {
+                    set((state) => {
+                        state.mode = state.mode === 'online' ? 'offline' : 'online';
+                    });
+                },
             })),
         ),
         { name: 'artist-list-store', version: 1 },

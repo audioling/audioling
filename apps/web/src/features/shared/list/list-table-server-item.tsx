@@ -25,6 +25,12 @@ export function ListTableServerItem<TItemType>(props: ItemTableItemProps<string,
     return <InnerContent {...props} />;
 }
 
+export function OfflineListTableServerItem<TItemType>(
+    props: ItemTableItemProps<string, TItemType>,
+) {
+    return <InnerContent {...props} isOffline={true} />;
+}
+
 function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
     const {
         columnOrder,
@@ -34,6 +40,7 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
         enableDragItem,
         enableSelection,
         enableStickyHeader,
+        isOffline,
         libraryId,
         listReducers,
         index,
@@ -53,7 +60,7 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
 
     const { data: itemData } = useQuery<ItemQueryData>({
         enabled: false,
-        queryKey: itemListHelpers.getDataQueryKey(libraryId, itemType),
+        queryKey: itemListHelpers.getDataQueryKey(libraryId, itemType, isOffline),
     });
 
     const item = itemData?.[id as string] as TItemType | undefined;
