@@ -36,7 +36,7 @@ import { ItemListColumn, itemListHelpers } from '@/features/ui/item-list/helpers
 import type { QueryFilter } from '@/features/ui/query-builder/query-builder.tsx';
 import { serializeFilter } from '@/features/ui/query-builder/query-builder.tsx';
 import { Tooltip } from '@/features/ui/tooltip/tooltip.tsx';
-import { formatDateTime } from '@/utils/format-date.ts';
+import { formatDateTimeLocal } from '@/utils/format-date.ts';
 
 export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }) {
     const { libraryId } = useParams() as { libraryId: string };
@@ -300,7 +300,7 @@ function OfflineLeftHeader({
                           }`
                         : 'Last indexed: ' +
                           (indexStatus?.lastUpdatedDate
-                              ? formatDateTime(indexStatus.lastUpdatedDate)
+                              ? formatDateTimeLocal(indexStatus.lastUpdatedDate)
                               : 'Never')
                 }
                 openDelay={0}
