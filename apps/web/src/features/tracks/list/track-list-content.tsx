@@ -58,7 +58,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     };
 
     if (mode === 'offline') {
-        const offlineListKey = stringify(query);
+        const offlineListKey = `${stringify(query)}-${pagination.currentPage}`;
 
         if (!offlineListKey || !query) {
             return null;
