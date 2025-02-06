@@ -22,6 +22,10 @@
     @include base.text-ellipsis;
 }
 
+.clamp-container {
+    display: flex;
+}
+
 .centered {
     align-items: center;
     justify-content: center;

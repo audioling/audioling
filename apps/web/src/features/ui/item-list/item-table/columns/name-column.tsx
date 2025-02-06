@@ -28,9 +28,7 @@ function DefaultCell({ item }: ItemListCellProps) {
     if (typeof item === 'object' && item) {
         if ('name' in item && typeof item.name === 'string') {
             return (
-                <div
-                    style={{ display: 'flex', flexDirection: 'column', gap: 'var(--base-gap-sm)' }}
-                >
+                <div className={styles.clampContainer}>
                     <Text className={clsx(styles.cell, styles.name)} lineClamp={2}>
                         {item.name}
                     </Text>

@@ -1,19 +1,19 @@
 import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
-import { EmptyCell } from '@/features/ui/item-list/item-table/columns/shared.tsx';
+import { CellSkeleton, EmptyCell } from '@/features/ui/item-list/item-table/columns/shared.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './column.module.scss';
 
 function Cell({ item }: ItemListCellProps) {
     if (!item) {
-        return <EmptyCell />;
+        return <CellSkeleton height={20} width={30} />;
     }
 
     if (typeof item === 'object' && item) {
-        if ('userPlayCount' in item && typeof item.userPlayCount === 'number') {
+        if ('discNumber' in item && typeof item.discNumber === 'string') {
             return (
                 <Text isCentered isSecondary className={styles.cell}>
-                    {item.userPlayCount > 0 ? item.userPlayCount : ''}
+                    {item.discNumber}
                 </Text>
             );
         }
@@ -22,13 +22,13 @@ function Cell({ item }: ItemListCellProps) {
     return <EmptyCell />;
 }
 
-export const playCountColumn = {
+export const discNumberColumn = {
     cell: Cell,
     header: () => (
         <Text isCentered isUppercase>
-            Plays
+            Disc
         </Text>
     ),
-    id: 'playCount' as ItemListColumn.PLAY_COUNT,
+    id: 'discNumber' as ItemListColumn.DISC_NUMBER,
     size: numberToColumnSize(50, 'px'),
 };

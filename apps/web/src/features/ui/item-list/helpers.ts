@@ -8,14 +8,20 @@ import { albumArtistsColumn } from '@/features/ui/item-list/item-table/columns/a
 import { albumColumn } from '@/features/ui/item-list/item-table/columns/album-column.tsx';
 import { albumCountColumn } from '@/features/ui/item-list/item-table/columns/album-count-column.tsx';
 import { artistsColumn } from '@/features/ui/item-list/item-table/columns/artists-column.tsx';
+import { bpmColumn } from '@/features/ui/item-list/item-table/columns/bpm-column.tsx';
 import { dateAddedColumn } from '@/features/ui/item-list/item-table/columns/date-added-column.tsx';
+import { discNumberColumn } from '@/features/ui/item-list/item-table/columns/disc-number-column.tsx';
 import { durationColumn } from '@/features/ui/item-list/item-table/columns/duration-column.tsx';
 import { favoriteColumn } from '@/features/ui/item-list/item-table/columns/favorite-column.tsx';
+import { fileNameColumn } from '@/features/ui/item-list/item-table/columns/file-name-column.tsx';
+import { filePathColumn } from '@/features/ui/item-list/item-table/columns/file-path-column.tsx';
+import { fileSizeColumn } from '@/features/ui/item-list/item-table/columns/file-size-column.tsx';
 import { genreColumn } from '@/features/ui/item-list/item-table/columns/genre-column.tsx';
 import { imageColumn } from '@/features/ui/item-list/item-table/columns/image-column.tsx';
 import { lastPlayedColumn } from '@/features/ui/item-list/item-table/columns/last-played-column.tsx';
 import { nameColumn } from '@/features/ui/item-list/item-table/columns/name-column.tsx';
 import { playCountColumn } from '@/features/ui/item-list/item-table/columns/play-count-column.tsx';
+import { qualityColumn } from '@/features/ui/item-list/item-table/columns/quality-column.tsx';
 import { ratingColumn } from '@/features/ui/item-list/item-table/columns/rating-column.tsx';
 import { releaseDateColumn } from '@/features/ui/item-list/item-table/columns/release-date-column.tsx';
 import { rowIndexColumn } from '@/features/ui/item-list/item-table/columns/row-index-column.tsx';
@@ -33,14 +39,20 @@ export enum ItemListColumn {
     ALBUM_ARTISTS = 'albumArtists',
     ALBUM_COUNT = 'albumCount',
     ARTISTS = 'artists',
+    BPM = 'bpm',
     DATE_ADDED = 'dateAdded',
+    DISC_NUMBER = 'discNumber',
     DURATION = 'duration',
     FAVORITE = 'favorite',
+    FILE_NAME = 'fileName',
+    FILE_PATH = 'filePath',
+    FILE_SIZE = 'fileSize',
     GENRE = 'genre',
     IMAGE = 'image',
     LAST_PLAYED = 'lastPlayed',
     NAME = 'name',
     PLAY_COUNT = 'playCount',
+    QUALITY = 'quality',
     RATING = 'rating',
     RELEASE_DATE = 'releaseDate',
     ROW_INDEX = 'rowIndex',
@@ -73,6 +85,7 @@ export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDef
     [ItemListColumn.IMAGE]: imageColumn,
     [ItemListColumn.LAST_PLAYED]: lastPlayedColumn,
     [ItemListColumn.PLAY_COUNT]: playCountColumn,
+    [ItemListColumn.BPM]: bpmColumn,
     [ItemListColumn.ALBUM_COUNT]: albumCountColumn,
     [ItemListColumn.TRACK_COUNT]: trackCountColumn,
     [ItemListColumn.TRACK_NUMBER]: trackNumberColumn,
@@ -81,6 +94,11 @@ export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDef
     [ItemListColumn.YEAR]: yearColumn,
     [ItemListColumn.ACTIONS]: actionsColumn,
     [ItemListColumn.ADD_TO_PLAYLIST]: addToPlaylistColumn,
+    [ItemListColumn.FILE_NAME]: fileNameColumn,
+    [ItemListColumn.FILE_PATH]: filePathColumn,
+    [ItemListColumn.FILE_SIZE]: fileSizeColumn,
+    [ItemListColumn.QUALITY]: qualityColumn,
+    [ItemListColumn.DISC_NUMBER]: discNumberColumn,
 };
 
 export interface ItemListCellProps {
