@@ -116,34 +116,34 @@ function buildQuery(
             const value = typeof val === 'number' || typeof val === 'boolean' ? val : `"${val}"`;
 
             if (operator === 'contains') {
-                return `$contains($lowercase(${filterKey}), $lowercase(${value}))`;
+                return `$boolean(${filterKey}) and $contains($lowercase(${filterKey}), $lowercase(${value}))`;
             }
 
             if (operator === 'notContains') {
-                return `$not($contains($lowercase(${filterKey}), $lowercase(${value})))`;
+                return `$boolean(${filterKey}) and $not($contains($lowercase(${filterKey}), $lowercase(${value})))`;
             }
 
             if (operator === 'match') {
-                return `$match($lowercase(${filterKey}), $lowercase(${value}))`;
-            }
-
-            if (operator === 'in') {
-                return `${value} in ${filterKey}`;
-            }
-
-            if (operator === 'notIn') {
-                return `$not(${value} in ${filterKey})`;
+                return `$boolean(${filterKey}) and $match($lowercase(${filterKey}), $lowercase(${value}))`;
             }
 
             if (operator === 'startsWith') {
-                return `$match($lowercase(${filterKey}), /^${val}/)`;
+                return `$boolean(${filterKey}) and $match($lowercase(${filterKey}), /^${val}/)`;
             }
 
             if (operator === 'endsWith') {
-                return `$match($lowercase(${filterKey}), /${val}$/)`;
+                return `$boolean(${filterKey}) and $match($lowercase(${filterKey}), /${val}$/)`;
             }
 
-            return `${filterKey} ${operators[operator as Operator]} ${value}`;
+            if (operator === 'in') {
+                return `$boolean(${filterKey}) and ${value} in ${filterKey}`;
+            }
+
+            if (operator === 'notIn') {
+                return `$boolean(${filterKey}) and $not(${value} in ${filterKey})`;
+            }
+
+            return `$boolean(${filterKey}) and ${filterKey} ${operators[operator as Operator]} ${value}`;
         } else {
             // Logical group (AND/OR)
             const conditions = node.conditions.map(buildConditionTree);
