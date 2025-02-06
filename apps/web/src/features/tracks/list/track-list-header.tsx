@@ -175,6 +175,8 @@ function OfflineLeftHeader({
             return libraryIndexStatus.abort(LibraryItemType.TRACK);
         }
 
+        await libraryIndex.clearQueryIndexes(LibraryItemType.TRACK);
+
         await libraryIndex.buildIndex<TrackItem>(LibraryItemType.TRACK, {
             fetcher: (page, limit) =>
                 fetchTrackListIndex(queryClient, libraryId, {

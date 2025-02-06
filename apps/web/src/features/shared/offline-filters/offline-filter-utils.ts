@@ -113,6 +113,22 @@ export const libraryIndex = {
             options,
         );
     },
+    clearIndex: async (itemType: LibraryItemType) => {
+        await appDb?.delete('indexes', itemType);
+    },
+    clearQueryIndexes: async (itemType: LibraryItemType) => {
+        const keys = await appDb?.getKeys('indexes');
+
+        if (!keys) {
+            return;
+        }
+
+        for (const key of keys) {
+            if (key.includes(`${itemType}-`)) {
+                await appDb?.delete('indexes', key);
+            }
+        }
+    },
     getCountQueryKey: (libraryId: string, itemType: LibraryItemType, serializedFilter: string) => {
         return [libraryId, itemType, 'count', serializedFilter];
     },

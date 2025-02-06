@@ -82,6 +82,9 @@ export function initAppDb(opts: { libraryId: string }) {
         get: async (db: AppDbType, key: string) => {
             return (await dbPromise).get(db, key);
         },
+        getKeys: async (db: AppDbType) => {
+            return (await dbPromise).getAllKeys(db);
+        },
         iterate: async (
             db: AppDbType,
             handlers: {
