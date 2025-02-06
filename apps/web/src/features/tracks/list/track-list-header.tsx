@@ -264,6 +264,7 @@ function OfflineLeftHeader({
     const { data: indexStatus } = useIndexStatus({ type: LibraryItemType.TRACK });
 
     const isQueryingDisabled = !indexStatus || indexStatus.status === 'running';
+    const isIndexingDisabled = Boolean(isQuerying);
 
     return (
         <Group gap="xs">
@@ -308,7 +309,12 @@ function OfflineLeftHeader({
                 openDelay={0}
                 position="bottom"
             >
-                <IconButton icon="cache" variant="outline" onClick={handleIndexTracks} />
+                <IconButton
+                    disabled={isIndexingDisabled}
+                    icon="cache"
+                    variant="outline"
+                    onClick={handleIndexTracks}
+                />
             </Tooltip>
         </Group>
     );
