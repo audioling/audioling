@@ -30,8 +30,8 @@ export function usePaginatedOfflineListData(args: {
             const data = await libraryIndex.getQueryResult(
                 type,
                 query,
-                pagination.currentPage,
                 pagination.itemsPerPage,
+                (pagination.currentPage - 1) * pagination.itemsPerPage,
             );
 
             const dataQueryKey = itemListHelpers.getDataQueryKey(libraryId, type, true);
@@ -183,7 +183,7 @@ export function useInfiniteOfflineListData(args: {
                     if (!query) return;
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const fn = query.queryFn(type, filter, fetchParams.offset, fetchParams.limit);
+                    const fn = query.queryFn(type, filter, fetchParams.limit, fetchParams.offset);
 
                     const pageData = await fn;
 

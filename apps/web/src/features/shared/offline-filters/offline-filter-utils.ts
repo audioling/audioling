@@ -122,8 +122,8 @@ export const libraryIndex = {
     getQueryResult: async <T>(
         itemType: LibraryItemType,
         query: QueryFilter,
-        offset: number,
         limit: number,
+        offset: number,
     ) => {
         const serializedFilter = serializeFilter(query);
         const queryId = getQueryId(itemType, stringify(serializedFilter));
@@ -224,15 +224,13 @@ function sortQueryResult<T>(items: T[], query: SerializedQueryFilter) {
 }
 
 function paginateQueryIds(ids: string[], offset: number, limit: number) {
-    let result;
-
+    // Return all results after offset if limit is -1
     if (limit === -1) {
-        result = ids.slice(offset);
-    } else {
-        result = ids.slice(offset - 1, offset + limit - 1);
+        return ids.slice(offset);
     }
 
-    return result;
+    // Return paginated subset of ids from offset to offset + limit
+    return ids.slice(offset, offset + limit);
 }
 
 export async function fetchAllRecords<T>(
