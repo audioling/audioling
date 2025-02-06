@@ -1,5 +1,6 @@
 import { LibraryItemType } from '@repo/shared-types';
 import { useQueryClient } from '@tanstack/react-query';
+import { appDb } from '@/api/db/app-db.ts';
 import { usePostApiLibraryIdAlbumsUnfavorite } from '@/api/openapi-generated/albums/albums.ts';
 import { itemListHelpers } from '@/features/ui/item-list/helpers.ts';
 import type { ItemQueryData } from '@/hooks/use-list.ts';
@@ -10,7 +11,7 @@ export function useUnfavoriteAlbum() {
 
     const mutation = usePostApiLibraryIdAlbumsUnfavorite({
         mutation: {
-            onSuccess: (_data, variables) => {
+            onSuccess: async (_data, variables) => {
                 const albumIds = variables.data.ids;
 
                 // Invalidate all queries
@@ -38,6 +39,18 @@ export function useUnfavoriteAlbum() {
                         return updates;
                     },
                 );
+
+                // Update value in the app db
+                for (const id of albumIds) {
+                    const album = await appDb?.get(LibraryItemType.ALBUM, id);
+
+                    if (!album) continue;
+
+                    await appDb?.set(LibraryItemType.ALBUM, {
+                        key: id,
+                        value: { ...album, userFavorite: false },
+                    });
+                }
 
                 // Update values in the change store for client-side updates
                 useChangeStoreBase.getState().addAlbumUnfavorite(albumIds);
