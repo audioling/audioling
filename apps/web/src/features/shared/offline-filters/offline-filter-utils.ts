@@ -138,10 +138,10 @@ export const libraryIndex = {
         const serializedFilter = serializeFilter(query);
         const expression = jsonataHelpers.getExpression(serializedFilter.rules, trackQueryFields);
 
-        const queryRulesId = stringify(serializedFilter.rules);
-        const queryId = stringify(serializedFilter);
+        const queryRulesId = getQueryId(itemType, stringify(serializedFilter.rules));
+        const queryId = getQueryId(itemType, stringify(serializedFilter));
 
-        const existingQueryIndex = (await appDb?.get('indexes', queryId)) as string[] | undefined;
+        const existingQueryIndex = (await appDb?.exists('indexes', queryId)) as boolean | undefined;
 
         if (existingQueryIndex && !options.force) {
             return;
@@ -157,7 +157,7 @@ export const libraryIndex = {
         } else {
             await appDb?.iterate(appDbTypeMap[itemType as keyof typeof appDbTypeMap] as AppDbType, {
                 onFinish: async () => {
-                    writeRulesIndex(itemType, queryRulesId, ids);
+                    writeRulesIndex(queryRulesId, ids);
                 },
                 onProgress: async (items) => {
                     const result = await jsonataHelpers.getResult(expression, items);
@@ -177,7 +177,7 @@ export const libraryIndex = {
         const sortedItems = sortQueryResult(items, query);
         const sortedIds = sortedItems.map((item) => (item as { id: string }).id);
 
-        await writeQueryIndex(itemType, queryId, sortedIds);
+        await writeQueryIndex(queryId, sortedIds);
         return;
     },
 };
@@ -202,16 +202,16 @@ function getQueryId(itemType: LibraryItemType, id: string) {
     return `${itemType}-${id}`;
 }
 
-async function writeRulesIndex(itemType: LibraryItemType, queryRulesId: string, ids: string[]) {
+async function writeRulesIndex(indexId: string, ids: string[]) {
     await appDb?.set('indexes', {
-        key: getQueryId(itemType, queryRulesId),
+        key: indexId,
         value: ids,
     });
 }
 
-async function writeQueryIndex(itemType: LibraryItemType, queryId: string, ids: string[]) {
+async function writeQueryIndex(indexId: string, ids: string[]) {
     await appDb?.set('indexes', {
-        key: getQueryId(itemType, queryId),
+        key: indexId,
         value: ids,
     });
 }

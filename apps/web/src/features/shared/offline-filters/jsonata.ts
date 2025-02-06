@@ -114,36 +114,51 @@ function buildQuery(
             const [op, val] = Object.entries(node.condition)[0];
             const operator = deserializeOperator(op as SerializedOperator);
             const value = typeof val === 'number' || typeof val === 'boolean' ? val : `"${val}"`;
+            const needsBoolean = !filterKey.includes('.');
+            const booleanCheck = needsBoolean ? '$boolean(' + filterKey + ') and ' : '';
+            const isArraySearch = filterKey.includes('.');
 
             if (operator === 'contains') {
-                return `$boolean(${filterKey}) and $contains($lowercase(${filterKey}), $lowercase(${value}))`;
+                if (isArraySearch) {
+                    return `${booleanCheck}$contains($lowercase($join(${filterKey}, " ")), $lowercase(${value}))`;
+                }
+
+                return `${booleanCheck}$contains($lowercase(${filterKey}), $lowercase(${value}))`;
             }
 
             if (operator === 'notContains') {
-                return `$boolean(${filterKey}) and $not($contains($lowercase(${filterKey}), $lowercase(${value})))`;
+                if (isArraySearch) {
+                    return `${booleanCheck}$not($contains($lowercase($join(${filterKey}, " ")), $lowercase(${value})))`;
+                }
+
+                return `${booleanCheck}$not($contains($lowercase(${filterKey}), $lowercase(${value})))`;
             }
 
             if (operator === 'match') {
-                return `$boolean(${filterKey}) and $match($lowercase(${filterKey}), $lowercase(${value}))`;
+                return `${booleanCheck}$match(${filterKey}, $lowercase(${value}))`;
             }
 
             if (operator === 'startsWith') {
-                return `$boolean(${filterKey}) and $match($lowercase(${filterKey}), /^${val}/)`;
+                if (isArraySearch) {
+                    return `${booleanCheck}$match(${filterKey}, /^${val}/)`;
+                }
+
+                return `${booleanCheck}$match(${filterKey}, /^${val}/)`;
             }
 
             if (operator === 'endsWith') {
-                return `$boolean(${filterKey}) and $match($lowercase(${filterKey}), /${val}$/)`;
+                return `${booleanCheck}$match(${filterKey}, /${val}$/)`;
             }
 
             if (operator === 'in') {
-                return `$boolean(${filterKey}) and ${value} in ${filterKey}`;
+                return `${booleanCheck}${value} in ${filterKey}`;
             }
 
             if (operator === 'notIn') {
-                return `$boolean(${filterKey}) and $not(${value} in ${filterKey})`;
+                return `${booleanCheck}$not(${value} in ${filterKey})`;
             }
 
-            return `$boolean(${filterKey}) and ${filterKey} ${operators[operator as Operator]} ${value}`;
+            return `${booleanCheck}${filterKey} ${operators[operator as Operator]} ${value}`;
         } else {
             // Logical group (AND/OR)
             const conditions = node.conditions.map(buildConditionTree);

@@ -62,7 +62,9 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
     const itemCount = queryClient.getQueryData<number | undefined>(itemCountQueryKey);
     const isFetchingItemCount = useIsFetching({ queryKey: itemCountQueryKey });
 
-    const [filter, setFilter] = useState<QueryFilter>();
+    const [filter, setFilter] = useState<QueryFilter | undefined>(
+        useTrackListStoreBase.getState().queryBuilder,
+    );
 
     const handleSubmitFilter = () => {
         if (!filter) {
@@ -114,7 +116,7 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
             {mode === 'offline' && (
                 <ListHeader.QueryBuilder>
                     <TrackQueryBuilder
-                        defaultFilter={useTrackListStoreBase.getState().queryBuilder}
+                        defaultFilter={filter}
                         onFilterChange={(filter) => setFilter(filter)}
                     />
                 </ListHeader.QueryBuilder>

@@ -76,7 +76,8 @@ export function initAppDb(opts: { libraryId: string }) {
             return (await dbPromise).delete(db, key);
         },
         exists: async (db: AppDbType, key: string) => {
-            return (await dbPromise).getKey(db, key) !== undefined;
+            const result = await (await dbPromise).getKey(db, key);
+            return result !== undefined;
         },
         get: async (db: AppDbType, key: string) => {
             return (await dbPromise).get(db, key);

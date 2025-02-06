@@ -37,7 +37,7 @@ const trackSortFields = [
 export const trackQueryFields = [
     { label: 'Album', type: 'albumSelect', value: 'albumId' },
     { label: 'Album Artist', type: 'albumArtistSelect', value: 'albumArtists.id' },
-    { label: 'Album Artist Name', type: 'text', value: 'albumArtists.name' },
+    { label: 'Album Artist Name', type: 'textArray', value: 'albumArtists.name' },
     { label: 'Album Name', type: 'text', value: 'album' },
     { label: 'Artist', type: 'artistSelect', value: 'artists.id' },
     { label: 'Artist Name', type: 'text', value: 'artists.name' },
@@ -57,7 +57,7 @@ export const trackQueryFields = [
     { label: 'File Size', type: 'number', value: 'fileSize' },
     { label: 'File Type', type: 'text', value: 'fileContainer' },
     { label: 'Genre', type: 'genreSelect', value: 'genres.id' },
-    { label: 'Genre Name', type: 'text', value: 'genres.name' },
+    { label: 'Genre Name', type: 'textArray', value: 'genres.name' },
     { label: 'Is Compilation', type: 'boolean', value: 'isCompilation' },
     { label: 'Is Favorite', type: 'boolean', value: 'userFavorite' },
     { label: 'Name', type: 'text', value: 'name' },
@@ -119,6 +119,12 @@ export const trackQueryOperators = {
         { input: 'text', label: 'does not contain', value: 'notContains' },
         { input: 'text', label: 'starts with', value: 'startsWith' },
         { input: 'text', label: 'ends with', value: 'endsWith' },
+    ],
+    textArray: [
+        { input: 'text', label: 'is', value: 'is' },
+        { input: 'text', label: 'is not', value: 'isNot' },
+        { input: 'text', label: 'contains', value: 'contains' },
+        { input: 'text', label: 'does not contain', value: 'notContains' },
     ],
 };
 
