@@ -1,8 +1,13 @@
 import clsx from 'clsx';
 import {
+    PlayerRepeat,
+    PlayerShuffle,
     PlayerStatus,
     usePlayerActions,
+    usePlayerRepeat,
+    usePlayerShuffle,
     usePlayerStatus,
+    usePlayerStore,
 } from '@/features/player/stores/player-store.tsx';
 import { IconButtonWithTooltip } from '@/features/ui/icon-button/icon-button.tsx';
 import styles from './playback-control.module.scss';
@@ -113,25 +118,60 @@ export function MediaStepForwardButton() {
 }
 
 export function MediaShuffleButton() {
+    const shuffle = usePlayerShuffle();
+    const setShuffle = usePlayerStore.use.setShuffle();
+
+    const iconState = shuffle === PlayerShuffle.TRACK ? 'primary' : undefined;
+
+    const handleClick = () => {
+        if (shuffle === PlayerShuffle.TRACK) {
+            setShuffle(PlayerShuffle.OFF);
+        } else {
+            setShuffle(PlayerShuffle.TRACK);
+        }
+    };
+
     return (
         <IconButtonWithTooltip
+            disabled
             iconFill
             className={clsx(styles.secondary)}
             icon="mediaShuffle"
+            iconProps={{ state: iconState }}
             size="lg"
             tooltipProps={{ label: 'Shuffle', openDelay: 500, position: 'top' }}
+            onClick={handleClick}
         />
     );
 }
 
 export function MediaRepeatButton() {
+    const repeat = usePlayerRepeat();
+    const setRepeat = usePlayerStore.use.setRepeat();
+
+    const iconState =
+        repeat === PlayerRepeat.ONE || repeat === PlayerRepeat.ALL ? 'primary' : undefined;
+
+    const handleClick = () => {
+        if (repeat === PlayerRepeat.ONE) {
+            setRepeat(PlayerRepeat.ALL);
+        } else if (repeat === PlayerRepeat.ALL) {
+            setRepeat(PlayerRepeat.OFF);
+        } else {
+            setRepeat(PlayerRepeat.ONE);
+        }
+    };
+
     return (
         <IconButtonWithTooltip
+            disabled
             iconFill
             className={clsx(styles.secondary)}
-            icon="mediaRepeat"
+            icon={repeat === PlayerRepeat.ONE ? 'mediaRepeatOne' : 'mediaRepeat'}
+            iconProps={{ state: iconState }}
             size="lg"
             tooltipProps={{ label: 'Repeat', openDelay: 500, position: 'top' }}
+            onClick={handleClick}
         />
     );
 }

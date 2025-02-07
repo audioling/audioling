@@ -91,16 +91,14 @@ interface Actions {
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
     setCrossfadeDuration: (duration: number) => void;
     setProgress: (timestamp: number) => void;
+    setRepeat: (repeat: PlayerRepeat) => void;
+    setShuffle: (shuffle: PlayerShuffle) => void;
     setSpeed: (speed: number) => void;
     setTransitionType: (transitionType: PlayerTransition) => void;
     setVolume: (volume: number) => void;
-    // setRepeat: (repeat: PlayerRepeat) => void;
-    // setShuffle: (shuffle: PlayerShuffle) => void;
     shuffle: () => void;
     shuffleAll: () => void;
     shuffleSelected: (items: PlayQueueItem[]) => void;
-    // toggleRepeat: () => void;
-    // toggleShuffle: () => void;
 }
 
 interface State {
@@ -779,6 +777,18 @@ export const usePlayerStoreBase = create<PlayerState>()(
                         state.player.timestamp = timestamp;
                     });
                 },
+                setRepeat: (repeat: PlayerRepeat) => {
+                    set((state) => {
+                        state.player.repeat = repeat;
+                    });
+                },
+                setShuffle: (shuffle: PlayerShuffle) => {
+                    set((state) => {
+                        state.player.shuffle = shuffle;
+                        const queue = state.queue.default;
+                        state.queue.shuffled = shuffleInPlace(queue.map((item) => item._uniqueId));
+                    });
+                },
                 setSpeed: (speed: number) => {
                     set((state) => {
                         const normalizedSpeed = Math.max(0.5, Math.min(2, speed));
@@ -865,7 +875,10 @@ export const usePlayerActions = () => {
             moveSelectedToBottom: state.moveSelectedToBottom,
             moveSelectedToNext: state.moveSelectedToNext,
             moveSelectedToTop: state.moveSelectedToTop,
+            setCrossfadeDuration: state.setCrossfadeDuration,
             setProgress: state.setProgress,
+            setRepeat: state.setRepeat,
+            setShuffle: state.setShuffle,
             setSpeed: state.setSpeed,
             setTransitionType: state.setTransitionType,
             setVolume: state.setVolume,
@@ -1204,4 +1217,12 @@ export function usePlayerVolume() {
 
 export function usePlayerMuted() {
     return usePlayerStoreBase((state) => state.player.muted);
+}
+
+export function usePlayerShuffle() {
+    return usePlayerStoreBase((state) => state.player.shuffle);
+}
+
+export function usePlayerRepeat() {
+    return usePlayerStoreBase((state) => state.player.repeat);
 }
