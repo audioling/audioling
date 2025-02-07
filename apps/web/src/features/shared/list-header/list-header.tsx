@@ -83,7 +83,11 @@ function QueryBuilder(props: ListHeaderQueryBuilderProps) {
     const { children, isOpen } = props;
 
     return (
-        <motion.div animate={{ height: isOpen ? 'auto' : 0 }} className={styles.queryBuilder}>
+        <motion.div
+            animate={{ height: isOpen ? 'auto' : 0 }}
+            className={styles.queryBuilder}
+            initial={{ height: 0 }}
+        >
             <ScrollArea>{children}</ScrollArea>
         </motion.div>
     );
