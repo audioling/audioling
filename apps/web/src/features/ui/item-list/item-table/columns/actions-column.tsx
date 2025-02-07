@@ -16,7 +16,12 @@ function Cell({ item, isHovered, handlers }: ItemListCellProps) {
     }
 
     return (
-        <IconButton isCompact icon="ellipsisHorizontal" variant="default" onClick={handleClick} />
+        <IconButton
+            isCompact
+            icon="ellipsisHorizontal"
+            variant="transparent"
+            onClick={handleClick}
+        />
     );
 }
 

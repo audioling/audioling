@@ -18,18 +18,28 @@ function Cell({ item, isHovered, itemType }: ItemListCellProps) {
 
     switch (itemType) {
         case LibraryItemType.ALBUM:
-            return <AlbumFavoriteButton buttonProps={{ size: 'md' }} data={item as AlbumItem} />;
+            return (
+                <AlbumFavoriteButton
+                    buttonProps={{ size: 'md', variant: 'transparent' }}
+                    data={item as AlbumItem}
+                />
+            );
         case LibraryItemType.ALBUM_ARTIST:
             return (
                 <AlbumArtistFavoriteButton
-                    buttonProps={{ size: 'md' }}
+                    buttonProps={{ size: 'md', variant: 'transparent' }}
                     data={item as AlbumArtistItem}
                 />
             );
         case LibraryItemType.QUEUE_TRACK:
         case LibraryItemType.TRACK:
         case LibraryItemType.PLAYLIST_TRACK:
-            return <TrackFavoriteButton buttonProps={{ size: 'md' }} data={item as TrackItem} />;
+            return (
+                <TrackFavoriteButton
+                    buttonProps={{ size: 'md', variant: 'transparent' }}
+                    data={item as TrackItem}
+                />
+            );
     }
 
     return <EmptyCell />;
