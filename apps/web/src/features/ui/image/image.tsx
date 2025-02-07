@@ -1,6 +1,7 @@
 import type { ImgHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import { Img } from 'react-image';
+import { Icon } from '@/features/ui/icon/icon.tsx';
 import { Skeleton } from '@/features/ui/skeleton/skeleton.tsx';
 import styles from './image.module.scss';
 
@@ -48,7 +49,11 @@ function ImageLoader(props: { className?: string }) {
 }
 
 function ImageUnloader(props: { className?: string }) {
-    return <div className={clsx(styles.unloader, props.className)}></div>;
+    return (
+        <div className={clsx(styles.unloader, props.className)}>
+            <Icon icon="emptyImage" size="xl" />
+        </div>
+    );
 }
 
 function ImageContainer(props: { children: React.ReactNode; className?: string }) {
