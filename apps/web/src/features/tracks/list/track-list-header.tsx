@@ -90,9 +90,11 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
                 )}
             </ListHeader.Left>
             <ListHeader.Right>
-                <Group gap="xs">
-                    <SearchButton />
-                </Group>
+                {mode === 'online' && (
+                    <Group gap="xs">
+                        <SearchButton />
+                    </Group>
+                )}
             </ListHeader.Right>
             <ListHeader.Footer>
                 <ListHeader.Left>
@@ -111,7 +113,7 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
                     </Button>
                     {mode === 'offline' && (
                         <IconButton
-                            icon={isQueryBuilderOpen ? 'arrowUpS' : 'arrowDownS'}
+                            icon={isQueryBuilderOpen ? 'arrowDownS' : 'arrowUpS'}
                             variant="default"
                             onClick={() => toggleQueryBuilderOpen?.()}
                         />
