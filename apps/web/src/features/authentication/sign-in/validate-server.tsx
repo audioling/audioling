@@ -7,6 +7,7 @@ import { animationProps } from '@/features/ui/animations/props.ts';
 import { Button } from '@/features/ui/button/button.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
+import { Text } from '@/features/ui/text/text.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
 import { useDebouncedValue } from '@/hooks/use-debounced-value.ts';
@@ -84,9 +85,13 @@ export const ValidateServer = (props: ValidateServerProps) => {
         <motion.div {...animationProps.fadeIn}>
             <form onSubmit={handleSubmit}>
                 <Stack ref={ref} w="350px">
-                    <Title order={1} size="md" weight="lg">
-                        Connect
+                    <Title order={1} size="lg" weight="lg">
+                        Connect to audioling
                     </Title>
+                    <Text>Enter the full URL to your audioling server</Text>
+                    <Text isSecondary>
+                        The local server is available at <code>http://localhost:4544</code>.
+                    </Text>
                     <Group>
                         <TextInput
                             data-autofocus

@@ -19,6 +19,7 @@ export const PasswordInput = forwardRef((props: TextInputProps, ref: Ref<HTMLInp
             rightSection={
                 <IconButton
                     icon={visible ? 'visibilityOff' : 'visibility'}
+                    type="button"
                     variant="default"
                     onClick={() => setVisible((prev) => !prev)}
                 />

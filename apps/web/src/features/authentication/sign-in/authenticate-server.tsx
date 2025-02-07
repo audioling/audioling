@@ -12,12 +12,14 @@ import { ButtonLink } from '@/features/ui/button-link.tsx/button-link.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import { Divider } from '@/features/ui/divider/divider.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
+import { Icon } from '@/features/ui/icon/icon.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { PasswordInput } from '@/features/ui/password-input/password-input.tsx';
 import { Stack } from '@/features/ui/stack/stack.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import { TextInput } from '@/features/ui/text-input/text-input.tsx';
 import { Title } from '@/features/ui/title/title.tsx';
+import { Tooltip } from '@/features/ui/tooltip/tooltip.tsx';
 import { useFocusTrap } from '@/hooks/use-focus-trap.ts';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
 
@@ -60,41 +62,58 @@ export const AuthenticateServer = (props: AuthenticateServerProps) => {
         );
     });
 
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSubmit();
+    };
+
     return (
         <motion.div ref={ref} {...animationProps.fadeIn}>
-            <form onSubmit={handleSubmit}>
-                <Stack justify="center" w="350px">
-                    <Group gap="xs">
-                        <IconButton icon="arrowLeft" onClick={props.onBack} />
-                        <Title order={1} size="lg">
-                            Sign In
-                        </Title>
-                    </Group>
-                    <Text isSecondary size="xs">
-                        {props.serverUrl}
-                    </Text>
-                    <TextInput
-                        data-autofocus
-                        autoComplete="username"
-                        label="Username"
-                        {...form.register('username', { required: true })}
-                    />
-                    <PasswordInput
-                        autoComplete="current-password"
-                        label="Password"
-                        {...form.register('password', { required: true })}
-                    />
-                    <Button uppercase type="submit" variant="filled">
+            <Stack justify="center" w="350px">
+                <Group gap="sm">
+                    <IconButton icon="arrowLeft" onClick={props.onBack} />
+                    <Title order={1} size="lg">
                         Sign In
-                    </Button>
-                    <Divider label="Or" />
-                    <Center>
-                        <ButtonLink to={APP_ROUTE.SIGN_UP} variant="subtle">
-                            Create a new account
-                        </ButtonLink>
-                    </Center>
-                </Stack>
-            </form>
+                    </Title>
+                    <Tooltip
+                        label={
+                            <Text style={{ maxWidth: '200px' }}>
+                                Sign in to your audioling account. If this is your first time
+                                accessing the app, create an account using the button below.
+                            </Text>
+                        }
+                    >
+                        <Icon icon="info" />
+                    </Tooltip>
+                </Group>
+
+                <form onSubmit={onSubmit}>
+                    <Stack>
+                        <TextInput
+                            data-autofocus
+                            autoComplete="username"
+                            label="Username"
+                            {...form.register('username', { required: true })}
+                        />
+                        <PasswordInput
+                            autoComplete="current-password"
+                            label="Password"
+                            {...form.register('password', { required: true })}
+                        />
+                        <Button uppercase type="submit" variant="filled">
+                            Sign In
+                        </Button>
+                    </Stack>
+                </form>
+
+                <Divider label="Or" />
+                <Center>
+                    <ButtonLink to={APP_ROUTE.SIGN_UP} variant="subtle">
+                        Create a new account
+                    </ButtonLink>
+                </Center>
+            </Stack>
         </motion.div>
     );
 };
