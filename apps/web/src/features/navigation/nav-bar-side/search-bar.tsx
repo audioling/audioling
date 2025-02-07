@@ -7,6 +7,7 @@ export function SearchBar() {
     return (
         <div>
             <TextInput
+                disabled
                 leftIcon="search"
                 placeholder="Search"
                 size="sm"
