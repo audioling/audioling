@@ -386,7 +386,9 @@ export function ItemTable<TDataType, TItemType>(props: ItemTableProps<TDataType,
                                     index={i}
                                     isSelected={Boolean(
                                         itemSelection[
-                                            getItemId ? getItemId(i, d as TItemType) : ''
+                                            getItemId
+                                                ? getItemId(i, d as TItemType)
+                                                : (d as keyof typeof itemSelection)
                                         ],
                                     )}
                                     itemSize={itemSize}
