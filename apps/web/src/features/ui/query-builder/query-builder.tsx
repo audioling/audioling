@@ -445,7 +445,7 @@ function RecursiveFilterGroup({
             conditions: [
                 ...group.conditions,
                 {
-                    condition: { is: '' },
+                    condition: { contains: '' },
                     conditionId: nanoid(),
                     field: 'name' as string,
                 },
