@@ -67,6 +67,10 @@ export function AlbumInfiniteCarousel(props: AlbumCarouselProps) {
 
     const handlePrevPage = useCallback(() => {}, []);
 
+    if (albums.pages[0].data.length === 0) {
+        return null;
+    }
+
     return (
         <GridCarousel
             cards={cards}
