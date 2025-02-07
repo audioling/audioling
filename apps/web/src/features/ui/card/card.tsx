@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, MouseEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
@@ -29,11 +29,11 @@ export type LoadingCardProps = BaseCardProps & {
 export type LoadedCardProps = BaseCardProps & {
     componentState: 'loaded';
     controls: {
+        onContextMenu?: (id: string, event: MouseEvent<HTMLButtonElement>) => void;
         onDragInitialData?: (id: string) => DragData;
         onDragStart?: (id: string) => void;
         onDrop?: (id: string) => void;
         onFavorite?: (id: string, libraryId: string) => void;
-        onMore?: (id: string) => void;
         onPlay: (id: string, playType: PlayType) => void;
         onUnfavorite?: (id: string, libraryId: string) => void;
         userFavorite?: boolean;
@@ -144,8 +144,8 @@ export function Card(props: CardProps) {
                                 itemType={loadedProps.itemType}
                                 libraryId={loadedProps.libraryId}
                                 userFavorite={loadedProps.controls.userFavorite}
+                                onContextMenu={loadedProps.controls.onContextMenu}
                                 onFavorite={loadedProps.controls.onFavorite}
-                                onMore={loadedProps.controls.onMore}
                                 onPlay={loadedProps.controls.onPlay}
                                 onUnfavorite={loadedProps.controls.onUnfavorite}
                             />

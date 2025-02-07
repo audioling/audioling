@@ -1,5 +1,6 @@
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import type { AlbumItem } from '@/api/api-types.ts';
+import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PrefetchController } from '@/features/controllers/prefetch-controller.tsx';
 import { useFavoriteAlbum } from '@/features/favorites/hooks/use-favorite-album.ts';
@@ -41,6 +42,15 @@ export function AlbumCard(props: AlbumCardProps) {
     const { album } = props;
 
     const controls: LoadedCardProps['controls'] = {
+        onContextMenu: (id, event) => {
+            ContextMenuController.call({
+                cmd: {
+                    ids: [id],
+                    type: 'album',
+                },
+                event,
+            });
+        },
         onDragInitialData: (id) => {
             return dndUtils.generateDragData(
                 {

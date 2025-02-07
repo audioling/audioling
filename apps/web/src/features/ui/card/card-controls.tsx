@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import type { LibraryItemType } from '@repo/shared-types';
 import { motion } from 'motion/react';
 import { PlayType } from '@/features/player/stores/player-store.tsx';
@@ -9,8 +10,8 @@ interface CardControlsProps {
     id: string;
     itemType: LibraryItemType;
     libraryId: string;
+    onContextMenu?: (id: string, event: MouseEvent<HTMLButtonElement>) => void;
     onFavorite?: (id: string, libraryId: string) => void;
-    onMore?: (id: string) => void;
     onPlay: (id: string, playType: PlayType) => void;
     onUnfavorite?: (id: string, libraryId: string) => void;
     userFavorite?: boolean;
@@ -97,7 +98,7 @@ export function CardControls(props: CardControlsProps) {
                     />
                 </div>
                 <div className={styles.bottomRight}>
-                    {Boolean(props.onMore) && (
+                    {Boolean(props.onContextMenu) && (
                         <IconButton
                             isCompact
                             icon="ellipsisHorizontal"
@@ -105,7 +106,7 @@ export function CardControls(props: CardControlsProps) {
                             variant="transparent"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                props.onMore?.(props.id);
+                                props.onContextMenu?.(props.id, e);
                             }}
                         />
                     )}
