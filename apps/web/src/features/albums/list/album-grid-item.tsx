@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { LibraryItemType, ListSortOrder, TrackListSortOptions } from '@repo/shared-types';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
@@ -50,6 +50,10 @@ export function ExpandedAlbumGridItemContent({
         }));
     }, [tracks]);
 
+    const getItemId = useCallback((_index: number, item: TrackItem) => {
+        return item.id;
+    }, []);
+
     if (!color) {
         return null;
     }
@@ -83,9 +87,13 @@ export function ExpandedAlbumGridItemContent({
                         columns={columns}
                         context={context}
                         data={rows}
+                        enableDragItem={true}
                         enableHeader={false}
+                        enableItemBorder={false}
                         enableMultiRowSelection={true}
+                        getItemId={getItemId}
                         itemCount={rows.length}
+                        itemSize="condensed"
                         itemType={LibraryItemType.TRACK}
                         onChangeColumnOrder={() => {}}
                     />
