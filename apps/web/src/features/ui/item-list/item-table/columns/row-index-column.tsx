@@ -37,7 +37,6 @@ function TrackCell({ index, startIndex, item }: ItemListCellProps) {
     const { track } = useCurrentTrack();
     const cellItem = item as TrackItem | undefined;
     const isPlaying = track !== undefined && cellItem?.id === track?.id;
-    const status = usePlayerStatus();
 
     return (
         <Text
@@ -47,11 +46,7 @@ function TrackCell({ index, startIndex, item }: ItemListCellProps) {
                 [styles.playing]: isPlaying,
             })}
         >
-            {!isPlaying ? (
-                index + (startIndex ?? 0) + 1
-            ) : (
-                <SoundBars isPlaying={status === PlayerStatus.PLAYING} />
-            )}
+            {index + (startIndex ?? 0) + 1}
         </Text>
     );
 }
