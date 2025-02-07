@@ -145,15 +145,13 @@ export function QueueControls({
                 <Menu.Content>
                     <Menu.Item onSelect={handleSelectAll}>Select all</Menu.Item>
                     <Menu.Divider />
-                    <Menu.Submenu>
-                        <Menu.SubmenuTarget>
-                            <Menu.Item rightIcon="arrowRightS">Remove</Menu.Item>
-                        </Menu.SubmenuTarget>
-                        <Menu.SubmenuContent>
-                            <Menu.Item onSelect={handleClearSelected}>Selected</Menu.Item>
-                            <Menu.Item onSelect={handleClear}>All</Menu.Item>
-                        </Menu.SubmenuContent>
-                    </Menu.Submenu>
+                    <Menu.Item leftIcon="remove" onSelect={handleClearSelected}>
+                        Remove selected
+                    </Menu.Item>
+                    <Menu.Item leftIcon="remove" onSelect={handleClear}>
+                        Remove all
+                    </Menu.Item>
+                    <Menu.Divider />
                     <Menu.Submenu>
                         <Menu.SubmenuTarget>
                             <Menu.Item rightIcon="arrowRightS">Shuffle</Menu.Item>
@@ -171,11 +169,11 @@ export function QueueControls({
                             <Menu.Item leftIcon="arrowRightS" onSelect={handleMoveToNext}>
                                 Next
                             </Menu.Item>
-                            <Menu.Item leftIcon="arrowUpToLine" onSelect={handleMoveToTop}>
-                                Top
-                            </Menu.Item>
                             <Menu.Item leftIcon="arrowDownToLine" onSelect={handleMoveToBottom}>
                                 Bottom
+                            </Menu.Item>
+                            <Menu.Item leftIcon="arrowUpToLine" onSelect={handleMoveToTop}>
+                                Top
                             </Menu.Item>
                         </Menu.SubmenuContent>
                     </Menu.Submenu>
