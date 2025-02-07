@@ -26,6 +26,7 @@ function Cell({ item, isHovered, itemType }: ItemListCellProps) {
                     data={item as AlbumArtistItem}
                 />
             );
+        case LibraryItemType.QUEUE_TRACK:
         case LibraryItemType.TRACK:
         case LibraryItemType.PLAYLIST_TRACK:
             return <TrackFavoriteButton buttonProps={{ size: 'md' }} data={item as TrackItem} />;

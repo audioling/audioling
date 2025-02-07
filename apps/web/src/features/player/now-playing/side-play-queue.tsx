@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { useParams } from 'react-router';
 import { initSimpleImg } from 'react-simple-img';
 import type { PlayQueueItem } from '@/api/api-types.ts';
@@ -7,8 +7,11 @@ import { useAuthBaseUrl } from '@/features/authentication/stores/auth-store.ts';
 import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import { PlayQueueTable } from '@/features/player/now-playing/play-queue-table.tsx';
 import type { QueueGroupingProperty } from '@/features/player/stores/player-store.tsx';
+import { useSettingsStore } from '@/features/settings/store/settings-store.ts';
+import { trackColumnOptions } from '@/features/tracks/list/track-list-header.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
+import type { ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableHandle } from '@/features/ui/item-list/item-table/item-table.tsx';
 import { Menu } from '@/features/ui/menu/menu.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -21,25 +24,40 @@ export function SidePlayQueue() {
     const { libraryId } = useParams() as { libraryId: string };
 
     const itemTableRef = useRef<ItemTableHandle | undefined>(undefined);
-    const [groupBy, setGroupBy] = useState<QueueGroupingProperty | undefined>(undefined);
+
+    const columnOrder = useSettingsStore.use.player().sideQueue.columnOrder;
+    const groupBy = useSettingsStore.use.player().sideQueue.groupBy;
+    const setSettings = useSettingsStore.use.setState();
+
+    const setGroupBy = (value: QueueGroupingProperty | undefined) => {
+        setSettings(['player', 'sideQueue', 'groupBy'], value);
+    };
+
+    const setColumnOrder = (columnOrder: ItemListColumnOrder) => {
+        setSettings(['player', 'sideQueue', 'columnOrder'], columnOrder);
+    };
 
     return (
         <div className={styles.container}>
             <Group align="center" className={styles.header} gap="sm" justify="between">
                 <Text isNoSelect>Queue</Text>
                 <QueueControls
+                    columnOrder={columnOrder}
                     groupBy={groupBy}
                     itemTableRef={itemTableRef}
                     items={[]}
+                    setColumnOrder={setColumnOrder}
                     onGroupBy={setGroupBy}
                 />
             </Group>
             <div className={styles.content}>
                 <PlayQueueTable
                     baseUrl={baseUrl}
+                    columnOrder={columnOrder}
                     groupBy={groupBy}
                     itemTableRef={itemTableRef}
                     libraryId={libraryId}
+                    setColumnOrder={setColumnOrder}
                 />
             </div>
         </div>
@@ -49,15 +67,19 @@ export function SidePlayQueue() {
 SidePlayQueue.displayName = 'SidePlayQueue';
 
 export function QueueControls({
+    columnOrder,
+    setColumnOrder,
     groupBy,
     itemTableRef,
     items,
     onGroupBy,
 }: {
+    columnOrder: ItemListColumnOrder;
     groupBy: QueueGroupingProperty | undefined;
     itemTableRef: MutableRefObject<ItemTableHandle | undefined>;
     items: PlayQueueItem[];
     onGroupBy: (value: QueueGroupingProperty | undefined) => void;
+    setColumnOrder: (columnOrder: ItemListColumnOrder) => void;
 }) {
     const handleClear = useCallback(() => {
         PlayerController.call({ cmd: { clearQueue: null } });
@@ -158,6 +180,35 @@ export function QueueControls({
                         </Menu.SubmenuContent>
                     </Menu.Submenu>
                     <Menu.Divider />
+                    <Menu.Submenu>
+                        <Menu.SubmenuTarget>
+                            <Menu.Item rightIcon="arrowRightS">Columns</Menu.Item>
+                        </Menu.SubmenuTarget>
+                        <Menu.SubmenuContent>
+                            {trackColumnOptions.map((option) => (
+                                <Menu.Item
+                                    key={`sort-${option.value}`}
+                                    isSelected={columnOrder.includes(option.value)}
+                                    onSelect={(e) => {
+                                        e.preventDefault();
+                                        const uniqueColumns = [
+                                            ...new Set([...columnOrder, option.value]),
+                                        ];
+
+                                        if (columnOrder.includes(option.value)) {
+                                            setColumnOrder(
+                                                uniqueColumns.filter((c) => c !== option.value),
+                                            );
+                                        } else {
+                                            setColumnOrder(uniqueColumns);
+                                        }
+                                    }}
+                                >
+                                    {option.label}
+                                </Menu.Item>
+                            ))}
+                        </Menu.SubmenuContent>
+                    </Menu.Submenu>
                     <Menu.Submenu>
                         <Menu.SubmenuTarget>
                             <Menu.Item rightIcon="arrowRightS">Group By</Menu.Item>

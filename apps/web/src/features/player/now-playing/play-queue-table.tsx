@@ -18,7 +18,6 @@ import {
 import { PlayQueueTableItem } from '@/features/shared/list/play-queue-table-item.tsx';
 import { Center } from '@/features/ui/center/center.tsx';
 import type { ItemListColumnOrder } from '@/features/ui/item-list/helpers.ts';
-import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { GroupedItemTable } from '@/features/ui/item-list/item-table/grouped-item-table.tsx';
 import { useItemTable } from '@/features/ui/item-list/item-table/hooks/use-item-table.ts';
 import type { ItemTableHandle } from '@/features/ui/item-list/item-table/item-table.tsx';
@@ -29,12 +28,20 @@ import styles from './play-queue-table.module.scss';
 
 interface PlayQueueTableProps {
     baseUrl: string;
+    columnOrder: ItemListColumnOrder;
     groupBy: QueueGroupingProperty | undefined;
     itemTableRef: MutableRefObject<ItemTableHandle | undefined>;
     libraryId: string;
+    setColumnOrder: (columnOrder: ItemListColumnOrder) => void;
 }
 
-export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTableProps) {
+export function PlayQueueTable({
+    columnOrder,
+    groupBy,
+    itemTableRef,
+    libraryId,
+    setColumnOrder,
+}: PlayQueueTableProps) {
     const { getQueue } = usePlayerActions();
 
     useEffect(() => {
@@ -74,12 +81,6 @@ export function PlayQueueTable({ groupBy, libraryId, itemTableRef }: PlayQueueTa
 
     const [data, setData] = useState<PlayQueueItem[]>([]);
     const [groups, setGroups] = useState<{ count: number; name: string }[]>([]);
-
-    const [columnOrder, setColumnOrder] = useState<ItemListColumnOrder>([
-        ItemListColumn.ROW_INDEX,
-        ItemListColumn.IMAGE,
-        ItemListColumn.STANDALONE_COMBINED,
-    ]);
 
     const { columns } = useItemTable(columnOrder);
 
