@@ -247,7 +247,7 @@ export const baseTheme: AppThemeConfiguration['theme'] = {
     'table-row-background-color': 'transparent',
     'table-row-border-color': 'rgba(30, 30, 30, 0.5)',
     'table-row-config-comfortable-height': '60px',
-    'table-row-config-condensed-height': '40px',
+    'table-row-config-condensed-height': '30px',
     'table-row-config-normal-height': '50px',
     'table-row-font-color': 'rgb(230, 230, 230)',
     'table-row-hover-background-color': 'rgba(100, 100, 100, 0.1)',

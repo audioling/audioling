@@ -10,7 +10,6 @@
     color: var(--table-row-font-color);
     user-select: none;
     background-color: var(--table-row-background-color);
-    border-bottom: 1px solid var(--table-row-border-color);
 
     &:hover {
         &::before {
@@ -26,6 +25,10 @@
 
         transition: background-color 0.2s ease-in-out;
     }
+}
+
+.row-border {
+    border-bottom: 1px solid var(--table-row-border-color);
 }
 
 .row.dragging {
@@ -106,7 +109,7 @@
 
 .selected {
     color: var(--table-row-selected-font-color);
-    background-color: var(--table-row-selected-background-color);
+    background-color: var(--table-row-selected-background-color) !important;
     border-color: var(--table-row-selected-border-color);
 }
 

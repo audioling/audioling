@@ -38,6 +38,7 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
         columns,
         data: id,
         enableDragItem,
+        enableItemBorder,
         enableSelection,
         enableStickyHeader,
         isOffline,
@@ -45,6 +46,7 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
         listReducers,
         index,
         isSelected,
+        itemSize,
         itemType,
         onChangeColumnOrder,
         onItemClick,
@@ -271,6 +273,9 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
                 className={clsx(styles.row, {
                     [styles.canSelect]: enableSelection,
                     [styles.selected]: isSelected,
+                    [styles.rowCondensed]: itemSize === 'condensed',
+                    [styles.rowComfortable]: itemSize === 'comfortable',
+                    [styles.rowBorder]: enableItemBorder,
                 })}
                 style={columnStyles?.styles}
                 onClick={(e) => onItemClick?.({ id, index, item: item as TItemType }, e)}

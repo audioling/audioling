@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import {
     draggable,
@@ -11,9 +12,13 @@ import {
     attachClosestEdge,
     extractClosestEdge,
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import { createRoot } from 'react-dom/client';
+import { ContextMenuController } from '@/features/controllers/context-menu/context-menu-controller.tsx';
 import { DragPreview } from '@/features/ui/drag-preview/drag-preview.tsx';
+import type { ItemListColumnDefinition } from '@/features/ui/item-list/helpers.ts';
+import { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import type { ItemTableItemProps } from '@/features/ui/item-list/item-table/item-table.tsx';
 import type { DragData } from '@/utils/drag-drop.ts';
 import { dndUtils, DragOperation, DragTarget } from '@/utils/drag-drop.ts';
@@ -28,8 +33,10 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
         columnStyles,
         columns,
         index,
+        itemSize,
         data: itemData,
         enableDropItem,
+        enableItemBorder,
         enableSelection,
         getItemId,
         isSelected,
@@ -105,7 +112,17 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                             nativeSetDragImage: data.nativeSetDragImage,
                             render: ({ container }) => {
                                 const root = createRoot(container);
-                                const selectedCount = 1;
+                                const isSelfSelected = listReducers.getSelectionById(id);
+
+                                let selectedCount = 0;
+
+                                if (!isSelfSelected) {
+                                    selectedCount = 1;
+                                } else {
+                                    const selected = listReducers.getSelection();
+                                    selectedCount = Object.keys(selected).length;
+                                }
+
                                 root.render(<DragPreview itemCount={selectedCount} />);
                             },
                         });
@@ -178,26 +195,92 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
         onItemDrop,
     ]);
 
-    const handleItemContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const handleItemContextMenu = useCallback(
+        (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+            e.preventDefault();
+            e.stopPropagation();
 
-        if (!id) return;
+            if (!id) return;
 
-        const isSelfSelected = listReducers.getSelectionById(id);
+            const isSelfSelected = listReducers.getSelectionById(id);
 
-        const ids: string[] = [];
+            const ids: string[] = [];
 
-        if (!isSelfSelected) {
-            listReducers.clearAndSetSelectionById(id);
-            ids.push(id);
-        } else {
-            const selected = listReducers.getSelection();
-            ids.push(...Object.keys(selected));
-        }
+            if (!isSelfSelected) {
+                listReducers.clearAndSetSelectionById(id);
+                ids.push(id);
+            } else {
+                const selected = listReducers.getSelection();
+                ids.push(...Object.keys(selected));
+            }
 
-        onItemContextMenu?.({ id, index, item: itemData, selectedIds: ids }, e);
-    };
+            onItemContextMenu?.({ id, index, item: itemData, selectedIds: ids }, e);
+
+            switch (itemType) {
+                case LibraryItemType.ALBUM:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'album',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.ALBUM_ARTIST:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'albumArtist',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.ARTIST:
+                    break;
+                case LibraryItemType.GENRE:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'genre',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.PLAYLIST:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'playlist',
+                        },
+                        event: e,
+                    });
+                    break;
+                case LibraryItemType.TRACK:
+                    ContextMenuController.call({
+                        cmd: {
+                            ids,
+                            type: 'track',
+                        },
+                        event: e,
+                    });
+                    break;
+            }
+        },
+        [id, index, itemData, itemType, listReducers, onItemContextMenu],
+    );
+
+    const cellHandlers = useCallback(
+        (column: ItemListColumnDefinition) => {
+            if (column.id === ItemListColumn.ACTIONS) {
+                return {
+                    onItemContextMenu: handleItemContextMenu,
+                };
+            }
+
+            return {};
+        },
+        [handleItemContextMenu],
+    );
 
     return (
         <div className={styles.rowContainer}>
@@ -208,6 +291,9 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                     [styles.selected]: isSelected,
                     [styles.draggedOverBottom]: isDraggedOver === 'bottom',
                     [styles.draggedOverTop]: isDraggedOver === 'top',
+                    [styles.rowCondensed]: itemSize === 'condensed',
+                    [styles.rowComfortable]: itemSize === 'comfortable',
+                    [styles.rowBorder]: enableItemBorder,
                 })}
                 style={columnStyles?.styles}
                 onClick={(e) => {
@@ -226,6 +312,7 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                     return (
                         <column.cell
                             key={column.id}
+                            handlers={cellHandlers(column)}
                             index={index}
                             isHovered={isHovered}
                             item={itemData}

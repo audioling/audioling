@@ -57,6 +57,7 @@ export interface ItemTableProps<TDataType, TItemType> {
     enableDragItem?: boolean;
     enableDropItem?: (args: { dragData: DragData }) => boolean;
     enableHeader?: boolean;
+    enableItemBorder?: boolean;
     enableMultiRowSelection?: boolean;
     enableSingleRowSelection?: boolean;
     enableStickyHeader?: boolean;
@@ -64,6 +65,7 @@ export interface ItemTableProps<TDataType, TItemType> {
     initialScrollIndex?: number;
     isScrolling?: (isScrolling: boolean) => void;
     itemCount: number;
+    itemSize?: 'condensed' | 'normal' | 'comfortable';
     itemType: LibraryItemType;
     onChangeColumnOrder: (columnOrder: ItemListColumn[]) => void;
     onEndReached?: (index: number) => void;
@@ -143,11 +145,13 @@ export function ItemTable<TDataType, TItemType>(props: ItemTableProps<TDataType,
         enableDragItem = true,
         enableSingleRowSelection,
         enableStickyHeader,
+        enableItemBorder = true,
         getItemId,
         HeaderComponent,
         initialScrollIndex,
         isScrolling,
         itemCount,
+        itemSize = 'normal',
         ItemComponent,
         virtuosoRef,
         itemType,
@@ -373,14 +377,19 @@ export function ItemTable<TDataType, TItemType>(props: ItemTableProps<TDataType,
                                     data={d as TDataType}
                                     enableDragItem={enableDragItem}
                                     enableExpanded={false}
+                                    enableItemBorder={enableItemBorder}
                                     enableSelection={Boolean(
                                         enableMultiRowSelection || enableSingleRowSelection,
                                     )}
                                     enableStickyHeader={enableStickyHeader}
+                                    getItemId={getItemId}
                                     index={i}
                                     isSelected={Boolean(
-                                        itemSelection[d as keyof typeof itemSelection],
+                                        itemSelection[
+                                            getItemId ? getItemId(i, d as TItemType) : ''
+                                        ],
                                     )}
+                                    itemSize={itemSize}
                                     itemType={itemType}
                                     libraryId={c.libraryId}
                                     listKey={c.listKey}
@@ -448,12 +457,14 @@ export interface ItemTableItemProps<TDataType, TItemType> {
     enableDragItem?: boolean;
     enableDropItem?: (args: { dragData: DragData }) => boolean;
     enableExpanded: boolean;
+    enableItemBorder?: boolean;
     enableSelection?: boolean;
     enableStickyHeader?: boolean;
     getItemId?: (index: number, item: TItemType) => string;
     index: number;
     isOffline?: boolean;
     isSelected?: boolean;
+    itemSize?: 'condensed' | 'normal' | 'comfortable';
     itemType: LibraryItemType;
     libraryId: string;
     listKey: string;

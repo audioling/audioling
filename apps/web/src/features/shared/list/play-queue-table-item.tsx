@@ -32,8 +32,10 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
         // enableExpanded,
         index,
         data: itemData,
+        enableItemBorder,
         enableSelection,
         isSelected,
+        itemSize,
         itemType,
         listReducers,
         onItemClick,
@@ -215,6 +217,9 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
                     [styles.selected]: isSelected,
                     [styles.draggedOverBottom]: isDraggedOver === 'bottom',
                     [styles.draggedOverTop]: isDraggedOver === 'top',
+                    [styles.rowCondensed]: itemSize === 'condensed',
+                    [styles.rowComfortable]: itemSize === 'comfortable',
+                    [styles.rowBorder]: enableItemBorder,
                 })}
                 style={columnStyles?.styles}
                 onClick={(e) =>
