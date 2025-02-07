@@ -2,6 +2,7 @@ import type { ItemListCellProps, ItemListColumn } from '@/features/ui/item-list/
 import { numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
 import { CellSkeleton, EmptyCell } from '@/features/ui/item-list/item-table/columns/shared.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
+import { formatSize } from '@/utils/format-size.ts';
 import styles from './column.module.scss';
 
 function Cell({ item }: ItemListCellProps) {
@@ -13,7 +14,7 @@ function Cell({ item }: ItemListCellProps) {
         if ('fileSize' in item && typeof item.fileSize === 'number') {
             return (
                 <Text isCentered isSecondary className={styles.cell}>
-                    {item.fileSize}
+                    {formatSize(item.fileSize)}
                 </Text>
             );
         }
