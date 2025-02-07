@@ -301,7 +301,7 @@ export function useIndexStatus(args: { type: LibraryItemType }) {
     return useSuspenseQuery({
         queryFn: async () => {
             const result = await appDb?.get('indexes', type);
-            return result as IndexStatus | undefined;
+            return (result as IndexStatus | undefined) || null;
         },
         queryKey: [libraryId, 'index', type, 'status'],
     });
