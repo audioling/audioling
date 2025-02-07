@@ -160,14 +160,6 @@ export function Pagination(props: PaginationProps) {
                     if (index > 0 && array[index - 1] !== page - 1) {
                         return (
                             <Fragment key={`dots-${page}`}>
-                                <GoToPageButton
-                                    currentPage={currentPage}
-                                    pageCount={pageCount}
-                                    radius={radius}
-                                    size={size}
-                                    variant={variant}
-                                    onPageChange={onPageChange}
-                                />
                                 <MotionButton
                                     key={page}
                                     radius={radius}
