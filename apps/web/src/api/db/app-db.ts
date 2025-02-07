@@ -82,8 +82,21 @@ export function initAppDb(opts: { libraryId: string }) {
         get: async (db: AppDbType, key: string) => {
             return (await dbPromise).get(db, key);
         },
+        getCount: async (db: AppDbType) => {
+            return (await dbPromise).count(db);
+        },
         getKeys: async (db: AppDbType) => {
             return (await dbPromise).getAllKeys(db);
+        },
+        getMany: async (db: AppDbType, keys: string[]) => {
+            const tx = (await dbPromise).transaction(db, 'readonly');
+            const store = tx.store;
+
+            const promises = keys.map((key) => store.get(key));
+
+            const results = await Promise.all(promises);
+            await tx.done;
+            return results.filter((item) => item !== undefined);
         },
         iterate: async (
             db: AppDbType,

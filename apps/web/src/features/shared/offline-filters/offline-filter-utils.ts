@@ -1,4 +1,5 @@
 import { type LibraryItemType } from '@repo/shared-types';
+import type { QueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import orderBy from 'lodash/orderBy.js';
 import stringify from 'safe-stable-stringify';
@@ -60,6 +61,7 @@ export const libraryIndexStatus = {
 };
 
 export const libraryIndex = {
+    abortQuery: async () => {},
     buildIndex: async <T>(
         itemType: LibraryItemType,
         handlers: {
@@ -146,13 +148,33 @@ export const libraryIndex = {
         const existingQueryIndex = (await appDb?.get('indexes', queryId)) as string[] | undefined;
         return getQueryResult<T>(itemType, existingQueryIndex || [], offset, limit);
     },
+    resetAbortQuery: async () => {},
     runQuery: async <T>(
+        queryClient: QueryClient,
+        libraryId: string,
         itemType: LibraryItemType,
-        query: QueryFilter,
+        query: {
+            filter: QueryFilter;
+            jsonataFields: Record<string, { type: string; value: string }>;
+        },
+        handlers: {
+            onFinish?: (args: {
+                isExistingQueryIndex?: boolean;
+                isExistingRulesIndex?: boolean;
+            }) => void;
+            onProgress?: (items: T[]) => void;
+            onStart?: (args: {
+                isExistingQueryIndex?: boolean;
+                isExistingRulesIndex?: boolean;
+            }) => void;
+        },
         options: { force?: boolean },
     ) => {
-        const serializedFilter = serializeFilter(query);
-        const expression = jsonataHelpers.getExpression(serializedFilter.rules, trackQueryFields);
+        const serializedFilter = serializeFilter(query.filter);
+        const expression = jsonataHelpers.getExpression(
+            serializedFilter.rules,
+            query.jsonataFields,
+        );
 
         const queryRulesId = getQueryId(itemType, stringify(serializedFilter.rules));
         const queryId = getQueryId(itemType, stringify(serializedFilter));
@@ -160,8 +182,17 @@ export const libraryIndex = {
         const existingQueryIndex = (await appDb?.exists('indexes', queryId)) as boolean | undefined;
 
         if (existingQueryIndex && !options.force) {
+            handlers.onFinish?.({
+                isExistingQueryIndex: true,
+            });
             return;
         }
+
+        const offlineListItemCountQueryKey = libraryIndex.getCountQueryKey(
+            libraryId,
+            itemType,
+            stringify(serializeFilter(query.filter)),
+        );
 
         let ids: string[] = [];
         const existingRulesIndex = (await appDb?.get('indexes', queryRulesId)) as
@@ -171,12 +202,30 @@ export const libraryIndex = {
         if (existingRulesIndex && !options.force) {
             ids = existingRulesIndex as string[];
         } else {
+            handlers.onStart?.({
+                isExistingQueryIndex: Boolean(existingQueryIndex),
+                isExistingRulesIndex: Boolean(existingRulesIndex),
+            });
+            await queryClient.setQueryData(offlineListItemCountQueryKey, 0);
+
             await appDb?.iterate(appDbTypeMap[itemType as keyof typeof appDbTypeMap] as AppDbType, {
                 onFinish: async () => {
                     writeRulesIndex(queryRulesId, ids);
                 },
                 onProgress: async (items) => {
                     const result = await jsonataHelpers.getResult(expression, items);
+                    handlers.onProgress?.(items as T[]);
+
+                    queryClient.setQueryData(
+                        offlineListItemCountQueryKey,
+                        (old: number | undefined) => {
+                            if (old !== undefined) {
+                                return old + result.length;
+                            }
+
+                            return result;
+                        },
+                    );
 
                     result.forEach((item) => {
                         ids.push(item.id);
@@ -184,16 +233,23 @@ export const libraryIndex = {
                 },
             });
         }
+        queueMicrotask(async () => {
+            const items = (await getDbItems(
+                appDbTypeMap[itemType as keyof typeof appDbTypeMap] as AppDbType,
+                ids,
+            )) as T[];
 
-        const items = (await getDbItems(
-            appDbTypeMap[itemType as keyof typeof appDbTypeMap] as AppDbType,
-            ids,
-        )) as T[];
+            const sortedItems = sortQueryResult(items, query.filter);
 
-        const sortedItems = sortQueryResult(items, query);
-        const sortedIds = sortedItems.map((item) => (item as { id: string }).id);
+            const sortedIds = sortedItems.map((item) => (item as { id: string }).id);
 
-        await writeQueryIndex(queryId, sortedIds);
+            await writeQueryIndex(queryId, sortedIds);
+
+            handlers.onFinish?.({
+                isExistingRulesIndex: Boolean(existingRulesIndex),
+            });
+        });
+
         return;
     },
 };
@@ -325,38 +381,3 @@ export async function fetchAllRecords<T>(
         },
     );
 }
-
-export const trackQueryFields: Record<string, { type: string; value: string }> = {
-    album: { type: 'text', value: 'album' },
-    'albumArtists.id': { type: 'text', value: 'albumArtists.id' },
-    'albumArtists.name': { type: 'text', value: 'albumArtists.name' },
-    albumId: { type: 'text', value: 'albumId' },
-    'artists.id': { type: 'text', value: 'artists.id' },
-    'artists.name': { type: 'text', value: 'artists.name' },
-    bitDepth: { type: 'number', value: 'bitDepth' },
-    bitRate: { type: 'number', value: 'bitRate' },
-    bpm: { type: 'number', value: 'bpm' },
-    channelCount: { type: 'number', value: 'channelCount' },
-    comment: { type: 'text', value: 'comment' },
-    createdDate: { type: 'date', value: 'createdDate' },
-    discNumber: { type: 'number', value: 'discNumber' },
-    discSubtitle: { type: 'text', value: 'discSubtitle' },
-    duration: { type: 'number', value: 'duration' },
-    fileContainer: { type: 'text', value: 'fileContainer' },
-    filePath: { type: 'text', value: 'filePath' },
-    fileSize: { type: 'number', value: 'fileSize' },
-    'genres.id': { type: 'text', value: 'genres.id' },
-    'genres.name': { type: 'text', value: 'genres.name' },
-    isCompilation: { type: 'boolean', value: 'isCompilation' },
-    moods: { type: 'text', value: 'moods' },
-    name: { type: 'text', value: 'name' },
-    releaseYear: { type: 'number', value: 'releaseYear' },
-    sortName: { type: 'text', value: 'sortName' },
-    trackNumber: { type: 'number', value: 'trackNumber' },
-    updatedDate: { type: 'date', value: 'updatedDate' },
-    userFavorite: { type: 'boolean', value: 'userFavorite' },
-    userFavoriteDate: { type: 'date', value: 'userFavoriteDate' },
-    userLastPlayedDate: { type: 'date', value: 'userLastPlayedDate' },
-    userPlayCount: { type: 'number', value: 'userPlayCount' },
-    userRating: { type: 'number', value: 'userRating' },
-};

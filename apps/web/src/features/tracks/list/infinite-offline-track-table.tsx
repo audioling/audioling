@@ -45,10 +45,18 @@ export function InfiniteOfflineTrackTable({
 
     const { columns } = useItemTable(columnOrder);
 
-    if (itemCount === undefined || itemCount === 0) {
+    if (itemCount === undefined) {
         return (
             <Center>
                 <Text>Query not available</Text>
+            </Center>
+        );
+    }
+
+    if (itemCount === 0) {
+        return (
+            <Center>
+                <Text>No tracks found</Text>
             </Center>
         );
     }

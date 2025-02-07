@@ -7,7 +7,9 @@ import { InfiniteTrackTable } from '@/features/tracks/list/infinite-track-table.
 import { PaginatedOfflineTrackTable } from '@/features/tracks/list/paginated-offline-track-table.tsx';
 import { PaginatedTrackTable } from '@/features/tracks/list/paginated-track-table.tsx';
 import { useTrackListStore } from '@/features/tracks/store/track-list-store.ts';
+import { Center } from '@/features/ui/center/center.tsx';
 import { ItemListDisplayType, ItemListPaginationType } from '@/features/ui/item-list/types.ts';
+import { Spinner } from '@/features/ui/spinner/spinner.tsx';
 import { useListKey } from '@/hooks/use-list.ts';
 
 export function TrackListContent() {
@@ -34,6 +36,7 @@ function ListComponent({ itemCount }: { itemCount: number }) {
     const sortOrder = useTrackListStore.use.sortOrder();
     const mode = useTrackListStore.use.mode();
     const query = useTrackListStore.use.queryBuilder?.();
+    const isQuerying = useTrackListStore.use.isQuerying?.();
 
     const pagination = useTrackListStore.use.pagination();
     const displayType = useTrackListStore.use.displayType();
@@ -62,6 +65,14 @@ function ListComponent({ itemCount }: { itemCount: number }) {
 
         if (!offlineListKey || !query) {
             return null;
+        }
+
+        if (isQuerying) {
+            return (
+                <Center>
+                    <Spinner />
+                </Center>
+            );
         }
 
         switch (paginationType) {

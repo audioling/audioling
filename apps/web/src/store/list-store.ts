@@ -13,6 +13,8 @@ export type ListStore<TSortBy> = {
     displayType: ItemListDisplayType;
     folderId: string[];
     initialScrollIndex: number;
+    isQueryBuilderOpen?: boolean;
+    isQuerying?: 'force' | 'query' | boolean;
     listId: Record<string, string>;
     mode: 'online' | 'offline';
     pagination: ItemListPaginationState;
@@ -22,6 +24,7 @@ export type ListStore<TSortBy> = {
     setDisplayType: (displayType: ItemListDisplayType) => void;
     setFolderId: (folderId: string[]) => void;
     setInitialScrollIndex: (initialScrollIndex: number) => void;
+    setIsQuerying?: (isQuerying: 'force' | 'query' | boolean) => void;
     setListId: (key: string, id: string) => void;
     setPagination: (pagination: ItemListPaginationState) => void;
     setPaginationType: (paginationType: ItemListPaginationType) => void;
@@ -33,4 +36,5 @@ export type ListStore<TSortBy> = {
     sortOrder: ListSortOrder;
     state: Record<string, GridStateSnapshot>;
     toggleMode: () => void;
+    toggleQueryBuilderOpen?: () => void;
 };

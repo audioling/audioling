@@ -10,6 +10,41 @@ import type {
 } from '@/features/ui/query-builder/query-builder.tsx';
 import { QueryBuilder } from '@/features/ui/query-builder/query-builder.tsx';
 
+export const trackMappingFields: Record<string, { type: string; value: string }> = {
+    album: { type: 'text', value: 'album' },
+    'albumArtists.id': { type: 'text', value: 'albumArtists.id' },
+    'albumArtists.name': { type: 'text', value: 'albumArtists.name' },
+    albumId: { type: 'text', value: 'albumId' },
+    'artists.id': { type: 'text', value: 'artists.id' },
+    'artists.name': { type: 'text', value: 'artists.name' },
+    bitDepth: { type: 'number', value: 'bitDepth' },
+    bitRate: { type: 'number', value: 'bitRate' },
+    bpm: { type: 'number', value: 'bpm' },
+    channelCount: { type: 'number', value: 'channelCount' },
+    comment: { type: 'text', value: 'comment' },
+    createdDate: { type: 'date', value: 'createdDate' },
+    discNumber: { type: 'number', value: 'discNumber' },
+    discSubtitle: { type: 'text', value: 'discSubtitle' },
+    duration: { type: 'number', value: 'duration' },
+    fileContainer: { type: 'text', value: 'fileContainer' },
+    filePath: { type: 'text', value: 'filePath' },
+    fileSize: { type: 'number', value: 'fileSize' },
+    'genres.id': { type: 'text', value: 'genres.id' },
+    'genres.name': { type: 'text', value: 'genres.name' },
+    isCompilation: { type: 'boolean', value: 'isCompilation' },
+    moods: { type: 'text', value: 'moods' },
+    name: { type: 'text', value: 'name' },
+    releaseYear: { type: 'number', value: 'releaseYear' },
+    sortName: { type: 'text', value: 'sortName' },
+    trackNumber: { type: 'number', value: 'trackNumber' },
+    updatedDate: { type: 'date', value: 'updatedDate' },
+    userFavorite: { type: 'boolean', value: 'userFavorite' },
+    userFavoriteDate: { type: 'date', value: 'userFavoriteDate' },
+    userLastPlayedDate: { type: 'date', value: 'userLastPlayedDate' },
+    userPlayCount: { type: 'number', value: 'userPlayCount' },
+    userRating: { type: 'number', value: 'userRating' },
+};
+
 const trackSortFields = [
     { label: 'Album', type: 'text', value: 'albumId' },
     { label: 'Album Artist', type: 'text', value: 'displayAlbumArtist' },
@@ -130,10 +165,15 @@ export const trackQueryOperators = {
 
 interface TrackQueryBuilderProps {
     defaultFilter?: QueryFilter;
+    disabled?: boolean;
     onFilterChange?: (filter: QueryFilter) => void;
 }
 
-export function TrackQueryBuilder({ defaultFilter, onFilterChange }: TrackQueryBuilderProps) {
+export function TrackQueryBuilder({
+    defaultFilter,
+    disabled,
+    onFilterChange,
+}: TrackQueryBuilderProps) {
     const [filter, setFilter] = useState<QueryFilter>(
         defaultFilter || {
             limit: undefined,
@@ -200,6 +240,7 @@ export function TrackQueryBuilder({ defaultFilter, onFilterChange }: TrackQueryB
 
     return (
         <QueryBuilder
+            disabled={disabled}
             filter={filter}
             queryFields={fields}
             sortFields={trackSortFields}

@@ -24,7 +24,10 @@ import {
 import { RefreshButton } from '@/features/shared/refresh-button/refresh-button.tsx';
 import { SearchButton } from '@/features/shared/search-button/search-button.tsx';
 import { SortOrderButton } from '@/features/shared/sort-order-button/sort-order-button.tsx';
-import { TrackQueryBuilder } from '@/features/tracks/query-builder/track-query-builder.tsx';
+import {
+    trackMappingFields,
+    TrackQueryBuilder,
+} from '@/features/tracks/query-builder/track-query-builder.tsx';
 import {
     useTrackListStore,
     useTrackListStoreBase,
@@ -48,7 +51,9 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
     const sortOrder = useTrackListStore.use.sortOrder();
     const paginationType = useTrackListStore.use.paginationType();
     const columnOrder = useTrackListStore.use.columnOrder();
-
+    const isQuerying = useTrackListStore.use.isQuerying?.();
+    const isQueryBuilderOpen = useTrackListStore.use.isQueryBuilderOpen?.();
+    const toggleQueryBuilderOpen = useTrackListStore.use.toggleQueryBuilderOpen?.();
     const toggleMode = useTrackListStore.use.toggleMode();
     const setColumnOrder = useTrackListStore.use.setColumnOrder();
     const setPaginationType = useTrackListStore.use.setPaginationType();
@@ -104,6 +109,13 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
                     <Button leftIcon="menu" variant="default" onClick={toggleMode}>
                         {mode === 'online' ? 'Online Mode' : 'Query Mode'}
                     </Button>
+                    {mode === 'offline' && (
+                        <IconButton
+                            icon={isQueryBuilderOpen ? 'arrowUpS' : 'arrowDownS'}
+                            variant="default"
+                            onClick={() => toggleQueryBuilderOpen?.()}
+                        />
+                    )}
                     <ListOptionsButton
                         columnOptions={trackColumnOptions}
                         columns={columnOrder}
@@ -114,9 +126,10 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
                 </ListHeader.Right>
             </ListHeader.Footer>
             {mode === 'offline' && (
-                <ListHeader.QueryBuilder>
+                <ListHeader.QueryBuilder isOpen={isQueryBuilderOpen ?? false}>
                     <TrackQueryBuilder
                         defaultFilter={filter}
+                        disabled={Boolean(isQuerying)}
                         onFilterChange={(filter) => setFilter(filter)}
                     />
                 </ListHeader.QueryBuilder>
@@ -166,6 +179,9 @@ function OfflineLeftHeader({
     const [searchParams] = useSearchParams();
     const sortBy = useTrackListStore.use.sortBy();
     const sortOrder = useTrackListStore.use.sortOrder();
+    const isQuerying = useTrackListStore.use.isQuerying?.();
+    const setIsQuerying = useTrackListStore.use.setIsQuerying?.();
+    const setQueryBuilder = useTrackListStore.use.setQueryBuilder?.();
     const [indexing, setIndexing] = useState<boolean | number>(false);
 
     const [queryError, setQueryError] = useState<Error | null>(null);
@@ -210,10 +226,9 @@ function OfflineLeftHeader({
         });
     };
 
-    const [isQuerying, setIsQuerying] = useState<boolean | 'force' | 'query'>(false);
-    const setQueryBuilder = useTrackListStore.use.setQueryBuilder?.();
     const handleQuery = async (options: { force?: boolean } = {}) => {
         if (isQuerying) {
+            // TODO: Abort query
             return;
         }
 
@@ -222,40 +237,64 @@ function OfflineLeftHeader({
         const filter = onFilterSubmit();
 
         if (!filter) {
+            setQueryError(new Error('No filter provided'));
             return;
         }
 
-        setIsQuerying(options.force ? 'force' : 'query');
+        setIsQuerying?.(options.force ? 'force' : 'query');
 
         try {
             const now = performance.now();
+            // setQueryBuilder?.(filter);
 
-            await libraryIndex.runQuery(LibraryItemType.TRACK, filter, {
-                force: options.force,
-            });
-
-            setIsQuerying(false);
-
-            const offlineListItemCountQueryKey = libraryIndex.getCountQueryKey(
+            await libraryIndex.runQuery(
+                queryClient,
                 libraryId,
                 LibraryItemType.TRACK,
-                stringify(serializeFilter(filter)),
+                {
+                    filter,
+                    jsonataFields: trackMappingFields,
+                },
+                {
+                    onFinish: async () => {
+                        setIsQuerying?.(false);
+
+                        const offlineListDataQueryKey = itemListHelpers.getDataQueryKey(
+                            libraryId,
+                            LibraryItemType.TRACK,
+                            true,
+                        );
+
+                        const offlineListItemCountQueryKey = libraryIndex.getCountQueryKey(
+                            libraryId,
+                            LibraryItemType.TRACK,
+                            stringify(serializeFilter(filter)),
+                        );
+
+                        await queryClient.invalidateQueries({
+                            queryKey: offlineListItemCountQueryKey,
+                        });
+
+                        await queryClient.invalidateQueries({ queryKey: offlineListDataQueryKey });
+
+                        const end = performance.now();
+
+                        setQueryBuilder?.(filter);
+
+                        console.log(`Time taken: ${(end - now) / 1000} seconds`);
+                    },
+                    onStart: ({ isExistingQueryIndex, isExistingRulesIndex }) => {
+                        if (!isExistingQueryIndex && !isExistingRulesIndex) {
+                            setQueryBuilder?.(filter);
+                        }
+                    },
+                },
+                {
+                    force: options.force,
+                },
             );
-
-            const offlineListDataQueryKey = itemListHelpers.getDataQueryKey(
-                libraryId,
-                LibraryItemType.TRACK,
-                true,
-            );
-
-            await queryClient.invalidateQueries({ queryKey: offlineListItemCountQueryKey });
-            await queryClient.invalidateQueries({ queryKey: offlineListDataQueryKey });
-            setQueryBuilder?.(filter);
-
-            const end = performance.now();
-            console.log(`Time taken: ${(end - now) / 1000} seconds`);
         } catch (error) {
-            setIsQuerying(false);
+            setIsQuerying?.(false);
             setQueryError(error as Error);
             console.error(error);
         }
@@ -280,7 +319,7 @@ function OfflineLeftHeader({
                     variant="outline"
                     onClick={() => handleQuery({ force: false })}
                 >
-                    Submit
+                    Run query
                 </Button>
             </Tooltip>
             <Tooltip label="Force the query to be refetched" openDelay={0} position="bottom">

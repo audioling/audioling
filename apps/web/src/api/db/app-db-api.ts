@@ -37,10 +37,21 @@ export async function getDbItems(type: AppDbType, ids: string[], cb?: (items: un
         throw new Error('AppDb is not initialized');
     }
 
+    const batchSize = 5000;
+    const batches = [];
+    for (let i = 0; i < ids.length; i += batchSize) {
+        batches.push(ids.slice(i, i + batchSize));
+    }
+
+    // Process each batch concurrently
+    const results = await Promise.all(batches.map((batchIds) => appDb?.getMany(type, batchIds)));
+
+    // Flatten the results from all batches
+    const items = results.flat();
+
     if (cb) {
-        const items = await Promise.all(ids.map((id) => appDb!.get(type, id)));
         return cb(items);
     }
 
-    return Promise.all(ids.map((id) => appDb!.get(type, id)));
+    return items;
 }

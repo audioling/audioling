@@ -55,7 +55,7 @@ function ItemCount(props: ListHeaderItemCountProps) {
     const [previousValue, setPreviousValue] = useState(value);
 
     useEffect(() => {
-        if (previousValue !== value && value !== 0) {
+        if (previousValue !== value && value !== undefined) {
             spring.set(value);
             setPreviousValue(value);
         }
@@ -76,12 +76,17 @@ function Footer(props: ListHeaderFooterProps) {
 
 interface ListHeaderQueryBuilderProps {
     children: ReactNode;
+    isOpen: boolean;
 }
 
 function QueryBuilder(props: ListHeaderQueryBuilderProps) {
-    const { children } = props;
+    const { children, isOpen } = props;
 
-    return <ScrollArea className={styles.queryBuilder}>{children}</ScrollArea>;
+    return (
+        <motion.div animate={{ height: isOpen ? 'auto' : 0 }} className={styles.queryBuilder}>
+            <ScrollArea>{children}</ScrollArea>
+        </motion.div>
+    );
 }
 
 ListHeader.Left = Left;

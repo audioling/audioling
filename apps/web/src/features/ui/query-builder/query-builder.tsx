@@ -233,8 +233,8 @@ interface FilterConditionProps {
 function FilterCondition({
     condition,
     field,
-    operator,
     fields,
+    operator,
     conditionId,
     index,
     onUpdate,
@@ -632,6 +632,7 @@ function SortByConditions({
 }
 
 interface QueryBuilderProps {
+    disabled?: boolean;
     filter: QueryFilter;
     onFilterChange: (filter: QueryFilter) => void;
     queryFields: QueryBuilderFields;
@@ -639,6 +640,7 @@ interface QueryBuilderProps {
 }
 
 export function QueryBuilder({
+    disabled,
     queryFields,
     sortFields,
     filter,
@@ -785,7 +787,12 @@ export function QueryBuilder({
     };
 
     return (
-        <div className={styles.container}>
+        <div
+            className={clsx({
+                [styles.container]: true,
+                [styles.disabled]: disabled,
+            })}
+        >
             <Stack gap="sm">
                 {'operator' in filter.rules ? (
                     <RecursiveFilterGroup

@@ -6,6 +6,13 @@
     gap: 1rem;
 }
 
+.container.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    user-select: none;
+    opacity: 0.5;
+}
+
 .filter-group {
     position: relative;
     padding: 1rem;

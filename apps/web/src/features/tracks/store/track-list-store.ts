@@ -26,6 +26,8 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                 displayType: ItemListDisplayType.TABLE,
                 folderId: [],
                 initialScrollIndex: 0,
+                isQueryBuilderOpen: true,
+                isQuerying: false,
                 listId: {},
                 mode: 'offline',
                 pagination: {
@@ -46,7 +48,16 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                         groupId: 'root',
                         operator: 'AND',
                     },
-                    sortBy: [],
+                    sortBy: [
+                        {
+                            direction: 'asc',
+                            field: 'albumId',
+                        },
+                        {
+                            direction: 'asc',
+                            field: 'trackNumber',
+                        },
+                    ],
                 },
                 setColumnOrder: (columnOrder) => {
                     set((state) => {
@@ -67,6 +78,11 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                 setInitialScrollIndex: (initialScrollIndex) => {
                     set((state) => {
                         state.initialScrollIndex = initialScrollIndex;
+                    });
+                },
+                setIsQuerying: (isQuerying) => {
+                    set((state) => {
+                        state.isQuerying = isQuerying;
                     });
                 },
                 setListId: (key, id) => {
@@ -115,9 +131,22 @@ export const useTrackListStoreBase = create<TrackListStore>()(
                         state.mode = state.mode === 'offline' ? 'online' : 'offline';
                     });
                 },
+                toggleQueryBuilderOpen: () => {
+                    set((state) => {
+                        state.isQueryBuilderOpen = !state.isQueryBuilderOpen;
+                    });
+                },
             })),
         ),
-        { name: 'track-list-store', version: 1 },
+        {
+            name: 'track-list-store',
+            partialize: (state) => {
+                return Object.fromEntries(
+                    Object.entries(state).filter(([key]) => !['isQuerying'].includes(key)),
+                );
+            },
+            version: 1,
+        },
     ),
 );
 
