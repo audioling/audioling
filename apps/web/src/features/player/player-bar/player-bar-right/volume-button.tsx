@@ -1,4 +1,5 @@
 import { type WheelEvent } from 'react';
+import clsx from 'clsx';
 import {
     usePlayerMuted,
     usePlayerStore,
@@ -40,6 +41,7 @@ export function VolumeButton() {
                 />
                 <VolumeSlider
                     containerClassName={styles.horizontalSliderContainer}
+                    isMuted={isMuted}
                     orientation="horizontal"
                     onWheel={handleScroll}
                 />
@@ -60,6 +62,7 @@ export function VolumeButton() {
             <Popover.Dropdown>
                 <VolumeSlider
                     containerClassName={styles.verticalSliderContainer}
+                    isMuted={isMuted}
                     orientation="vertical"
                     onWheel={handleScroll}
                 />
@@ -70,17 +73,18 @@ export function VolumeButton() {
 
 interface VolumeSliderProps {
     containerClassName?: string;
+    isMuted: boolean;
     onWheel: (e: WheelEvent) => void;
     orientation: 'horizontal' | 'vertical';
 }
 
 function VolumeSlider(props: VolumeSliderProps) {
-    const { containerClassName, onWheel, orientation } = props;
+    const { containerClassName, isMuted, onWheel, orientation } = props;
     const volume = usePlayerVolume();
     const setVolume = usePlayerStore.use.setVolume();
 
     return (
-        <div className={containerClassName} onWheel={onWheel}>
+        <div className={clsx(containerClassName, { [styles.muted]: isMuted })} onWheel={onWheel}>
             <Slider
                 defaultValue={[volume]}
                 max={100}

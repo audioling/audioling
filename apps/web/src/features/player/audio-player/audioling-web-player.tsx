@@ -14,8 +14,9 @@ import {
     PlayerTransition,
     usePlayerActions,
     usePlayerData,
+    usePlayerMuted,
     usePlayerProperties,
-    usePlayerStore,
+    usePlayerVolume,
 } from '@/features/player/stores/player-store.tsx';
 
 const PLAY_PAUSE_FADE_DURATION = 300;
@@ -26,8 +27,8 @@ export function AudiolingWebPlayer() {
     const { player1, player2, player } = usePlayerData();
     const { mediaAutoNext, setProgress } = usePlayerActions();
     const { transitionType, crossfadeDuration, speed } = usePlayerProperties();
-
-    const volume = usePlayerStore.use.player().volume;
+    const isMuted = usePlayerMuted();
+    const volume = usePlayerVolume();
 
     const [localPlayerStatus, setLocalPlayerStatus] = useState<PlayerStatus>(player.status);
     const [isTransitioning, setIsTransitioning] = useState<string | boolean>(false);
@@ -207,7 +208,7 @@ export function AudiolingWebPlayer() {
 
     return (
         <WebAudioEngine
-            isMuted={false}
+            isMuted={isMuted}
             isTransitioning={Boolean(isTransitioning)}
             playerNum={player.playerNum}
             playerRef={playerRef}
