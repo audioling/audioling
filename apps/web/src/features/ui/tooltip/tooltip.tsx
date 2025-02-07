@@ -7,7 +7,7 @@ import styles from './tooltip.module.scss';
 export interface TooltipProps {
     children: ReactNode;
     isOpen?: boolean;
-    label: string;
+    label: string | ReactNode;
     openDelay?: number;
     position?: 'top' | 'right' | 'bottom' | 'left';
 }
