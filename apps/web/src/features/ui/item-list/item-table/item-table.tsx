@@ -129,6 +129,10 @@ export interface ItemTableProps<TDataType, TItemType> {
 
 export interface ItemTableHandle extends VirtuosoHandle {
     deselectAll: () => void;
+    getSelection: () => {
+        ids: string[];
+        items: unknown[];
+    };
     selectAll: () => void;
 }
 
@@ -246,6 +250,17 @@ export function ItemTable<TDataType, TItemType>(props: ItemTableProps<TDataType,
         },
         deselectAll: () => {
             reducers.setSelection({});
+        },
+        getSelection: () => {
+            const items = data.filter((item, index) => {
+                const id = getItemId ? getItemId(index, item as TItemType) : undefined;
+                return id ? itemSelection[id] : false;
+            });
+
+            return {
+                ids: Object.keys(itemSelection),
+                items,
+            };
         },
         getState: (stateCb: StateCallback) => {
             ref?.current?.getState(stateCb);

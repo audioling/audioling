@@ -45,7 +45,6 @@ export function SidePlayQueue() {
                     columnOrder={columnOrder}
                     groupBy={groupBy}
                     itemTableRef={itemTableRef}
-                    items={[]}
                     setColumnOrder={setColumnOrder}
                     onGroupBy={setGroupBy}
                 />
@@ -71,13 +70,11 @@ export function QueueControls({
     setColumnOrder,
     groupBy,
     itemTableRef,
-    items,
     onGroupBy,
 }: {
     columnOrder: ItemListColumnOrder;
     groupBy: QueueGroupingProperty | undefined;
     itemTableRef: MutableRefObject<ItemTableHandle | undefined>;
-    items: PlayQueueItem[];
     onGroupBy: (value: QueueGroupingProperty | undefined) => void;
     setColumnOrder: (columnOrder: ItemListColumnOrder) => void;
 }) {
@@ -86,6 +83,8 @@ export function QueueControls({
     }, []);
 
     const handleClearSelected = useCallback(() => {
+        const items = itemTableRef.current?.getSelection().items as PlayQueueItem[];
+
         PlayerController.call({
             cmd: {
                 clearSelected: {
@@ -93,13 +92,15 @@ export function QueueControls({
                 },
             },
         });
-    }, [items]);
+    }, [itemTableRef]);
 
     const handleSelectAll = useCallback(() => {
         itemTableRef.current?.selectAll();
     }, [itemTableRef]);
 
     const handleMoveToTop = useCallback(() => {
+        const items = itemTableRef.current?.getSelection().items as PlayQueueItem[];
+
         PlayerController.call({
             cmd: {
                 moveSelectedToTop: {
@@ -107,9 +108,11 @@ export function QueueControls({
                 },
             },
         });
-    }, [items]);
+    }, [itemTableRef]);
 
     const handleMoveToBottom = useCallback(() => {
+        const items = itemTableRef.current?.getSelection().items as PlayQueueItem[];
+
         PlayerController.call({
             cmd: {
                 moveSelectedToBottom: {
@@ -117,9 +120,11 @@ export function QueueControls({
                 },
             },
         });
-    }, [items]);
+    }, [itemTableRef]);
 
     const handleMoveToNext = useCallback(() => {
+        const items = itemTableRef.current?.getSelection().items as PlayQueueItem[];
+
         PlayerController.call({
             cmd: {
                 moveSelectedToNext: {
@@ -127,7 +132,21 @@ export function QueueControls({
                 },
             },
         });
-    }, [items]);
+    }, [itemTableRef]);
+
+    const handleShuffle = useCallback(() => {
+        PlayerController.call({ cmd: { shuffleAll: null } });
+    }, []);
+
+    const handleShuffleSelected = useCallback(() => {
+        const items = itemTableRef.current?.getSelection().items as PlayQueueItem[];
+
+        PlayerController.call({
+            cmd: {
+                shuffleSelected: { items },
+            },
+        });
+    }, [itemTableRef]);
 
     const handleGroupBy = useCallback(
         (value: QueueGroupingProperty | undefined) => {
@@ -157,8 +176,8 @@ export function QueueControls({
                             <Menu.Item rightIcon="arrowRightS">Shuffle</Menu.Item>
                         </Menu.SubmenuTarget>
                         <Menu.SubmenuContent>
-                            <Menu.Item>Selected</Menu.Item>
-                            <Menu.Item>All</Menu.Item>
+                            <Menu.Item onSelect={handleShuffleSelected}>Selected</Menu.Item>
+                            <Menu.Item onSelect={handleShuffle}>All</Menu.Item>
                         </Menu.SubmenuContent>
                     </Menu.Submenu>
                     <Menu.Submenu>
@@ -169,11 +188,11 @@ export function QueueControls({
                             <Menu.Item leftIcon="arrowRightS" onSelect={handleMoveToNext}>
                                 Next
                             </Menu.Item>
-                            <Menu.Item leftIcon="arrowDownToLine" onSelect={handleMoveToBottom}>
-                                Bottom
-                            </Menu.Item>
                             <Menu.Item leftIcon="arrowUpToLine" onSelect={handleMoveToTop}>
                                 Top
+                            </Menu.Item>
+                            <Menu.Item leftIcon="arrowDownToLine" onSelect={handleMoveToBottom}>
+                                Bottom
                             </Menu.Item>
                         </Menu.SubmenuContent>
                     </Menu.Submenu>

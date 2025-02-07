@@ -8,7 +8,7 @@ interface QueueShuffleProps {
 
 export function QueueShuffle({ items }: QueueShuffleProps) {
     const handleShuffle = () => {
-        PlayerController.call({ cmd: { shuffle: null } });
+        PlayerController.call({ cmd: { shuffleAll: null } });
     };
 
     const handleShuffleSelected = () => {

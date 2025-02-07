@@ -97,6 +97,7 @@ interface Actions {
     // setRepeat: (repeat: PlayerRepeat) => void;
     // setShuffle: (shuffle: PlayerShuffle) => void;
     shuffle: () => void;
+    shuffleAll: () => void;
     shuffleSelected: (items: PlayQueueItem[]) => void;
     // toggleRepeat: () => void;
     // toggleShuffle: () => void;
@@ -800,6 +801,12 @@ export const usePlayerStoreBase = create<PlayerState>()(
                         state.queue.shuffled = shuffleInPlace(queue.map((item) => item._uniqueId));
                     });
                 },
+                shuffleAll: () => {
+                    set((state) => {
+                        const queue = state.queue.default;
+                        state.queue.default = shuffleInPlace(queue);
+                    });
+                },
                 shuffleSelected: (items: PlayQueueItem[]) => {
                     set((state) => {
                         const indices = items.map((item) =>
@@ -863,6 +870,7 @@ export const usePlayerActions = () => {
             setTransitionType: state.setTransitionType,
             setVolume: state.setVolume,
             shuffle: state.shuffle,
+            shuffleAll: state.shuffleAll,
             shuffleSelected: state.shuffleSelected,
         })),
     );

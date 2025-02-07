@@ -145,6 +145,17 @@ export const GroupedItemTable = <TDataType, TItemType>(
         deselectAll: () => {
             reducers.setSelection({});
         },
+        getSelection: () => {
+            const items = data.filter((item, index) => {
+                const id = getItemId ? getItemId(index, item as TItemType) : undefined;
+                return id ? itemSelection[id] : false;
+            });
+
+            return {
+                ids: Object.keys(itemSelection),
+                items,
+            };
+        },
         getState: (stateCb: StateCallback) => {
             ref?.current?.getState(stateCb);
         },

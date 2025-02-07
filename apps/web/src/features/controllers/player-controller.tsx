@@ -33,6 +33,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         clearQueue,
         clearSelected,
         shuffle,
+        shuffleAll,
         shuffleSelected,
         setVolume,
         increaseVolume,
@@ -180,6 +181,11 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
                 break;
             }
 
+            case 'shuffleAll': {
+                shuffleAll();
+                break;
+            }
+
             case 'shuffleSelected': {
                 const command = cmd as ShuffleSelected;
                 shuffleSelected(command.shuffleSelected.items);
@@ -212,6 +218,7 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         decreaseVolume,
         mediaSeekToTimestamp,
         mediaToggleMute,
+        shuffleAll,
     ]);
 
     return null;
@@ -236,6 +243,7 @@ export type PlayerCommand =
     | MoveSelectedToBottom
     | MoveSelectedToNext
     | Shuffle
+    | ShuffleAll
     | ShuffleSelected
     | SetVolume
     | IncreaseVolume
@@ -352,6 +360,10 @@ type MoveSelectedTo = {
 
 type Shuffle = {
     shuffle: null;
+};
+
+type ShuffleAll = {
+    shuffleAll: null;
 };
 
 type ShuffleSelected = {
