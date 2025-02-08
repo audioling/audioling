@@ -32,7 +32,7 @@ export function ExpandedAlbumGridItemContent({
 
     const imageUrl = `${baseUrl}${data.imageUrl}&size=300`;
 
-    const color = useImageColor(imageUrl);
+    let color = useImageColor(imageUrl);
 
     const columnOrder = [
         ItemListColumn.TRACK_NUMBER,
@@ -55,7 +55,16 @@ export function ExpandedAlbumGridItemContent({
     }, []);
 
     if (!color) {
-        return null;
+        // Add fallback if no color is found
+        color = {
+            hex: 'var(--paper-background-color)',
+            hexa: 'var(--paper-background-color)',
+            isDark: true,
+            isLight: false,
+            rgb: 'var(--paper-background-color)',
+            rgba: 'var(--paper-background-color)',
+            value: [0, 0, 0, 0],
+        };
     }
 
     return (
