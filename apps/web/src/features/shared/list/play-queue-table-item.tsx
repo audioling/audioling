@@ -56,7 +56,7 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
     const id = itemData._uniqueId;
 
     useEffect(() => {
-        if (!ref.current || !isGroupCollapsed) return;
+        if (!ref.current || isGroupCollapsed) return;
 
         const fns = [];
 
