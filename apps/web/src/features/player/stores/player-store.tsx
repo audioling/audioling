@@ -91,6 +91,7 @@ interface Actions {
     moveSelectedToTop: (items: PlayQueueItem[]) => void;
     setCrossfadeDuration: (duration: number) => void;
     setProgress: (timestamp: number) => void;
+    setQueueType: (queueType: QueueType) => void;
     setRepeat: (repeat: PlayerRepeat) => void;
     setShuffle: (shuffle: PlayerShuffle) => void;
     setSpeed: (speed: number) => void;
@@ -107,6 +108,7 @@ interface State {
         index: number;
         muted: boolean;
         playerNum: 1 | 2;
+        queueType: QueueType;
         repeat: PlayerRepeat;
         seekToTimestamp: string;
         shuffle: PlayerShuffle;
@@ -750,6 +752,7 @@ export const usePlayerStoreBase = create<PlayerState>()(
                     index: -1,
                     muted: false,
                     playerNum: 1,
+                    queueType: QueueType.DEFAULT,
                     repeat: PlayerRepeat.OFF,
                     seekToTimestamp: uniqueSeekToTimestamp(0),
                     shuffle: PlayerShuffle.OFF,
@@ -775,6 +778,11 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 setProgress: (timestamp: number) => {
                     set((state) => {
                         state.player.timestamp = timestamp;
+                    });
+                },
+                setQueueType: (queueType: QueueType) => {
+                    set((state) => {
+                        state.player.queueType = queueType;
                     });
                 },
                 setRepeat: (repeat: PlayerRepeat) => {
@@ -1096,6 +1104,7 @@ export const usePlayerProperties = () => {
             crossfadeDuration: state.player.crossfadeDuration,
             isMuted: state.player.muted,
             playerNum: state.player.playerNum,
+            queueType: state.player.queueType,
             repeat: state.player.repeat,
             shuffle: state.player.shuffle,
             speed: state.player.speed,
@@ -1182,7 +1191,8 @@ function toPlayQueueItem(item: TrackItem): PlayQueueItem {
 
 function getQueueType() {
     // eslint-disable-next-line no-constant-condition
-    const queueType: QueueType = 1 > 0 ? QueueType.DEFAULT : QueueType.PRIORITY; // TODO: Implement settings store useSettingsStore.getState().queueType
+
+    const queueType: QueueType = usePlayerStore.getState().player.queueType;
     return queueType;
 }
 
@@ -1225,4 +1235,8 @@ export function usePlayerShuffle() {
 
 export function usePlayerRepeat() {
     return usePlayerStoreBase((state) => state.player.repeat);
+}
+
+export function usePlayerQueueType() {
+    return usePlayerStoreBase((state) => state.player.queueType);
 }

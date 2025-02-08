@@ -1,9 +1,11 @@
 import {
     PlayerTransition,
+    QueueType,
     usePlayerProperties,
     usePlayerStore,
 } from '@/features/player/stores/player-store.tsx';
 import { Button } from '@/features/ui/button/button.tsx';
+import { Divider } from '@/features/ui/divider/divider.tsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { Popover } from '@/features/ui/popover/popover.tsx';
@@ -25,10 +27,12 @@ export function PlayerSettingsButton() {
 }
 
 export function PlayerSettings() {
-    const { crossfadeDuration, speed, transitionType } = usePlayerProperties();
+    const { crossfadeDuration, speed, transitionType, queueType } = usePlayerProperties();
     const setPlayerTransition = usePlayerStore.use.setTransitionType();
     const setCrossfadeDuration = usePlayerStore.use.setCrossfadeDuration();
     const setSpeed = usePlayerStore.use.setSpeed();
+    const setQueueType = usePlayerStore.use.setQueueType();
+
     return (
         <Stack gap="lg" p="sm" w="300px">
             <Group grow align="center" justify="between">
@@ -51,43 +55,59 @@ export function PlayerSettings() {
                 </Button>
             </Group>
             {transitionType === PlayerTransition.CROSSFADE && (
-                <Stack as="section" gap="xs">
-                    <Group align="center" justify="between">
-                        <Text isNoSelect>Crossfade</Text>
-
-                        <Slider
-                            defaultValue={[crossfadeDuration]}
-                            max={10}
-                            min={0.5}
-                            orientation="horizontal"
-                            step={0.1}
-                            tooltipFormatter={(value) => `${value.toFixed(2)}s`}
-                            onChange={(value) => setCrossfadeDuration(value[0])}
-                        />
-                        <Text isMonospace isNoSelect isSecondary>
-                            {crossfadeDuration.toFixed(2)}s
-                        </Text>
-                    </Group>
-                </Stack>
-            )}
-            <Stack as="section" gap="xs">
                 <Group align="center" justify="between">
-                    <Text isNoSelect>Speed</Text>
+                    <Text isNoSelect>Crossfade</Text>
 
                     <Slider
-                        defaultValue={[speed]}
-                        max={2}
+                        defaultValue={[crossfadeDuration]}
+                        max={10}
                         min={0.5}
                         orientation="horizontal"
-                        step={0.05}
-                        tooltipFormatter={(value) => `${value}x`}
-                        onChange={(value) => setSpeed(value[0])}
+                        step={0.1}
+                        tooltipFormatter={(value) => `${value.toFixed(2)}s`}
+                        onChange={(value) => setCrossfadeDuration(value[0])}
                     />
                     <Text isMonospace isNoSelect isSecondary>
-                        {speed.toFixed(2)}x
+                        {crossfadeDuration.toFixed(2)}s
                     </Text>
                 </Group>
-            </Stack>
+            )}
+            <Group align="center" justify="between">
+                <Text isNoSelect>Speed</Text>
+
+                <Slider
+                    defaultValue={[speed]}
+                    max={2}
+                    min={0.5}
+                    orientation="horizontal"
+                    step={0.05}
+                    tooltipFormatter={(value) => `${value}x`}
+                    onChange={(value) => setSpeed(value[0])}
+                />
+                <Text isMonospace isNoSelect isSecondary>
+                    {speed.toFixed(2)}x
+                </Text>
+            </Group>
+            <Divider />
+            <Group grow align="center" justify="between">
+                <Text isNoSelect>Queue Type</Text>
+                <Button
+                    isCompact
+                    size="sm"
+                    variant={queueType === QueueType.DEFAULT ? 'primary' : 'default'}
+                    onClick={() => setQueueType(QueueType.DEFAULT)}
+                >
+                    Default
+                </Button>
+                <Button
+                    isCompact
+                    size="sm"
+                    variant={queueType === QueueType.PRIORITY ? 'primary' : 'default'}
+                    onClick={() => setQueueType(QueueType.PRIORITY)}
+                >
+                    Priority
+                </Button>
+            </Group>
         </Stack>
     );
 }
