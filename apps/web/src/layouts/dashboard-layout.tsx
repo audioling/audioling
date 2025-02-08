@@ -19,6 +19,7 @@ import { AddToPlaylistModal } from '@/features/playlists/add-to-playlist/add-to-
 import { CreatePlaylistModal } from '@/features/playlists/create-playlist/create-playlist-modal.tsx';
 import { CreatePlaylistFolderModal } from '@/features/playlists/create-playlist-folder/create-playlist-folder-modal.tsx';
 import { ConfirmationModal } from '@/features/shared/confirmation-modal/confirmation-modal.tsx';
+import { GeneralModal } from '@/features/shared/general-modal/general-modal.tsx';
 import { animationVariants } from '@/features/ui/animations/variants.ts';
 import { useIsLargerThanSm } from '@/hooks/use-media-query.ts';
 import { APP_ROUTE } from '@/routes/app-routes.ts';
@@ -60,6 +61,7 @@ export function DashboardLayout() {
             <ContextMenuController.Root key="context-menu-controller" />
             <AddToPlaylistModal.Root key="add-to-playlist-modal" />
             <ConfirmationModal.Root key="confirmation-modal" />
+            <GeneralModal.Root key="general-modal" />
             <AnimatePresence mode="sync">
                 <motion.div
                     animate="show"

@@ -9,6 +9,7 @@ import styles from './checkbox.module.scss';
 
 interface CheckboxProps {
     defaultValue?: boolean;
+    disabled?: boolean;
     label?: string;
     onChange: (value: boolean) => void;
     required?: boolean;
@@ -16,12 +17,13 @@ interface CheckboxProps {
 }
 
 export const Checkbox = forwardRef((props: CheckboxProps, ref: Ref<HTMLButtonElement>) => {
-    const { defaultValue, label, onChange, required, value } = props;
+    const { defaultValue, disabled, label, onChange, required, value } = props;
 
     const id = useId();
 
     const rootClassNames = clsx({
         [styles.root]: true,
+        [styles.disabled]: disabled,
     });
 
     if (label) {
@@ -32,6 +34,7 @@ export const Checkbox = forwardRef((props: CheckboxProps, ref: Ref<HTMLButtonEle
                     asChild
                     checked={value}
                     defaultChecked={defaultValue}
+                    disabled={disabled}
                     required={required}
                     onCheckedChange={onChange}
                 >

@@ -14,6 +14,6 @@ export const isAdminMiddleware = () => {
             throw new apiError.permissionDenied();
         }
 
-        await next();
+        return next();
     });
 };

@@ -163,16 +163,22 @@ export const initUserController = (modules: { service: AppService }) => {
         async (c) => {
             const params = c.req.valid('param');
             const body = c.req.valid('json');
+            const { user: authUser } = c.var;
+
+            const validBody: typeof body = {};
+
+            if ((authUser as AuthVariables['user']).isAdmin) {
+                validBody.isAdmin = body.isAdmin;
+                validBody.isEnabled = body.isEnabled;
+            }
+
+            validBody.displayName = body.displayName;
+            validBody.password = body.password;
+            validBody.username = body.username;
 
             const user = await service.user.update({
                 id: params.id,
-                values: {
-                    displayName: body.displayName,
-                    isAdmin: body.isAdmin,
-                    isEnabled: body.isEnabled,
-                    password: body.password,
-                    username: body.username,
-                },
+                values: validBody,
             });
 
             const response: UserDetailResponse = {

@@ -7,6 +7,11 @@
     border: var(--checkbox-border);
     border-radius: var(--checkbox-border-radius);
     transition: background-color 0.2s ease-in-out;
+
+    &[data-disabled] {
+        cursor: not-allowed;
+        opacity: 0.3;
+    }
 }
 
 .root[data-state='checked'] {

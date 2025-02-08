@@ -1,11 +1,13 @@
 import { forwardRef } from 'react';
 import * as RSwitch from '@radix-ui/react-switch';
+import clsx from 'clsx';
 import { Group } from '@/features/ui/group/group.tsx';
 import { Text } from '@/features/ui/text/text.tsx';
 import styles from './switch.module.scss';
 
 interface SwitchProps {
     defaultValue?: boolean;
+    disabled?: boolean;
     label?: string;
     onChange: (value: boolean) => void;
     required?: boolean;
@@ -13,7 +15,11 @@ interface SwitchProps {
 }
 
 export const Switch = forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => {
-    const { defaultValue, label, onChange, required, value } = props;
+    const { defaultValue, disabled, label, onChange, required, value } = props;
+
+    const rootClassNames = clsx(styles.root, {
+        [styles.disabled]: disabled,
+    });
 
     if (label) {
         return (
@@ -21,8 +27,9 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>((props, ref) =>
                 <RSwitch.Root
                     ref={ref}
                     checked={value}
-                    className={styles.root}
+                    className={rootClassNames}
                     defaultChecked={defaultValue}
+                    disabled={disabled}
                     required={required}
                     onCheckedChange={onChange}
                 >
@@ -37,8 +44,9 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>((props, ref) =>
         <RSwitch.Root
             ref={ref}
             checked={value}
-            className={styles.root}
+            className={rootClassNames}
             defaultChecked={defaultValue}
+            disabled={disabled}
             required={required}
             onCheckedChange={onChange}
         >

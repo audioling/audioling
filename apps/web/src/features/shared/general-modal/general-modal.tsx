@@ -1,34 +1,40 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
+import React from 'react';
 import { createCallable } from 'react-call';
+import { FullPageSpinner } from '@/features/shared/full-page-spinner/full-page-spinner.tsx';
 import { Modal } from '@/features/ui/modal/modal.tsx';
-import { Stack } from '@/features/ui/stack/stack.tsx';
 
 interface GeneralModalProps {
     children?: ReactNode;
     closeOnClickOutside?: boolean;
+    size?: 'sm' | 'md' | 'lg';
     title?: string;
 }
 
-export const GeneralModal = createCallable<GeneralModalProps, boolean>(
-    ({ call, children, closeOnClickOutside, title }) => {
-        // const handleCancel = async () => {
-        //     await onCancel?.();
-        //     call.end(false);
-        // };
+export interface GeneralModalChildProps {
+    closeModal: () => void;
+}
 
-        // const handleConfirm = async () => {
-        //     await onConfirm?.();
-        //     call.end(true);
-        // };
+export const GeneralModal = createCallable<GeneralModalProps, boolean>(
+    ({ call, children, closeOnClickOutside, size, title }) => {
+        const childrenWithProps = React.Children.map(children, (child) => {
+            if (React.isValidElement(child)) {
+                return React.cloneElement(child as React.ReactElement<GeneralModalChildProps>, {
+                    closeModal: () => call.end(false),
+                });
+            }
+            return child;
+        });
 
         return (
             <Modal
                 closeOnClickOutside={closeOnClickOutside}
                 isClosing={call.ended}
+                size={size}
                 title={title ?? ''}
                 onClose={() => call.end(false)}
             >
-                <Stack>{children}</Stack>
+                <Suspense fallback={<FullPageSpinner />}>{childrenWithProps}</Suspense>
             </Modal>
         );
     },

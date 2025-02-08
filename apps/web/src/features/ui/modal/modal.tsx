@@ -46,6 +46,7 @@ export function Modal(props: ModalProps) {
 
     return (
         <motion.div
+            ref={focusTrapRef}
             animate={isClosing ? 'hidden' : 'show'}
             className={styles.overlay}
             exit="hidden"

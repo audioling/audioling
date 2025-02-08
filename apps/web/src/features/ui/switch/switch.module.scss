@@ -5,6 +5,11 @@
     background-color: var(--switch-background-color);
     border-radius: var(--switch-border-radius);
     transition: background-color 0.2s ease-in-out;
+
+    &[data-disabled] {
+        cursor: not-allowed;
+        opacity: 0.3;
+    }
 }
 
 .root[data-state='checked'] {
@@ -18,8 +23,8 @@
     height: 1rem;
     background-color: var(--switch-thumb-background-color);
     border-radius: var(--switch-thumb-border-radius);
-    transition: transform 100ms;
     transform: translateX(2px);
+    transition: transform 100ms;
     will-change: transform;
 
     &[data-state='checked'] {

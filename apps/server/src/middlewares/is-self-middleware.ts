@@ -11,7 +11,7 @@ export const isSelfMiddleware = () => {
         const user = c.get('user');
 
         if (user.isAdmin) {
-            await next();
+            return next();
         }
 
         const id = c.req.param('id');
@@ -20,6 +20,6 @@ export const isSelfMiddleware = () => {
             throw new apiError.permissionDenied();
         }
 
-        await next();
+        return next();
     });
 };

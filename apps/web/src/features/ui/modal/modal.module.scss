@@ -25,26 +25,25 @@
     background-color: var(--modal-background-color);
 
     @include base.larger-than-sm {
-        width: 50%;
         min-width: 350px;
         max-width: 800px;
         height: auto;
         border: var(--modal-border);
         border-radius: var(--modal-border-radius);
 
-        .modal-sm {
+        &.modal-sm {
             width: 30%;
             min-width: 300px;
             max-width: 400px;
         }
 
-        .modal-md {
+        &.modal-md {
             width: 50%;
             min-width: 400px;
             max-width: 500px;
         }
 
-        .modal-lg {
+        &.modal-lg {
             width: 70%;
             min-width: 500px;
             max-width: 800px;
