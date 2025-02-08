@@ -34,6 +34,7 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
         data: itemData,
         enableItemBorder,
         enableSelection,
+        isGroupCollapsed,
         isSelected,
         itemSize,
         itemType,
@@ -55,7 +56,7 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
     const id = itemData._uniqueId;
 
     useEffect(() => {
-        if (!ref.current) return;
+        if (!ref.current || !isGroupCollapsed) return;
 
         const fns = [];
 
@@ -181,6 +182,7 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
         enableDragItem,
         id,
         index,
+        isGroupCollapsed,
         itemData,
         itemType,
         listReducers,
@@ -207,6 +209,10 @@ const InnerContent = (props: ItemTableItemProps<PlayQueueItem, PlayQueueItem>) =
 
         onItemContextMenu?.({ id, index, item: itemData, selectedIds: ids }, e);
     };
+
+    if (isGroupCollapsed) {
+        return null;
+    }
 
     return (
         <div className={styles.rowContainer}>

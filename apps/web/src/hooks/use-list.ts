@@ -534,11 +534,17 @@ export type ItemListInternalReducers = {
     _itemExpandedReducer: Dispatch<SelectionStateAction>;
     _itemSelectionReducer: Dispatch<SelectionStateAction>;
     addSelection: (id: string) => void;
+    clearAndSetGroupCollapsedById: (id: string) => void;
     clearAndSetSelectionById: (id: string) => void;
+    clearGroupCollapsed: () => void;
     clearSelection: () => void;
+    getGroupCollapsed: () => Record<string, boolean>;
+    getGroupCollapsedById: (id: string) => boolean;
     getSelection: () => Record<string, boolean>;
     getSelectionById: (id: string) => boolean;
     removeSelectionById: (id: string) => void;
+    setGroupCollapsed: (values: Record<string, boolean>) => void;
+    setGroupCollapsedById: (id: string, expanded: boolean) => void;
     setSelection: (values: Record<string, boolean>) => void;
     setSelectionById: (id: string, selected: boolean) => void;
     toggleSelectionById: (id: string) => void;
@@ -552,6 +558,7 @@ export interface ItemListInternalState {
         e: MouseEvent<HTMLDivElement>,
     ) => void;
     _onSingleSelectionClick: (id: string, e: MouseEvent<HTMLDivElement>) => void;
+    groupCollapsed: Record<string, boolean>;
     itemExpanded: Record<string, boolean>;
     itemSelection: Record<string, boolean>;
     reducers: ItemListInternalReducers;
@@ -627,6 +634,8 @@ function selectionStateReducer(
 export function useItemListInternalState(): ItemListInternalState {
     const [itemSelection, dispatchItemSelection] = useReducer(selectionStateReducer, {});
     const [itemExpanded, dispatchItemExpanded] = useReducer(selectionStateReducer, {});
+    const [groupCollapsed, dispatchGroupCollapsed] = useReducer(selectionStateReducer, {});
+
     const lastSelectedIndex = useRef<number | null>(null);
 
     const _onMultiSelectionClick = (
@@ -707,11 +716,23 @@ export function useItemListInternalState(): ItemListInternalState {
         addSelection: (id: string) => {
             dispatchItemSelection({ id, type: 'addById' });
         },
+        clearAndSetGroupCollapsedById: (id: string) => {
+            dispatchGroupCollapsed({ id, type: 'clearAndSetById' });
+        },
         clearAndSetSelectionById: (id: string) => {
             dispatchItemSelection({ id, type: 'clearAndSetById' });
         },
+        clearGroupCollapsed: () => {
+            dispatchGroupCollapsed({ type: 'clear' });
+        },
         clearSelection: () => {
             dispatchItemSelection({ type: 'clear' });
+        },
+        getGroupCollapsed: () => {
+            return groupCollapsed;
+        },
+        getGroupCollapsedById: (id: string) => {
+            return groupCollapsed[id];
         },
         getSelection: () => {
             return itemSelection;
@@ -721,6 +742,12 @@ export function useItemListInternalState(): ItemListInternalState {
         },
         removeSelectionById: (id: string) => {
             dispatchItemSelection({ id, type: 'removeById' });
+        },
+        setGroupCollapsed: (values: Record<string, boolean>) => {
+            dispatchGroupCollapsed({ type: 'set', values });
+        },
+        setGroupCollapsedById: (id: string, expanded: boolean) => {
+            dispatchGroupCollapsed({ id, type: 'setById', value: expanded });
         },
         setSelection: (values: Record<string, boolean>) => {
             dispatchItemSelection({ type: 'set', values });
@@ -736,6 +763,7 @@ export function useItemListInternalState(): ItemListInternalState {
     return {
         _onMultiSelectionClick,
         _onSingleSelectionClick,
+        groupCollapsed,
         itemExpanded,
         itemSelection,
         reducers,

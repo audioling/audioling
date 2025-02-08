@@ -479,6 +479,7 @@ export interface ItemTableItemProps<TDataType, TItemType> {
     enableStickyHeader?: boolean;
     getItemId?: (index: number, item: TItemType) => string;
     index: number;
+    isGroupCollapsed?: boolean;
     isOffline?: boolean;
     isSelected?: boolean;
     itemSize?: 'condensed' | 'normal' | 'comfortable';

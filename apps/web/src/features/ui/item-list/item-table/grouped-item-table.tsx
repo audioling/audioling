@@ -148,11 +148,11 @@ export const GroupedItemTable = <TDataType, TItemType>(
         getSelection: () => {
             const items = data.filter((item, index) => {
                 const id = getItemId ? getItemId(index, item as TItemType) : undefined;
-                return id ? itemSelection[id] : false;
+                return id ? reducers.getSelectionById(id) : false;
             });
 
             return {
-                ids: Object.keys(itemSelection),
+                ids: Object.keys(reducers.getSelection()),
                 items,
             };
         },
@@ -185,7 +185,7 @@ export const GroupedItemTable = <TDataType, TItemType>(
         },
     }));
 
-    const { _onMultiSelectionClick, _onSingleSelectionClick, itemSelection, reducers } =
+    const { _onMultiSelectionClick, _onSingleSelectionClick, reducers } =
         useItemListInternalState();
 
     const handleItemClick = useCallback(
@@ -273,12 +273,20 @@ export const GroupedItemTable = <TDataType, TItemType>(
                                 : undefined,
                         }}
                         endReached={onEndReached}
-                        groupContent={(index) => <TableGroup groups={groups} index={index} />}
+                        groupContent={(index) => (
+                            <TableGroup
+                                data={data as TItemType[]}
+                                getItemId={getItemId as (index: number, item: unknown) => string}
+                                groups={groups}
+                                index={index}
+                                reducers={reducers}
+                            />
+                        )}
                         groupCounts={groupCounts}
                         increaseViewportBy={100}
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
-                        itemContent={(i) => {
+                        itemContent={(i, groupIndex) => {
                             if (i < itemCount) {
                                 const itemId = getItemId?.(i, data[i] as TItemType) || '';
 
@@ -294,9 +302,10 @@ export const GroupedItemTable = <TDataType, TItemType>(
                                             enableMultiRowSelection || enableSingleRowSelection,
                                         )}
                                         index={i}
-                                        isSelected={Boolean(
-                                            itemSelection[itemId as keyof typeof itemSelection],
+                                        isGroupCollapsed={Boolean(
+                                            reducers.getGroupCollapsedById(groupIndex.toString()),
                                         )}
+                                        isSelected={Boolean(reducers.getSelectionById(itemId))}
                                         itemType={itemType}
                                         libraryId={context.libraryId}
                                         listKey={context.listKey}
