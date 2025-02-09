@@ -6,12 +6,17 @@
         "packages/*"
     ],
     "scripts": {
+        "build": "bun run build:packages && bun run build:apps",
         "build:apps": "bun --filter './apps/**' build",
         "build:packages": "bun --filter './packages/**' build",
         "build:server:desktop": "bun --filter './apps/server' build:desktop",
+        "build:server:desktop-macos-arm64": "bun --filter './apps/server' build:desktop-macos-arm64",
+        "build:server:desktop-macos-x64": "bun --filter './apps/server' build:desktop-macos-x64",
         "build:web:desktop": "bun --filter './apps/web' build:desktop",
         "commit": "git-cz",
         "deploy": "bun run deploy.ts",
+        "deploy:server": "bun run deploy-server.ts",
+        "deploy:server:macos": "bun run deploy-server-macos.ts",
         "lint:apps": "bun --filter './apps/**' lint",
         "lint:packages": "bun --filter './packages/** lint",
         "prepare": "husky"

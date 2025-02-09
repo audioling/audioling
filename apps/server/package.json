@@ -1,6 +1,6 @@
 {
     "name": "@audioling/server",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "private": false,
     "description": "",
     "license": "GPL-3.0-only",
@@ -9,6 +9,11 @@
     "scripts": {
         "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
         "build:desktop": "bun build --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server",
+        "build:desktop-linux-arm64": "bun build --target=bun-linux-arm64 --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server",
+        "build:desktop-linux-x64": "bun build --target=bun-linux-x64-modern --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server",
+        "build:desktop-macos-arm64": "bun build --target=bun-darwin-arm64 --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server",
+        "build:desktop-macos-x64": "bun build --target=bun-darwin-x64 --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server",
+        "build:desktop-windows": "bun build --target=bun-windows-x64-modern --compile --minify ./src/index.ts ./src/image-worker.ts --outfile ./dist/audioling-server.exe",
         "db:init": "pwsh -c 'Remove-Item ./app.db' && pnpm run db:push",
         "dev": "cross-env NODE_ENV=development APP_LOG_LEVEL=debug bun --watch run ./src/index.ts",
         "dev:trace": "cross-env NODE_ENV=development APP_LOG_LEVEL=trace bun --watch run ./src/index.ts",

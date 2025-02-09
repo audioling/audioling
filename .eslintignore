@@ -1,3 +1,5 @@
 node_modules
 dist
 deploy.ts
+deploy-server.ts
+deploy-server-macos.ts

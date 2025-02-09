@@ -28,9 +28,6 @@ jobs:
               with:
                   bun-version: latest
 
-            # - name: build server binaries
-            #   run: bun run build:desktop
-
             - name: install Rust stable
               uses: dtolnay/rust-toolchain@stable
               with:
@@ -47,16 +44,27 @@ jobs:
             - name: install frontend dependencies
               run: bun install
 
-            - uses: tauri-apps/tauri-action@v0
+            - name: build server binaries
+              if: matrix.platform != 'macos-latest'
+              run: bun run deploy:server
+
+            - name: build server binaries (macos)
+              if: matrix.platform == 'macos-latest'
+              run: bun run deploy:server:macos
+
+            - uses: tauri-apps/tauri-action@v0.5.16
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+                  TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
               with:
-                  projectPath: 'apps/web'
-                  # includeRelease: true # default is true
-                  # includeUpdaterJson: true # default is false
-                  tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-                  releaseName: 'App v__VERSION__'
+                  projectPath: './apps/web'
+                  includeRelease: true
+                  includeUpdaterJson: true
+                  tagName: audioling-v__VERSION__
+                  releaseName: 'audioling v__VERSION__'
                   releaseBody: 'See the assets to download this version and install.'
                   releaseDraft: true
                   prerelease: false
                   args: ${{ matrix.args }}
+                  tauriScript: 'bun run tauri'
