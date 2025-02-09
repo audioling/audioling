@@ -540,6 +540,7 @@ export type ItemListInternalReducers = {
     clearSelection: () => void;
     getGroupCollapsed: () => Record<string, boolean>;
     getGroupCollapsedById: (id: string) => boolean;
+    getOrderedSelection: () => string[];
     getSelection: () => Record<string, boolean>;
     getSelectionById: (id: string) => boolean;
     removeSelectionById: (id: string) => void;
@@ -631,7 +632,11 @@ function selectionStateReducer(
     }
 }
 
-export function useItemListInternalState(): ItemListInternalState {
+export function useItemListInternalState<TDataType, TItemType>(args: {
+    data: (TDataType | undefined)[];
+    getItemId?: (index: number, item: TItemType) => string;
+}): ItemListInternalState {
+    const { data, getItemId } = args;
     const [itemSelection, dispatchItemSelection] = useReducer(selectionStateReducer, {});
     const [itemExpanded, dispatchItemExpanded] = useReducer(selectionStateReducer, {});
     const [groupCollapsed, dispatchGroupCollapsed] = useReducer(selectionStateReducer, {});
@@ -733,6 +738,20 @@ export function useItemListInternalState(): ItemListInternalState {
         },
         getGroupCollapsedById: (id: string) => {
             return groupCollapsed[id];
+        },
+        getOrderedSelection: () => {
+            if (getItemId) {
+                return data
+                    .filter((item) => item !== undefined)
+                    .map((item, index) => getItemId(index, item as TItemType));
+            }
+
+            const results = (data as (string | undefined)[]).filter((id) => {
+                if (id === undefined && typeof id !== 'string') return false;
+                return itemSelection[id as string] as boolean;
+            }) as string[];
+
+            return results;
         },
         getSelection: () => {
             return itemSelection;

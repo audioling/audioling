@@ -221,7 +221,7 @@ export function ItemTable<TDataType, TItemType>(props: ItemTableProps<TDataType,
     }, [scroller, initialize, osInstance, rowsKey, disableAutoScroll]);
 
     const { _onMultiSelectionClick, _onSingleSelectionClick, itemSelection, reducers } =
-        useItemListInternalState();
+        useItemListInternalState<TDataType, TItemType>({ data, getItemId });
 
     const columnStyles = useMemo(() => {
         const headerSizes = columns.map((column) => column.size);

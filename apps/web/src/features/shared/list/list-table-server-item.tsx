@@ -79,13 +79,12 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
                     getInitialData: () => {
                         const isSelfSelected = listReducers.getSelectionById(id);
 
-                        const ids: string[] = [];
+                        let ids: string[] = [];
 
                         if (!isSelfSelected) {
                             ids.push(id);
                         } else {
-                            const selected = listReducers.getSelection();
-                            ids.push(...Object.keys(selected));
+                            ids = listReducers.getOrderedSelection();
                         }
 
                         const dragTarget = DragTargetMap[itemType as keyof typeof DragTargetMap] as
@@ -102,14 +101,13 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
                     onDragStart: () => {
                         const isSelfSelected = listReducers.getSelectionById(id);
 
-                        const ids: string[] = [];
+                        let ids: string[] = [];
 
                         if (!isSelfSelected) {
                             listReducers.clearAndSetSelectionById(id);
                             ids.push(id);
                         } else {
-                            const selected = listReducers.getSelection();
-                            ids.push(...Object.keys(selected));
+                            ids = listReducers.getOrderedSelection();
                         }
 
                         switch (itemType) {
@@ -176,14 +174,13 @@ function InnerContent<TItemType>(props: ItemTableItemProps<string, TItemType>) {
 
             const isSelfSelected = listReducers.getSelectionById(id);
 
-            const ids: string[] = [];
+            let ids: string[] = [];
 
             if (!isSelfSelected) {
                 listReducers.clearAndSetSelectionById(id);
                 ids.push(id);
             } else {
-                const selected = listReducers.getSelection();
-                ids.push(...Object.keys(selected));
+                ids = listReducers.getOrderedSelection();
             }
 
             onItemContextMenu?.({ id, index, item: item as TItemType, selectedIds: ids }, e);

@@ -152,7 +152,7 @@ export const GroupedItemTable = <TDataType, TItemType>(
             });
 
             return {
-                ids: Object.keys(reducers.getSelection()),
+                ids: reducers.getOrderedSelection(),
                 items,
             };
         },
@@ -185,8 +185,9 @@ export const GroupedItemTable = <TDataType, TItemType>(
         },
     }));
 
-    const { _onMultiSelectionClick, _onSingleSelectionClick, reducers } =
-        useItemListInternalState();
+    const { _onMultiSelectionClick, _onSingleSelectionClick, reducers } = useItemListInternalState({
+        data,
+    });
 
     const handleItemClick = useCallback(
         (args: { id: string; index: number; item: TItemType }, e: MouseEvent<HTMLDivElement>) => {

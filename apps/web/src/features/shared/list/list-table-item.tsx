@@ -70,13 +70,12 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                     getInitialData: () => {
                         const isSelfSelected = listReducers.getSelectionById(id);
 
-                        const ids: string[] = [];
+                        let ids: string[] = [];
 
                         if (!isSelfSelected) {
                             ids.push(id);
                         } else {
-                            const selected = listReducers.getSelection();
-                            ids.push(...Object.keys(selected));
+                            ids = listReducers.getOrderedSelection();
                         }
 
                         if (onItemDragData) {
@@ -93,14 +92,13 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                     onDragStart: () => {
                         const isSelfSelected = listReducers.getSelectionById(id);
 
-                        const ids: string[] = [];
+                        let ids: string[] = [];
 
                         if (!isSelfSelected) {
                             listReducers.clearAndSetSelectionById(id);
                             ids.push(id);
                         } else {
-                            const selected = listReducers.getSelection();
-                            ids.push(...Object.keys(selected));
+                            ids = listReducers.getOrderedSelection();
                         }
 
                         onItemDrag?.({ id, index, item: itemData, selectedIds: ids });
@@ -165,7 +163,7 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
                         const data = args.source.data as DragData;
                         const edge = closestEdgeOfTarget;
 
-                        const selectedIds = Object.keys(listReducers.getSelection());
+                        const selectedIds = listReducers.getOrderedSelection();
 
                         onItemDrop?.({
                             dragData: data,
@@ -204,14 +202,13 @@ const InnerContent = <T,>(props: ItemTableItemProps<T, T>) => {
 
             const isSelfSelected = listReducers.getSelectionById(id);
 
-            const ids: string[] = [];
+            let ids: string[] = [];
 
             if (!isSelfSelected) {
                 listReducers.clearAndSetSelectionById(id);
                 ids.push(id);
             } else {
-                const selected = listReducers.getSelection();
-                ids.push(...Object.keys(selected));
+                ids = listReducers.getOrderedSelection();
             }
 
             onItemContextMenu?.({ id, index, item: itemData, selectedIds: ids }, e);
