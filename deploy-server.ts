@@ -14,6 +14,10 @@ async function main() {
 async function renameSidecar() {
     return new Promise((resolve, reject) => {
         try {
+            const cwd = process.cwd();
+
+            console.log('cwd :>> ', cwd);
+
             const extension = process.platform === 'win32' ? '.exe' : '';
 
             const rustInfo = execSync('rustc -vV');
@@ -25,10 +29,31 @@ async function renameSidecar() {
                 console.error('Failed to determine platform target triple');
             }
 
-            fs.renameSync(
-                `./apps/server/dist/audioling-server${extension}`,
-                `./apps/web/src-tauri/target/external/audioling-server-${targetTriple}${extension}`,
-            );
+            const binaryPath = `./apps/server/dist/audioling-server${extension}`;
+
+            console.log('binaryPath', binaryPath);
+
+            const isBinaryExists = fs.existsSync(binaryPath);
+
+            if (!isBinaryExists) {
+                throw new Error('Binary not found');
+            }
+
+            console.log('isBinaryExists', isBinaryExists);
+
+            const targetDirectory = `./apps/web/src-tauri/target/external`;
+
+            const isTargetDirectoryExists = fs.existsSync(targetDirectory);
+
+            if (!isTargetDirectoryExists) {
+                throw new Error('Target directory not found');
+            }
+
+            const binaryName = `audioling-server-${targetTriple}${extension}`;
+
+            console.log('isTargetDirectoryExists', isTargetDirectoryExists);
+
+            fs.renameSync(binaryPath, `${targetDirectory}/${binaryName}`);
         } catch (error) {
             reject(error);
         }
