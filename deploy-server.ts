@@ -36,7 +36,7 @@ async function renameSidecar() {
             const isBinaryExists = fs.existsSync(binaryPath);
 
             if (!isBinaryExists) {
-                throw new Error('Binary not found');
+                throw new Error('Binary not found, erroring...');
             }
 
             console.log('isBinaryExists', isBinaryExists);
@@ -46,14 +46,18 @@ async function renameSidecar() {
             const isTargetDirectoryExists = fs.existsSync(targetDirectory);
 
             if (!isTargetDirectoryExists) {
-                throw new Error('Target directory not found');
+                console.log('Target directory not found, creating...');
+                fs.mkdirSync(targetDirectory, { recursive: true });
+                console.log('Target directory created: ', targetDirectory);
             }
 
             const binaryName = `audioling-server-${targetTriple}${extension}`;
 
             console.log('isTargetDirectoryExists', isTargetDirectoryExists);
 
+            console.log('Moving binary to target directory...');
             fs.renameSync(binaryPath, `${targetDirectory}/${binaryName}`);
+            console.log('Binary moved to target directory: ', `${targetDirectory}/${binaryName}`);
         } catch (error) {
             reject(error);
         }
