@@ -23,6 +23,11 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+
             - name: setup bun
               uses: oven-sh/setup-bun@v2
               with:
@@ -50,12 +55,14 @@ jobs:
             - uses: tauri-apps/tauri-action@v0
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+                  TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
               with:
-                  projectPath: 'apps/web'
+                  projectPath: './apps/web'
                   # includeRelease: true # default is true
                   # includeUpdaterJson: true # default is false
-                  tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-                  releaseName: 'App v__VERSION__'
+                  tagName: ${{ github.ref_name }}
+                  releaseName: 'audioling ${{ github.ref_name }}'
                   releaseBody: 'See the assets to download this version and install.'
                   releaseDraft: true
                   prerelease: false
