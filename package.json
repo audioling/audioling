@@ -6,6 +6,7 @@
         "packages/*"
     ],
     "scripts": {
+        "build": "bun run build:packages && bun run build:apps",
         "build:apps": "bun --filter './apps/**' build",
         "build:packages": "bun --filter './packages/**' build",
         "build:server:desktop": "bun --filter './apps/server' build:desktop",
