@@ -28,9 +28,6 @@ jobs:
               with:
                   bun-version: latest
 
-            # - name: build server binaries
-            #   run: bun run build:desktop
-
             - name: install Rust stable
               uses: dtolnay/rust-toolchain@stable
               with:
@@ -46,6 +43,9 @@ jobs:
 
             - name: install frontend dependencies
               run: bun install
+
+            - name: build server binaries
+              run: bun run deploy:server
 
             - uses: tauri-apps/tauri-action@v0
               env:
