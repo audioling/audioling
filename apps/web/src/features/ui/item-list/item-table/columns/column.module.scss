@@ -11,6 +11,10 @@
     @include base.text-ellipsis;
 }
 
+.remove {
+    justify-self: center;
+}
+
 .skeleton {
     display: flex;
     align-content: center;

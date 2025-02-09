@@ -1,6 +1,7 @@
 import { LibraryItemType } from '@repo/shared-types';
 import clsx from 'clsx';
 import type { PlayQueueItem, TrackItem } from '@/api/api-types.ts';
+import { PlayerController } from '@/features/controllers/player-controller.tsx';
 import {
     PlayerStatus,
     useCurrentTrack,
@@ -8,6 +9,7 @@ import {
 } from '@/features/player/stores/player-store.tsx';
 import { Icon } from '@/features/ui/icon/icon.tsx';
 import { SoundBars } from '@/features/ui/icon/sound-bars.tsx';
+import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import type { ItemListColumn } from '@/features/ui/item-list/helpers.ts';
 import { type ItemListCellProps, numberToColumnSize } from '@/features/ui/item-list/helpers.ts';
 import { Text } from '@/features/ui/text/text.tsx';
@@ -51,11 +53,39 @@ function TrackCell({ index, startIndex, item }: ItemListCellProps) {
     );
 }
 
-function QueueTrackCell({ index, item }: ItemListCellProps) {
+function QueueTrackCell({ index, item, isHovered }: ItemListCellProps) {
     const { track } = useCurrentTrack();
     const cellItem = item as PlayQueueItem | undefined;
     const isPlaying = track !== undefined && cellItem?._uniqueId === track?._uniqueId;
     const status = usePlayerStatus();
+
+    if (isHovered) {
+        const handleRemove = () => {
+            if (!cellItem) {
+                return;
+            }
+
+            PlayerController.call({
+                cmd: {
+                    clearSelected: {
+                        items: [cellItem],
+                    },
+                },
+            });
+        };
+
+        return (
+            <div className={clsx(styles.cell, styles.remove)}>
+                <IconButton
+                    isCompact
+                    icon="remove"
+                    size="lg"
+                    variant="transparent"
+                    onClick={handleRemove}
+                />
+            </div>
+        );
+    }
 
     return (
         <Text
