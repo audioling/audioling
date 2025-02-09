@@ -4,6 +4,8 @@ import console from 'console';
 import fs from 'fs';
 
 async function main() {
+    await Promise.all([$`bun run build:packages`]);
+
     await Promise.all([$`bun run build:server:desktop`]);
 
     await renameSidecar();
