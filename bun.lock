@@ -17,7 +17,7 @@
     },
     "apps/server": {
       "name": "@audioling/server",
-      "version": "1.0.0",
+      "version": "0.0.1",
       "dependencies": {
         "@audioling/open-subsonic-api-client": "4.0.2",
         "@hono/zod-openapi": "^0.18.3",
@@ -52,7 +52,7 @@
     },
     "apps/web": {
       "name": "@audioling/web",
-      "version": "1.0.0",
+      "version": "0.0.1",
       "dependencies": {
         "@atlaskit/pragmatic-drag-and-drop": "1.4.0",
         "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^2.1.0",

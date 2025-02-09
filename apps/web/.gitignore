@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 openapi.json
+
+src-tauri/~
