@@ -16,7 +16,7 @@ jobs:
                       args: '--target x86_64-apple-darwin'
                     - platform: 'ubuntu-22.04'
                       args: ''
-                    - platform: 'windows-latest'
+                    - platform: 'windows-2019'
                       args: ''
 
         runs-on: ${{ matrix.platform }}
@@ -47,7 +47,7 @@ jobs:
             - name: build server binaries
               run: bun run deploy:server
 
-            - uses: tauri-apps/tauri-action@v0.5.16
+            - uses: tauri-apps/tauri-action@0
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
