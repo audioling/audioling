@@ -62,4 +62,4 @@ jobs:
                   releaseDraft: true
                   prerelease: false
                   args: ${{ matrix.args }}
-                  tauriScript: 'bun run'
+                  tauriScript: 'bun run tauri'
