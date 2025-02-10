@@ -104,58 +104,9 @@ a {
 }
 
 @font-face {
-    font-family: Archivo;
-    font-weight: 100 1000;
-    src: url('../fonts/Archivo-VariableFont_wdth,wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: Raleway;
-    font-weight: 100 1000;
-    src: url('../fonts/Raleway-VariableFont_wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: Fredoka;
-    font-weight: 100 1000;
-    src: url('../fonts/Fredoka-VariableFont_wdth,wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: 'League Spartan';
-    font-weight: 100 1000;
-    src: url('../fonts/LeagueSpartan-VariableFont_wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: Lexend;
-    font-weight: 100 1000;
-    src: url('../fonts/Lexend-VariableFont_wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
     font-family: Inter;
     font-weight: 100 1000;
     src: url('../fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: Sora;
-    font-weight: 100 1000;
-    src: url('../fonts/Sora-VariableFont_wght.ttf') format('truetype-variations');
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: 'Work Sans';
-    font-weight: 100 1000;
-    src: url('../fonts/WorkSans-VariableFont_wght.ttf') format('truetype-variations');
     unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
@@ -201,13 +152,6 @@ a {
     font-weight: 900;
     src: url('../fonts/Poppins-Black.ttf') format('truetype');
     font-display: swap;
-    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
-}
-
-@font-face {
-    font-family: Raleway;
-    font-weight: 100 1000;
-    src: url('../fonts/Raleway-VariableFont_wght.ttf') format('truetype-variations');
     unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
 }
 
