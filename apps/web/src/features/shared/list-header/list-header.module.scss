@@ -56,3 +56,10 @@
     max-height: 35vh;
     border-bottom: 1px solid var(--layout-border-color);
 }
+
+.play-button {
+    width: auto;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+}

@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { motion, useSpring, useTransform } from 'motion/react';
+import { IconButton } from '@/features/ui/icon-button/icon-button.tsx';
 import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
 import styles from './list-header.module.scss';
 
@@ -92,6 +93,28 @@ function QueryBuilder(props: ListHeaderQueryBuilderProps) {
         </motion.div>
     );
 }
+interface PlayButtonProps {
+    disabled?: boolean;
+    isLoading?: boolean;
+    onClick: () => void;
+}
+
+function PlayButton(props: PlayButtonProps) {
+    const { disabled, isLoading, onClick } = props;
+
+    return (
+        <IconButton
+            iconFill
+            isCompact
+            className={styles.playButton}
+            icon={isLoading ? 'spinner' : 'mediaPlay'}
+            isDisabled={disabled}
+            isLoading={isLoading}
+            variant="primary"
+            onClick={onClick}
+        />
+    );
+}
 
 ListHeader.Left = Left;
 ListHeader.Right = Right;
@@ -99,3 +122,4 @@ ListHeader.Title = Title;
 ListHeader.Footer = Footer;
 ListHeader.ItemCount = ItemCount;
 ListHeader.QueryBuilder = QueryBuilder;
+ListHeader.PlayButton = PlayButton;

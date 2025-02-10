@@ -9,6 +9,8 @@ import { fetchTrackListIndex } from '@/api/fetchers/tracks.ts';
 import type { GetApiLibraryIdTracksParams } from '@/api/openapi-generated/audioling-openapi-client.schemas.ts';
 import { getGetApiLibraryIdTracksCountQueryKey } from '@/api/openapi-generated/tracks/tracks.ts';
 import { useLibraryFeatures } from '@/features/authentication/stores/auth-store.ts';
+import { PlayerController } from '@/features/controllers/player-controller.tsx';
+import { PlayType } from '@/features/player/stores/player-store.tsx';
 import { ListFolderFilterButton } from '@/features/shared/list-folder-filter-button/list-folder-filter-button.tsx';
 import { ListHeader } from '@/features/shared/list-header/list-header.tsx';
 import { ListOptionsButton } from '@/features/shared/list-options-button/list-options-button.tsx';
@@ -82,6 +84,7 @@ export function TrackListHeader({ handleRefresh }: { handleRefresh: () => void }
     return (
         <ListHeader>
             <ListHeader.Left>
+                {mode === 'offline' && <OfflinePlayButton />}
                 <ListHeader.Title>Tracks</ListHeader.Title>
                 {mode === 'offline' ? (
                     <OfflineItemCount />
@@ -167,6 +170,39 @@ function OfflineItemCount() {
             <OfflineItemCountInner />
         </Suspense>
     );
+}
+
+function OfflinePlayButton() {
+    const query = useTrackListStore.use.queryBuilder?.();
+    const isQuerying = useTrackListStore.use.isQuerying?.();
+
+    const handleClick = async () => {
+        if (!query || isQuerying) {
+            return;
+        }
+
+        const items: TrackItem[] = await libraryIndex.getQueryResult(
+            LibraryItemType.TRACK,
+            query,
+            -1,
+            0,
+        );
+
+        if (items.length === 0) {
+            return;
+        }
+
+        PlayerController.call({
+            cmd: {
+                addToQueueByData: {
+                    data: items,
+                    type: PlayType.NOW,
+                },
+            },
+        });
+    };
+
+    return <ListHeader.PlayButton disabled={Boolean(isQuerying)} onClick={handleClick} />;
 }
 
 function OfflineLeftHeader({
