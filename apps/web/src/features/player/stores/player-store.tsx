@@ -933,6 +933,19 @@ export const usePlayerStoreBase = create<PlayerState>()(
                 },
                 setQueueType: (queueType: QueueType) => {
                     set((state) => {
+                        // From default -> priority, move all items from default to priority
+                        if (queueType === QueueType.PRIORITY) {
+                            state.queue.priority = [
+                                ...state.queue.default,
+                                ...state.queue.priority,
+                            ];
+                            state.queue.default = [];
+                        } else {
+                            // From priority -> default, move all items from priority to the start of default
+                            state.queue.default = [...state.queue.priority, ...state.queue.default];
+                            state.queue.priority = [];
+                        }
+
                         state.player.queueType = queueType;
                     });
                 },
