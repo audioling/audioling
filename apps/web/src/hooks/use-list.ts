@@ -741,9 +741,15 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         },
         getOrderedSelection: () => {
             if (getItemId) {
-                return data
+                const results = data
                     .filter((item) => item !== undefined)
-                    .map((item, index) => getItemId(index, item as TItemType));
+                    .map((item, index) => getItemId(index, item as TItemType))
+                    .filter((id) => {
+                        if (id === undefined && typeof id !== 'string') return false;
+                        return itemSelection[id as string] as boolean;
+                    });
+
+                return results;
             }
 
             const results = (data as (string | undefined)[]).filter((id) => {

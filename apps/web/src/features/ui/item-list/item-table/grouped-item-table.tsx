@@ -187,6 +187,7 @@ export const GroupedItemTable = <TDataType, TItemType>(
 
     const { _onMultiSelectionClick, _onSingleSelectionClick, reducers } = useItemListInternalState({
         data,
+        getItemId,
     });
 
     const handleItemClick = useCallback(
