@@ -3,3 +3,4 @@ dist
 deploy.ts
 deploy-server.ts
 deploy-server-macos.ts
+init.ts
