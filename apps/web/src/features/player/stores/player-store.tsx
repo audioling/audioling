@@ -273,6 +273,9 @@ export const usePlayerStoreBase = create<PlayerState>()(
                                                     ...state.queue.default,
                                                     ...newItems.slice(1),
                                                 ];
+
+                                                state.player.index =
+                                                    state.queue.priority.length - 1;
                                             }
                                         }
 
