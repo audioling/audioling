@@ -1,0 +1,46 @@
+name: Feature Request
+description: Suggest an idea for this project
+title: '[Feature]: '
+labels: ['enhancement']
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for taking the time to suggest a new feature!
+
+    - type: checkboxes
+      id: check-duplicate
+      attributes:
+          label: I have already checked through the existing feature requests and found no duplicates
+          options:
+              - label: 'Yes'
+                required: true
+
+    - type: dropdown
+      id: server-specific
+      attributes:
+          label: Is this a server-specific feature?
+          options:
+              - Not server-specific
+              - I don't know (provide details in description)
+              - OpenSubsonic
+              - Jellyfin
+              - Navidrome
+          default: 0
+      validations:
+          required: true
+
+    - type: textarea
+      id: solution
+      attributes:
+          label: Describe the solution you'd like
+          description: What would you like to see happen to solve your problem?
+          placeholder: I would like to see [...]
+      validations:
+          required: true
+
+    - type: textarea
+      id: context
+      attributes:
+          label: Additional context
+          description: Add any other context or screenshots about the feature request here.

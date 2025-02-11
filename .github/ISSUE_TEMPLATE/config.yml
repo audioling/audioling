@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+    - name: Questions or help
+      url: https://github.com/audioling/audioling/discussions
+      about: Ask questions or get help in the discussions section
+    - name: Discord Community
+      url: https://discord.gg/FVKpcMDy5f
+      about: The discord/matrix servers are bridged so you can join whichever you prefer
+    - name: Matrix Community
+      url: https://matrix.to/#/#sonixd:matrix.org
+      about: The discord/matrix servers are bridged so you can join whichever you prefer
