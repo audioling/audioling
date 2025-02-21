@@ -1,0 +1,38 @@
+{
+    "name": "@repo/electron-preload",
+    "type": "commonjs",
+    "version": "0.1.0",
+    "private": true,
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
+            "default": "./dist/index.cjs"
+        },
+        "./main": {
+            "types": "./dist/ipcMain.d.ts",
+            "development": "./src/ipcMain.ts",
+            "default": "./dist/ipcMain.cjs"
+        },
+        "./dist/*": "./dist/*"
+    },
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "engines": {
+        "node": ">=v16.13",
+        "npm": ">=8.1"
+    },
+    "scripts": {
+        "build": "vite build",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "postinstall": "pnpm run build"
+    },
+    "peerDependencies": {
+        "electron": "^22.3.27"
+    },
+    "devDependencies": {
+        "vite-plugin-dts": "^4.5.0"
+    }
+}

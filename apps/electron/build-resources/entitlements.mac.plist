@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Enable file read and write permissions -->
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+    <key>com.apple.security.files.documents.read-write</key>
+    <true/>
+    <key>com.apple.security.files.desktop.read-write</key>
+    <true/>
+    <key>com.apple.security.files.home-relative-path.read-write</key>
+    <true/>
+
+    <!-- Enable permissions for camera, microphone, photo library, etc. -->
+    <key>com.apple.security.device.camera</key>
+    <true/>
+    <key>com.apple.security.device.usb</key>
+    <true/>
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    <key>com.apple.security.device.microphone</key>
+    <true/>
+    <key>com.apple.security.personal-information.photos-library</key>
+    <true/>
+
+    <!-- Enable access to the Internet and Bluetooth -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
+    <key>com.apple.security.bluetooth</key>
+    <true/>
+
+    <!-- Enable Apple Events -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+
+    <!-- Enable access to location services -->
+    <key>com.apple.security.personal-information.location</key>
+    <true/>
+
+    <!-- Enable access to calendar and reminders -->
+    <key>com.apple.security.personal-information.calendars</key>
+    <true/>
+    <key>com.apple.security.personal-information.reminders</key>
+    <true/>
+
+    <!-- Enable access to contacts -->
+    <key>com.apple.security.personal-information.addressbook</key>
+    <true/>
+
+    <!-- Allows applications to use JIT compilation and unsigned executable memory -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- Enable access to Apple Music and media library -->
+    <key>com.apple.security.personal-information.music-library</key>
+    <true/>
+    <key>com.apple.security.personal-information.media-library</key>
+    <true/>
+
+</dict>
+</plist>

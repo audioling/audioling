@@ -1,0 +1,70 @@
+{
+    "name": "audioling",
+    "version": "0.1.0",
+    "private": false,
+    "packageManager": "pnpm@9.6.0",
+    "license": "GPL-3.0-only",
+    "engines": {
+        "pnpm": ">=9.0.0",
+        "node": ">=18.0.0"
+    },
+    "scripts": {
+        "dev": "tsx scripts/watch.ts",
+        "dev:watch": "tsx scripts/watch.ts --watch",
+        "dev:pkg": "pnpm -F \"./packages/**\" dev",
+        "build:pkg": "pnpm -F \"./packages/**\" build",
+        "build": "turbo run build",
+        "dev:p": "turbo run dev --parallel",
+        "compile": "pnpm build && turbo run compile",
+        "pack:dev": "pnpm run build && pnpm -F electron-main run pack:dev",
+        "pack:prod": "pnpm run build && pnpm -F electron-main run pack:prod",
+        "postinstall": "npm run build:pkg",
+        "lint": "turbo run lint",
+        "lint:fix": "eslint . --fix",
+        "clean:cache": "npx rimraf node_modules/.cache/ && npx rimraf node_modules/.vite",
+        "clean:lib": "npx rimraf --glob node_modules **/node_modules",
+        "reinstall": "npx rimraf pnpm-lock.yaml && pnpm clean:lib",
+        "commit": "git-cz",
+        "prepare": "husky"
+    },
+    "config": {
+        "commitizen": {
+            "path": "@commitlint/cz-commitlint"
+        }
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.5.0",
+        "@commitlint/config-conventional": "^19.5.0",
+        "@commitlint/cz-commitlint": "^19.5.0",
+        "@antfu/eslint-config": "^3.13.0",
+        "@dotenvx/dotenvx": "^1.32.1",
+        "@types/node": "^22.10.5",
+        "@unocss/eslint-plugin": "^65.4.0",
+        "cross-env": "^7.0.3",
+        "eslint": "9.17.0",
+        "eslint-plugin-format": "^1.0.1",
+        "husky": "^9.1.6",
+        "inquirer": "9",
+        "lint-staged": "^15.3.0",
+        "prettier": "^3.4.2",
+        "rimraf": "6.0.1",
+        "simple-git-hooks": "^2.11.1",
+        "tsx": "^4.19.2",
+        "turbo": "^2.3.3",
+        "vite": "^6.0.7"
+    },
+    "pnpm": {
+        "peerDependencyRules": {
+            "allowedVersions": {
+                "eslint": "*"
+            }
+        },
+        "overrides": {}
+    },
+    "simple-git-hooks": {
+        "pre-commit": "pnpm lint-staged"
+    },
+    "lint-staged": {
+        "*": "eslint --fix"
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "baseUrl": ".",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "paths": {
+            "/@/*": [
+                "./src/*"
+            ]
+        },
+        "strict": true,
+        "sourceMap": false,
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "types/*.d.ts",
+        "src/**/*.ts",
+        "../electron/node_modules/electron/**/*.d.ts"
+    ],
+    "exclude": [
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ]
+}
