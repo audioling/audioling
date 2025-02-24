@@ -33,16 +33,17 @@
         }
     },
     "devDependencies": {
+        "@antfu/eslint-config": "^3.13.0",
         "@commitlint/cli": "^19.5.0",
         "@commitlint/config-conventional": "^19.5.0",
         "@commitlint/cz-commitlint": "^19.5.0",
-        "@antfu/eslint-config": "^3.13.0",
         "@dotenvx/dotenvx": "^1.32.1",
         "@types/node": "^22.10.5",
         "@unocss/eslint-plugin": "^65.4.0",
         "cross-env": "^7.0.3",
         "eslint": "9.17.0",
         "eslint-plugin-format": "^1.0.1",
+        "eslint-plugin-sort-keys-custom-order": "^2.2.1",
         "husky": "^9.1.6",
         "inquirer": "9",
         "lint-staged": "^15.3.0",
@@ -51,6 +52,7 @@
         "simple-git-hooks": "^2.11.1",
         "tsx": "^4.19.2",
         "turbo": "^2.3.3",
+        "typescript": "5.7.3",
         "vite": "^6.0.7"
     },
     "pnpm": {

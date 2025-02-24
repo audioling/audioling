@@ -1,0 +1,159 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
+    text-size-adjust: none;
+    outline: none;
+}
+
+html,
+body {
+    position: absolute;
+    display: block;
+    width: 100%;
+    min-width: 360px;
+    height: 100%;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+@media only screen and (width < 360px) {
+    body,
+    html {
+        overflow-x: auto;
+    }
+}
+
+::-webkit-scrollbar {
+    width: var(--scroll-bar-size);
+    height: var(--scroll-bar-size);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--scroll-bar-track-background-color);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-bar-track-background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-bar-thumb-background-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-bar-thumb-hover-background-color);
+}
+
+.al-os-scrollbar {
+    --os-size: var(--scroll-bar-size);
+    --os-track-bg: var(--scroll-bar-track-background-color);
+    --os-track-bg-hover: var(--scroll-bar-track-hover-background-color);
+    --os-track-border-radius: var(--scroll-bar-track-border-radius);
+    --os-handle-bg: var(--scroll-bar-thumb-background-color);
+    --os-handle-bg-hover: var(--scroll-bar-thumb-hover-background-color);
+    --os-handle-bg-active: var(--scroll-bar-thumb-active-background-color);
+    --os-handle-border-radius: var(--scroll-bar-thumb-border-radius);
+    --os-handle-max-size: 200px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+@font-face {
+    font-family: 'Noto Sans JP';
+    font-weight: 100 900;
+    src: url('../fonts/NotoSansJP-VariableFont_wght.ttf') format('truetype-variations');
+    font-display: swap;
+    unicode-range: U+3000-9FFF, U+FF00-FFEF; /* Japanese characters */
+}
+
+@font-face {
+    font-family: Geist;
+    font-weight: 100 1000;
+    src: url('../fonts/Geist[wght].ttf') format('truetype-variations');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@font-face {
+    font-family: Inter;
+    font-weight: 100 1000;
+    src: url('../fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype-variations');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@font-face {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Poppins-Regular.ttf') format('truetype');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@font-face {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/Poppins-SemiBold.ttf') format('truetype');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@font-face {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Poppins-Bold.ttf') format('truetype');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@font-face {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 800;
+    src: url('../fonts/Poppins-ExtraBold.ttf') format('truetype');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@font-face {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 900;
+    src: url('../fonts/Poppins-Black.ttf') format('truetype');
+    font-display: swap;
+    unicode-range: U+0000-2FFF, U+A000-FEFF; /* Non-Japanese characters */
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

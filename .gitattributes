@@ -2,3 +2,23 @@
 scripts/*.js linguist-detectable=false
 *.config.js linguist-detectable=false
 * text=auto eol=lf
+
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.c text
+*.h text
+
+# Declare files that will always have CRLF line endings on checkout.
+*.sln text eol=crlf
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.ttf binary
+*.ico binary
+*.svg binary
+*.webp binary
+*.gif binary
+*.bmp binary
+*.tiff binary

@@ -1,0 +1,58 @@
+{
+    "common": {
+        "actions": {
+            "submit": "Submit",
+            "cancel": "Cancel",
+            "save": "Save",
+            "delete": "Delete",
+            "edit": "Edit",
+            "next": "Next"
+        },
+        "messages": {
+            "loading": "Loading...",
+            "error": "An error occurred",
+            "success": "Operation successful",
+            "confirmDelete": "Are you sure you want to delete this?"
+        },
+        "validation": {
+            "required": "This field is required",
+            "email": "Please enter a valid email address",
+            "minLength": "Must be at least {{count}} characters",
+            "maxLength": "Must be no more than {{count}} characters"
+        }
+    },
+    "auth": {
+        "signIn": {
+            "connect": "Connect to your server",
+            "signIn": "Sign In",
+            "username": "Username",
+            "password": "Password",
+            "serverAddress": "Server Address",
+            "serverType": "Server Type"
+        }
+    },
+    "navigation": {
+        "home": "Home",
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "errors": {
+        "404": "Page not found",
+        "403": "Access denied",
+        "500": "Server error",
+        "network": "Network error"
+    },
+    "forms": {
+        "placeholders": {
+            "search": "Search...",
+            "email": "Enter your email",
+            "password": "Enter your password"
+        },
+        "labels": {
+            "search": "Search",
+            "email": "Email Address",
+            "password": "Password"
+        }
+    }
+}

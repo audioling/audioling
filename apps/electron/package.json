@@ -9,10 +9,10 @@
         "npm": ">=8.1"
     },
     "scripts": {
-        "bundle": "npx rimraf ./dist && webpack --config webpack.config.js",
+        "bundle": "pnpm dlx rimraf ./dist && webpack --config webpack.config.js",
         "build:dev": "vite build --mode development && pnpm bundle",
         "build:prod": "vite build && pnpm bundle",
-        "pack:app": "npx tsx scripts/build.ts",
+        "pack:app": "pnpm dlx tsx scripts/build.ts",
         "pack:dev": "pnpm build:dev && dotenvx run -f .env.development -- pnpm pack:app",
         "pack:prod": "pnpm build:prod && dotenvx run -f .env.production -- pnpm pack:app",
         "typecheck": "tsc --noEmit -p tsconfig.json",

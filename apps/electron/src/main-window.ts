@@ -1,16 +1,48 @@
+import type { BrowserWindowConstructorOptions } from 'electron';
 import { join } from 'node:path';
 import { BrowserWindow } from 'electron';
-import { isDev, isPackaged } from '/@/utils/';
+import { isDev, isLinux, isMacOS, isPackaged, isWindows } from '/@/utils/';
 
 async function createWindow() {
+    const nativeFrameConfig: Record<string, BrowserWindowConstructorOptions> = {
+        linux: {
+            autoHideMenuBar: true,
+            frame: true,
+        },
+        macOS: {
+            autoHideMenuBar: true,
+            frame: true,
+            titleBarStyle: 'default',
+            trafficLightPosition: { x: 10, y: 10 },
+        },
+        windows: {
+            autoHideMenuBar: true,
+            frame: true,
+        },
+    };
+
     const browserWindow = new BrowserWindow({
-    // Use 'ready-to-show' event to show window
+        autoHideMenuBar: true,
+        frame: false,
+        fullscreen: false,
+        height: 900,
+        minHeight: 720,
+        minWidth: 480,
         show: false,
         webPreferences: {
+            backgroundThrottling: false,
+            contextIsolation: true,
+            nodeIntegration: true,
+            preload: isPackaged
+                ? join(__dirname, './preload/index.cjs')
+                : join(__dirname, '../../preload/dist/index.cjs'),
             // https://www.electronjs.org/docs/latest/api/webview-tag#warning
             webviewTag: false,
-            preload: isPackaged ? join(__dirname, './preload/index.cjs') : join(__dirname, '../../preload/dist/index.cjs'),
         },
+        width: 1440,
+        ...(isLinux && nativeFrameConfig.linux),
+        ...(isMacOS && nativeFrameConfig.macOS),
+        ...(isWindows && nativeFrameConfig.windows),
     });
 
     /**
@@ -35,7 +67,7 @@ async function createWindow() {
 }
 
 /**
- * 恢复现有的浏览器窗口或创建新的浏览器窗口
+ * Restore or create a new window
  */
 export async function restoreOrCreateWindow() {
     let window = BrowserWindow.getAllWindows().find(w => !w.isDestroyed());

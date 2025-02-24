@@ -10,9 +10,9 @@
             "default": "./dist/index.cjs"
         },
         "./main": {
-            "types": "./dist/ipcMain.d.ts",
-            "development": "./src/ipcMain.ts",
-            "default": "./dist/ipcMain.cjs"
+            "types": "./dist/ipc-main.d.ts",
+            "development": "./src/ipc-main.ts",
+            "default": "./dist/ipc-main.cjs"
         },
         "./dist/*": "./dist/*"
     },

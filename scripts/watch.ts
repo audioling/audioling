@@ -32,9 +32,6 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
     let electronApp: ChildProcess | null = null;
 
     return build({
-        mode,
-        logLevel,
-        configFile: 'apps/electron/vite.config.ts',
         build: {
             /**
              * Set to {} to enable rollup listener
@@ -42,6 +39,9 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
              */
             watch: Reflect.has(args, '--watch') ? {} : null,
         },
+        configFile: 'apps/electron/vite.config.ts',
+        logLevel,
+        mode,
         plugins: [
             {
                 name: 'reload-app-on-main-package-change',
@@ -66,7 +66,10 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
 
                     electronApp.stderr?.on('data', (data) => {
                         const str = data.toString();
-                        const ignoreErrors = ['Secure coding is not enabled for restorable state', 'CoreText note: Client requested name'];
+                        const ignoreErrors = [
+                            'Secure coding is not enabled for restorable state',
+                            'CoreText note: Client requested name',
+                        ];
                         if (ignoreErrors.some(err => str.includes(err))) {
                             return;
                         }
@@ -89,9 +92,6 @@ function setupMainPackageWatcher({ resolvedUrls }: ViteDevServer) {
  */
 function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
     return build({
-        mode,
-        logLevel,
-        configFile: 'apps/preload/vite.config.ts',
         build: {
             /**
              * Set to {} to enable rollup listener
@@ -99,6 +99,9 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
              */
             watch: {},
         },
+        configFile: 'apps/preload/vite.config.ts',
+        logLevel,
+        mode,
         plugins: [
             {
                 name: 'reload-page-on-preload-package-change',
@@ -119,9 +122,9 @@ function setupPreloadPackageWatcher({ ws }: ViteDevServer) {
  */
 (async () => {
     const rendererWatchServer = await createServer({
-        mode,
-        logLevel,
         configFile: 'apps/web/vite.config.ts',
+        logLevel,
+        mode,
     }).then(s => s.listen());
 
     await setupPreloadPackageWatcher(rendererWatchServer);

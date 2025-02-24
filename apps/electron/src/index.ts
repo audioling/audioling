@@ -1,6 +1,6 @@
 import { app } from 'electron';
-import './ipc';
 import { restoreOrCreateWindow } from './main-window';
+import './ipc';
 
 /**
  * Prevent multiple instances

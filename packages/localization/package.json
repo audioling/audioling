@@ -1,0 +1,19 @@
+{
+    "name": "@repo/localization",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "MIT",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "i18n": "^0.15.1",
+        "i18next": "^24.2.2",
+        "react-i18next": "^15.4.1"
+    },
+    "devDependencies": {
+        "typescript": "5.7.3"
+    }
+}

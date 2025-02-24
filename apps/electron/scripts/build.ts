@@ -17,8 +17,8 @@ console.log('APP Version：', version);
 const workDir = path.join(__dirname, '../');
 
 const copySyncOptions: CopySyncOptions = {
-    recursive: true,
     filter: src => !src.endsWith('.map') && !src.endsWith('.d.ts'),
+    recursive: true,
 };
 
 cpSync(path.join(workDir, '../web/dist'), path.join(workDir, './dist/web'), copySyncOptions);
@@ -26,83 +26,72 @@ cpSync(path.join(workDir, '../preload/dist'), path.join(workDir, './dist/preload
 
 const options: Configuration = {
     appId,
-    productName: appName,
-    copyright: appName,
     // eslint-disable-next-line no-template-curly-in-string
     artifactName: '${productName}_${arch}_${version}.${ext}',
     asar: true,
-    extraMetadata: {
-        version,
-        name: appName,
-        main: 'dist/main.cjs',
-    },
-    directories: {
-        output: '../../out',
-        buildResources: 'build-resources',
-    },
-    files: [
-        'dist',
-        'resources',
-    ],
-    protocols: {
-        name: 'ElectronApp Example',
-        schemes: ['electronapp'],
-    },
+    buildDependenciesFromSource: false,
 
     // "store” | “normal” | "maximum". - For testing builds, use 'store' to reduce build time significantly.
     compression: 'normal',
-    removePackageScripts: true,
-
-    // afterSign: async (context) => {
-    //   await notarizeMac(context)
-    // },
-    nodeGypRebuild: false,
-    buildDependenciesFromSource: false,
-
-    win: {
-        icon: 'icon.ico',
-        target: [
-            {
-                target: 'nsis',
-                arch: ['ia32', 'x64'],
-            },
-        ],
-    },
-    nsis: {
-        oneClick: false,
-        perMachine: true,
-        allowToChangeInstallationDirectory: true,
-        createDesktopShortcut: true,
-        createStartMenuShortcut: true,
-        shortcutName,
+    copyright: appName,
+    directories: {
+        buildResources: 'build-resources',
+        output: '../../out',
     },
 
     dmg: {
         sign: true,
     },
-    mac: {
-        target: [
-            {
-                target: 'default',
-                arch: ['x64', 'arm64'],
-            },
-        ],
-        icon: 'icon.icns',
-        hardenedRuntime: true,
-        gatekeeperAssess: false,
-        entitlements: 'build-resources/entitlements.mac.plist',
-        entitlementsInherit: 'build-resources/entitlements.mac.plist',
-        // identity: "",
-        notarize: false,
+    extraMetadata: {
+        main: 'dist/main.cjs',
+        name: appName,
+        version,
     },
+    files: [
+        'dist',
+        'resources',
+    ],
 
     linux: {
         desktop: {
-            StartupNotify: 'false',
             Encoding: 'UTF-8',
             MimeType: 'x-scheme-handler/deeplink',
+            StartupNotify: 'false',
         },
         target: ['AppImage', 'rpm', 'deb'],
+    },
+    mac: {
+        entitlements: 'build-resources/entitlements.mac.plist',
+        entitlementsInherit: 'build-resources/entitlements.mac.plist',
+        gatekeeperAssess: false,
+        hardenedRuntime: true,
+        icon: 'icon.icns',
+        // identity: "",
+        notarize: false,
+        target: [
+            {
+                arch: ['x64', 'arm64'],
+                target: 'default',
+            },
+        ],
+    },
+
+    // afterSign: async (context) => {
+    //   await notarizeMac(context)
+    // },
+    nodeGypRebuild: false,
+    nsis: {
+        allowToChangeInstallationDirectory: true,
+        createDesktopShortcut: true,
+        createStartMenuShortcut: true,
+        oneClick: false,
+        perMachine: true,
+        shortcutName,
+    },
+    productName: appName,
+    protocols: {
+        name: 'ElectronApp Example',
+        schemes: ['electronapp'],
     },
     publish: [
         {
@@ -111,18 +100,29 @@ const options: Configuration = {
             // private: true,
         },
     ],
+    removePackageScripts: true,
+
+    win: {
+        icon: 'icon.ico',
+        target: [
+            {
+                arch: ['ia32', 'x64'],
+                target: 'nsis',
+            },
+        ],
+    },
 };
 
 const targetPlatform: Platform = {
     darwin: Platform.MAC,
-    win32: Platform.WINDOWS,
     linux: Platform.LINUX,
+    win32: Platform.WINDOWS,
 }[platform];
 
 build({
-    targets: targetPlatform.createTarget(),
     config: options,
     publish: process.env.CI ? 'always' : 'never',
+    targets: targetPlatform.createTarget(),
 })
     .then((result) => {
         console.log(JSON.stringify(result));

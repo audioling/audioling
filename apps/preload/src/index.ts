@@ -11,9 +11,9 @@ export * from './types/';
 const ipcRenderer = new IPCRenderer<RenderMessage, MainMessage>();
 
 const electronAPI = {
-    versions: process.versions,
-    send: ipcRenderer.send,
     on: ipcRenderer.on,
+    send: ipcRenderer.send,
+    versions: process.versions,
 } as const;
 
 export type ElectronAPI = typeof electronAPI;

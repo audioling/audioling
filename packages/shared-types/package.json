@@ -1,0 +1,14 @@
+{
+    "name": "@repo/shared-types",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "MIT",
+    "exports": {
+        "./app-types": "./src/app-types.ts"
+    },
+    "devDependencies": {
+        "typescript": "5.7.3"
+    }
+}

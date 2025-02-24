@@ -60,8 +60,8 @@ export class IPCMain<
             if (this.listeners[payload.name]) {
                 const res = await this.listeners[payload.name](...payload.payload);
                 return {
-                    type: 'success',
                     result: res,
+                    type: 'success',
                 };
             }
             else {
@@ -70,8 +70,8 @@ export class IPCMain<
         }
         catch (e: any) {
             return {
-                type: 'error',
                 error: e.toString(),
+                type: 'error',
             };
         }
     }

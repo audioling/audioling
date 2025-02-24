@@ -6,20 +6,16 @@ const PACKAGE_ROOT = __dirname;
 const PROJECT_ROOT = join(PACKAGE_ROOT, '../..');
 
 const config = {
-    mode: process.env.MODE,
-    root: PACKAGE_ROOT,
-    envDir: PROJECT_ROOT,
     build: {
-        ssr: true,
-        sourcemap: 'inline',
-        target: `chrome${chrome}`,
-        outDir: 'dist',
         assetsDir: '.',
-        minify: process.env.MODE !== 'development',
+        emptyOutDir: true,
         lib: {
-            entry: ['src/index.ts', 'src/ipcMain.ts'],
+            entry: ['src/index.ts', 'src/ipc-main.ts'],
             formats: ['cjs'],
         },
+        minify: process.env.MODE !== 'development',
+        outDir: 'dist',
+        reportCompressedSize: false,
         rollupOptions: {
             external: ['electron'],
             output: {
@@ -28,11 +24,15 @@ const config = {
                 entryFileNames: '[name].cjs',
             },
         },
-        emptyOutDir: true,
-        reportCompressedSize: false,
+        sourcemap: 'inline',
+        ssr: true,
+        target: `chrome${chrome}`,
     },
+    envDir: PROJECT_ROOT,
+    mode: process.env.MODE,
 
     plugins: [dts()],
+    root: PACKAGE_ROOT,
 };
 
 export default config;

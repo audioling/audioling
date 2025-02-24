@@ -6,35 +6,35 @@ const PACKAGE_ROOT = __dirname;
 // const PROJECT_ROOT = join(PACKAGE_ROOT, '../..')
 
 const config: UserConfig = {
-    envDir: PACKAGE_ROOT,
-    root: PACKAGE_ROOT,
-    resolve: {
-        alias: {
-            '/@/': `${join(PACKAGE_ROOT, 'src')}/`,
-        },
-    },
     build: {
-        ssr: true,
-        sourcemap: false,
-        target: `node${node}`,
-        outDir: 'dist-vite',
         assetsDir: '.',
-        minify: process.env.MODE !== 'development',
         lib: {
             entry: {
                 index: join(PACKAGE_ROOT, 'src/index.ts'),
             },
             formats: ['cjs'],
         },
+        sourcemap: false,
+        emptyOutDir: true,
+        ssr: true,
+        target: `node${node}`,
+        minify: process.env.MODE !== 'development',
+        outDir: 'dist-vite',
+        reportCompressedSize: false,
         rollupOptions: {
             output: {
-                entryFileNames: '[name].cjs',
                 chunkFileNames: '[name].cjs',
+                entryFileNames: '[name].cjs',
             },
         },
-        emptyOutDir: true,
-        reportCompressedSize: false,
     },
+    envDir: PACKAGE_ROOT,
+    resolve: {
+        alias: {
+            '/@/': `${join(PACKAGE_ROOT, 'src')}/`,
+        },
+    },
+    root: PACKAGE_ROOT,
 };
 
 export default config;
