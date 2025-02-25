@@ -1,0 +1,24 @@
+{
+    "name": "@repo/adapter-api",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "MIT",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "@audioling/open-subsonic-api-client": "^4.0.3",
+        "@repo/shared-types": "workspace:*",
+        "dayjs": "^1.11.13",
+        "lodash": "^4.17.21",
+        "md5": "^2.3.0",
+        "ofetch": "^1.4.1",
+        "safe-stable-stringify": "^2.5.0"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.17.15",
+        "typescript": "5.7.3"
+    }
+}

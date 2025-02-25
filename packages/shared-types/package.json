@@ -6,7 +6,8 @@
     "author": "",
     "license": "MIT",
     "exports": {
-        "./app-types": "./src/app-types.ts"
+        "./app-types": "./src/app/_app-types.ts",
+        "./adapter-types": "./src/adapter/_adapter-types.ts"
     },
     "devDependencies": {
         "typescript": "5.7.3"
