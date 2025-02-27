@@ -100,7 +100,7 @@ importers:
         version: 5.7.3
       vite:
         specifier: 6.1.1
-        version: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
+        version: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1)(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
       webpack:
         specifier: ^5.98.0
         version: 5.98.0(esbuild@0.24.2)(webpack-cli@6.0.1)
@@ -147,6 +147,9 @@ importers:
       '@mantine/modals':
         specifier: ^8.0.0-alpha.0
         version: 8.0.0-alpha.0(@mantine/core@8.0.0-alpha.0(@mantine/hooks@8.0.0-alpha.0(react@18.3.1))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@8.0.0-alpha.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@repo/adapter-api':
+        specifier: workspace:*
+        version: link:../../packages/adapter-api
       '@repo/localization':
         specifier: workspace:*
         version: link:../../packages/localization
@@ -156,9 +159,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.66.9
         version: 5.66.9(react@18.3.1)
-      axios:
-        specifier: ^1.7.9
-        version: 1.7.9
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -234,6 +234,9 @@ importers:
       safe-stable-stringify:
         specifier: ^2.5.0
         version: 2.5.0
+      sonner:
+        specifier: ^2.0.1
+        version: 2.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.7.3)(vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1))
@@ -282,7 +285,7 @@ importers:
         version: 5.7.3
       vite:
         specifier: ^6.1.1
-        version: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
+        version: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1)(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
 
   packages/adapter-api:
     dependencies:
@@ -5054,6 +5057,12 @@ packages:
     resolution: {integrity: sha512-l5x7VUUWbjVFbafGLxPWkYsHIhEvmF85tbIeFZWc8ZPtoMyybuEhL7Jye/ooC4/d48FgOjSJXgsF/AJPYCW8Zw==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
+  sonner@2.0.1:
+    resolution: {integrity: sha512-FRBphaehZ5tLdLcQ8g2WOIRE+Y7BCfWi5Zyd8bCvBjiW8TxxAyoWZIxS661Yz6TGPqFQ4VLzOF89WEYhfynSFQ==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -7235,7 +7244,7 @@ snapshots:
   '@vitejs/plugin-react-swc@3.8.0(vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1))':
     dependencies:
       '@swc/core': 1.10.18
-      vite: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1)(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@swc/helpers'
 
@@ -11077,6 +11086,11 @@ snapshots:
       ip-address: 9.0.5
       smart-buffer: 4.2.0
 
+  sonner@2.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   source-map-js@1.2.1: {}
 
   source-map-support@0.5.21:
@@ -11485,7 +11499,7 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.7.3
     optionalDependencies:
-      vite: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1)(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -11497,7 +11511,7 @@ snapshots:
       globrex: 0.1.2
       tsconfck: 3.1.5(typescript@5.7.3)
     optionalDependencies:
-      vite: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
+      vite: 6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1)(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11517,7 +11531,7 @@ snapshots:
       tsx: 4.19.2
       yaml: 2.6.1
 
-  vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1(postcss@8.5.3))(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1):
+  vite@6.1.1(@types/node@22.13.4)(jiti@2.4.2)(lightningcss@1.29.1)(sugarss@4.0.1)(terser@5.34.1)(tsx@4.19.2)(yaml@2.6.1):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.5.3

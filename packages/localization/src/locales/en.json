@@ -24,11 +24,14 @@
     "auth": {
         "signIn": {
             "connect": "Connect to your server",
+            "displayName": "Server Name (Optional)",
             "signIn": "Sign In",
+            "addServer": "Add Server",
             "username": "Username",
             "password": "Password",
             "serverAddress": "Server Address",
-            "serverType": "Server Type"
+            "serverType": "Server Type",
+            "chooseExistingServer": "Choose an existing server"
         }
     },
     "app": {
@@ -100,7 +103,10 @@
         "500": "Server error",
         "network": "Network error",
         "userNotFound": "User not found",
-        "noServerSelected": "No server selected"
+        "noServerSelected": "No server selected",
+        "adapterNotFound": "Adapter not found",
+        "invalidCredentials": "Invalid credentials",
+        "invalidServer": "Invalid server"
     },
     "forms": {
         "placeholders": {

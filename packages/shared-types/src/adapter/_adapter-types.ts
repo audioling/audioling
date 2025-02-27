@@ -119,7 +119,9 @@ export type AdapterFn<TRequest, TResponse> = (
     options?: RequestOptions,
 ) => Promise<[AdapterError, null] | [null, TResponse]>;
 
-export interface AdapterApi {
+export type ExtractAdapterResponse<T> = T extends AdapterFn<any, infer R> ? R : never;
+
+export interface AdapterAPI {
     _getCoverArtUrl: (
         args: {
             id: string;

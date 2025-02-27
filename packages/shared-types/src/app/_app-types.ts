@@ -126,10 +126,11 @@ export enum ServerItemType {
 
 export interface AuthServer {
     baseUrl: string;
-    displayName?: string;
+    displayName: string;
     id: string;
     overrideBaseUrl?: string;
     overrideEnabled?: boolean;
+    type: ServerType;
     user: {
         credential: string;
         username: string;

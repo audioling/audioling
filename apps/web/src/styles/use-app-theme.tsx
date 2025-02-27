@@ -1,7 +1,7 @@
 import type { AppTheme } from '/@/styles/theme-types';
 import type { MantineThemeOverride } from '@mantine/core';
 import { useEffect, useMemo } from 'react';
-import { createAppTheme } from '/@/styles/mantine-theme';
+import { createAppTheme } from '/@/styles/mantine-theme.tsx';
 import { themes } from '/@/styles/themes';
 import { caseConverter } from '/@/utils/case-converter';
 

@@ -39,6 +39,7 @@ import {
     Tooltip,
 } from '@mantine/core';
 import merge from 'lodash/merge';
+import { Icon } from '/@/components/icon/icon';
 
 const CONTAINER_SIZES: Record<string, string> = {
     lg: rem('600px'),
@@ -383,6 +384,7 @@ const mantineTheme: MantineThemeOverride = createTheme({
         PasswordInput: PasswordInput.extend({
             defaultProps: {
                 variant: 'filled',
+                visibilityToggleIcon: ({ reveal }) => <Icon icon={reveal ? 'visibilityOff' : 'visibility'} />,
             },
             styles: () => ({
                 input: {

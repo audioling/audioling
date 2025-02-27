@@ -1,7 +1,7 @@
 import type { OpenSubsonicApiClient as OS } from '@audioling/open-subsonic-api-client';
 import type {
     AdapterAlbumListQuery,
-    AdapterApi,
+    AdapterAPI,
     AdapterArtistListQuery,
     AdapterGenre,
     AdapterPlaylist,
@@ -13,7 +13,7 @@ import type {
     AdapterUser,
 } from '@repo/shared-types/adapter-types';
 import type { AuthServer } from '@repo/shared-types/app-types';
-import type { $Fetch, FetchOptions } from 'ofetch';
+import type { FetchOptions } from 'ofetch';
 import { localize } from '@repo/localization';
 import { AlbumListSortOptions, ServerItemType } from '@repo/shared-types/app-types';
 import dayjs from 'dayjs';
@@ -22,7 +22,10 @@ import { ofetch } from 'ofetch';
 import { generateRandomString, helpers } from '../helpers.js';
 import { osUtils } from './utils.js';
 
-type ResponseType<T extends (...args: any) => any> = Extract<Awaited<ReturnType<T>>, { status: 200 }>;
+type ResponseType<T extends (...args: any) => any> =
+    Extract<Awaited<ReturnType<T>>, { status: 200 }>['body']['subsonic-response'];
+
+type RawResponseType<T extends (...args: any) => any> = Extract<Awaited<ReturnType<T>>, { status: 200 }>['body'];
 
 type QueryParams<T extends (...args: any) => any> = Required<Parameters<T>>[0]['query'];
 
@@ -30,19 +33,23 @@ type AlbumSortType = Parameters<
     OS['getAlbumList2']['os']['1']['get']
 >[0]['query']['type'];
 
-export const adapter: Partial<AdapterApi> = {};
+export const adapter: Partial<AdapterAPI> = {};
 
-function serializeCredential(username: string, credential: string, type: string) {
+function serializeCredential(username: string, credential: Record<string, string>, type: string) {
     switch (type) {
         case 'apiKey':
-            return `{ apiKey: ${credential} }`;
+            return `{ apiKey: ${credential.apiKey} }`;
         case 'plaintext':
-            return `{ u: ${username}, p: ${credential} }`;
+            return `{ u: ${username}, p: ${credential.password} }`;
         case 'token':
-            return `{ u: ${username}, t: ${credential} }`;
+            return `{ u: ${username}, s: ${credential.s}, t: ${credential.t} }`;
         default:
             throw new Error(`Invalid credential type: ${type}`);
     }
+}
+
+function deserializeCredential(credential: string): Record<string, string> {
+    return JSON.parse(credential);
 }
 
 function fetchClient<TResponseType>(url: string, server: AuthServer, options?: FetchOptions<'json'>) {
@@ -54,10 +61,20 @@ function fetchClient<TResponseType>(url: string, server: AuthServer, options?: F
         },
         onRequest({ options }) {
             const query = options?.query ?? {};
-            query.c = process.env.APP_NAME;
+            query.c = import.meta.env.VITE_APP_NAME;
             query.v = '1.16.1';
-            query.u = server.user?.username;
             query.f = 'json';
+
+            if (server.user) {
+                const deserializedCredential = deserializeCredential(server.user?.credential);
+
+                Object.entries(deserializedCredential).forEach(([key, value]) => {
+                    query[key] = value;
+                });
+            }
+        },
+        parseResponse: (response) => {
+            return (response as any)['subsonic-response'];
         },
         responseType: 'json',
     });
@@ -77,7 +94,7 @@ adapter._getCoverArtUrl = ({ id, size }, server) => {
         + `&u=${server.user.username}`
         + `&v=$1.16.1`
         + `&size=${size}`
-        + `&c=${process.env.APP_NAME}`
+        + `&c=${import.meta.env.VITE_APP_NAME}`
     );
 };
 
@@ -94,7 +111,7 @@ adapter._getStreamUrl = ({ id }, server) => {
         + `&${credentialParams}`
         + `&u=${server.user.username}`
         + `&v=$1.16.1`
-        + `&c=${process.env.APP_NAME}`
+        + `&c=${import.meta.env.VITE_APP_NAME}`
     );
 };
 
@@ -111,11 +128,11 @@ adapter.album = {
             query,
         });
 
-        if (res.status !== 200) {
-            return [{ code: res.status, message: res.body as unknown as string }, null];
+        if (res.status !== 'ok') {
+            return [{ code: Number(res.status), message: res as unknown as string }, null];
         }
 
-        const album = osUtils.converter.albumToAdapter(res.body['subsonic-response'].album);
+        const album = osUtils.converter.albumToAdapter(res.album);
 
         return [null, album];
     },
@@ -143,11 +160,11 @@ adapter.album = {
                         },
                     });
 
-                    if (result.status !== 200) {
-                        throw new Error(JSON.stringify(result.body));
+                    if (result.status !== 'ok') {
+                        throw new Error(JSON.stringify(result));
                     }
 
-                    return result.body['subsonic-response'].searchResult3.album || [];
+                    return result.searchResult3.album || [];
                 };
 
                 const results = await helpers.fetchAllRecords({
@@ -191,11 +208,11 @@ adapter.album = {
                 query,
             });
 
-            if (result.status !== 200) {
-                return [{ code: result.status, message: result.body as unknown as string }, null];
+            if (result.status !== 'ok') {
+                return [{ code: 500, message: result as unknown as string }, null];
             }
 
-            const items = (result.body['subsonic-response'].searchResult3.album || []).map(
+            const items = (result.searchResult3.album || []).map(
                 osUtils.converter.albumToAdapter,
             );
 
@@ -327,11 +344,11 @@ adapter.album = {
                     },
                 });
 
-                if (result.status !== 200) {
-                    throw new Error(JSON.stringify(result.body));
+                if (result.status !== 'ok') {
+                    throw new Error(JSON.stringify(result));
                 }
 
-                return result.body['subsonic-response'].albumList2.album || [];
+                return result.albumList2.album || [];
             };
 
             const results = await helpers.fetchAllRecords({
@@ -366,11 +383,11 @@ adapter.album = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        let items = (result.body['subsonic-response'].albumList2.album || []).map(
+        let items = (result.albumList2.album || []).map(
             osUtils.converter.albumToAdapter,
         );
 
@@ -411,11 +428,11 @@ adapter.album = {
                 },
             });
 
-            if (result.status !== 200) {
-                throw new Error(JSON.stringify(result.body));
+            if (result.status !== 'ok') {
+                throw new Error(JSON.stringify(result));
             }
 
-            return result.body['subsonic-response'].albumList2.album?.length || 0;
+            return result.albumList2.album?.length || 0;
         }
 
         async function getSearchPageItemCount(page: number, limit: number): Promise<number> {
@@ -434,11 +451,11 @@ adapter.album = {
                 },
             });
 
-            if (result.status !== 200) {
-                throw new Error(JSON.stringify(result.body));
+            if (result.status !== 'ok') {
+                throw new Error(JSON.stringify(result));
             }
 
-            return result.body['subsonic-response'].searchResult3.album?.length || 0;
+            return result.searchResult3.album?.length || 0;
         }
 
         const pageItemCountFn = request.query.searchTerm ? getSearchPageItemCount : getPageItemCount;
@@ -469,11 +486,11 @@ adapter.album = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const results = (result.body['subsonic-response'].album.song || []).map(
+        const results = (result.album.song || []).map(
             osUtils.converter.trackToAdapter,
         );
 
@@ -505,11 +522,11 @@ adapter.albumArtist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const albums = (result.body['subsonic-response'].artist.album || []).map(
+        const albums = (result.artist.album || []).map(
             osUtils.converter.albumToAdapter,
         );
 
@@ -538,13 +555,13 @@ adapter.albumArtist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [
             null,
-            osUtils.converter.artistToAdapter(result.body['subsonic-response'].artist),
+            osUtils.converter.artistToAdapter(result.artist),
         ];
     },
     getAlbumArtistList: async (request, server) => {
@@ -559,11 +576,11 @@ adapter.albumArtist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: Number(result.status), message: result as unknown as string }, null];
         }
 
-        const artists = result.body['subsonic-response'].artists.index.flatMap((artist) => {
+        const artists = result.artists.index.flatMap((artist) => {
             return (artist.artist || []).map(osUtils.converter.artistToAdapter);
         });
 
@@ -628,11 +645,11 @@ adapter.albumArtist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const artistCount = result.body['subsonic-response'].artists.index.reduce(
+        const artistCount = result.artists.index.reduce(
             (acc, artist) => {
                 if (request.query.searchTerm) {
                     acc += (artist.artist || []).filter(artist =>
@@ -664,11 +681,11 @@ adapter.albumArtist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const albumIds = (result.body['subsonic-response'].artist.album || []).map(
+        const albumIds = (result.artist.album || []).map(
             album => album.id,
         );
 
@@ -681,17 +698,12 @@ adapter.albumArtist = {
 
         const albumResponses = await Promise.all(albumPromises);
 
-        if (albumResponses.some(album => album.status !== 200)) {
+        if (albumResponses.some(album => album.status !== 'ok')) {
             return [{ code: 500, message: 'Failed to get album details' }, null];
         }
 
-        type AlbumResponse = Extract<
-            Awaited<ReturnType<typeof ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>>>,
-            { status: 200 }
-        >['body'];
-
         const tracksResponse = albumResponses.flatMap(
-            album => (album.body as AlbumResponse)['subsonic-response'].album.song || [],
+            album => album.album.song || [],
         );
 
         const tracks = tracksResponse.map(osUtils.converter.trackToAdapter);
@@ -723,14 +735,14 @@ adapter.artist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null,
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null,
             ];
         }
 
         return [
             null,
-            osUtils.converter.artistToAdapter(result.body['subsonic-response'].artist),
+            osUtils.converter.artistToAdapter(result.artist),
         ];
     },
     getArtistList: async (request, server) => {
@@ -747,11 +759,11 @@ adapter.artist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const artists = result.body['subsonic-response'].artists.index.flatMap((artist) => {
+        const artists = result.artists.index.flatMap((artist) => {
             return (artist.artist || []).map(osUtils.converter.artistToAdapter);
         });
 
@@ -816,11 +828,11 @@ adapter.artist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const artistCount = result.body['subsonic-response'].artists.index.reduce(
+        const artistCount = result.artists.index.reduce(
             (acc, artist) => {
                 if (request.query.searchTerm) {
                     acc += (artist.artist || []).filter(artist =>
@@ -852,11 +864,11 @@ adapter.artist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const albumIds = (result.body['subsonic-response'].artist.album || []).map(
+        const albumIds = (result.artist.album || []).map(
             album => album.id,
         );
 
@@ -869,17 +881,12 @@ adapter.artist = {
 
         const albumResponses = await Promise.all(albumPromises);
 
-        if (albumResponses.some(album => album.status !== 200)) {
+        if (albumResponses.some(album => album.status !== 'ok')) {
             return [{ code: 500, message: 'Failed to get album details' }, null];
         }
 
-        type AlbumResponse = Extract<
-            Awaited<ReturnType<typeof ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>>>,
-            { status: 200 }
-        >['body'];
-
         const tracksResponse = albumResponses.flatMap(
-            album => (album.body as AlbumResponse)['subsonic-response'].album.song || [],
+            album => album.album.song || [],
         );
 
         const tracks = tracksResponse.map(osUtils.converter.trackToAdapter);
@@ -909,108 +916,145 @@ adapter.auth = {
          * 3. API key https://opensubsonic.netlify.app/docs/extensions/apikeyauth/
         */
 
-        async function tokenAuth(username: string, credential: string) {
-            const salt = generateRandomString(12);
-            const token = md5(credential + salt);
+      type RawUserResponse = RawResponseType<OS['getUser']['os']['1']['get']>;
 
-            const query: QueryParams<OS['getUser']['os']['1']['get']> = {
-                c: process.env.APP_NAME,
-                f: 'json',
-                s: salt,
-                t: token,
-                u: username,
-                v: '1.16.1',
-            };
+      async function tokenAuth(username: string, credential: string) {
+          const salt = generateRandomString(12);
+          const token = md5(credential + salt);
 
-            const result = await ofetch<ResponseType<OS['getUser']['os']['1']['get']>>(url, {
-                method: 'GET',
-                query,
-            });
+          const authQuery = {
+              s: salt,
+              t: token,
+              u: username,
+          };
 
-            return result;
-        }
+          const query: QueryParams<OS['getUser']['os']['1']['get']> = {
+              c: import.meta.env.VITE_APP_NAME,
+              f: 'json',
+              v: '1.16.1',
+              ...authQuery,
+          };
 
-        async function plaintextAuth(username: string, credential: string) {
-            const query: QueryParams<OS['getUser']['os']['1']['get']> = {
-                c: process.env.APP_NAME,
-                f: 'json',
-                p: credential,
-                u: username,
-                v: '1.16.1',
-            };
+          const result = await ofetch<RawUserResponse>(url, {
+              method: 'GET',
+              query,
+          });
 
-            const result = await ofetch<ResponseType<OS['getUser']['os']['1']['get']>>(url, {
-                method: 'GET',
-                query,
-            });
+          return { authQuery, result };
+      }
 
-            return result;
-        }
+      async function plaintextAuth(username: string, credential: string) {
+          const authQuery = {
+              p: credential,
+              u: username,
+          };
 
-        async function apiKeyAuth(username: string, credential: string) {
-            const query: QueryParams<OS['getUser']['os']['1']['get']> = {
-                apiKey: credential,
-                c: process.env.APP_NAME,
-                v: '1.16.1',
-            };
+          const query: QueryParams<OS['getUser']['os']['1']['get']> = {
+              c: import.meta.env.VITE_APP_NAME,
+              f: 'json',
+              v: '1.16.1',
+              ...authQuery,
+          };
 
-            const result = await ofetch<ResponseType<OS['getUser']['os']['1']['get']>>(url, {
-                method: 'GET',
-                query,
-            });
+          const result = await ofetch<RawUserResponse>(url, {
+              method: 'GET',
+              query,
+          });
 
-            return result;
-        }
+          return { authQuery, result };
+      }
 
-        let errorMessage: string | null = null;
+      async function apiKeyAuth(_username: string, credential: string) {
+          const authQuery = {
+              apiKey: credential,
+          };
 
-        const authFunctions = [{
-            fn: tokenAuth,
-            type: 'token',
-        }, {
-            fn: plaintextAuth,
-            type: 'plaintext',
-        }, {
-            fn: apiKeyAuth,
-            type: 'apiKey',
-        }];
+          const extraQuery = {
+              u: username,
+          };
 
-        for (const authFn of authFunctions) {
-            const result = await authFn.fn(username, credential);
+          const query: QueryParams<OS['getUser']['os']['1']['get']> = {
+              c: import.meta.env.VITE_APP_NAME,
+              f: 'json',
+              v: '1.16.1',
+              ...authQuery,
+          };
 
-            if (result.status !== 200) {
-                errorMessage = result.body as unknown as string;
-                continue;
-            }
+          const result = await ofetch<RawUserResponse>(url, {
+              method: 'GET',
+              query,
+          });
 
-            const serializedCredential = serializeCredential(
-                username,
-                credential,
-                authFn.type,
-            );
+          return { authQuery: { ...authQuery, ...extraQuery }, result };
+      }
 
-            const user: AdapterUser = {
-                credential: serializedCredential,
-                permissions: {
-                    'jukebox.manage': result.body['subsonic-response'].user.jukeboxRole,
-                    'media.download': result.body['subsonic-response'].user.downloadRole,
-                    'media.folder': result.body['subsonic-response'].user.folder.map(folder => folder.toString()),
-                    'media.share': result.body['subsonic-response'].user.shareRole,
-                    'media.stream': result.body['subsonic-response'].user.streamRole,
-                    'media.upload': result.body['subsonic-response'].user.uploadRole,
-                    'playlist.create': result.body['subsonic-response'].user.playlistRole,
-                    'playlist.delete': result.body['subsonic-response'].user.playlistRole,
-                    'playlist.edit': result.body['subsonic-response'].user.playlistRole,
-                    'server.admin': result.body['subsonic-response'].user.adminRole,
-                    'user.edit': result.body['subsonic-response'].user.settingsRole,
-                },
-                username: result.body['subsonic-response'].user.username,
-            };
+      let errorMessage: string | null = null;
 
-            return [null, user];
-        }
+      const authFunctions = [{
+          fn: tokenAuth,
+          type: 'token',
+      }, {
+          fn: apiKeyAuth,
+          type: 'apiKey',
+      }, {
+          fn: plaintextAuth,
+          type: 'plaintext',
+      }];
 
-        return [{ code: 200, message: errorMessage ?? '' }, null];
+      for (const authFn of authFunctions) {
+          const { authQuery, result } = await authFn.fn(username, credential);
+
+          if (result['subsonic-response'].status !== 'ok') {
+              errorMessage = result['subsonic-response'].error?.message as unknown as string;
+              continue;
+          }
+
+          const serializedCredential = serializeCredential(
+              username,
+              authQuery,
+              authFn.type,
+          );
+
+          const musicFolderResult = await ofetch<RawResponseType<OS['getMusicFolders']['os']['1']['get']>>(`${baseUrl}/rest/getMusicFolders.view`, {
+              method: 'GET',
+              query: {
+                  c: import.meta.env.VITE_APP_NAME,
+                  f: 'json',
+                  v: '1.16.1',
+                  ...authQuery,
+              },
+          });
+
+          if (musicFolderResult['subsonic-response'].status !== 'ok') {
+              errorMessage = musicFolderResult['subsonic-response'].error?.message as unknown as string;
+              continue;
+          }
+
+          const musicFolders = (musicFolderResult['subsonic-response'].musicFolders.musicFolder || [])
+              .map(folder => folder.id.toString());
+
+          const user: AdapterUser = {
+              credential: serializedCredential,
+              permissions: {
+                  'jukebox.manage': result['subsonic-response'].user.jukeboxRole,
+                  'media.download': result['subsonic-response'].user.downloadRole,
+                  'media.folder': musicFolders,
+                  'media.share': result['subsonic-response'].user.shareRole,
+                  'media.stream': result['subsonic-response'].user.streamRole,
+                  'media.upload': result['subsonic-response'].user.uploadRole,
+                  'playlist.create': result['subsonic-response'].user.playlistRole,
+                  'playlist.delete': result['subsonic-response'].user.playlistRole,
+                  'playlist.edit': result['subsonic-response'].user.playlistRole,
+                  'server.admin': result['subsonic-response'].user.adminRole,
+                  'user.edit': result['subsonic-response'].user.settingsRole,
+              },
+              username: result['subsonic-response'].user.username,
+          };
+
+          return [null, user];
+      }
+
+      return [{ code: 500, message: `${localize.t('errors.invalidCredentials')}: ${errorMessage}` }, null];
     },
 };
 
@@ -1027,11 +1071,11 @@ adapter.favorite = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const items = (result.body['subsonic-response'].starred2?.artist || []).map(
+        const items = (result.starred2?.artist || []).map(
             osUtils.converter.artistToAdapter,
         );
 
@@ -1044,7 +1088,7 @@ adapter.favorite = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.body['subsonic-response'].starred2?.artist || [])
+                totalRecordCount: (result.starred2?.artist || [])
                     .length,
             },
         ];
@@ -1061,11 +1105,11 @@ adapter.favorite = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const items = (result.body['subsonic-response'].starred2?.album || []).map(
+        const items = (result.starred2?.album || []).map(
             osUtils.converter.albumToAdapter,
         );
 
@@ -1078,7 +1122,7 @@ adapter.favorite = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.body['subsonic-response'].starred2?.album || [])
+                totalRecordCount: (result.starred2?.album || [])
                     .length,
             },
         ];
@@ -1095,12 +1139,12 @@ adapter.favorite = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         const items: AdapterTrack[] = (
-            result.body['subsonic-response'].starred2?.song || []
+            result.starred2?.song || []
         ).map(osUtils.converter.trackToAdapter);
 
         const sorted = helpers.sortBy.track(items, request.query.sortBy, request.query.sortOrder);
@@ -1112,7 +1156,7 @@ adapter.favorite = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.body['subsonic-response'].starred2.song || []).length,
+                totalRecordCount: (result.starred2.song || []).length,
             },
         ];
     },
@@ -1131,11 +1175,11 @@ adapter.genre = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        let items: AdapterGenre[] = (result.body['subsonic-response'].genres.genre || []).map(
+        let items: AdapterGenre[] = (result.genres.genre || []).map(
             genre => ({
                 albumCount: genre.albumCount ?? null,
                 id: genre.value,
@@ -1160,7 +1204,7 @@ adapter.genre = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.body['subsonic-response'].genres.genre || []).length,
+                totalRecordCount: (result.genres.genre || []).length,
             },
         ];
     },
@@ -1176,11 +1220,11 @@ adapter.genre = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        let items: AdapterGenre[] = (result.body['subsonic-response'].genres.genre || []).map(
+        let items: AdapterGenre[] = (result.genres.genre || []).map(
             genre => ({
                 albumCount: genre.albumCount ?? null,
                 id: genre.value,
@@ -1224,11 +1268,11 @@ adapter.genre = {
                     },
                 });
 
-                if (result.status !== 200) {
-                    throw new Error(JSON.stringify(result.body));
+                if (result.status !== 'ok') {
+                    throw new Error(JSON.stringify(result));
                 }
 
-                return result.body['subsonic-response'].songsByGenre.song || [];
+                return result.songsByGenre.song || [];
             };
 
             const results = await helpers.fetchAllRecords({ fetcher: fetcherFn });
@@ -1244,11 +1288,11 @@ adapter.genre = {
                 },
             });
 
-            if (result.status !== 200) {
-                return [{ code: result.status, message: result.body as unknown as string }, null];
+            if (result.status !== 'ok') {
+                return [{ code: 500, message: result as unknown as string }, null];
             }
 
-            tracks.push(...(result.body['subsonic-response'].songsByGenre.song || []));
+            tracks.push(...(result.songsByGenre.song || []));
         }
 
         const items = tracks.map(osUtils.converter.trackToAdapter);
@@ -1287,11 +1331,11 @@ adapter.genre = {
                 },
             });
 
-            if (result.status !== 200) {
-                throw new Error(JSON.stringify(result.body));
+            if (result.status !== 'ok') {
+                throw new Error(JSON.stringify(result));
             }
 
-            return (result.body['subsonic-response'].songsByGenre.song || []).length;
+            return (result.songsByGenre.song || []).length;
         };
 
         try {
@@ -1324,8 +1368,8 @@ adapter.meta = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [null, null];
@@ -1380,8 +1424,8 @@ adapter.meta = {
                 query,
             });
 
-            if (result.status !== 200) {
-                return [{ code: result.status, message: result.body as unknown as string }, null];
+            if (result.status !== 'ok') {
+                return [{ code: 500, message: result as unknown as string }, null];
             }
         }
 
@@ -1397,8 +1441,8 @@ adapter.meta = {
                 query,
             });
 
-            if (result.status !== 200) {
-                return [{ code: result.status, message: result.body as unknown as string }, null];
+            if (result.status !== 'ok') {
+                return [{ code: 500, message: result as unknown as string }, null];
             }
         }
 
@@ -1416,8 +1460,8 @@ adapter.meta = {
                 },
             });
 
-            if (result.status !== 200) {
-                return [{ code: result.status, message: result.body as unknown as string }, null];
+            if (result.status !== 'ok') {
+                return [{ code: 500, message: result as unknown as string }, null];
             }
         }
 
@@ -1433,11 +1477,11 @@ adapter.musicFolder = {
             method: 'GET',
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const items = (result.body['subsonic-response'].musicFolders?.musicFolder || []).map(
+        const items = (result.musicFolders?.musicFolder || []).map(
             folder => ({
                 id: folder.id.toString(),
                 name: folder.name || '',
@@ -1451,7 +1495,7 @@ adapter.musicFolder = {
                 limit: request.query.limit,
                 offset: request.query.offset,
                 totalRecordCount: (
-                    result.body['subsonic-response'].musicFolders?.musicFolder || []
+                    result.musicFolders?.musicFolder || []
                 ).length,
             },
         ];
@@ -1489,15 +1533,15 @@ adapter.playlist = {
         const albumResponses = await Promise.all(albumPromises);
 
         for (const albumResponse of albumResponses) {
-            if (albumResponse.status === 200) {
-                const tracks = albumResponse.body['subsonic-response'].album.song;
+            if (albumResponse.status === 'ok') {
+                const tracks = albumResponse.album.song;
 
                 tracks?.forEach((track) => {
                     trackIds.push(track.id);
                 });
             }
             else {
-                return [{ code: albumResponse.status, message: albumResponse.body as unknown as string }, null];
+                return [{ code: 500, message: albumResponse as unknown as string }, null];
             }
         }
 
@@ -1511,8 +1555,8 @@ adapter.playlist = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [null, null];
@@ -1527,8 +1571,8 @@ adapter.playlist = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [null, null];
@@ -1546,14 +1590,14 @@ adapter.playlist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         const updateQuery: QueryParams<OS['updatePlaylist']['os']['1']['get']> = {
             comment: request.body.comment,
             name: request.body.name,
-            playlistId: result.body['subsonic-response'].playlist.id,
+            playlistId: result.playlist.id,
             public: request.body.public,
         };
 
@@ -1562,16 +1606,16 @@ adapter.playlist = {
             query: updateQuery,
         });
 
-        if (updateResult.status !== 200) {
+        if (updateResult.status !== 'ok') {
             // Delete the playlist if the update fails
             const url = `${server.baseUrl}/rest/deletePlaylist.view`;
 
             await fetchClient<ResponseType<OS['deletePlaylist']['os']['1']['get']>>(url, server, {
                 method: 'GET',
-                query: { playlistId: result.body['subsonic-response'].playlist.id },
+                query: { playlistId: result.playlist.id },
             });
 
-            return [{ code: updateResult.status, message: updateResult.body as unknown as string }, null];
+            return [{ code: 500, message: updateResult as unknown as string }, null];
         }
 
         return [null, null];
@@ -1588,8 +1632,8 @@ adapter.playlist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [null, null];
@@ -1606,11 +1650,11 @@ adapter.playlist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        const playlist = osUtils.converter.playlistToAdapter(result.body['subsonic-response'].playlist);
+        const playlist = osUtils.converter.playlistToAdapter(result.playlist);
 
         return [null, playlist];
     },
@@ -1624,12 +1668,12 @@ adapter.playlist = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         let playlists: AdapterPlaylist[] = (
-            result.body['subsonic-response'].playlists.playlist || []
+            result.playlists.playlist || []
         ).map(osUtils.converter.playlistToAdapter);
 
         if (request.query.searchTerm) {
@@ -1681,11 +1725,11 @@ adapter.playlist = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        return [null, (result.body['subsonic-response'].playlists.playlist || []).length];
+        return [null, (result.playlists.playlist || []).length];
     },
     getPlaylistTrackList: async (request, server) => {
         const url = `${server.baseUrl}/rest/getPlaylist.view`;
@@ -1699,12 +1743,12 @@ adapter.playlist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         let tracks: AdapterPlaylistTrack[] = (
-            result.body['subsonic-response'].playlist.entry || []
+            result.playlist.entry || []
         ).map(osUtils.converter.playlistTrackToAdapter);
 
         if (request.query.searchTerm) {
@@ -1763,11 +1807,11 @@ adapter.playlist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        return [null, (result.body['subsonic-response'].playlist.entry || []).length];
+        return [null, (result.playlist.entry || []).length];
     },
     removeFromPlaylist: async (request, server) => {
         const url = `${server.baseUrl}/rest/updatePlaylist.view`;
@@ -1780,8 +1824,8 @@ adapter.playlist = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [null, null];
@@ -1801,8 +1845,8 @@ adapter.playlist = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         return [null, null];
@@ -1822,11 +1866,11 @@ adapter.track = {
             query,
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
-        return [null, osUtils.converter.trackToAdapter(result.body['subsonic-response'].song)];
+        return [null, osUtils.converter.trackToAdapter(result.song)];
     },
     getTrackList: async (request, server) => {
         const url = `${server.baseUrl}/rest/search3.view`;
@@ -1843,11 +1887,11 @@ adapter.track = {
                     },
                 });
 
-                if (result.status !== 200) {
-                    throw new Error(JSON.stringify(result.body));
+                if (result.status !== 'ok') {
+                    throw new Error(JSON.stringify(result));
                 }
 
-                return result.body['subsonic-response'].searchResult3.song || [];
+                return result.searchResult3.song || [];
             };
 
             const results = await helpers.fetchAllRecords({ fetcher: fetcherFn, fetchLimit: request.query.limit });
@@ -1876,12 +1920,12 @@ adapter.track = {
             },
         });
 
-        if (result.status !== 200) {
-            return [{ code: result.status, message: result.body as unknown as string }, null];
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
         }
 
         const items: AdapterTrack[] = (
-            result.body['subsonic-response'].searchResult3.song || []
+            result.searchResult3.song || []
         ).map(osUtils.converter.trackToAdapter);
 
         const [err, totalRecordCount] = await adapter.track!.getTrackListCount(request, server);
@@ -1923,11 +1967,11 @@ adapter.track = {
                 },
             });
 
-            if (result.status !== 200) {
-                throw new Error(JSON.stringify(result.body));
+            if (result.status !== 'ok') {
+                throw new Error(JSON.stringify(result));
             }
 
-            return (result.body['subsonic-response'].searchResult3.song || []).length;
+            return (result.searchResult3.song || []).length;
         };
 
         const genreUrl = `${server.baseUrl}/rest/getSongsByGenre.view`;
@@ -1946,11 +1990,11 @@ adapter.track = {
                 },
             });
 
-            if (result.status !== 200) {
-                throw new Error(JSON.stringify(result.body));
+            if (result.status !== 'ok') {
+                throw new Error(JSON.stringify(result));
             }
 
-            return (result.body['subsonic-response'].songsByGenre.song || []).length;
+            return (result.songsByGenre.song || []).length;
         };
 
         try {

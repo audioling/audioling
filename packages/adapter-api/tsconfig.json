@@ -5,6 +5,9 @@
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
         "resolveJsonModule": true,
+        "types": [
+            "../../env.d.ts"
+        ],
         "allowArbitraryExtensions": true,
         "allowJs": true,
         "strict": true,

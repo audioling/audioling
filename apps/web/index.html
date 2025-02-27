@@ -2,15 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' unpkg.com;" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <!-- Uncomment below to use React Scan https://react-scan.com/-->
+        <script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>
+        <script type="module" src="/src/app.tsx"></script>
         <title>audioling</title>
     </head>
 
     <body>
         <div id="app"></div>
-        <!-- Uncomment below to use React Scan https://react-scan.com/-->
-        <!-- <script src="https://unpkg.com/react-scan/dist/auto.global.js"></script> -->
-        <script type="module" src="/src/app.tsx"></script>
     </body>
 </html>
