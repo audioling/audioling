@@ -1,19 +1,25 @@
 import type { OpenSubsonicApiClient as OS } from '@audioling/open-subsonic-api-client';
-import type { AdapterApi } from '@repo/shared-types/adapter-types';
-import type { AdapterAlbumListQuery } from '../../../shared-types/src/adapter/adapter-album.js';
-import type { AdapterArtistListQuery } from '../../../shared-types/src/adapter/adapter-artist.js';
-import type { AdapterGenre } from '../../../shared-types/src/adapter/adapter-genre.js';
 import type {
+    AdapterAlbumListQuery,
+    AdapterApi,
+    AdapterArtistListQuery,
+    AdapterGenre,
     AdapterPlaylist,
     AdapterPlaylistListQuery,
     AdapterPlaylistTrack,
     AdapterPlaylistTrackListQuery,
-} from '../../../shared-types/src/adapter/adapter-playlist.js';
-import type { AdapterTrack, AdapterTrackListQuery } from '../../../shared-types/src/adapter/adapter-track.js';
+    AdapterTrack,
+    AdapterTrackListQuery,
+    AdapterUser,
+} from '@repo/shared-types/adapter-types';
+import type { AuthServer } from '@repo/shared-types/app-types';
+import type { $Fetch, FetchOptions } from 'ofetch';
+import { localize } from '@repo/localization';
 import { AlbumListSortOptions, ServerItemType } from '@repo/shared-types/app-types';
 import dayjs from 'dayjs';
+import md5 from 'md5';
 import { ofetch } from 'ofetch';
-import { helpers } from '../helpers.js';
+import { generateRandomString, helpers } from '../helpers.js';
 import { osUtils } from './utils.js';
 
 type ResponseType<T extends (...args: any) => any> = Extract<Awaited<ReturnType<T>>, { status: 200 }>;
@@ -26,8 +32,43 @@ type AlbumSortType = Parameters<
 
 export const adapter: Partial<AdapterApi> = {};
 
+function serializeCredential(username: string, credential: string, type: string) {
+    switch (type) {
+        case 'apiKey':
+            return `{ apiKey: ${credential} }`;
+        case 'plaintext':
+            return `{ u: ${username}, p: ${credential} }`;
+        case 'token':
+            return `{ u: ${username}, t: ${credential} }`;
+        default:
+            throw new Error(`Invalid credential type: ${type}`);
+    }
+}
+
+function fetcher<TResponseType>(url: string, server: AuthServer, options?: FetchOptions<'json'>) {
+    return ofetch<TResponseType>(url, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers,
+        },
+        onRequest({ options }) {
+            const query = options?.query ?? {};
+            query.c = process.env.APP_NAME;
+            query.v = '1.16.1';
+            query.u = server.user?.username;
+            query.f = 'json';
+        },
+        responseType: 'json',
+    });
+}
+
 adapter._getCoverArtUrl = ({ id, size }, server) => {
     const credentialParams = '';
+
+    if (!server.user) {
+        throw new Error(localize.t('errors.userNotFound'));
+    }
 
     return (
         `${server.baseUrl}/rest/getCoverArt.view`
@@ -42,6 +83,10 @@ adapter._getCoverArtUrl = ({ id, size }, server) => {
 
 adapter._getStreamUrl = ({ id }, server) => {
     const credentialParams = '';
+
+    if (!server.user) {
+        throw new Error(localize.t('errors.userNotFound'));
+    }
 
     return (
         `${server.baseUrl}/rest/stream.view`
@@ -507,8 +552,6 @@ adapter.albumArtist = {
 
         const query: QueryParams<OS['getArtists']['os']['1']['get']> = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
-            // offset: request.query.offset,
-            // size: request.query.limit,
         };
 
         const result = await ofetch<ResponseType<OS['getArtists']['os']['1']['get']>>(url, {
@@ -852,6 +895,122 @@ adapter.artist = {
                 totalRecordCount: tracks.length,
             },
         ];
+    },
+};
+
+adapter.auth = {
+    signIn: async ({ baseUrl, credential, username }) => {
+        const url = `${baseUrl}/rest/getUser.view`;
+
+        /*
+         * We will attempt to authenticate in three ways:
+         * 1. Username and token (md5(password + salt))
+         * 2. Username and plaintext password
+         * 3. API key https://opensubsonic.netlify.app/docs/extensions/apikeyauth/
+        */
+
+        async function tokenAuth(username: string, credential: string) {
+            const salt = generateRandomString(12);
+            const token = md5(credential + salt);
+
+            const query: QueryParams<OS['getUser']['os']['1']['get']> = {
+                c: process.env.APP_NAME,
+                f: 'json',
+                s: salt,
+                t: token,
+                u: username,
+                v: '1.16.1',
+            };
+
+            const result = await ofetch<ResponseType<OS['getUser']['os']['1']['get']>>(url, {
+                method: 'GET',
+                query,
+            });
+
+            return result;
+        }
+
+        async function plaintextAuth(username: string, credential: string) {
+            const query: QueryParams<OS['getUser']['os']['1']['get']> = {
+                c: process.env.APP_NAME,
+                f: 'json',
+                p: credential,
+                u: username,
+                v: '1.16.1',
+            };
+
+            const result = await ofetch<ResponseType<OS['getUser']['os']['1']['get']>>(url, {
+                method: 'GET',
+                query,
+            });
+
+            return result;
+        }
+
+        async function apiKeyAuth(username: string, credential: string) {
+            const query: QueryParams<OS['getUser']['os']['1']['get']> = {
+                apiKey: credential,
+                c: process.env.APP_NAME,
+                v: '1.16.1',
+            };
+
+            const result = await ofetch<ResponseType<OS['getUser']['os']['1']['get']>>(url, {
+                method: 'GET',
+                query,
+            });
+
+            return result;
+        }
+
+        let errorMessage: string | null = null;
+
+        const authFunctions = [{
+            fn: tokenAuth,
+            type: 'token',
+        }, {
+            fn: plaintextAuth,
+            type: 'plaintext',
+        }, {
+            fn: apiKeyAuth,
+            type: 'apiKey',
+        }];
+
+        for (const authFn of authFunctions) {
+            const result = await authFn.fn(username, credential);
+
+            if (result.status !== 200) {
+                errorMessage = result.body as unknown as string;
+                continue;
+            }
+
+            const serializedCredential = serializeCredential(
+                username,
+                credential,
+                authFn.type,
+            );
+
+            const user: AdapterUser = {
+                credential: serializedCredential,
+                permissions: {
+                    'jukebox.manage': result.body['subsonic-response'].user.jukeboxRole,
+                    'media.download': result.body['subsonic-response'].user.downloadRole,
+                    'media.folder': result.body['subsonic-response'].user.folder.map(folder => folder.toString()),
+                    'media.share': result.body['subsonic-response'].user.shareRole,
+                    'media.stream': result.body['subsonic-response'].user.streamRole,
+                    'media.upload': result.body['subsonic-response'].user.uploadRole,
+                    'playlist.create': result.body['subsonic-response'].user.playlistRole,
+                    'playlist.delete': result.body['subsonic-response'].user.playlistRole,
+                    'playlist.edit': result.body['subsonic-response'].user.playlistRole,
+                    'server.admin': result.body['subsonic-response'].user.adminRole,
+                    'user.edit': result.body['subsonic-response'].user.settingsRole,
+                },
+                username: result.body['subsonic-response'].user.username,
+            };
+
+            return [null, user];
+        }
+
+        return [{ code: 200, message: errorMessage ?? '' }, null];
     },
 };
 

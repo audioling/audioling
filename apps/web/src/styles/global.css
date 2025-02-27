@@ -1,6 +1,4 @@
-* {
-    box-sizing: border-box;
-    padding: 0;
+body {
     margin: 0;
 }
 
@@ -32,6 +30,26 @@ body {
 #app {
     width: 100%;
     height: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+button,
+select {
+    text-transform: none;
+}
+
+img {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 @media only screen and (width < 360px) {

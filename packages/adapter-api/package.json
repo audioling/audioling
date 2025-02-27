@@ -10,7 +10,9 @@
     },
     "dependencies": {
         "@audioling/open-subsonic-api-client": "^4.0.3",
+        "@repo/localization": "workspace:*",
         "@repo/shared-types": "workspace:*",
+        "@types/md5": "^2.3.5",
         "dayjs": "^1.11.13",
         "lodash": "^4.17.21",
         "md5": "^2.3.0",
