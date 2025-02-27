@@ -1,6 +1,11 @@
-import type { ListSortOrder } from '../app/_app-types.js';
-import type { AdapterUser } from './_adapter-types.js';
+import type { AuthUserPermissions, ListSortOrder } from '../app/_app-types.js';
 import type { PaginatedResponse, QueryRequest } from './_shared.js';
+
+export interface AdapterUser {
+    credential: string;
+    permissions: AuthUserPermissions;
+    username: string;
+}
 
 export type AdapterUserListResponse = PaginatedResponse<AdapterUser>;
 

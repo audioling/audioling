@@ -2,7 +2,6 @@
 
 import type { UserConfig } from 'vite';
 import { join } from 'node:path';
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react-swc';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { chrome } from '../electron/.electron-vendors.cache.json';
@@ -26,7 +25,6 @@ const config: UserConfig = {
     envDir: PROJECT_ROOT,
     mode: process.env.MODE,
     plugins: [
-        TanStackRouterVite({ autoCodeSplitting: true }),
         react(),
         tsconfigPaths(),
     ],

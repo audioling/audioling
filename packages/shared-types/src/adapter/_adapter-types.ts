@@ -1,4 +1,4 @@
-import type { ServerItem, ServerItemType, ServerType } from '../app/_app-types.js';
+import type { AuthServer, AuthUserPermissions, ServerItemType, ServerType } from '../app/_app-types.js';
 import type {
     AdapterAlbumDetailRequest,
     AdapterAlbumDetailResponse,
@@ -76,11 +76,21 @@ import type {
     AdapterTrackListRequest,
     AdapterTrackListResponse,
 } from './adapter-track.js';
+import type { AdapterUser } from './adapter-user.js';
 
-export interface AdapterUser {
-    id: string;
-    username: string;
-}
+export * from './adapter-album.js';
+export * from './adapter-artist.js';
+export * from './adapter-favorite.js';
+export * from './adapter-genre.js';
+export * from './adapter-lyrics.js';
+export * from './adapter-music-folder.js';
+export * from './adapter-playlist.js';
+export * from './adapter-rating.js';
+export * from './adapter-scrobble.js';
+export * from './adapter-server.js';
+export * from './adapter-stream.js';
+export * from './adapter-track.js';
+export * from './adapter-user.js';
 
 export interface AdapterError {
     code: number;
@@ -105,7 +115,7 @@ interface RequestOptions {
 
 export type AdapterFn<TRequest, TResponse> = (
     request: TRequest,
-    server: ServerItem,
+    server: AuthServer,
     options?: RequestOptions,
 ) => Promise<[AdapterError, null] | [null, TResponse]>;
 
@@ -116,7 +126,7 @@ export interface AdapterApi {
             size?: number;
             type: ServerItemType;
         },
-        server: ServerItem
+        server: AuthServer
     ) => string;
     _getStreamUrl: (
         args: {
@@ -124,7 +134,7 @@ export interface AdapterApi {
             format?: string;
             id: string;
         },
-        server: ServerItem
+        server: AuthServer
     ) => string;
     _getType: () => ServerType;
     album: {
@@ -145,6 +155,15 @@ export interface AdapterApi {
         getArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
         getArtistListCount: AdapterFn<AdapterArtistListCountRequest, AdapterArtistListCountResponse>;
         getArtistTrackList: AdapterFn<AdapterArtistTrackListRequest, AdapterArtistTrackListResponse>;
+    };
+    auth: {
+        signIn: (
+            args: {
+                baseUrl: string;
+                credential: string;
+                username: string;
+            },
+        ) => Promise<[AdapterError, null] | [null, AdapterUser]>;
     };
     favorite: {
         getFavoriteAlbumArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;

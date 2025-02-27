@@ -1,0 +1,7 @@
+.block {
+    width: 100%;
+    padding: var(--base-gap-sm);
+    overflow: auto;
+    color: var(--global-font-color);
+    background-color: var(--paper-background-color);
+}

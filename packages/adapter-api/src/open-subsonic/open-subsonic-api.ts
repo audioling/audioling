@@ -45,7 +45,7 @@ function serializeCredential(username: string, credential: string, type: string)
     }
 }
 
-function fetcher<TResponseType>(url: string, server: AuthServer, options?: FetchOptions<'json'>) {
+function fetchClient<TResponseType>(url: string, server: AuthServer, options?: FetchOptions<'json'>) {
     return ofetch<TResponseType>(url, {
         ...options,
         headers: {
@@ -106,7 +106,7 @@ adapter.album = {
             id: request.query.id,
         };
 
-        const res = await ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, {
+        const res = await fetchClient<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -129,8 +129,8 @@ adapter.album = {
         if (request.query.searchTerm) {
             const url = `${server.baseUrl}/rest/search3.view`;
             if (request.query.limit === -1) {
-                const fetcher = async (page: number, limit: number) => {
-                    const result = await ofetch<ResponseType<OS['search3']['os']['1']['get']>>(url, {
+                const fetcherFn = async (page: number, limit: number) => {
+                    const result = await fetchClient<ResponseType<OS['search3']['os']['1']['get']>>(url, server, {
                         method: 'GET',
                         query: {
                             albumCount: limit,
@@ -151,7 +151,7 @@ adapter.album = {
                 };
 
                 const results = await helpers.fetchAllRecords({
-                    fetcher,
+                    fetcher: fetcherFn,
                     fetchLimit: request.query.limit,
                 });
 
@@ -186,7 +186,7 @@ adapter.album = {
                 songOffset: 0,
             };
 
-            const result = await ofetch<ResponseType<OS['search3']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['search3']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query,
             });
@@ -314,8 +314,8 @@ adapter.album = {
         }
 
         if (request.query.limit === -1) {
-            const fetcher = async (page: number, limit: number) => {
-                const result = await ofetch<ResponseType<OS['getAlbumList2']['os']['1']['get']>>(url, {
+            const fetcherFn = async (page: number, limit: number) => {
+                const result = await fetchClient<ResponseType<OS['getAlbumList2']['os']['1']['get']>>(url, server, {
                     method: 'GET',
                     query: {
                         fromYear,
@@ -335,7 +335,7 @@ adapter.album = {
             };
 
             const results = await helpers.fetchAllRecords({
-                fetcher,
+                fetcher: fetcherFn,
                 fetchLimit: request.query.limit,
             });
 
@@ -354,7 +354,7 @@ adapter.album = {
             ];
         }
 
-        const result = await ofetch<ResponseType<OS['getAlbumList2']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getAlbumList2']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 fromYear,
@@ -401,7 +401,7 @@ adapter.album = {
         async function getPageItemCount(page: number, limit: number): Promise<number> {
             const url = `${server.baseUrl}/rest/getAlbumList2.view`;
 
-            const result = await ofetch(url, {
+            const result = await fetchClient<ResponseType<OS['getAlbumList2']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: {
                     musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
@@ -421,7 +421,7 @@ adapter.album = {
         async function getSearchPageItemCount(page: number, limit: number): Promise<number> {
             const url = `${server.baseUrl}/rest/search3.view`;
 
-            const result = await ofetch(url, {
+            const result = await fetchClient<ResponseType<OS['search3']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: {
                     albumCount: limit,
@@ -464,7 +464,7 @@ adapter.album = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -500,7 +500,7 @@ adapter.albumArtist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -533,7 +533,7 @@ adapter.albumArtist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -554,7 +554,7 @@ adapter.albumArtist = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtists']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtists']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -623,7 +623,7 @@ adapter.albumArtist = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtists']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtists']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -659,7 +659,7 @@ adapter.albumArtist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -673,7 +673,7 @@ adapter.albumArtist = {
         );
 
         const albumPromises = albumIds.map(albumId =>
-            ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, {
+            fetchClient<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: { id: albumId },
             }),
@@ -718,7 +718,7 @@ adapter.artist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -742,7 +742,7 @@ adapter.artist = {
             // size: request.query.limit,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtists']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtists']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -811,7 +811,7 @@ adapter.artist = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtists']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtists']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -847,7 +847,7 @@ adapter.artist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getArtist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -861,7 +861,7 @@ adapter.artist = {
         );
 
         const albumPromises = albumIds.map(albumId =>
-            ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, {
+            fetchClient<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: { id: albumId },
             }),
@@ -1022,7 +1022,7 @@ adapter.favorite = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getStarred2']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getStarred2']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1056,7 +1056,7 @@ adapter.favorite = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getStarred2']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getStarred2']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1090,7 +1090,7 @@ adapter.favorite = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getStarred2']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getStarred2']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1126,7 +1126,7 @@ adapter.genre = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getGenres']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getGenres']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1171,7 +1171,7 @@ adapter.genre = {
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
 
-        const result = await ofetch<ResponseType<OS['getGenres']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getGenres']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1214,8 +1214,8 @@ adapter.genre = {
 
         const tracks = [];
         if (request.query.limit === -1) {
-            const fetcher = async (page: number, limit: number) => {
-                const result = await ofetch<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(url, {
+            const fetcherFn = async (page: number, limit: number) => {
+                const result = await fetchClient<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(url, server, {
                     method: 'GET',
                     query: {
                         count: limit,
@@ -1231,11 +1231,11 @@ adapter.genre = {
                 return result.body['subsonic-response'].songsByGenre.song || [];
             };
 
-            const results = await helpers.fetchAllRecords({ fetcher });
+            const results = await helpers.fetchAllRecords({ fetcher: fetcherFn });
             tracks.push(...results);
         }
         else {
-            const result = await ofetch<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: {
                     count: request.query.limit,
@@ -1277,7 +1277,7 @@ adapter.genre = {
         const url = `${server.baseUrl}/rest/getSongsByGenre.view`;
 
         const getPageItemCount = async (page: number, limit: number): Promise<number> => {
-            const result = await ofetch<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: {
                     count: limit,
@@ -1319,7 +1319,7 @@ adapter.meta = {
             submission: request.body.submission,
         };
 
-        const result = await ofetch<ResponseType<OS['scrobble']['os']['1']['post']>>(url, {
+        const result = await fetchClient<ResponseType<OS['scrobble']['os']['1']['post']>>(url, server, {
             method: 'POST',
             query,
         });
@@ -1375,7 +1375,7 @@ adapter.meta = {
                 id: trackIds.add,
             };
 
-            const result = await ofetch<ResponseType<OS['star']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['star']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query,
             });
@@ -1392,7 +1392,7 @@ adapter.meta = {
                 id: trackIds.remove,
             };
 
-            const result = await ofetch<ResponseType<OS['unstar']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['unstar']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query,
             });
@@ -1408,7 +1408,7 @@ adapter.meta = {
         const url = `${server.baseUrl}/rest/setRating.view`;
 
         for (const entry of request.body.entry) {
-            const result = await ofetch<ResponseType<OS['setRating']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['setRating']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: {
                     id: entry.id,
@@ -1429,7 +1429,7 @@ adapter.musicFolder = {
     getMusicFolderList: async (request, server) => {
         const url = `${server.baseUrl}/rest/getMusicFolders.view`;
 
-        const result = await ofetch<ResponseType<OS['getMusicFolders']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getMusicFolders']['os']['1']['get']>>(url, server, {
             method: 'GET',
         });
 
@@ -1479,7 +1479,7 @@ adapter.playlist = {
             const url = `${server.baseUrl}/rest/getAlbum.view`;
 
             albumPromises.push(
-                ofetch<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, {
+                fetchClient<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, server, {
                     method: 'GET',
                     query: { id: albumId },
                 }),
@@ -1503,7 +1503,7 @@ adapter.playlist = {
 
         const url = `${server.baseUrl}/rest/updatePlaylist.view`;
 
-        const result = await ofetch<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 playlistId: request.query.id,
@@ -1520,7 +1520,7 @@ adapter.playlist = {
     clearPlaylist: async (request, server) => {
         const url = `${server.baseUrl}/rest/createPlaylist.view`;
 
-        const result = await ofetch<ResponseType<OS['createPlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['createPlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 playlistId: request.query.id,
@@ -1541,7 +1541,7 @@ adapter.playlist = {
             songId: [],
         };
 
-        const result = await ofetch<ResponseType<OS['createPlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['createPlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1557,7 +1557,7 @@ adapter.playlist = {
             public: request.body.public,
         };
 
-        const updateResult = await ofetch<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, {
+        const updateResult = await fetchClient<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: updateQuery,
         });
@@ -1566,7 +1566,7 @@ adapter.playlist = {
             // Delete the playlist if the update fails
             const url = `${server.baseUrl}/rest/deletePlaylist.view`;
 
-            await ofetch<ResponseType<OS['deletePlaylist']['os']['1']['get']>>(url, {
+            await fetchClient<ResponseType<OS['deletePlaylist']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: { playlistId: result.body['subsonic-response'].playlist.id },
             });
@@ -1583,7 +1583,7 @@ adapter.playlist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['deletePlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['deletePlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1601,7 +1601,7 @@ adapter.playlist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getPlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getPlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1617,7 +1617,7 @@ adapter.playlist = {
     getPlaylistList: async (request, server) => {
         const url = `${server.baseUrl}/rest/getPlaylists.view`;
 
-        const result = await ofetch<ResponseType<OS['getPlaylists']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getPlaylists']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 username: request.query.userId,
@@ -1674,7 +1674,7 @@ adapter.playlist = {
             return [null, totalRecordCountFromDb];
         }
 
-        const result = await ofetch<ResponseType<OS['getPlaylists']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getPlaylists']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 username: request.query.userId,
@@ -1694,7 +1694,7 @@ adapter.playlist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getPlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getPlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1758,7 +1758,7 @@ adapter.playlist = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getPlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getPlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1772,7 +1772,7 @@ adapter.playlist = {
     removeFromPlaylist: async (request, server) => {
         const url = `${server.baseUrl}/rest/updatePlaylist.view`;
 
-        const result = await ofetch<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 playlistId: request.query.id,
@@ -1796,7 +1796,7 @@ adapter.playlist = {
             public: request.body.public,
         };
 
-        const result = await ofetch<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['updatePlaylist']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1817,7 +1817,7 @@ adapter.track = {
             id: request.query.id,
         };
 
-        const result = await ofetch<ResponseType<OS['getSong']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['getSong']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query,
         });
@@ -1832,8 +1832,8 @@ adapter.track = {
         const url = `${server.baseUrl}/rest/search3.view`;
 
         if (request.query.limit === -1) {
-            const fetcher = async (page: number, limit: number) => {
-                const result = await ofetch<ResponseType<OS['search3']['os']['1']['get']>>(url, {
+            const fetcherFn = async (page: number, limit: number) => {
+                const result = await fetchClient<ResponseType<OS['search3']['os']['1']['get']>>(url, server, {
                     method: 'GET',
                     query: {
                         musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
@@ -1850,7 +1850,7 @@ adapter.track = {
                 return result.body['subsonic-response'].searchResult3.song || [];
             };
 
-            const results = await helpers.fetchAllRecords({ fetcher, fetchLimit: request.query.limit });
+            const results = await helpers.fetchAllRecords({ fetcher: fetcherFn, fetchLimit: request.query.limit });
             const items = results.map(osUtils.converter.trackToAdapter);
             const sorted = helpers.sortBy.track(items, request.query.sortBy, request.query.sortOrder);
             const paginated = helpers.paginate(sorted, request.query.offset, request.query.limit);
@@ -1866,7 +1866,7 @@ adapter.track = {
             ];
         }
 
-        const result = await ofetch<ResponseType<OS['search3']['os']['1']['get']>>(url, {
+        const result = await fetchClient<ResponseType<OS['search3']['os']['1']['get']>>(url, server, {
             method: 'GET',
             query: {
                 musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
@@ -1913,7 +1913,7 @@ adapter.track = {
         };
 
         const getPageItemCount = async (page: number, limit: number): Promise<number> => {
-            const result = await ofetch<ResponseType<OS['search3']['os']['1']['get']>>(url, {
+            const result = await fetchClient<ResponseType<OS['search3']['os']['1']['get']>>(url, server, {
                 method: 'GET',
                 query: {
                     musicFolderId: sanitizedQuery.folderId ? Number(sanitizedQuery.folderId[0]) : undefined,
@@ -1936,7 +1936,7 @@ adapter.track = {
             page: number,
             limit: number,
         ): Promise<number> => {
-            const result = await ofetch<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(genreUrl, {
+            const result = await fetchClient<ResponseType<OS['getSongsByGenre']['os']['1']['get']>>(genreUrl, server, {
                 method: 'GET',
                 query: {
                     count: limit,

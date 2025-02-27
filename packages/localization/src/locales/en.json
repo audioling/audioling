@@ -9,7 +9,7 @@
             "next": "Next"
         },
         "messages": {
-            "loading": "Loading...",
+            "loading": "Loading",
             "error": "An error occurred",
             "success": "Operation successful",
             "confirmDelete": "Are you sure you want to delete this?"
@@ -31,6 +31,63 @@
             "serverType": "Server Type"
         }
     },
+    "app": {
+        "album": {
+            "title": "Albums",
+            "sort": {
+                "albumArtist": "Album Artist",
+                "artist": "Artist",
+                "communityRating": "Community Rating",
+                "criticRating": "Critic Rating",
+                "dateAdded": "Date Added",
+                "datePlayed": "Date Played",
+                "duration": "Duration",
+                "isFavorite": "Favorite",
+                "name": "Name",
+                "playCount": "Play Count",
+                "random": "Random",
+                "rating": "Rating",
+                "releaseDate": "Release Date",
+                "trackCount": "Track Count",
+                "year": "Year"
+            }
+        },
+        "albumArtist": {
+            "title": "Album Artists",
+            "sort": {
+                "name": "Name",
+                "albumCount": "Album Count",
+                "trackCount": "Track Count"
+            }
+        },
+        "artist": {
+            "title": "Artists",
+            "sort": {
+                "name": "Name",
+                "albumCount": "Album Count",
+                "trackCount": "Track Count"
+            }
+        },
+        "genre": {
+            "title": "Genres",
+            "sort": {
+                "name": "Name",
+                "trackCount": "Track Count",
+                "albumCount": "Album Count"
+            }
+        },
+        "playlist": {
+            "title": "Playlists",
+            "sort": {
+                "name": "Name",
+                "trackCount": "Track Count",
+                "duration": "Duration",
+                "owner": "Owner",
+                "public": "Public",
+                "updatedAt": "Updated At"
+            }
+        }
+    },
     "navigation": {
         "home": "Home",
         "profile": "Profile",
@@ -41,7 +98,9 @@
         "404": "Page not found",
         "403": "Access denied",
         "500": "Server error",
-        "network": "Network error"
+        "network": "Network error",
+        "userNotFound": "User not found",
+        "noServerSelected": "No server selected"
     },
     "forms": {
         "placeholders": {
