@@ -1,0 +1,8 @@
+.thumb {
+    background-color: var(--mantine-color-default);
+    border-color: var(--mantine-color-default-border);
+}
+
+.track {
+    border-color: var(--mantine-color-default-border);
+}

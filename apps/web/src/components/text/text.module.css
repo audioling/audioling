@@ -1,0 +1,24 @@
+.secondary {
+    color: darken(var(--mantine-color-text), 20%);
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.centered {
+    text-align: center;
+}
+
+.no-select {
+    user-select: none;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.monospace {
+    font-family: var(--mantine-font-family-monospace);
+}

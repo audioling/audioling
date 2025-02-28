@@ -1,0 +1,86 @@
+@use '@/styles/base';
+
+.content {
+    z-index: 10000;
+    padding: var(--menu-padding);
+    background-color: var(--menu-background-color);
+    border: var(--menu-border);
+    border-radius: var(--menu-border-radius);
+    box-shadow: var(--menu-box-shadow);
+}
+
+.item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    min-width: 8rem;
+    padding: var(--menu-item-padding);
+    padding-right: 2rem;
+    padding-left: 2rem;
+    font-size: var(--menu-item-font-size);
+    font-weight: var(--menu-item-font-weight);
+    color: var(--menu-item-font-color);
+    cursor: default;
+    user-select: none;
+    background-color: var(--menu-item-background-color);
+
+    &:hover {
+        color: var(--menu-item-hover-font-color);
+        background-color: var(--menu-item-hover-background-color);
+    }
+}
+
+.left-icon {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    padding: 0 1rem 0 0.5rem;
+    transform: translateY(-50%);
+}
+
+.right-icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    padding: 0 0.5rem 0 1rem;
+    transform: translateY(-50%);
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.item.selected {
+    &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        content: '';
+        background-color: base.$primary-color;
+    }
+}
+
+.item[data-highlighted] {
+    color: var(--menu-item-hover-font-color);
+    background-color: var(--menu-item-hover-background-color);
+}
+
+.divider {
+    margin: var(--menu-divider-margin);
+    border-top: var(--menu-divider-border-top);
+}
+
+.label {
+    padding: var(--menu-item-padding);
+    font-size: var(--menu-item-font-size);
+    font-weight: var(--menu-item-font-weight);
+    color: var(--menu-item-font-color);
+    user-select: none;
+}
+
+.max-height {
+    max-height: 24rem;
+}

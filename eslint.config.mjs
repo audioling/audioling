@@ -77,6 +77,7 @@ export default antfu(
                     tabWidth: 4,
                 },
             ],
+            'ts/prefer-literal-enum-member': 'off',
         },
     },
 );

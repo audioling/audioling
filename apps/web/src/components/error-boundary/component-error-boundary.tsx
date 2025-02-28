@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Button, Center, Group, Stack, Title } from '@mantine/core';
 import { ErrorBoundary } from 'react-error-boundary';
+import styles from './component-error-boundary.module.css';
 import { ErrorBlock } from '/@/components/error-boundary/error-block';
 
 interface ComponentErrorBoundaryProps {
@@ -33,14 +34,8 @@ function fallbackRender({
     };
 
     return (
-        <Center
-            style={{
-                outline: '2px solid var(--global-danger-color)',
-                overflow: 'hidden',
-                width: '100%',
-            }}
-        >
-            <Stack gap="md" maw="480px" p="md" w="100%">
+        <Center className={styles.errorBoundary}>
+            <Stack className={styles.content}>
                 <Title order={1} size="lg">
                     An error occurred
                 </Title>

@@ -1,0 +1,7 @@
+.root {
+    background-color: transparent;
+}
+
+.root .filled {
+    background-color: var(--mantine-color-default);
+}

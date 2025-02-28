@@ -22,6 +22,12 @@ const config: UserConfig = {
         sourcemap: true,
         target: `chrome${chrome}`,
     },
+    css: {
+        modules: {
+            generateScopedName: '[name]__[local]__[hash:base64:5]',
+            localsConvention: 'camelCase',
+        },
+    },
     envDir: PROJECT_ROOT,
     mode: process.env.MODE,
     plugins: [
