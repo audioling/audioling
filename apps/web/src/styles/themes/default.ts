@@ -28,6 +28,12 @@ const darkColors: MantineColorsTuple = [
 ];
 
 export const defaultTheme: AppTheme = {
+    app: {
+        'global-bg-dark': '#0d0d0d',
+        'global-bg-light': '#f9f9f9',
+        'global-fg-dark': '#f9f9f9',
+        'global-fg-light': '#0d0d0d',
+    },
     mantineOverride: {
         colors: {
             dark: darkColors,
@@ -43,6 +49,4 @@ export const defaultTheme: AppTheme = {
             light: 9,
         },
     },
-    textDark: '#f9f9f9',
-    textLight: '#030303',
 };

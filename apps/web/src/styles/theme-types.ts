@@ -1,16 +1,12 @@
 import type { MantineColorsTuple, MantineThemeOverride } from '@mantine/core';
 
 export interface AppTheme {
-    /**
-     * The background color of the theme in dark mode.
-     */
-    backgroundDark?: string;
-
-    /**
-     * The background color of the theme in light mode.
-     */
-    backgroundLight?: string;
-
+    app: {
+        'global-bg-dark': string;
+        'global-bg-light': string;
+        'global-fg-dark': string;
+        'global-fg-light': string;
+    };
     mantineOverride: {
         /**
          * The colors of the theme.
@@ -76,14 +72,4 @@ export interface AppTheme {
          */
         white?: MantineThemeOverride['white'];
     };
-
-    /**
-     * The text color of the theme in dark mode.
-     */
-    textDark?: string;
-
-    /**
-     * The text color of the theme in light mode.
-     */
-    textLight?: string;
 }

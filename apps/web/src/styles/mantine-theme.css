@@ -1,11 +1,11 @@
 :root {
     @mixin light-root {
-        --mantine-color-body: var(--theme-background-light, #f9f9f9);
-        --mantine-color-text: var(--theme-text-light, #030303);
+        --mantine-color-body: var(--theme-global-bg-light, #f9f9f9);
+        --mantine-color-text: var(--theme-global-fg-light, #131313);
     }
 
     @mixin dark-root {
-        --mantine-color-body: var(--theme-background-dark, #030303);
-        --mantine-color-text: var(--theme-text-dark, #f9f9f9);
+        --mantine-color-body: var(--theme-global-bg-dark, #131313);
+        --mantine-color-text: var(--theme-global-fg-dark, #f9f9f9);
     }
 }

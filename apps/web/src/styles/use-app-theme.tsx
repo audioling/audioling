@@ -1,16 +1,7 @@
-import type { AppTheme } from '/@/styles/theme-types';
 import type { MantineThemeOverride } from '@mantine/core';
 import { useEffect, useMemo } from 'react';
 import { createAppTheme } from '/@/styles/mantine-theme.tsx';
 import { themes } from '/@/styles/themes';
-import { caseConverter } from '/@/utils/case-converter';
-
-const cssVariableProperties: Partial<keyof AppTheme>[] = [
-    'backgroundLight',
-    'backgroundDark',
-    'textLight',
-    'textDark',
-];
 
 export function useAppTheme(): MantineThemeOverride {
     // TODO: Get theme from settings
@@ -19,13 +10,11 @@ export function useAppTheme(): MantineThemeOverride {
 
     const theme = createAppTheme(selectedTheme);
 
-    const themeVars = useMemo(() => {
-        return Object.entries(selectedTheme).map(([key, value]) => {
-            if (cssVariableProperties.includes(key as Partial<keyof AppTheme>)) {
-                return [`--theme-${caseConverter.camelToHyphen(key)}`, value];
-            }
+    console.log('selectedTheme', selectedTheme);
 
-            return undefined;
+    const themeVars = useMemo(() => {
+        return Object.entries(selectedTheme.app).map(([key, value]) => {
+            return [`--theme-${(key)}`, value];
         }).filter(Boolean) as [string, string][];
     }, [selectedTheme]);
 
