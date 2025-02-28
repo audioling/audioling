@@ -1,0 +1,15 @@
+{
+    "extends": [
+        "stylelint-config-standard",
+        "stylelint-config-css-modules",
+        "stylelint-config-recess-order"
+    ],
+    "rules": {
+        "block-no-empty": null,
+        "selector-type-case": ["lower", { "ignoreTypes": ["/^\\$\\w+/"] }],
+        "selector-type-no-unknown": [true, { "ignoreTypes": ["/-styled-mixin/", "/^\\$\\w+/"] }],
+        "at-rule-no-unknown": [true, { "ignoreAtRules": ["mixin"] }],
+        "function-no-unknown": [true, { "ignoreFunctions": ["darken", "alpha", "lighten"] }],
+        "declaration-property-value-no-unknown": null
+    }
+}
