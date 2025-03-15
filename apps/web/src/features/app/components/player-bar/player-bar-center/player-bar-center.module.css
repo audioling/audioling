@@ -1,0 +1,12 @@
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls {
+    display: flex;
+    gap: var(--mantine-spacing-md);
+    align-items: center;
+    justify-content: center;
+}

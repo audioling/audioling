@@ -9,7 +9,7 @@ export const queryClient = new QueryClient({
         },
         queries: {
             gcTime: 1000 * 10,
-            staleTime: 0,
+            staleTime: 1000 * 5,
         },
     },
 });

@@ -1,0 +1,26 @@
+.item {
+    --item-border-color: transparent;
+}
+
+.label {
+    padding-top: var(--mantine-spacing-xs);
+    padding-bottom: var(--mantine-spacing-xs);
+}
+
+.control {
+    padding: 0 var(--mantine-spacing-sm);
+    border-radius: var(--mantine-radius-md);
+}
+
+.content {
+    padding: 0;
+    padding-top: 0;
+}
+
+.chevron {
+    justify-content: center;
+
+    &[data-rotate='true'] {
+        transform: rotate(90deg);
+    }
+}

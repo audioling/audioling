@@ -35,7 +35,26 @@
         }
     },
     "app": {
-        "album": {
+        "actions": {
+            "addToFavorites": "Add to favorites",
+            "removeFromFavorites": "Remove from favorites"
+        },
+        "player": {
+            "mediaPrevious": "Previous",
+            "mediaNext": "Next",
+            "mediaShuffle": "Shuffle",
+            "mediaRepeat": "Repeat",
+            "mediaPlay": "Play",
+            "mediaPause": "Pause",
+            "mediaSeekBackward": "Seek Backward",
+            "mediaSeekForward": "Seek Forward",
+            "crossfade": "Crossfade",
+            "speed": "Speed",
+            "queueType": "Queue Type",
+            "default": "Default",
+            "priority": "Priority"
+        },
+        "albums": {
             "title": "Albums",
             "sort": {
                 "albumArtist": "Album Artist",
@@ -55,7 +74,7 @@
                 "year": "Year"
             }
         },
-        "albumArtist": {
+        "albumArtists": {
             "title": "Album Artists",
             "sort": {
                 "name": "Name",
@@ -63,7 +82,7 @@
                 "trackCount": "Track Count"
             }
         },
-        "artist": {
+        "artists": {
             "title": "Artists",
             "sort": {
                 "name": "Name",
@@ -71,7 +90,14 @@
                 "trackCount": "Track Count"
             }
         },
-        "genre": {
+        "folders": {
+            "title": "Folders",
+            "sort": {
+                "name": "Name",
+                "trackCount": "Track Count"
+            }
+        },
+        "genres": {
             "title": "Genres",
             "sort": {
                 "name": "Name",
@@ -79,7 +105,7 @@
                 "albumCount": "Album Count"
             }
         },
-        "playlist": {
+        "playlists": {
             "title": "Playlists",
             "sort": {
                 "name": "Name",
@@ -89,13 +115,22 @@
                 "public": "Public",
                 "updatedAt": "Updated At"
             }
+        },
+        "tracks": {
+            "title": "Tracks"
         }
     },
     "navigation": {
         "home": "Home",
+        "albums": "Albums",
+        "artists": "Artists",
+        "genres": "Genres",
+        "playlists": "Playlists",
+        "tracks": "Tracks",
         "profile": "Profile",
         "settings": "Settings",
-        "logout": "Logout"
+        "logout": "Logout",
+        "library": "Library"
     },
     "errors": {
         "404": "Page not found",
@@ -107,17 +142,5 @@
         "adapterNotFound": "Adapter not found",
         "invalidCredentials": "Invalid credentials",
         "invalidServer": "Invalid server"
-    },
-    "forms": {
-        "placeholders": {
-            "search": "Search...",
-            "email": "Enter your email",
-            "password": "Enter your password"
-        },
-        "labels": {
-            "search": "Search",
-            "email": "Email Address",
-            "password": "Password"
-        }
     }
 }

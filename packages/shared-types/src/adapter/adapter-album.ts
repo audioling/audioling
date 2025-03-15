@@ -17,19 +17,24 @@ export interface AdapterAlbum {
     }[];
     displayArtist: string | null;
     duration: number;
-    external: {
-        musicBrainzId?: string;
-    };
     genres: AdapterRelatedGenre[];
     id: string;
     imageUrl: string;
     isCompilation: boolean;
+    maxOriginalYear: number | null;
+    maxReleaseYear: number | null;
+    mbzAlbumId: string | null;
+    mbzReleaseGroupId: string | null;
+    minOriginalYear: number | null;
+    minReleaseYear: number | null;
+    missing?: boolean;
     moods: {
         id: string;
         name: string;
     }[];
     name: string;
     originalReleaseDate: string | null;
+    participants: Record<string, AdapterRelatedArtist[]>;
     recordLabels: {
         id: string;
         name: string;
@@ -39,9 +44,9 @@ export interface AdapterAlbum {
         id: string;
         name: string;
     }[];
-    releaseYear: number | null;
     size: number | null;
     sortName: string;
+    tags: Record<string, string[]>;
     trackCount: number | null;
     updatedDate: string | null;
     userFavorite: boolean;
@@ -93,3 +98,11 @@ export interface AdapterAlbumTrackListQuery {
 export type AdapterAlbumTrackListRequest = QueryRequest<AdapterAlbumTrackListQuery>;
 
 export type AdapterAlbumTrackListResponse = AdapterTrackListResponse;
+
+export interface AdapterAlbumTrackListCountQuery {
+    id: string;
+}
+
+export type AdapterAlbumTrackListCountRequest = QueryRequest<AdapterAlbumTrackListCountQuery>;
+
+export type AdapterAlbumTrackListCountResponse = number;

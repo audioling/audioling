@@ -1,12 +1,12 @@
 .error-boundary {
-    outline: 2px solid var(--global-danger-color);
-    overflow: hidden;
     width: 100%;
+    overflow: hidden;
+    outline: 2px solid var(--global-danger-color);
 }
 
 .content {
     gap: var(--mantine-spacing-md);
+    width: 100%;
     max-width: 480px;
     padding: var(--mantine-spacing-md);
-    width: 100%;
 }

@@ -14,6 +14,19 @@ const primaryColors: MantineColorsTuple = [
     '#141414',
 ];
 
+const secondaryColors: MantineColorsTuple = [
+    '#f6efff',
+    '#e6ddf4',
+    '#c8bae2',
+    '#aa94d0',
+    '#9073c1',
+    '#7f5fb8',
+    '#7754b4',
+    '#66459f',
+    '#5a3d8f',
+    '#4e337f',
+];
+
 const darkColors: MantineColorsTuple = [
     '#C9C9C9',
     '#b8b8b8',
@@ -29,20 +42,30 @@ const darkColors: MantineColorsTuple = [
 
 export const defaultTheme: AppTheme = {
     app: {
-        'global-bg-dark': '#0d0d0d',
-        'global-bg-light': '#f9f9f9',
-        'global-fg-dark': '#f9f9f9',
-        'global-fg-light': '#0d0d0d',
+        'global-bg-dark': '#0d0d0f',
+        'global-bg-light': '#e6e6e6',
+        'global-fg-dark': '#e6e6e6',
+        'global-fg-light': '#0d0d0f',
+        'global-primary-color-contrast': '#0d0d0f',
+        'global-scrollbar-size': '8px',
+        'global-scrollbar-thumb-active-background-color': 'var(--mantine-color-dark-5)',
+        'global-scrollbar-thumb-background-color': 'var(--mantine-color-dark-6)',
+        'global-scrollbar-thumb-border-radius': '0px',
+        'global-scrollbar-thumb-hover-background-color': 'var(--mantine-color-dark-5)',
+        'global-scrollbar-track-background-color': 'transparent',
+        'global-scrollbar-track-border-radius': '6px',
+        'global-scrollbar-track-hover-background-color': 'transparent',
+
     },
     mantineOverride: {
         colors: {
             dark: darkColors,
             primary: primaryColors,
-            secondary: primaryColors,
+            secondary: secondaryColors,
         },
-        defaultRadius: 'md',
-        focusRing: 'auto',
-        fontFamily: 'Poppins',
+        defaultRadius: 'sm',
+        focusRing: 'never',
+        fontFamily: 'Poppins, Noto Sans JP',
         fontFamilyMonospace: 'Inter',
         primaryShade: {
             dark: 1,

@@ -1,0 +1,21 @@
+.preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12rem;
+    height: 2rem;
+    padding: var(--mantine-spacing-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--mantine-font-size-md);
+    white-space: nowrap;
+    border-radius: var(--mantine-radius-md);
+
+    @mixin dark {
+        background: var(--mantine-color-dark-4);
+    }
+
+    @mixin light {
+        background: var(--mantine-color-light-3);
+    }
+}

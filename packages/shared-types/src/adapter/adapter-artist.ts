@@ -14,12 +14,10 @@ export interface AdapterArtist {
     biography: string | null;
     createdDate: string | null;
     duration: number | null;
-    external: {
-        musicBrainzId?: string;
-    };
     genres: AdapterRelatedGenre[];
     id: string;
     imageUrl: string;
+    musicBrainzId: string | null;
     name: string;
     trackCount: number | null;
     updatedDate: string | null;
@@ -85,6 +83,10 @@ export type AdapterArtistTrackListRequest = QueryRequest<AdapterArtistTrackListQ
 
 export type AdapterArtistTrackListResponse = AdapterTrackListResponse;
 
+export interface AdapterArtistTrackListCountQuery {
+    id: string;
+}
+
 export interface AdapterArtistAlbumListQuery {
     folderId?: string[];
     id: string;
@@ -97,3 +99,19 @@ export interface AdapterArtistAlbumListQuery {
 export type AdapterArtistAlbumListRequest = QueryRequest<AdapterArtistAlbumListQuery>;
 
 export type AdapterArtistAlbumListResponse = AdapterAlbumListResponse;
+
+export interface AdapterArtistAlbumListCountQuery {
+    id: string;
+}
+
+export type AdapterArtistAlbumListCountRequest = QueryRequest<AdapterArtistAlbumListCountQuery>;
+
+export type AdapterArtistAlbumListCountResponse = number;
+
+export interface AdapterArtistTrackListCountQuery {
+    id: string;
+}
+
+export type AdapterArtistTrackListCountRequest = QueryRequest<AdapterArtistTrackListCountQuery>;
+
+export type AdapterArtistTrackListCountResponse = number;

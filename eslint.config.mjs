@@ -30,13 +30,6 @@ export default antfu(
                     prevent: true,
                 },
             ],
-            'style/jsx-self-closing-comp': [
-                'error',
-                {
-                    component: true,
-                    html: true,
-                },
-            ],
             'style/jsx-sort-props': [
                 'error',
                 {
@@ -74,7 +67,6 @@ export default antfu(
                     ignoreComments: true,
                     ignoreRegExpLiterals: true,
                     ignoreTemplateLiterals: true,
-                    tabWidth: 4,
                 },
             ],
             'ts/prefer-literal-enum-member': 'off',

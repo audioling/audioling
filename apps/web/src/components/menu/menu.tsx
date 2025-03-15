@@ -1,14 +1,24 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { createContext, Fragment, type ReactNode, useContext, useMemo, useState } from 'react';
+import type { AppIcon } from '/@/components/icon/icon';
+import type {
+    Dispatch,
+    ReactNode,
+    SetStateAction,
+} from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
-import { animationVariants } from '@/features/ui/animations/variants.ts';
-import { type AppIcon, Icon } from '@/features/ui/icon/icon.tsx';
-import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
-import styles from './menu.module.scss';
+import {
+    createContext,
+    useContext,
+    useMemo,
+    useState,
+} from 'react';
+import styles from './menu.module.css';
+import { animationVariants } from '/@/components/animations/variants';
+import { Icon } from '/@/components/icon/icon';
+import { ScrollArea } from '/@/components/scroll-area/scroll-area';
 
-interface MenuContext {
+interface MenuContextProps {
     align: 'start' | 'center' | 'end';
     closeOnSelect?: boolean;
     open: boolean;
@@ -16,7 +26,7 @@ interface MenuContext {
     side: 'top' | 'right' | 'bottom' | 'left';
 }
 
-export const MenuContext = createContext<MenuContext | null>(null);
+const MenuContext = createContext<MenuContextProps | null>(null);
 
 export interface MenuProps {
     align?: 'start' | 'center' | 'end';
@@ -26,7 +36,7 @@ export interface MenuProps {
 }
 
 export function Menu(props: MenuProps) {
-    const { children, align = 'center', closeOnSelect = true, side = 'bottom' } = props;
+    const { align = 'center', children, closeOnSelect = true, side = 'bottom' } = props;
     const [open, setOpen] = useState(false);
 
     const context = useMemo(
@@ -64,53 +74,55 @@ interface ContentProps {
 
 function Content(props: ContentProps) {
     const { children, isInPortal = true, stickyContent } = props;
-    const { align, open, side } = useContext(MenuContext) as MenuContext;
+    const { align, open, side } = useContext(MenuContext) as MenuContextProps;
 
     return (
         <AnimatePresence>
             {open && (
                 <>
-                    {isInPortal ? (
-                        <DropdownMenu.Portal forceMount>
-                            <DropdownMenu.Content
-                                asChild
-                                align={align}
-                                className={styles.content}
-                                collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
-                                side={side}
-                                sideOffset={6}
-                            >
-                                <motion.div
-                                    animate="show"
-                                    exit="hidden"
-                                    initial="hidden"
-                                    variants={animationVariants.fadeIn}
+                    {isInPortal
+                        ? (
+                                <DropdownMenu.Portal forceMount>
+                                    <DropdownMenu.Content
+                                        asChild
+                                        align={align}
+                                        className={styles.content}
+                                        collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
+                                        side={side}
+                                        sideOffset={6}
+                                    >
+                                        <motion.div
+                                            animate="show"
+                                            exit="hidden"
+                                            initial="hidden"
+                                            variants={animationVariants.fadeIn}
+                                        >
+                                            {stickyContent}
+                                            <ScrollArea className={styles.maxHeight}>{children}</ScrollArea>
+                                        </motion.div>
+                                    </DropdownMenu.Content>
+                                </DropdownMenu.Portal>
+                            )
+                        : (
+                                <DropdownMenu.Content
+                                    asChild
+                                    align={align}
+                                    className={styles.content}
+                                    collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
+                                    side={side}
+                                    sideOffset={6}
                                 >
-                                    {stickyContent}
-                                    <ScrollArea className={styles.maxHeight}>{children}</ScrollArea>
-                                </motion.div>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Portal>
-                    ) : (
-                        <DropdownMenu.Content
-                            asChild
-                            align={align}
-                            className={styles.content}
-                            collisionPadding={{ bottom: 4, left: 4, right: 4, top: 4 }}
-                            side={side}
-                            sideOffset={6}
-                        >
-                            <motion.div
-                                animate="show"
-                                exit="hidden"
-                                initial="hidden"
-                                variants={animationVariants.fadeIn}
-                            >
-                                {stickyContent}
-                                <ScrollArea>{children}</ScrollArea>
-                            </motion.div>
-                        </DropdownMenu.Content>
-                    )}
+                                    <motion.div
+                                        animate="show"
+                                        exit="hidden"
+                                        initial="hidden"
+                                        variants={animationVariants.fadeIn}
+                                    >
+                                        {stickyContent}
+                                        <ScrollArea>{children}</ScrollArea>
+                                    </motion.div>
+                                </DropdownMenu.Content>
+                            )}
                 </>
             )}
         </AnimatePresence>
@@ -127,9 +139,9 @@ interface ItemProps {
 }
 
 function Item(props: ItemProps) {
-    const { children, disabled, leftIcon, onSelect, rightIcon, isSelected } = props;
+    const { children, disabled, isSelected, leftIcon, onSelect, rightIcon } = props;
 
-    const { closeOnSelect } = useContext(MenuContext) as MenuContext;
+    const { closeOnSelect } = useContext(MenuContext) as MenuContextProps;
 
     const handleSelect = (e: Event) => {
         if (!closeOnSelect) {
@@ -185,14 +197,14 @@ function Divider(props: DividerProps) {
     return <DropdownMenu.Separator {...props} className={styles.divider} />;
 }
 
-interface SubmenuContext {
+interface SubmenuContextProps {
     disabled?: boolean;
     isCloseDisabled?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const SubmenuContext = createContext<SubmenuContext | null>(null);
+const SubmenuContext = createContext<SubmenuContextProps | null>(null);
 
 interface SubmenuProps {
     children: ReactNode;
@@ -221,7 +233,7 @@ interface SubmenuTargetProps {
 
 function SubmenuTarget(props: SubmenuTargetProps) {
     const { children } = props;
-    const { disabled, isCloseDisabled, setOpen } = useContext(SubmenuContext) as SubmenuContext;
+    const { disabled, isCloseDisabled, setOpen } = useContext(SubmenuContext) as SubmenuContextProps;
 
     return (
         <DropdownMenu.SubTrigger
@@ -246,10 +258,10 @@ interface SubmenuContentProps {
 
 function SubmenuContent(props: SubmenuContentProps) {
     const { children, stickyContent } = props;
-    const { open, setOpen } = useContext(SubmenuContext) as SubmenuContext;
+    const { open, setOpen } = useContext(SubmenuContext) as SubmenuContextProps;
 
     return (
-        <Fragment>
+        <>
             {open && (
                 <DropdownMenu.Portal forceMount>
                     <DropdownMenu.SubContent
@@ -268,7 +280,7 @@ function SubmenuContent(props: SubmenuContentProps) {
                     </DropdownMenu.SubContent>
                 </DropdownMenu.Portal>
             )}
-        </Fragment>
+        </>
     );
 }
 

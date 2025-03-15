@@ -1,0 +1,40 @@
+.vertical-slider-container {
+    height: 100px;
+    padding: var(--mantine-gap-sm);
+}
+
+.horizontal-slider-container {
+    display: flex;
+    align-items: center;
+    width: 5rem;
+}
+
+.track {
+    position: relative;
+    width: 5px;
+    height: 100%;
+    background-color: var(--mantine-color-font-secondary);
+    border-radius: 9999px;
+}
+
+.track-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--mantine-color-primary);
+    border-radius: 9999px;
+}
+
+.handle {
+    position: absolute;
+    z-index: 1000;
+    align-self: center;
+    width: 1rem;
+    height: 0.5rem;
+    background-color: var(--mantine-color-font);
+    border-radius: 0.5rem;
+}
+
+.muted {
+    opacity: 0.5;
+}

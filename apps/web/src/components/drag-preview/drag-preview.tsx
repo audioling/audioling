@@ -1,4 +1,4 @@
-import styles from './drag-preview.module.scss';
+import styles from './drag-preview.module.css';
 
 interface DragPreviewProps {
     itemCount: number;
@@ -7,5 +7,11 @@ interface DragPreviewProps {
 export function DragPreview(props: DragPreviewProps) {
     const { itemCount } = props;
 
-    return <div className={styles.preview}>{itemCount} items</div>;
+    return (
+        <div className={styles.preview}>
+            {itemCount}
+            {' '}
+            items
+        </div>
+    );
 }

@@ -6,6 +6,15 @@ export interface AppTheme {
         'global-bg-light': string;
         'global-fg-dark': string;
         'global-fg-light': string;
+        'global-primary-color-contrast': string;
+        'global-scrollbar-size': string;
+        'global-scrollbar-thumb-active-background-color': string;
+        'global-scrollbar-thumb-background-color': string;
+        'global-scrollbar-thumb-border-radius': string;
+        'global-scrollbar-thumb-hover-background-color': string;
+        'global-scrollbar-track-background-color': string;
+        'global-scrollbar-track-border-radius': string;
+        'global-scrollbar-track-hover-background-color': string;
     };
     mantineOverride: {
         /**

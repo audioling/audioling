@@ -5,15 +5,10 @@ import styles from './text.module.css';
 export const TextComponentOverride = MantineText.extend({
     classNames: (_theme, props) => ({
         root: clsx({
-            [styles.centered]: props.isCentered,
-            [styles.ellipsis]: props.isEllipsis,
-            [styles.monospace]: props.isMonospace,
-            [styles.uppercase]: props.isUppercase,
-            [styles.noSelect]: props.isNoSelect,
-            [styles.secondary]: props.isSecondary,
+            [styles.noSelect]: true,
+            [styles.secondary]: props.variant === 'secondary' || props.variant === 'secondary-ellipsis',
+            [styles.ellipsis]: props.variant === 'default-ellipsis' || props.variant === 'secondary-ellipsis',
+            [styles.monospace]: props.variant === 'monospace' || props.variant === 'monospace-secondary',
         }),
     }),
-    defaultProps: {
-        isNoSelect: true,
-    },
 });

@@ -10,8 +10,6 @@ export function useAppTheme(): MantineThemeOverride {
 
     const theme = createAppTheme(selectedTheme);
 
-    console.log('selectedTheme', selectedTheme);
-
     const themeVars = useMemo(() => {
         return Object.entries(selectedTheme.app).map(([key, value]) => {
             return [`--theme-${(key)}`, value];

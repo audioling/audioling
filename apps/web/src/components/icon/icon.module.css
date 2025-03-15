@@ -1,0 +1,61 @@
+.fill {
+    fill: transparent;
+}
+
+.fill-inherit {
+    fill: inherit;
+}
+
+.fill-primary {
+    color: var(--mantine-primary-color-filled);
+    fill: var(--mantine-primary-color-filled);
+}
+
+.fill-secondary {
+    color: var(--mantine-color-secondary-7);
+    fill: var(--mantine-color-secondary-7);
+}
+
+.fill-success {
+    color: var(--mantine-color-green-7);
+    fill: var(--mantine-color-green-7);
+}
+
+.fill-error {
+    color: var(--mantine-color-error);
+    fill: var(--mantine-color-error);
+}
+
+.fill-info {
+    color: var(--mantine-color-blue-7);
+    fill: var(--mantine-color-blue-7);
+}
+
+.fill-warn {
+    color: var(--mantine-color-yellow-7);
+    fill: var(--mantine-color-yellow-7);
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+.pulse {
+    animation: pulse 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+}

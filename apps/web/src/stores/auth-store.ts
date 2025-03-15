@@ -1,5 +1,4 @@
-import type { AuthServer, ServerType } from '@repo/shared-types/app-types';
-import { localize } from '@repo/localization';
+import { type AuthServer, SERVER_CONFIG, type ServerType } from '@repo/shared-types/app-types';
 import { nanoid } from 'nanoid/non-secure';
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
@@ -12,6 +11,7 @@ interface State {
 }
 
 interface Actions {
+    getSelectedServer: () => AuthServer | null;
     invalidateServer: (id: string) => void;
     removeServer: (id: string) => void;
     setSelectedServer: (id: string | null) => void;
@@ -36,8 +36,17 @@ export const useAuthStoreBase = create<State & Actions>()(
     devtools(
         persist(
             subscribeWithSelector(
-                immer(set => ({
+                immer((set, get) => ({
                     baseUrl: null,
+                    getSelectedServer: () => {
+                        const serverId = get().serverId;
+
+                        if (!serverId) {
+                            return null;
+                        }
+
+                        return get().servers[serverId];
+                    },
                     invalidateServer: (id) => {
                         set((state) => {
                             state.servers[id].user = null;
@@ -71,6 +80,7 @@ export const useAuthStoreBase = create<State & Actions>()(
                                 state.servers[newId] = {
                                     baseUrl: args.baseUrl,
                                     displayName: args.displayName || args.baseUrl,
+                                    features: SERVER_CONFIG[args.serverType].features,
                                     id: newId,
                                     type: args.serverType,
                                     user: {
@@ -120,8 +130,18 @@ export function useAuthServer() {
     const servers = useAuthStore.use.servers();
 
     if (!serverId) {
-        throw new Error(localize.t('errors.noServerSelected'));
+        return null;
     }
 
     return servers[serverId];
+}
+
+export function useAuthServerById(id: string) {
+    const servers = useAuthStore.use.servers();
+    return servers[id];
+}
+
+export function getAuthServerById(id: string) {
+    const servers = useAuthStore.getState().servers;
+    return servers[id];
 }

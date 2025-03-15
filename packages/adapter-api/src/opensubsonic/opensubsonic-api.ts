@@ -38,11 +38,11 @@ export const adapter: Partial<AdapterAPI> = {};
 function serializeCredential(username: string, credential: Record<string, string>, type: string) {
     switch (type) {
         case 'apiKey':
-            return `{ apiKey: ${credential.apiKey} }`;
+            return JSON.stringify({ apiKey: credential.apiKey });
         case 'plaintext':
-            return `{ u: ${username}, p: ${credential.password} }`;
+            return JSON.stringify({ p: credential.password, u: username });
         case 'token':
-            return `{ u: ${username}, s: ${credential.s}, t: ${credential.t} }`;
+            return JSON.stringify({ s: credential.s, t: credential.t, u: username });
         default:
             throw new Error(`Invalid credential type: ${type}`);
     }
@@ -74,24 +74,31 @@ function fetchClient<TResponseType>(url: string, server: AuthServer, options?: F
             }
         },
         parseResponse: (response) => {
-            return (response as any)['subsonic-response'];
+            const parsed = JSON.parse(response);
+
+            if (parsed['subsonic-response']) {
+                return parsed['subsonic-response'];
+            }
+
+            return parsed;
         },
         responseType: 'json',
     });
 }
 
 adapter._getCoverArtUrl = ({ id, size }, server) => {
-    const credentialParams = '';
-
     if (!server.user) {
         throw new Error(localize.t('errors.userNotFound'));
     }
 
+    const credential = Object.entries(deserializeCredential(server.user.credential))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+
     return (
         `${server.baseUrl}/rest/getCoverArt.view`
         + `?id=${id}`
-        + `&${credentialParams}`
-        + `&u=${server.user.username}`
+        + `&${credential}`
         + `&v=$1.16.1`
         + `&size=${size}`
         + `&c=${import.meta.env.VITE_APP_NAME}`
@@ -188,7 +195,6 @@ adapter.album = {
                         items: paginated.items,
                         limit: paginated.limit,
                         offset: paginated.offset,
-                        totalRecordCount: results.length,
                     },
                 ];
             }
@@ -222,7 +228,6 @@ adapter.album = {
                     items,
                     limit: request.query.limit,
                     offset: request.query.offset,
-                    totalRecordCount,
                 },
             ];
         }
@@ -366,7 +371,6 @@ adapter.album = {
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: results.length,
                 },
             ];
         }
@@ -503,9 +507,46 @@ adapter.album = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: results.length,
             },
         ];
+    },
+    getAlbumTrackListCount: async (request, server) => {
+        const url = `${server.baseUrl}/rest/getAlbum.view`;
+
+        const query: QueryParams<OS['getAlbum']['os']['1']['get']> = {
+            id: request.query.id,
+        };
+
+        const listCountType = `${ServerItemType.ALBUM}-${request.query.id}-tracks`;
+
+        const totalRecordCountFromDb = await helpers.getListCount({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        if (totalRecordCountFromDb) {
+            return [null, totalRecordCountFromDb];
+        }
+
+        const result = await fetchClient<ResponseType<OS['getAlbum']['os']['1']['get']>>(url, server, {
+            method: 'GET',
+            query,
+        });
+
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
+        }
+
+        const key = helpers.getListCountKey({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        helpers.setListCount(key, result.album.song?.length || 0);
+
+        return [null, result.album.song?.length || 0];
     },
 };
 
@@ -539,9 +580,46 @@ adapter.albumArtist = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: albums.length,
             },
         ];
+    },
+    getAlbumArtistAlbumListCount: async (request, server) => {
+        const url = `${server.baseUrl}/rest/getArtist.view`;
+
+        const query: QueryParams<OS['getArtist']['os']['1']['get']> = {
+            id: request.query.id,
+        };
+
+        const listCountType = `${ServerItemType.ALBUM}-${request.query.id}-albums`;
+
+        const totalRecordCountFromDb = await helpers.getListCount({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        if (totalRecordCountFromDb) {
+            return [null, totalRecordCountFromDb];
+        }
+
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
+            method: 'GET',
+            query,
+        });
+
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
+        }
+
+        const key = helpers.getListCountKey({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        helpers.setListCount(key, result.artist.album?.length || 0);
+
+        return [null, result.artist.album?.length || 0];
     },
     getAlbumArtistDetail: async (request, server) => {
         const url = `${server.baseUrl}/rest/getArtist.view`;
@@ -599,7 +677,6 @@ adapter.albumArtist = {
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: searchedItems.length,
                 },
             ];
         }
@@ -613,7 +690,6 @@ adapter.albumArtist = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: artists.length,
             },
         ];
     },
@@ -716,9 +792,46 @@ adapter.albumArtist = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: tracks.length,
             },
         ];
+    },
+    getAlbumArtistTrackListCount: async (request, server) => {
+        const url = `${server.baseUrl}/rest/getArtist.view`;
+
+        const query: QueryParams<OS['getArtist']['os']['1']['get']> = {
+            id: request.query.id,
+        };
+
+        const listCountType = `${ServerItemType.TRACK}-${request.query.id}-tracks`;
+
+        const totalRecordCountFromDb = await helpers.getListCount({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        if (totalRecordCountFromDb) {
+            return [null, totalRecordCountFromDb];
+        }
+
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
+            method: 'GET',
+            query,
+        });
+
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
+        }
+
+        const key = helpers.getListCountKey({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        helpers.setListCount(key, result.artist.album?.length || 0);
+
+        return [null, result.artist.album?.length || 0];
     },
 };
 
@@ -782,7 +895,6 @@ adapter.artist = {
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: searchedItems.length,
                 },
             ];
         }
@@ -796,7 +908,6 @@ adapter.artist = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: artists.length,
             },
         ];
     },
@@ -899,9 +1010,46 @@ adapter.artist = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: tracks.length,
             },
         ];
+    },
+    getArtistTrackListCount: async (request, server) => {
+        const url = `${server.baseUrl}/rest/getArtist.view`;
+
+        const query: QueryParams<OS['getArtist']['os']['1']['get']> = {
+            id: request.query.id,
+        };
+
+        const listCountType = `${ServerItemType.TRACK}-${request.query.id}-tracks`;
+
+        const totalRecordCountFromDb = await helpers.getListCount({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        if (totalRecordCountFromDb) {
+            return [null, totalRecordCountFromDb];
+        }
+
+        const result = await fetchClient<ResponseType<OS['getArtist']['os']['1']['get']>>(url, server, {
+            method: 'GET',
+            query,
+        });
+
+        if (result.status !== 'ok') {
+            return [{ code: 500, message: result as unknown as string }, null];
+        }
+
+        const key = helpers.getListCountKey({
+            query,
+            serverId: server.id,
+            type: listCountType,
+        });
+
+        helpers.setListCount(key, result.artist.album?.length || 0);
+
+        return [null, result.artist.album?.length || 0];
     },
 };
 
@@ -1088,8 +1236,6 @@ adapter.favorite = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.starred2?.artist || [])
-                    .length,
             },
         ];
     },
@@ -1122,8 +1268,6 @@ adapter.favorite = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.starred2?.album || [])
-                    .length,
             },
         ];
     },
@@ -1156,7 +1300,6 @@ adapter.favorite = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.starred2.song || []).length,
             },
         ];
     },
@@ -1204,7 +1347,6 @@ adapter.genre = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: (result.genres.genre || []).length,
             },
         ];
     },
@@ -1249,12 +1391,6 @@ adapter.genre = {
             genre: request.query.id,
             musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
         };
-
-        const [err, totalRecordCount] = await adapter.genre!.getGenreTrackListCount(request, server);
-
-        if (err) {
-            return [err, null];
-        }
 
         const tracks = [];
         if (request.query.limit === -1) {
@@ -1305,7 +1441,6 @@ adapter.genre = {
                 items: paginated.items,
                 limit: paginated.limit,
                 offset: paginated.offset,
-                totalRecordCount: totalRecordCount ?? 0,
             },
         ];
     },
@@ -1494,9 +1629,6 @@ adapter.musicFolder = {
                 items,
                 limit: request.query.limit,
                 offset: request.query.offset,
-                totalRecordCount: (
-                    result.musicFolders?.musicFolder || []
-                ).length,
             },
         ];
     },
@@ -1905,7 +2037,6 @@ adapter.track = {
                     items: paginated.items,
                     limit: paginated.limit,
                     offset: paginated.offset,
-                    totalRecordCount: results.length,
                 },
             ];
         }

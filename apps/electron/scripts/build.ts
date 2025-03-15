@@ -127,9 +127,9 @@ build({
     .then((result) => {
         console.log(JSON.stringify(result));
         const outDir = path.join(workDir, options.directories!.output!);
-        console.log('\x1B[32m', `打包完成🎉🎉🎉你要的都在 ${outDir} 目录里🤪🤪🤪`);
+        console.log('\x1B[32m', `Release created in ${outDir}`);
     })
     .catch((error) => {
-        console.log('\x1B[31m', '打包失败，错误信息：', error);
+        console.log('\x1B[31m', 'Build failed, error:', error);
         exit(1);
     });

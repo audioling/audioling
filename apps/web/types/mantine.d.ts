@@ -1,4 +1,5 @@
 import type { ButtonVariant } from '@mantine/core';
+import type { AppIcon } from '../src/components/icon/icon';
 import { MantineSize } from '@mantine/core';
 
 declare module '@mantine/core' {
@@ -6,16 +7,17 @@ declare module '@mantine/core' {
         variant?: 'filled' | 'default';
     }
 
-    export interface ActionIconProps {
-        filled?: boolean;
+    export interface TextProps {
+        variant?:
+            | 'default'
+            | 'default-ellipsis'
+            | 'secondary'
+            | 'secondary-ellipsis'
+            | 'monospace'
+            | 'monospace-secondary';
     }
 
-    export interface TextProps {
-        isCentered?: boolean;
-        isEllipsis?: boolean;
-        isMonospace?: boolean;
-        isNoSelect?: boolean;
-        isSecondary?: boolean;
-        isUppercase?: boolean;
+    export interface ButtonProps {
+        variant?: 'secondary' | 'default' | 'filled' | 'subtle' | 'transparent' | 'white' | 'outline';
     }
 }

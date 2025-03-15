@@ -20,7 +20,6 @@ export class IPCRenderer<
         ...payload: Parameters<MessageType[T]>
     ): Promise<Awaited<ReturnType<MessageType[T]>>> => {
         return new Promise((resolve, reject) => {
-            // console.log("send", name, payload);
             ipcRenderer.invoke(this.channel, {
                 name,
                 payload,
@@ -29,7 +28,6 @@ export class IPCRenderer<
                     return resolve(data.result);
                 }
                 else {
-                    //  主进程如果返回错误的话，在这里显示到 UI 上
                     console.log(data.error);
                     return reject(data.error);
                 }

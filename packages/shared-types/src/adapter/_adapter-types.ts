@@ -1,4 +1,5 @@
-import type { AuthServer, AuthUserPermissions, ServerItemType, ServerType } from '../app/_app-types.js';
+/* eslint-disable style/max-len */
+import type { AuthServer, ServerItemType, ServerType } from '../app/_app-types.js';
 import type {
     AdapterAlbumDetailRequest,
     AdapterAlbumDetailResponse,
@@ -6,10 +7,14 @@ import type {
     AdapterAlbumListCountResponse,
     AdapterAlbumListRequest,
     AdapterAlbumListResponse,
+    AdapterAlbumTrackListCountRequest,
+    AdapterAlbumTrackListCountResponse,
     AdapterAlbumTrackListRequest,
     AdapterAlbumTrackListResponse,
 } from './adapter-album.js';
 import type {
+    AdapterArtistAlbumListCountRequest,
+    AdapterArtistAlbumListCountResponse,
     AdapterArtistAlbumListRequest,
     AdapterArtistAlbumListResponse,
     AdapterArtistDetailRequest,
@@ -18,6 +23,8 @@ import type {
     AdapterArtistListCountResponse,
     AdapterArtistListRequest,
     AdapterArtistListResponse,
+    AdapterArtistTrackListCountRequest,
+    AdapterArtistTrackListCountResponse,
     AdapterArtistTrackListRequest,
     AdapterArtistTrackListResponse,
 } from './adapter-artist.js';
@@ -97,7 +104,7 @@ export interface AdapterError {
     message: string;
 }
 
-interface RequestOptions {
+export interface AdapterRequestOptions {
     cache?: 'default' | 'force-cache' | 'no-cache' | 'no-store' | 'only-if-cached' | 'reload';
     credentials?: 'omit' | 'include' | 'same-origin';
     integrity?: string;
@@ -116,7 +123,7 @@ interface RequestOptions {
 export type AdapterFn<TRequest, TResponse> = (
     request: TRequest,
     server: AuthServer,
-    options?: RequestOptions,
+    options?: AdapterRequestOptions,
 ) => Promise<[AdapterError, null] | [null, TResponse]>;
 
 export type ExtractAdapterResponse<T> = T extends AdapterFn<any, infer R> ? R : never;
@@ -144,19 +151,23 @@ export interface AdapterAPI {
         getAlbumList: AdapterFn<AdapterAlbumListRequest, AdapterAlbumListResponse>;
         getAlbumListCount: AdapterFn<AdapterAlbumListCountRequest, AdapterAlbumListCountResponse>;
         getAlbumTrackList: AdapterFn<AdapterAlbumTrackListRequest, AdapterAlbumTrackListResponse>;
+        getAlbumTrackListCount: AdapterFn<AdapterAlbumTrackListCountRequest, AdapterAlbumTrackListCountResponse>;
     };
     albumArtist: {
         getAlbumArtistAlbumList: AdapterFn<AdapterArtistAlbumListRequest, AdapterArtistAlbumListResponse >;
+        getAlbumArtistAlbumListCount: AdapterFn<AdapterArtistAlbumListCountRequest, AdapterArtistAlbumListCountResponse >;
         getAlbumArtistDetail: AdapterFn<AdapterArtistDetailRequest, AdapterArtistDetailResponse>;
         getAlbumArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
         getAlbumArtistListCount: AdapterFn<AdapterArtistListCountRequest, AdapterArtistListCountResponse >;
         getAlbumArtistTrackList: AdapterFn<AdapterArtistTrackListRequest, AdapterArtistTrackListResponse >;
+        getAlbumArtistTrackListCount: AdapterFn<AdapterArtistTrackListCountRequest, AdapterArtistTrackListCountResponse >;
     };
     artist: {
         getArtistDetail: AdapterFn<AdapterArtistDetailRequest, AdapterArtistDetailResponse>;
         getArtistList: AdapterFn<AdapterArtistListRequest, AdapterArtistListResponse>;
         getArtistListCount: AdapterFn<AdapterArtistListCountRequest, AdapterArtistListCountResponse>;
         getArtistTrackList: AdapterFn<AdapterArtistTrackListRequest, AdapterArtistTrackListResponse>;
+        getArtistTrackListCount: AdapterFn<AdapterArtistTrackListCountRequest, AdapterArtistTrackListCountResponse>;
     };
     auth: {
         signIn: (

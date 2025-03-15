@@ -1,0 +1,5 @@
+.root {
+    --card-padding: var(--mantine-spacing-xs);
+
+    background-color: lighten(var(--mantine-color-body), 3%);
+}

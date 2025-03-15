@@ -1,12 +1,12 @@
+import type { DragData } from '/@/utils/drag-drop';
 import type { Ref } from 'react';
-import { forwardRef, useEffect, useRef, useState } from 'react';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
+import { useMergedRef } from '@mantine/hooks';
 import { clsx } from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
-import { useMergedRef } from '@/hooks/use-merged-ref.ts';
-import type { DragData } from '@/utils/drag-drop.ts';
-import { DragTarget } from '@/utils/drag-drop.ts';
-import styles from './scroll-area.module.scss';
+import { forwardRef, useEffect, useRef, useState } from 'react';
+import styles from './scroll-area.module.css';
+import { DragTarget } from '/@/utils/drag-drop';
 
 interface ScrollAreaProps extends React.ComponentPropsWithoutRef<'div'> {
     allowDragScroll?: boolean;
@@ -48,8 +48,9 @@ export const ScrollArea = forwardRef((props: ScrollAreaProps, ref: Ref<HTMLDivEl
             if (allowDragScroll) {
                 autoScrollForElements({
                     canScroll: (args) => {
-                        const data = args.source.data as DragData<unknown>;
-                        if (data.type === DragTarget.TABLE_COLUMN) return false;
+                        const data = args.source.data as unknown as DragData<unknown>;
+                        if (data.type === DragTarget.TABLE_COLUMN)
+                            return false;
                         return true;
                     },
                     element: scroller as HTMLElement,

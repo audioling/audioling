@@ -8,6 +8,8 @@ import {
     rem,
 } from '@mantine/core';
 import merge from 'lodash/merge';
+import { AccordionComponentOverride } from '/@/components/accordion/accordion';
+import { ActionIconComponentOverride } from '/@/components/action-icon/action-icon';
 import { AnchorComponentOverride } from '/@/components/anchor/anchor';
 import { BadgeComponentOverride } from '/@/components/badge/badge';
 import { ButtonComponentOverride } from '/@/components/button/button';
@@ -16,19 +18,21 @@ import { CheckboxComponentOverride } from '/@/components/checkbox/checkbox';
 import { ChipComponentOverride } from '/@/components/chip/chip';
 import { ContainerComponentOverride } from '/@/components/container/container';
 import { IndicatorComponentOverride } from '/@/components/indicator/indicator';
+import { LoaderComponentOverride } from '/@/components/loader/loader';
 import { MarkComponentOverride } from '/@/components/mark/mark';
 import { NavLinkComponentOverride } from '/@/components/nav-link/nav-link';
 import { NumberInputComponentOverride } from '/@/components/number-input/number-input';
 import { PaginationComponentOverride } from '/@/components/pagination/pagination';
 import { PaperComponentOverride } from '/@/components/paper/paper';
 import { PasswordInputComponentOverride } from '/@/components/password-input/password-input';
+import { PopoverComponentOverride } from '/@/components/popover/popover';
 import { RadioComponentOverride } from '/@/components/radio/radio';
 import { SegmentedControlComponentOverride } from '/@/components/segmented-control/segmented-control';
 import { SelectComponentOverride } from '/@/components/select/select';
+import { SliderComponentOverride } from '/@/components/slider/slider';
 import { SwitchComponentOverride } from '/@/components/switch/switch';
 import { TextInputComponentOverride } from '/@/components/text-input/text-input';
 import { TextComponentOverride } from '/@/components/text/text';
-import { TooltipComponentOverride } from '/@/components/tooltip/tooltip';
 
 const primaryColors: MantineColorsTuple = [
     '#f5f5f5',
@@ -59,17 +63,21 @@ const darkColors: MantineColorsTuple = [
 const mantineTheme: MantineThemeOverride = createTheme({
     autoContrast: true,
     breakpoints: {
-        lg: '75em',
-        md: '62em',
-        sm: '48em',
-        xl: '88em',
-        xs: '36em',
+        '2xl': '120em',
+        '3xl': '160em',
+        'lg': '75em',
+        'md': '62em',
+        'sm': '48em',
+        'xl': '88em',
+        'xs': '36em',
     },
     colors: {
         dark: darkColors,
         primary: primaryColors,
     },
     components: {
+        Accordion: AccordionComponentOverride,
+        ActionIcon: ActionIconComponentOverride,
         Anchor: AnchorComponentOverride,
         Badge: BadgeComponentOverride,
         Button: ButtonComponentOverride,
@@ -78,23 +86,25 @@ const mantineTheme: MantineThemeOverride = createTheme({
         Chip: ChipComponentOverride,
         Container: ContainerComponentOverride,
         Indicator: IndicatorComponentOverride,
+        Loader: LoaderComponentOverride,
         Mark: MarkComponentOverride,
         NavLink: NavLinkComponentOverride,
         NumberInput: NumberInputComponentOverride,
         Pagination: PaginationComponentOverride,
         Paper: PaperComponentOverride,
         PasswordInput: PasswordInputComponentOverride,
+        Popover: PopoverComponentOverride,
         Radio: RadioComponentOverride,
         SegmentedControl: SegmentedControlComponentOverride,
         Select: SelectComponentOverride,
+        Slider: SliderComponentOverride,
         Switch: SwitchComponentOverride,
         Text: TextComponentOverride,
         TextInput: TextInputComponentOverride,
-        Tooltip: TooltipComponentOverride,
     },
     cursorType: 'pointer',
-    defaultRadius: 'md',
-    focusRing: 'auto',
+    defaultRadius: 'sm',
+    focusRing: 'never',
     fontFamily: 'Poppins',
     fontSizes: {
         '2xl': rem('24px'),
@@ -107,6 +117,7 @@ const mantineTheme: MantineThemeOverride = createTheme({
         'xl': rem('20px'),
         'xs': rem('10px'),
     },
+    fontSmoothing: true,
     headings: {
         fontFamily: 'Poppins',
         sizes: {
@@ -133,10 +144,11 @@ const mantineTheme: MantineThemeOverride = createTheme({
         },
     },
     lineHeights: {
-        lg: rem('24px'),
-        md: rem('20px'),
-        sm: rem('18px'),
-        xs: rem('16px'),
+        lg: rem('20px'),
+        md: rem('18px'),
+        sm: rem('16px'),
+        xl: rem('24px'),
+        xs: rem('14px'),
     },
     luminanceThreshold: 0.3,
     primaryColor: 'primary',

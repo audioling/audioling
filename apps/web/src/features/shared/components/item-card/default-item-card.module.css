@@ -1,0 +1,96 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-xs);
+    width: 100%;
+}
+
+.image-section {
+    position: relative;
+    padding: var(--mantine-spacing-xs) var(--mantine-spacing-xs) 0 var(--mantine-spacing-xs);
+}
+
+.lines-section {
+    padding: 0 var(--mantine-spacing-xs) var(--mantine-spacing-xs) var(--mantine-spacing-xs);
+}
+
+.image-section.hovered {
+    &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        content: '';
+        background: linear-gradient(0deg, rgb(0 0 0 / 90%) 100%, rgb(0 0 0 / 0%) 100%);
+        opacity: 0.7;
+        transition: all 0.2s ease-in-out;
+    }
+}
+
+.image {
+    border-radius: var(--mantine-radius-md);
+}
+
+.lines {
+    display: flex;
+    flex-direction: column;
+    gap: rem(1px);
+}
+
+.lines > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.skeleton-lines > * {
+    width: 100%;
+
+    &:nth-child(2) {
+        width: 80%;
+    }
+
+    &:nth-child(3) {
+        width: 60%;
+    }
+}
+
+.inline {
+    display: inline-flex;
+    gap: var(--mantine-spacing-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: darken(var(--mantine-color-text), 40%);
+    white-space: nowrap;
+}
+
+.inline > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.selection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: var(--mantine-spacing-md);
+}
+
+.selected {
+    outline: 2px solid var(--mantine-color-secondary-7);
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}

@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
+import clsx from 'clsx';
 import { motion } from 'motion/react';
-import { forwardRef } from 'react';
 import {
     LuArrowDown,
     LuArrowDownToLine,
@@ -35,7 +35,6 @@ import {
     LuHash,
     LuHeart,
     LuHeartCrack,
-    LuHouse,
     LuImage,
     LuImageOff,
     LuInfinity,
@@ -71,6 +70,7 @@ import {
     LuSkipForward,
     LuSlidersHorizontal,
     LuSquare,
+    LuSquareMenu,
     LuStar,
     LuStepBack,
     LuStepForward,
@@ -86,6 +86,9 @@ import {
     LuX,
 } from 'react-icons/lu';
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
+import styles from './icon.module.css';
+
+export type AppIconSelection = keyof typeof AppIcon;
 
 export const AppIcon = {
     add: LuPlus,
@@ -121,7 +124,7 @@ export const AppIcon = {
     folder: LuFolderOpen,
     genre: LuFlag,
     hash: LuHash,
-    home: LuHouse,
+    home: LuSquareMenu,
     image: LuImage,
     info: LuInfo,
     layoutGrid: LuLayoutGrid,
@@ -176,25 +179,55 @@ export const AppIcon = {
 } as const;
 
 export interface IconProps {
+    animate?: 'spin' | 'pulse';
     className?: string;
-    fill?: boolean;
+    fill?: 'success' | 'error' | 'info' | 'warn' | 'secondary' | 'primary' | 'inherit';
     icon: keyof typeof AppIcon;
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
-    state?: 'success' | 'error' | 'info' | 'warn' | 'secondary' | 'primary';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number | string;
 }
 
-export const Icon = forwardRef<HTMLSpanElement, IconProps>((props, ref) => {
-    const { className, fill, icon, size, ...htmlProps } = props;
+export function Icon(props: IconProps) {
+    const { animate, className, fill, icon, size = 'md' } = props;
 
     const IconComponent = AppIcon[icon];
 
-    return (
-        <span ref={ref} {...htmlProps}>
-            <IconComponent />
-        </span>
-    );
-});
+    const classNames = clsx(className, {
+        [styles.fill]: true,
+        [styles.spin]: animate === 'spin',
+        [styles.pulse]: animate === 'pulse',
+        [styles.fillInherit]: fill === 'inherit',
+        [styles.fillSuccess]: fill === 'success',
+        [styles.fillError]: fill === 'error',
+        [styles.fillInfo]: fill === 'info',
+        [styles.fillWarn]: fill === 'warn',
+        [styles.fillSecondary]: fill === 'secondary',
+        [styles.fillPrimary]: fill === 'primary',
+    });
+
+    return <IconComponent className={classNames} fill={fill} size={convertSizeToNumber(size)} />;
+}
 
 Icon.displayName = 'Icon';
 
 export const MotionIcon: ComponentType = motion.create(Icon);
+
+function convertSizeToNumber(size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number | string) {
+    if (typeof size === 'number') {
+        return size;
+    }
+
+    switch (size) {
+        case 'xs':
+            return 10;
+        case 'sm':
+            return 12;
+        case 'md':
+            return 16;
+        case 'lg':
+            return 24;
+        case 'xl':
+            return 32;
+        default:
+            return size;
+    }
+}

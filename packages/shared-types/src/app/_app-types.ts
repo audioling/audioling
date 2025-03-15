@@ -1,3 +1,4 @@
+import { localize } from '@repo/localization';
 import JellyfinLogo from './assets/jellyfin.png';
 import NavidromeLogo from './assets/navidrome.png';
 import OpenSubsonicLogo from './assets/opensubsonic.png';
@@ -33,6 +34,24 @@ export enum AlbumListSortOptions {
     TRACK_COUNT = 'trackCount',
     YEAR = 'year',
 }
+
+export const AlbumListSortOptionsLabels = {
+    [AlbumListSortOptions.ALBUM_ARTIST]: localize.t('app.albums.sort.albumArtist'),
+    [AlbumListSortOptions.ARTIST]: localize.t('app.albums.sort.artist'),
+    [AlbumListSortOptions.COMMUNITY_RATING]: localize.t('app.albums.sort.communityRating'),
+    [AlbumListSortOptions.CRITIC_RATING]: localize.t('app.albums.sort.criticRating'),
+    [AlbumListSortOptions.DATE_ADDED]: localize.t('app.albums.sort.dateAdded'),
+    [AlbumListSortOptions.DATE_PLAYED]: localize.t('app.albums.sort.datePlayed'),
+    [AlbumListSortOptions.DURATION]: localize.t('app.albums.sort.duration'),
+    [AlbumListSortOptions.IS_FAVORITE]: localize.t('app.albums.sort.isFavorite'),
+    [AlbumListSortOptions.NAME]: localize.t('app.albums.sort.name'),
+    [AlbumListSortOptions.PLAY_COUNT]: localize.t('app.albums.sort.playCount'),
+    [AlbumListSortOptions.RANDOM]: localize.t('app.albums.sort.random'),
+    [AlbumListSortOptions.RATING]: localize.t('app.albums.sort.rating'),
+    [AlbumListSortOptions.RELEASE_DATE]: localize.t('app.albums.sort.releaseDate'),
+    [AlbumListSortOptions.TRACK_COUNT]: localize.t('app.albums.sort.trackCount'),
+    [AlbumListSortOptions.YEAR]: localize.t('app.albums.sort.year'),
+};
 
 export enum ArtistListSortOptions {
     ALBUM_COUNT = 'albumCount',
@@ -127,6 +146,7 @@ export enum ServerItemType {
 export interface AuthServer {
     baseUrl: string;
     displayName: string;
+    features: ServerFeatures;
     id: string;
     overrideBaseUrl?: string;
     overrideEnabled?: boolean;
@@ -154,48 +174,30 @@ export interface ServerFeatures {
     'album:detail:favorites': boolean;
     'album:detail:ratings': boolean;
     'album:list': boolean;
-    'album:list:sort': Partial<Record<AlbumListSortOptions, {
-        label: string;
-        property: string;
-    }>>;
+    'album:list:sort': AlbumListSortOptions[];
     'albumArtist:detail': boolean;
     'albumArtist:detail:favorites': boolean;
     'albumArtist:detail:ratings': boolean;
     'albumArtist:list': boolean;
-    'albumArtist:list:sort': Partial<Record<ArtistListSortOptions, {
-        label: string;
-        property: string;
-    }>>;
+    'albumArtist:list:sort': ArtistListSortOptions[];
     'artist:detail': boolean;
     'artist:detail:favorites': boolean;
     'artist:detail:ratings': boolean;
     'artist:list': boolean;
-    'artist:list:sort': Partial<Record<ArtistListSortOptions, {
-        label: string;
-        property: string;
-    }>>;
+    'artist:list:sort': ArtistListSortOptions[];
     'genre:detail': boolean;
     'genre:list': boolean;
-    'genre:list:sort': Partial<Record<GenreListSortOptions, {
-        label: string;
-        property: string;
-    }>>;
+    'genre:list:sort': GenreListSortOptions[];
     'playlist:create': boolean;
     'playlist:delete': boolean;
     'playlist:detail': boolean;
     'playlist:list': boolean;
-    'playlist:list:sort': Partial<Record<PlaylistListSortOptions, {
-        label: string;
-        property: string;
-    }>>;
+    'playlist:list:sort': PlaylistListSortOptions[];
     'track:detail': boolean;
     'track:detail:favorites': boolean;
     'track:detail:ratings': boolean;
     'track:list': boolean;
-    'track:list:sort': Partial<Record<TrackListSortOptions, {
-        label: string;
-        property: string;
-    }>>;
+    'track:list:sort': TrackListSortOptions[];
 }
 
 export const SERVER_CONFIG: AppServerConfig = {
@@ -205,30 +207,30 @@ export const SERVER_CONFIG: AppServerConfig = {
             'album:detail:favorites': true,
             'album:detail:ratings': true,
             'album:list': true,
-            'album:list:sort': {},
+            'album:list:sort': [],
             'albumArtist:detail': true,
             'albumArtist:detail:favorites': true,
             'albumArtist:detail:ratings': true,
             'albumArtist:list': true,
-            'albumArtist:list:sort': {},
+            'albumArtist:list:sort': [],
             'artist:detail': true,
             'artist:detail:favorites': true,
             'artist:detail:ratings': true,
             'artist:list': true,
-            'artist:list:sort': {},
+            'artist:list:sort': [],
             'genre:detail': true,
             'genre:list': true,
-            'genre:list:sort': {},
+            'genre:list:sort': [],
             'playlist:create': true,
             'playlist:delete': true,
             'playlist:detail': true,
             'playlist:list': true,
-            'playlist:list:sort': {},
+            'playlist:list:sort': [],
             'track:detail': true,
             'track:detail:favorites': true,
             'track:detail:ratings': true,
             'track:list': true,
-            'track:list:sort': {},
+            'track:list:sort': [],
         },
         logo: JellyfinLogo,
         name: 'Jellyfin',
@@ -239,30 +241,30 @@ export const SERVER_CONFIG: AppServerConfig = {
             'album:detail:favorites': true,
             'album:detail:ratings': true,
             'album:list': true,
-            'album:list:sort': {},
+            'album:list:sort': [],
             'albumArtist:detail': true,
             'albumArtist:detail:favorites': true,
             'albumArtist:detail:ratings': true,
             'albumArtist:list': true,
-            'albumArtist:list:sort': {},
+            'albumArtist:list:sort': [],
             'artist:detail': true,
             'artist:detail:favorites': true,
             'artist:detail:ratings': true,
             'artist:list': true,
-            'artist:list:sort': {},
+            'artist:list:sort': [],
             'genre:detail': true,
             'genre:list': true,
-            'genre:list:sort': {},
+            'genre:list:sort': [],
             'playlist:create': true,
             'playlist:delete': true,
             'playlist:detail': true,
             'playlist:list': true,
-            'playlist:list:sort': {},
+            'playlist:list:sort': [],
             'track:detail': true,
             'track:detail:favorites': true,
             'track:detail:ratings': true,
             'track:list': true,
-            'track:list:sort': {},
+            'track:list:sort': [],
         },
         logo: NavidromeLogo,
         name: 'Navidrome',
@@ -273,72 +275,42 @@ export const SERVER_CONFIG: AppServerConfig = {
             'album:detail:favorites': true,
             'album:detail:ratings': true,
             'album:list': true,
-            'album:list:sort': {
-                [AlbumListSortOptions.DATE_ADDED]: {
-                    label: 'Date Added',
-                    property: 'newest',
-                },
-                [AlbumListSortOptions.DATE_PLAYED]: {
-                    label: 'Date Played',
-                    property: 'recent',
-                },
-                [AlbumListSortOptions.IS_FAVORITE]: {
-                    label: 'Favorite',
-                    property: 'starred',
-                },
-                [AlbumListSortOptions.NAME]: {
-                    label: 'Name',
-                    property: 'alphabeticalByName',
-                },
-                [AlbumListSortOptions.RATING]: {
-                    label: 'Rating',
-                    property: 'highest',
-                },
-                [AlbumListSortOptions.PLAY_COUNT]: {
-                    label: 'Play Count',
-                    property: 'frequent',
-                },
-                [AlbumListSortOptions.YEAR]: {
-                    label: 'Year',
-                    property: 'byYear',
-                },
-            },
+            'album:list:sort': [
+                AlbumListSortOptions.DATE_ADDED,
+                AlbumListSortOptions.DATE_PLAYED,
+                AlbumListSortOptions.IS_FAVORITE,
+                AlbumListSortOptions.NAME,
+                AlbumListSortOptions.RATING,
+                AlbumListSortOptions.PLAY_COUNT,
+                AlbumListSortOptions.YEAR,
+            ],
             'albumArtist:detail': true,
             'albumArtist:detail:favorites': true,
             'albumArtist:detail:ratings': true,
             'albumArtist:list': true,
-            'albumArtist:list:sort': {
-                [ArtistListSortOptions.NAME]: {
-                    label: 'Name',
-                    property: 'alphabeticalByName',
-                },
-                [ArtistListSortOptions.ALBUM_COUNT]: {
-                    label: 'Album Count',
-                    property: 'albumCount',
-                },
-                [ArtistListSortOptions.TRACK_COUNT]: {
-                    label: 'Track Count',
-                    property: 'trackCount',
-                },
-            },
+            'albumArtist:list:sort': [
+                ArtistListSortOptions.NAME,
+                ArtistListSortOptions.ALBUM_COUNT,
+                ArtistListSortOptions.TRACK_COUNT,
+            ],
             'artist:detail': true,
             'artist:detail:favorites': true,
             'artist:detail:ratings': true,
             'artist:list': true,
-            'artist:list:sort': {},
+            'artist:list:sort': [],
             'genre:detail': true,
             'genre:list': true,
-            'genre:list:sort': {},
+            'genre:list:sort': [],
             'playlist:create': true,
             'playlist:delete': true,
             'playlist:detail': true,
             'playlist:list': true,
-            'playlist:list:sort': {},
+            'playlist:list:sort': [],
             'track:detail': true,
             'track:detail:favorites': true,
             'track:detail:ratings': true,
             'track:list': true,
-            'track:list:sort': {},
+            'track:list:sort': [],
         },
         logo: OpenSubsonicLogo,
         name: 'OpenSubsonic',

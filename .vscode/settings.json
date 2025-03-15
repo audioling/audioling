@@ -3,9 +3,10 @@
     "prettier.enable": false,
     "editor.formatOnSave": false,
     "editor.detectIndentation": false,
-    "editor.indentSize": 4,
-    "editor.tabSize": 4,
     "editor.rulers": [120],
+    "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+    "editor.tabSize": 4,
+    "editor.indentSize": 4,
 
     // Auto fix
     "editor.codeActionsOnSave": {
@@ -48,7 +49,12 @@
         "**/*.less",
         "apps/web/node_modules/@mantine/core/styles.css"
     ],
-    "stylelint.config": null
-    // "stylelint.configFile": "./apps/web/.stylelintrc",
-    // "stylelint.stylelintPath": "node_modules/stylelint"
+    "stylelint.config": null,
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "@radix-ui/react-tooltip",
+        "@radix-ui/react-context-menu",
+        "@radix-ui/react-dropdown-menu"
+    ]
+
 }

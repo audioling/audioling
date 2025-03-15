@@ -1,0 +1,86 @@
+.root {
+    --button-height-xs: calc(1.875rem * var(--mantine-scale));
+    --button-height-sm: calc(2rem * var(--mantine-scale));
+    --button-height-md: calc(2.125rem * var(--mantine-scale));
+    --button-height-lg: calc(2.5rem * var(--mantine-scale));
+    --button-height-xl: calc(3.125rem * var(--mantine-scale));
+    --button-height-compact-xs: calc(1.875rem * var(--mantine-scale));
+    --button-height-compact-sm: calc(2rem * var(--mantine-scale));
+    --button-height-compact-md: calc(2.125rem * var(--mantine-scale));
+    --button-height-compact-lg: calc(2.5rem * var(--mantine-scale));
+    --button-height-compact-xl: calc(3.125rem * var(--mantine-scale));
+    --button-padding-x-xs: calc(0.625rem * var(--mantine-scale));
+    --button-padding-x-sm: calc(0.875rem * var(--mantine-scale));
+    --button-padding-x-md: calc(1rem * var(--mantine-scale));
+    --button-padding-x-lg: calc(1.25rem * var(--mantine-scale));
+    --button-padding-x-xl: calc(1.5rem * var(--mantine-scale));
+
+    font-weight: 500;
+
+    &[data-disabled='true'] {
+        background-color: var(--button-color);
+        opacity: 0.7;
+    }
+
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+
+    &[data-variant='default'] {
+        border: 1px solid var(--mantine-color-default-border);
+
+        &:hover {
+            background-color: lighten(var(--button-bg), 5%);
+        }
+
+        &:focus-visible {
+            background-color: lighten(var(--button-bg), 10%);
+        }
+    }
+
+    &[data-variant='outline'] {
+        --button-border: var(--mantine-color-default-border);
+
+        border: 1px solid lighten(var(--mantine-color-default-border), 10%);
+
+        &:hover {
+            border: 1px solid lighten(var(--mantine-color-default-border), 25%);
+        }
+
+        &:focus-visible {
+            border: 1px solid lighten(var(--mantine-color-default-border), 25%);
+        }
+    }
+
+    &[data-variant='filled'] {
+        &:focus-visible {
+            background-color: darken(var(--button-bg), 30%);
+        }
+    }
+
+    &[data-variant='subtle'] {
+        &:focus-visible {
+            background-color: lighten(var(--button-bg), 10%);
+        }
+    }
+
+    &[data-variant='secondary'] {
+        &:hover {
+            background-color: darken(var(--button-bg), 5%);
+        }
+
+        &:focus-visible {
+            background-color: darken(var(--button-bg), 10%);
+        }
+    }
+
+    &[data-variant='transparent'] {
+        &:hover {
+            background-color: transparent;
+        }
+
+        &:focus-visible {
+            border: 1px solid lighten(var(--mantine-color-default-border), 25%);
+        }
+    }
+}

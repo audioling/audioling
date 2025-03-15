@@ -1,0 +1,12 @@
+.container {
+    position: absolute;
+    display: flex;
+    gap: var(--mantine-gap-sm);
+    align-items: center;
+    width: 100%;
+}
+
+.root {
+    --track-bg: transparent;
+    --slider-color: var(--mantine-color-secondary-7);
+}

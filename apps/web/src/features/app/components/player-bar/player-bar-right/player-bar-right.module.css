@@ -1,0 +1,6 @@
+.right {
+    display: flex;
+    gap: var(--mantine-gap-sm);
+    align-items: center;
+    justify-content: flex-end;
+}

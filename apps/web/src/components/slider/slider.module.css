@@ -1,0 +1,36 @@
+.root {
+    width: 100%;
+}
+
+.thumb {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.label {
+    z-index: 50000;
+    padding: rem(2px) rem(8px);
+    font-family: var(--mantine-font-family);
+    font-size: var(--mantine-font-size-md);
+    font-weight: 500;
+    user-select: none;
+    border: 1px solid var(--mantine-color-default-border);
+    border-radius: var(--mantine-radius-xs);
+    box-shadow: var(mantine-shadow-lg);
+
+    @mixin light {
+        color: var(--mantine-color-dark-6);
+        background-color: var(--mantine-color-light-3);
+    }
+
+    @mixin dark {
+        color: var(--mantine-color-light-9);
+        background-color: var(--mantine-color-dark-6);
+    }
+}
+
+.root:hover {
+    .thumb {
+        opacity: 1;
+    }
+}

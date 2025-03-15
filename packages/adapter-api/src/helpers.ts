@@ -12,7 +12,8 @@ import {
     TrackListSortOptions,
 } from '@repo/shared-types/app-types';
 import dayjs from 'dayjs';
-import { orderBy, shuffle } from 'lodash';
+import orderBy from 'lodash/orderBy.js';
+import shuffle from 'lodash/shuffle.js';
 import stringify from 'safe-stable-stringify';
 
 export async function fetchTotalRecordCount(args: {
@@ -248,8 +249,17 @@ setInterval(() => {
     });
 }, 1000 * 60 * 10); // 10 minutes
 
-function setListCount(key: string, count: number, expiresMinutes = 10000) {
-    counts.set(key, { count, expires: dayjs().unix() + expiresMinutes }); // 10 minutes
+function getListCountKey(options: {
+    query: Record<string, unknown>;
+    serverId: string;
+    type: ServerItemType | string;
+}) {
+    const hash = stringify(options.query);
+    return `${options.serverId}::${options.type}::${hash}`;
+}
+
+function setListCount(key: string, count: number, expiration = 1440) {
+    counts.set(key, { count, expires: dayjs().unix() + expiration * 1000 * 60 });
 }
 
 async function getListCount(options: {
@@ -257,15 +267,14 @@ async function getListCount(options: {
     fetchLimit?: number;
     query: Record<string, unknown>;
     serverId: string;
-    type: ServerItemType;
+    type: ServerItemType | string;
 }, fetcher?: (page: number, limit: number) => Promise<number>) {
-    const hash = stringify(options.query);
-    const key = `${options.serverId}::${options.type}::${hash}`;
+    const key = getListCountKey(options);
     const value = counts.get(key);
 
     if (fetcher && (!value || value.expires < dayjs().unix())) {
         const totalRecordCount = await fetchTotalRecordCount({ fetcher, fetchLimit: options.fetchLimit });
-        setListCount(key, totalRecordCount);
+        setListCount(key, totalRecordCount, options.expiration ?? 1440);
         return totalRecordCount;
     }
 
@@ -504,6 +513,7 @@ export const helpers = {
     fetchAllRecords,
     fetchTotalRecordCount,
     getListCount,
+    getListCountKey,
     invalidateListCount,
     paginate,
     search,

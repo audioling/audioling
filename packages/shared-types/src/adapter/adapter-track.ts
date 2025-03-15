@@ -27,9 +27,6 @@ export interface AdapterTrack {
     displayArtist: string | null;
     displayComposer: string | null;
     duration: number;
-    external: {
-        musicBrainzId?: string;
-    };
     fileContainer: string | null;
     fileName: string | null;
     filePath: string | null;
@@ -43,6 +40,7 @@ export interface AdapterTrack {
         id: string;
         name: string;
     }[];
+    musicBrainzId: string | null;
     name: string;
     releaseYear: number | null;
     rgAlbumGain: number | null;

@@ -1,0 +1,16 @@
+.skeleton {
+    --base-color: var(--mantine-color-dark-6) !important;
+    --highlight-color: var(--mantine-color-dark-4) !important;
+    --animation-duration: 1.5s !important;
+}
+
+.skeleton-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.centered {
+    justify-content: center;
+}

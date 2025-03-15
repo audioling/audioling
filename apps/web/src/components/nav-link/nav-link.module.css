@@ -1,0 +1,43 @@
+.root {
+    --nl-bg: transparent;
+
+    border-radius: var(--mantine-radius-md);
+
+    &[data-active='true'] {
+        @mixin dark {
+            color: var(--mantine-color-secondary-contrast);
+            background-color: var(--mantine-color-secondary-7);
+
+            &:hover {
+                background-color: var(--mantine-color-secondary-8);
+            }
+        }
+
+        @mixin light {
+            color: var(--mantine-color-secondary-contrast);
+            background-color: var(--mantine-color-secondary-7);
+
+            &:hover {
+                background-color: var(--mantine-color-secondary-8);
+            }
+        }
+    }
+
+    transition: background-color 0.2s ease-in-out;
+}
+
+.label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.root:hover {
+    @mixin dark {
+        background-color: var(--mantine-color-dark-7);
+    }
+
+    @mixin light {
+        background-color: var(--mantine-color-gray-0);
+    }
+}

@@ -1,0 +1,88 @@
+.root {
+    --ai-size-xs: calc(1.875rem * var(--mantine-scale));
+    --ai-size-sm: calc(2rem * var(--mantine-scale));
+    --ai-size-md: calc(2.125rem * var(--mantine-scale));
+    --ai-size-lg: calc(2.5rem * var(--mantine-scale));
+    --ai-size-xl: calc(3.125rem * var(--mantine-scale));
+
+    &[data-disabled='true'] {
+        background-color: var(--ai-bg);
+        opacity: 0.7;
+    }
+
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+
+    &[data-variant='default'] {
+        border: 1px solid var(--mantine-color-default-border);
+
+        &:hover {
+            background-color: lighten(var(--ai-bg), 5%);
+        }
+
+        &:focus-visible {
+            background-color: lighten(var(--ai-bg), 10%);
+        }
+    }
+
+    &[data-variant='outline'] {
+        --ai-border: var(--mantine-color-default-border);
+
+        border: 1px solid lighten(var(--mantine-color-default-border), 10%);
+
+        &:hover {
+            border: 1px solid lighten(var(--mantine-color-default-border), 25%);
+        }
+
+        &:focus-visible {
+            border: 1px solid lighten(var(--mantine-color-default-border), 25%);
+        }
+    }
+
+    &[data-variant='filled'] {
+        &:focus-visible {
+            background-color: darken(var(--ai-bg), 30%);
+        }
+    }
+
+    &[data-variant='subtle'] {
+        &:hover {
+            background-color: lighten(var(--ai-bg), 10%);
+        }
+
+        &:focus-visible {
+            background-color: lighten(var(--ai-bg), 10%);
+        }
+    }
+
+    &[data-variant='secondary'] {
+        &:hover {
+            background-color: darken(var(--ai-bg), 5%);
+        }
+
+        &:focus-visible {
+            background-color: darken(var(--ai-bg), 10%);
+        }
+    }
+
+    &[data-variant='transparent'] {
+        &:hover {
+            background-color: transparent;
+        }
+
+        &:focus-visible {
+            border: 1px solid lighten(var(--mantine-color-default-border), 25%);
+        }
+    }
+}
+
+.fill svg {
+    fill: var(--ai-color);
+}
+
+.loader span,
+.loader span::after {
+    width: 1rem;
+    height: 1rem;
+}

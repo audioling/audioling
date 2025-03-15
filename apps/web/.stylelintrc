@@ -10,6 +10,7 @@
         "selector-type-no-unknown": [true, { "ignoreTypes": ["/-styled-mixin/", "/^\\$\\w+/"] }],
         "at-rule-no-unknown": [true, { "ignoreAtRules": ["mixin"] }],
         "function-no-unknown": [true, { "ignoreFunctions": ["darken", "alpha", "lighten"] }],
-        "declaration-property-value-no-unknown": null
+        "declaration-property-value-no-unknown": null,
+        "no-descending-specificity": null
     }
 }

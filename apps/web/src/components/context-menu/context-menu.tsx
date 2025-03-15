@@ -1,20 +1,20 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { createContext, Fragment, type ReactNode, useContext, useMemo, useState } from 'react';
+import type { AppIcon } from '/@/components/icon/icon';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import { ScrollArea, Text } from '@mantine/core';
 import * as RadixContextMenu from '@radix-ui/react-context-menu';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'motion/react';
-import { animationVariants } from '@/features/ui/animations/variants.ts';
-import type { AppIcon } from '@/features/ui/icon/icon.tsx';
-import { Icon } from '@/features/ui/icon/icon.tsx';
-import { ScrollArea } from '@/features/ui/scroll-area/scroll-area.tsx';
-import styles from './context-menu.module.scss';
+import { createContext, useContext, useMemo, useState } from 'react';
+import styles from './context-menu.module.css';
+import { animationVariants } from '/@/components/animations/variants';
+import { Icon } from '/@/components/icon/icon';
 
-interface ContextMenuContext {
+interface ContextMenuContextProps {
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const ContextMenuContext = createContext<ContextMenuContext | null>(null);
+const ContextMenuContext = createContext<ContextMenuContextProps | null>(null);
 
 interface ContextMenuProps {
     children: ReactNode;
@@ -44,7 +44,7 @@ interface ContentProps {
 
 function Content(props: ContentProps) {
     const { children, stickyContent } = props;
-    const { open } = useContext(ContextMenuContext) as ContextMenuContext;
+    const { open } = useContext(ContextMenuContext) as ContextMenuContextProps;
 
     return (
         <AnimatePresence>
@@ -73,7 +73,7 @@ interface ItemProps {
 }
 
 function Item(props: ItemProps) {
-    const { children, className, disabled, leftIcon, onSelect, rightIcon, isSelected } = props;
+    const { children, className, disabled, isSelected, leftIcon, onSelect, rightIcon } = props;
 
     return (
         <RadixContextMenu.Item
@@ -84,9 +84,9 @@ function Item(props: ItemProps) {
             disabled={disabled}
             onSelect={onSelect}
         >
-            {leftIcon && <Icon className={styles.leftIcon} icon={leftIcon} />}
-            {children}
-            {rightIcon && <Icon className={styles.rightIcon} icon={rightIcon} />}
+            {leftIcon && <Icon className={styles.leftIcon} icon={leftIcon} size="sm" />}
+            <Text>{children}</Text>
+            {rightIcon && <Icon className={styles.rightIcon} icon={rightIcon} size="sm" />}
         </RadixContextMenu.Item>
     );
 }
@@ -125,14 +125,14 @@ function Divider(props: DividerProps) {
     return <RadixContextMenu.Separator {...props} className={styles.divider} />;
 }
 
-interface SubmenuContext {
+interface SubmenuContextProps {
     disabled?: boolean;
     isCloseDisabled?: boolean;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const SubmenuContext = createContext<SubmenuContext | null>(null);
+const SubmenuContext = createContext<SubmenuContextProps | null>(null);
 
 interface SubmenuProps {
     children: ReactNode;
@@ -162,7 +162,7 @@ interface SubmenuTargetProps {
 
 function SubmenuTarget(props: SubmenuTargetProps) {
     const { children } = props;
-    const { disabled, setOpen } = useContext(SubmenuContext) as SubmenuContext;
+    const { disabled, setOpen } = useContext(SubmenuContext) as SubmenuContextProps;
 
     return (
         <RadixContextMenu.SubTrigger
@@ -183,10 +183,10 @@ interface SubmenuContentProps {
 
 function SubmenuContent(props: SubmenuContentProps) {
     const { children, stickyContent } = props;
-    const { isCloseDisabled, open, setOpen } = useContext(SubmenuContext) as SubmenuContext;
+    const { isCloseDisabled, open, setOpen } = useContext(SubmenuContext) as SubmenuContextProps;
 
     return (
-        <Fragment>
+        <>
             {open && (
                 <RadixContextMenu.Portal forceMount>
                     <RadixContextMenu.SubContent
@@ -210,7 +210,7 @@ function SubmenuContent(props: SubmenuContentProps) {
                     </RadixContextMenu.SubContent>
                 </RadixContextMenu.Portal>
             )}
-        </Fragment>
+        </>
     );
 }
 

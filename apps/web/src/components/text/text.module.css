@@ -1,5 +1,5 @@
 .secondary {
-    color: darken(var(--mantine-color-text), 20%);
+    color: darken(var(--mantine-color-text), 40%);
 }
 
 .ellipsis {

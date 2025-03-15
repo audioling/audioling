@@ -1,0 +1,9 @@
+.play-pause {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main {
+    border-radius: 50%;
+}

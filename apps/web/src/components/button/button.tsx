@@ -1,21 +1,47 @@
 import { Button } from '@mantine/core';
+import styles from './button.module.css';
 
 export const ButtonComponentOverride = Button.extend({
-    vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined;
+    classNames: () => ({
+        root: styles.root,
+    }),
+    vars: (_theme, props) => {
         const variant = props.variant ?? 'filled';
+
         return {
             root: {
+                '--button-bg': (() => {
+                    if (variant === 'filled') {
+                        return 'var(--mantine-primary-color-filled)';
+                    }
+
+                    if (variant === 'secondary') {
+                        return `var(--mantine-color-secondary-7)`;
+                    }
+                })(),
                 '--button-color': (() => {
                     if (variant === 'filled') {
-                        if (colorKey) {
-                            return `var(--mantine-color-${colorKey}-contrast)`;
-                        }
                         return 'var(--mantine-primary-color-contrast)';
                     }
+
+                    if (variant === 'secondary') {
+                        return `var(--mantine-color-secondary-contrast)`;
+                    }
+
                     if (variant === 'white') {
                         return undefined;
                     }
+                    return undefined;
+                })(),
+                '--button-hover': (() => {
+                    if (variant === 'secondary') {
+                        return `var(--mantine-color-secondary-9)`;
+                    }
+
+                    if (variant === 'outline') {
+                        return 'transparent';
+                    }
+
                     return undefined;
                 })(),
             },

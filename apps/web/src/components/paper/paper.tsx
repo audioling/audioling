@@ -1,14 +1,11 @@
-import { alpha, Paper } from '@mantine/core';
+import { Paper } from '@mantine/core';
+import styles from './paper.module.css';
 
 export const PaperComponentOverride = Paper.extend({
+    classNames: {
+        root: styles.root,
+    },
     defaultProps: {
         shadow: 'xl',
-    },
-    styles: () => {
-        return {
-            root: {
-                backgroundColor: alpha('var(--mantine-color-default)', 0.135),
-            },
-        };
     },
 });
