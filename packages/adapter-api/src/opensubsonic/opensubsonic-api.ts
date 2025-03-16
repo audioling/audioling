@@ -106,17 +106,18 @@ adapter._getCoverArtUrl = ({ id, size }, server) => {
 };
 
 adapter._getStreamUrl = ({ id }, server) => {
-    const credentialParams = '';
-
     if (!server.user) {
         throw new Error(localize.t('errors.userNotFound'));
     }
 
+    const credential = Object.entries(deserializeCredential(server.user.credential))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+
     return (
         `${server.baseUrl}/rest/stream.view`
         + `?id=${id}`
-        + `&${credentialParams}`
-        + `&u=${server.user.username}`
+        + `&${credential}`
         + `&v=$1.16.1`
         + `&c=${import.meta.env.VITE_APP_NAME}`
     );
