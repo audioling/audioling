@@ -9,7 +9,10 @@ export const queryClient = new QueryClient({
         },
         queries: {
             gcTime: 1000 * 10,
-            staleTime: 1000 * 5,
+            refetchOnMount: false,
+            refetchOnReconnect: false,
+            refetchOnWindowFocus: false,
+            staleTime: 0,
         },
     },
 });
