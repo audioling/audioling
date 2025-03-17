@@ -82,7 +82,6 @@ export function ServerConnectionForm() {
                 >
                     {t('common.actions.next')}
                 </Button>
-                {/* <Divider label={t('auth.signIn.chooseExistingServer')} /> */}
             </Stack>
         </Box>
     );
