@@ -1,23 +1,20 @@
-import type { SetFavoriteResponse } from '/@/features/favorites/api/set-favorite';
+import type { SetFavoriteRequest, SetFavoriteResponse } from '/@/features/favorites/api/set-favorite';
 import type { AdapterError } from '@repo/shared-types/adapter-types';
 import { ServerItemType } from '@repo/shared-types/app-types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAppDBItemQueryKey, updateDBItem } from '/@/api/app-db';
+import { useAppContext } from '/@/features/authentication/context/app-context';
 import { setFavorite } from '/@/features/favorites/api/set-favorite';
-import { getAuthServerById } from '/@/stores/auth-store';
-
-interface SetFavoriteAlbumArtistRequest {
-    ids: string[];
-    serverId: string;
-}
 
 export function useFavoriteAlbumArtist() {
-    const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteAlbumArtistRequest>({
-        mutationFn: (params) => {
-            const server = getAuthServerById(params.serverId);
+    const { appDB, server } = useAppContext();
+    const queryClient = useQueryClient();
 
+    const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteRequest>({
+        mutationFn: (variables) => {
             return setFavorite(server, {
                 body: {
-                    entry: params.ids.map(id => ({
+                    entry: variables.ids.map(id => ({
                         favorite: true,
                         id,
                         type: ServerItemType.ARTIST,
@@ -26,8 +23,16 @@ export function useFavoriteAlbumArtist() {
                 query: null,
             });
         },
-        onSuccess: () => {
-            // TODO: Update the artist in AppDB
+        onSuccess: async (_data, variables) => {
+            for (const id of variables.ids) {
+                await updateDBItem(appDB, ServerItemType.ALBUM_ARTIST, id, {
+                    userFavorite: true,
+                });
+
+                queryClient.invalidateQueries({
+                    queryKey: getAppDBItemQueryKey(server, ServerItemType.ALBUM_ARTIST, id),
+                });
+            }
         },
     });
 
@@ -35,10 +40,11 @@ export function useFavoriteAlbumArtist() {
 }
 
 export function useUnfavoriteAlbumArtist() {
-    const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteAlbumArtistRequest>({
-        mutationFn: (params) => {
-            const server = getAuthServerById(params.serverId);
+    const { appDB, server } = useAppContext();
+    const queryClient = useQueryClient();
 
+    const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteRequest>({
+        mutationFn: (params) => {
             return setFavorite(server, {
                 body: {
                     entry: params.ids.map(id => ({
@@ -50,8 +56,16 @@ export function useUnfavoriteAlbumArtist() {
                 query: null,
             });
         },
-        onSuccess: () => {
-            // TODO: Update the artist in AppDB
+        onSuccess: async (_data, variables) => {
+            for (const id of variables.ids) {
+                await updateDBItem(appDB, ServerItemType.ALBUM_ARTIST, id, {
+                    userFavorite: true,
+                });
+
+                queryClient.invalidateQueries({
+                    queryKey: getAppDBItemQueryKey(server, ServerItemType.ALBUM_ARTIST, id),
+                });
+            }
         },
     });
 

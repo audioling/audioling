@@ -1,40 +1,49 @@
 import type { AlbumItem } from '/@/app-types';
-import type { ItemGridComponent } from '/@/features/shared/components/item-list/item-grid/item-grid';
-import type { InnerServerGridItemProps } from '/@/features/shared/components/item-list/item-grid/server-grid-item';
-import type { PlayType } from '/@/stores/player-store';
+import type { ItemGridComponent } from '/@/features/shared/components/item-list/grid-view/item-list-grid';
+import type { InnerServerGridItemProps } from '/@/features/shared/components/item-list/grid-view/server-grid-item';
 import { ListSortOrder, ServerItemType, TrackListSortOptions } from '@repo/shared-types/app-types';
-import { memo, type MouseEvent } from 'react';
+import { memo } from 'react';
 import { PlayerController } from '/@/controllers/player-controller';
 import { PrefetchController } from '/@/controllers/prefetch-controller';
 import { ContextMenuController } from '/@/features/context-menu/context-menu-controller';
-import { InnerServerGridItem } from '/@/features/shared/components/item-list/item-grid/server-grid-item';
+import { InnerServerGridItem } from '/@/features/shared/components/item-list/grid-view/server-grid-item';
 import { dndUtils, DragOperation, DragTarget } from '/@/utils/drag-drop';
 
-const albumItemCardProps = {
-    onContextMenu: (id: string, serverId: string, event: MouseEvent<HTMLButtonElement>) => {
+const albumItemCardProps: Partial<InnerServerGridItemProps<AlbumItem>> = {
+    onContextMenu: (
+        item,
+        event,
+        reducers,
+    ) => {
+        const ids = reducers?.getListSelection(item.id) ?? [];
+
         ContextMenuController.call({
             cmd: {
-                ids: [id],
+                ids,
                 type: ServerItemType.ALBUM,
             },
             event,
         });
     },
-    onDragInitialData: (id: string) => {
+    onDragInitialData: (item, reducers) => {
+        const ids = reducers?.getListSelection(item.id) ?? [];
+
         return dndUtils.generateDragData(
             {
-                id: [id],
+                id: ids,
                 operation: [DragOperation.ADD],
                 type: DragTarget.ALBUM,
             },
             { },
         );
     },
-    onDragStart: (id: string) => {
+    onDragStart: (item, reducers) => {
+        const ids = reducers?.getListSelection(item.id) ?? [];
+
         PrefetchController.call({
             cmd: {
                 tracksByAlbumId: {
-                    id: [id],
+                    ids,
                     params: {
                         sortBy: TrackListSortOptions.ID,
                         sortOrder: ListSortOrder.ASC,
@@ -43,22 +52,36 @@ const albumItemCardProps = {
             },
         });
     },
-    onFavorite: (id: string, serverId: string) => {
-        // favoriteAlbum({ data: { ids: [id] }, libraryId });
+    onFavorite: (item) => {
+        PlayerController.call({
+            cmd: {
+                setFavoriteAlbums: {
+                    favorite: true,
+                    ids: [item.id],
+                },
+            },
+        });
     },
-    onPlay: (id: string, serverId: string, playType: PlayType) => {
+    onPlay: (item, playType) => {
         PlayerController.call({
             cmd: {
                 addToQueueByFetch: {
-                    id: [id],
+                    id: [item.id],
                     itemType: ServerItemType.ALBUM,
                     type: playType,
                 },
             },
         });
     },
-    onUnfavorite: (id: string, serverId: string) => {
-        // unfavoriteAlbum({ data: { ids: [id] }, libraryId });
+    onUnfavorite: (item) => {
+        PlayerController.call({
+            cmd: {
+                setFavoriteAlbums: {
+                    favorite: false,
+                    ids: [item.id],
+                },
+            },
+        });
     },
 };
 

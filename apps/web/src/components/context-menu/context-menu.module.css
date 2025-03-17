@@ -31,11 +31,11 @@
 .item[data-highlighted],
 .sub-item[data-highlighted] {
     @mixin dark {
-        background-color: lighten(var(--mantine-color-body), 5%);
+        background-color: lighten(var(--mantine-color-body), 10%);
     }
 
     @mixin light {
-        background-color: darken(var(--mantine-color-body), 5%);
+        background-color: darken(var(--mantine-color-body), 10%);
     }
 }
 
@@ -71,7 +71,8 @@
 }
 
 .divider {
-    border-top: var(--mantine-color-default-border);
+    height: rem(1px);
+    background-color: var(--mantine-color-default-border);
 }
 
 .max-height {

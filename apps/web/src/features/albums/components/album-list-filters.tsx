@@ -6,7 +6,7 @@ import { getAlbumListQueryKey } from '/@/features/albums/api/get-album-list';
 import { getAlbumListCountQueryKey } from '/@/features/albums/api/get-album-list-count';
 import { useAlbumListParams } from '/@/features/albums/hooks/use-album-list-options';
 import { useAppContext, useAppFeatures } from '/@/features/authentication/context/app-context';
-import { listDataQueryKey } from '/@/features/shared/components/item-list/hooks';
+import { listDataQueryKey } from '/@/features/shared/components/item-list/utils/hooks';
 import { RefreshButton } from '/@/features/shared/components/refresh-button/refresh-button';
 import { SelectionMenu } from '/@/features/shared/components/selection-menu/selection-menu';
 import { SortOrderToggle } from '/@/features/shared/components/sort-order-toggle/sort-order-toggle';

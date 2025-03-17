@@ -1,18 +1,20 @@
 import type { SetFavoriteRequest, SetFavoriteResponse } from '/@/features/favorites/api/set-favorite';
 import type { AdapterError } from '@repo/shared-types/adapter-types';
 import { ServerItemType } from '@repo/shared-types/app-types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAppDBItemQueryKey, updateDBItem } from '/@/api/app-db';
+import { useAppContext } from '/@/features/authentication/context/app-context';
 import { setFavorite } from '/@/features/favorites/api/set-favorite';
-import { getAuthServerById } from '/@/stores/auth-store';
 
 export function useFavoriteTrack() {
-    const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteRequest>({
-        mutationFn: (params) => {
-            const server = getAuthServerById(params.serverId);
+    const { appDB, server } = useAppContext();
+    const queryClient = useQueryClient();
 
+    const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteRequest>({
+        mutationFn: (variables) => {
             return setFavorite(server, {
                 body: {
-                    entry: params.ids.map(id => ({
+                    entry: variables.ids.map(id => ({
                         favorite: true,
                         id,
                         type: ServerItemType.TRACK,
@@ -21,8 +23,16 @@ export function useFavoriteTrack() {
                 query: null,
             });
         },
-        onSuccess: () => {
-            // TODO: Update the track in AppDB
+        onSuccess: async (_data, variables) => {
+            for (const id of variables.ids) {
+                await updateDBItem(appDB, ServerItemType.TRACK, id, {
+                    userFavorite: true,
+                });
+
+                queryClient.invalidateQueries({
+                    queryKey: getAppDBItemQueryKey(server, ServerItemType.TRACK, id),
+                });
+            }
         },
     });
 
@@ -30,10 +40,11 @@ export function useFavoriteTrack() {
 }
 
 export function useUnfavoriteTrack() {
+    const { appDB, server } = useAppContext();
+    const queryClient = useQueryClient();
+
     const mutation = useMutation<SetFavoriteResponse, AdapterError, SetFavoriteRequest>({
         mutationFn: (params) => {
-            const server = getAuthServerById(params.serverId);
-
             return setFavorite(server, {
                 body: {
                     entry: params.ids.map(id => ({
@@ -45,8 +56,16 @@ export function useUnfavoriteTrack() {
                 query: null,
             });
         },
-        onSuccess: () => {
-            // TODO: Update the track in AppDB
+        onSuccess: async (_data, variables) => {
+            for (const id of variables.ids) {
+                await updateDBItem(appDB, ServerItemType.TRACK, id, {
+                    userFavorite: false,
+                });
+
+                queryClient.invalidateQueries({
+                    queryKey: getAppDBItemQueryKey(server, ServerItemType.TRACK, id),
+                });
+            }
         },
     });
 

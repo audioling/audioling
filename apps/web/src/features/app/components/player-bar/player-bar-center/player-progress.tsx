@@ -1,7 +1,7 @@
-import { Box, Slider, Text } from '@mantine/core';
+import { Box, Slider } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
 import styles from './player-progress.module.css';
-import { PlayerController } from '../../../../../controllers/player-controller';
+import { PlayerController } from '/@/controllers/player-controller';
 import { subscribePlayerProgress, usePlayerDuration } from '/@/stores/player-store';
 import { formatDuration } from '/@/utils/format-duration';
 
@@ -43,11 +43,11 @@ export function PlayerProgress() {
 
     return (
         <Box className={styles.container}>
-            {Boolean(duration) && (
+            {/* {Boolean(duration) && (
                 <Text size="sm" variant="monospace">
                     {formatDuration(Math.min(value, duration))}
                 </Text>
-            )}
+            )} */}
             <Slider
                 classNames={{
                     root: styles.root,
@@ -62,11 +62,11 @@ export function PlayerProgress() {
                 onChange={onChange}
                 onChangeEnd={onChangeEnd}
             />
-            {Boolean(duration) && (
+            {/* {Boolean(duration) && (
                 <Text size="sm" variant="monospace">
                     {formatDuration(duration)}
                 </Text>
-            )}
+            )} */}
         </Box>
     );
 }

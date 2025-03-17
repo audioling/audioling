@@ -23,7 +23,7 @@ import { useFavoriteTrack, useUnfavoriteTrack } from '/@/features/favorites/api/
 import { PlayType } from '/@/stores/player-store';
 
 export function TrackContextMenu({ ids }: TrackContextMenuProps) {
-    const { appDB, server } = useAppContext();
+    const { appDB } = useAppContext();
 
     const handlePlay = useCallback(
         async (type: PlayType) => {
@@ -45,12 +45,12 @@ export function TrackContextMenu({ ids }: TrackContextMenuProps) {
     const { mutate: unfavoriteTrack } = useUnfavoriteTrack();
 
     const handleFavorite = useCallback(() => {
-        favoriteTrack({ ids, serverId: server.id });
-    }, [favoriteTrack, ids, server.id]);
+        favoriteTrack({ ids });
+    }, [favoriteTrack, ids]);
 
     const handleUnfavorite = useCallback(() => {
-        unfavoriteTrack({ ids, serverId: server.id });
-    }, [unfavoriteTrack, ids, server.id]);
+        unfavoriteTrack({ ids });
+    }, [unfavoriteTrack, ids]);
 
     return (
         <ContextMenu.Content>

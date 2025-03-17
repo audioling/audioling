@@ -3,7 +3,7 @@ import type { ServerItemType } from '@repo/shared-types/app-types';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import type { Dispatch, MouseEvent } from 'react';
 import { nanoid } from 'nanoid';
-import { useReducer, useRef } from 'react';
+import { useReducer, useRef, useState } from 'react';
 
 export enum ItemListColumn {
     ACTIONS = 'actions',
@@ -74,17 +74,17 @@ export enum ItemListColumn {
 //     [ItemListColumn.DISC_NUMBER]: discNumberColumn,
 // };
 
-export interface ItemListCellProps {
-    context?: TableContext;
-    handlers?: {
-        onItemContextMenu?: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
-    };
-    index: number;
-    isHovered?: boolean;
-    item: unknown | undefined;
-    itemType: ServerItemType;
-    startIndex?: number;
-}
+// export interface ItemListCellProps {
+//     context?: TableContext;
+//     handlers?: {
+//         onItemContextMenu?: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+//     };
+//     index: number;
+//     isHovered?: boolean;
+//     item: unknown | undefined;
+//     itemType: ServerItemType;
+//     startIndex?: number;
+// }
 
 export type ItemListColumnOrder = (typeof ItemListColumn)[keyof typeof ItemListColumn][];
 
@@ -100,11 +100,11 @@ export interface PaginatedItemListProps<T> extends InfiniteItemListProps<T> {
     setPagination: (pagination: ItemListPaginationState) => void;
 }
 
-export function numberToColumnSize(size: number, unit: 'px' | 'fr') {
-    if (unit === 'px')
-        return size;
-    return size + 100000;
-}
+// export function numberToColumnSize(size: number, unit: 'px' | 'fr') {
+//     if (unit === 'px')
+//         return size;
+//     return size + 100000;
+// }
 
 export const itemListHelpers = {
     generateListId(libraryId: string, pathname: string) {
@@ -115,6 +115,15 @@ export const itemListHelpers = {
     },
     getInitialData(itemCount: number) {
         return Array.from({ length: itemCount }, () => undefined);
+    },
+    getItemRange<T>(
+        items: (T | undefined)[],
+        currentIndex: number,
+        selectedIndex: number,
+    ): (T | undefined)[] {
+        const rangeStart = selectedIndex > currentIndex ? currentIndex : selectedIndex;
+        const rangeEnd = rangeStart === currentIndex ? selectedIndex : currentIndex;
+        return items.slice(rangeStart, rangeEnd + 1);
     },
     getListQueryKey(libraryId: string, listKey: string, type: ServerItemType) {
         return [libraryId, 'list', type, listKey];
@@ -154,36 +163,27 @@ export const itemListHelpers = {
 
         return pagesToLoad;
     },
-    table: {
-        columnSizeToStyle(columnSize: number) {
-            if (columnSize > 100000)
-                return `minmax(0px, ${columnSize - 100000}fr)`;
-            return `${columnSize}px`;
-        },
-        getColumns(columnOrder: ItemListColumnOrder) {
-            const listColumns = [];
+    // table: {
+    //     columnSizeToStyle(columnSize: number) {
+    //         if (columnSize > 100000)
+    //             return `minmax(0px, ${columnSize - 100000}fr)`;
+    //         return `${columnSize}px`;
+    //     },
+    //     getColumns(columnOrder: ItemListColumnOrder) {
+    //         const listColumns = [];
 
-            for (const column of columnOrder) {
-                // listColumns.push(itemListColumnMap[column]);
-            }
+    //         for (const column of columnOrder) {
+    //             // listColumns.push(itemListColumnMap[column]);
+    //         }
 
-            return listColumns;
-        },
-        getItemRange<T>(
-            items: (T | undefined)[],
-            currentIndex: number,
-            selectedIndex: number,
-        ): (T | undefined)[] {
-            const rangeStart = selectedIndex > currentIndex ? currentIndex : selectedIndex;
-            const rangeEnd = rangeStart === currentIndex ? selectedIndex : currentIndex;
-            return items.slice(rangeStart, rangeEnd + 1);
-        },
-        numberToColumnSize(size: number, unit: 'px' | 'fr') {
-            if (unit === 'px')
-                return size;
-            return size + 100000;
-        },
-    },
+    //         return listColumns;
+    //     },
+    //     numberToColumnSize(size: number, unit: 'px' | 'fr') {
+    //         if (unit === 'px')
+    //             return size;
+    //         return size + 100000;
+    //     },
+    // },
     updateFavorite<T>(
         queryClient: QueryClient,
         queryKey: QueryKey,
@@ -212,12 +212,15 @@ export interface ItemListInternalReducers {
     clearSelection: () => void;
     getGroupCollapsed: () => Record<string, boolean>;
     getGroupCollapsedById: (id: string) => boolean;
+    getIsDragging: () => boolean;
+    getListSelection: (id: string) => string[];
     getOrderedSelection: () => string[];
     getSelection: () => Record<string, boolean>;
     getSelectionById: (id: string) => boolean;
     removeSelectionById: (id: string) => void;
     setGroupCollapsed: (values: Record<string, boolean>) => void;
     setGroupCollapsedById: (id: string, expanded: boolean) => void;
+    setIsDragging: (isDragging: boolean) => void;
     setSelection: (values: Record<string, boolean>) => void;
     setSelectionById: (id: string, selected: boolean) => void;
     toggleSelectionById: (id: string) => void;
@@ -225,12 +228,17 @@ export interface ItemListInternalReducers {
 
 export interface ItemListInternalState {
     _onMultiSelectionClick: (
-        id: string,
+        item: { id: string; serverId: string },
         index: number,
         e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
     ) => void;
-    _onSingleSelectionClick: (id: string, index: number, e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    _onSingleSelectionClick: (
+        item: { id: string; serverId: string },
+        index: number,
+        e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
+    ) => void;
     groupCollapsed: Record<string, boolean>;
+    isDragging: boolean;
     itemExpanded: Record<string, boolean>;
     itemSelection: Record<string, boolean>;
     reducers: ItemListInternalReducers;
@@ -311,11 +319,12 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
     const [itemSelection, dispatchItemSelection] = useReducer(selectionStateReducer, {});
     const [itemExpanded, dispatchItemExpanded] = useReducer(selectionStateReducer, {});
     const [groupCollapsed, dispatchGroupCollapsed] = useReducer(selectionStateReducer, {});
+    const [isDragging, setIsDragging] = useState(false);
 
     const lastSelectedIndex = useRef<number | null>(null);
 
     const _onMultiSelectionClick = (
-        id: string,
+        item: { id: string; serverId: string },
         index: number,
         e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
     ) => {
@@ -326,25 +335,25 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
             if (currentIndex === -1 || lastSelectedIndex.current === null)
                 return;
 
-            const itemsToToggle = itemListHelpers.table.getItemRange(
+            const itemsToToggle = itemListHelpers.getItemRange(
                 data,
                 currentIndex,
                 lastSelectedIndex.current,
             );
 
             if (itemsToToggle.length > 0) {
-                const shouldSelect = !itemSelection[id];
+                const shouldSelect = !itemSelection[item.id];
                 const newSelections = { ...itemSelection };
 
                 // Process each item in the range
-                itemsToToggle.forEach((item, idx) => {
-                    if (item !== undefined) {
-                        const itemId = typeof item === 'string'
-                            ? item
-                            : getItemId?.(index + idx, item as TItemType) ?? '';
+                itemsToToggle.forEach((i, idx) => {
+                    if (i !== undefined) {
+                        const itemId = typeof i === 'string'
+                            ? i
+                            : getItemId?.(index + idx, i as TItemType) ?? '';
 
                         // Don't deselect the currently clicked item
-                        if (itemId === id) {
+                        if (itemId === item.id) {
                             newSelections[itemId] = true;
                         }
                         else {
@@ -361,14 +370,14 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         }
         else if (e.ctrlKey) {
             dispatchItemSelection({
-                id,
+                id: item.id,
                 type: 'toggleById',
             });
 
             // If no modifier key is pressed, replace the selection with the new item or toggle if already selected
         }
         else {
-            const isSelfSelected = itemSelection[id];
+            const isSelfSelected = itemSelection[item.id];
 
             if (isSelfSelected && Object.keys(itemSelection).length === 1) {
                 dispatchItemSelection({
@@ -377,7 +386,7 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
             }
             else {
                 dispatchItemSelection({
-                    id,
+                    id: item.id,
                     type: 'clearAndSetById',
                 });
             }
@@ -386,8 +395,8 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         lastSelectedIndex.current = index;
     };
 
-    const _onSingleSelectionClick = (id: string) => {
-        const isSelfSelected = itemSelection[id];
+    const _onSingleSelectionClick = (item: { id: string; serverId: string }) => {
+        const isSelfSelected = itemSelection[item.id];
 
         if (isSelfSelected && Object.keys(itemSelection).length === 1) {
             dispatchItemSelection({
@@ -396,7 +405,7 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         }
         else {
             dispatchItemSelection({
-                id,
+                id: item.id,
                 type: 'clearAndSetById',
             });
         }
@@ -425,6 +434,30 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         },
         getGroupCollapsedById: (id: string) => {
             return groupCollapsed[id];
+        },
+        getIsDragging: () => {
+            return isDragging;
+        },
+        getListSelection: (id: string) => {
+            const isSelfSelected = itemSelection[id];
+
+            let ids: string[] = [];
+
+            if (!isSelfSelected) {
+                dispatchItemSelection({ id, type: 'clearAndSetById' });
+                ids.push(id);
+            }
+            else {
+                const results = (data as (string | undefined)[]).filter((id) => {
+                    if (id === undefined && typeof id !== 'string')
+                        return false;
+                    return itemSelection[id as string] as boolean;
+                }) as string[];
+
+                ids = results ?? [];
+            }
+
+            return ids;
         },
         getOrderedSelection: () => {
             if (getItemId) {
@@ -463,6 +496,9 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         setGroupCollapsedById: (id: string, expanded: boolean) => {
             dispatchGroupCollapsed({ id, type: 'setById', value: expanded });
         },
+        setIsDragging: (isDragging: boolean) => {
+            setIsDragging(isDragging);
+        },
         setSelection: (values: Record<string, boolean>) => {
             dispatchItemSelection({ type: 'set', values });
         },
@@ -478,8 +514,21 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         _onMultiSelectionClick,
         _onSingleSelectionClick,
         groupCollapsed,
+        isDragging,
         itemExpanded,
         itemSelection,
         reducers,
     };
 }
+
+export const listHelpers = {
+    getOrderedSelection: (data: (string | undefined)[], itemSelection: Record<string, boolean>) => {
+        const results = data.filter((id) => {
+            if (id === undefined && typeof id !== 'string')
+                return false;
+            return itemSelection[id as string] as boolean;
+        }) as string[];
+
+        return results;
+    },
+};

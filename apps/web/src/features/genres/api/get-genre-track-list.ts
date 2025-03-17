@@ -1,8 +1,10 @@
+import type { TrackItem } from '/@/app-types';
 import type { AdapterGenreTrackListRequest } from '@repo/shared-types/adapter-types';
 import type { QueryClient } from '@tanstack/react-query';
 import { adapterAPI } from '@repo/adapter-api';
 import { type AuthServer, ServerItemType } from '@repo/shared-types/app-types';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { apiHelpers } from '/@/app-types';
 
 export async function getGenreTrackList(server: AuthServer, params: AdapterGenreTrackListRequest) {
     const adapter = adapterAPI(server.type);
@@ -12,7 +14,10 @@ export async function getGenreTrackList(server: AuthServer, params: AdapterGenre
         throw new Error(result[0].message);
     }
 
-    return result[1];
+    return {
+        ...result[1],
+        items: result[1].items.map(track => apiHelpers.transform(track, { _serverId: server.id })) as TrackItem[],
+    };
 }
 
 export function useGenreTrackList(server: AuthServer, params: AdapterGenreTrackListRequest) {

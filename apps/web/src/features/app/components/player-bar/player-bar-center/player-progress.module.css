@@ -1,5 +1,7 @@
 .container {
     position: absolute;
+    top: rem(-4px);
+    left: 0;
     display: flex;
     gap: var(--mantine-gap-sm);
     align-items: center;

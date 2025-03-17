@@ -1,8 +1,10 @@
 import type { PlayQueueItem } from '/@/app-types';
 import type { MouseEvent } from 'react';
+import { ServerItemType } from '@repo/shared-types/app-types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { createCallable } from 'react-call';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { ContextMenu } from '/@/components/context-menu/context-menu';
 import { AlbumArtistContextMenu } from '/@/features/context-menu/components/album-artists/album-artist-context-menu';
@@ -11,6 +13,7 @@ import { GenreContextMenu } from '/@/features/context-menu/components/genres/gen
 import { PlaylistContextMenu } from '/@/features/context-menu/components/playlists/playlist-context-menu';
 import { QueueContextMenu } from '/@/features/context-menu/components/queue/queue-context-menu';
 import { TrackContextMenu } from '/@/features/context-menu/components/tracks/track-context-menu';
+import { logger } from '/@/logger';
 
 interface ContextMenuControllerProps {
     cmd: ContextMenuCommand;
@@ -20,6 +23,7 @@ interface ContextMenuControllerProps {
 export const ContextMenuController = createCallable<ContextMenuControllerProps, void>(
     ({ call, cmd, event }) => {
         const { libraryId } = useParams() as { libraryId: string };
+        const { t } = useTranslation();
         const queryClient = useQueryClient();
 
         const triggerRef = useRef<HTMLDivElement>(null);
@@ -35,6 +39,8 @@ export const ContextMenuController = createCallable<ContextMenuControllerProps, 
             }
 
             const handleContextMenu = () => {
+                logger.info('context-menu-controller', cmd);
+
                 triggerRef.current?.dispatchEvent(
                     new MouseEvent('contextmenu', {
                         bubbles: true,
@@ -65,12 +71,18 @@ export const ContextMenuController = createCallable<ContextMenuControllerProps, 
                         }}
                     />
                 </ContextMenu.Target>
-                {cmd.type === 'queue' && <QueueContextMenu {...cmd} />}
-                {cmd.type === 'album' && <AlbumContextMenu {...cmd} />}
-                {cmd.type === 'albumArtist' && <AlbumArtistContextMenu {...cmd} />}
-                {cmd.type === 'genre' && <GenreContextMenu {...cmd} />}
-                {cmd.type === 'playlist' && <PlaylistContextMenu {...cmd} />}
-                {cmd.type === 'track' && <TrackContextMenu {...cmd} />}
+                <ContextMenu.Content>
+                    {cmd.type === 'queue' && <QueueContextMenu {...cmd} />}
+                    {cmd.type === ServerItemType.ALBUM && <AlbumContextMenu {...cmd} />}
+                    {cmd.type === ServerItemType.ALBUM_ARTIST && <AlbumArtistContextMenu {...cmd} />}
+                    {cmd.type === ServerItemType.GENRE && <GenreContextMenu {...cmd} />}
+                    {cmd.type === ServerItemType.PLAYLIST && <PlaylistContextMenu {...cmd} />}
+                    {cmd.type === 'track' && <TrackContextMenu {...cmd} />}
+                    <ContextMenu.Divider />
+                    <ContextMenu.Item disabled>
+                        {t('app.actions.selectedItems', { count: (cmd as { ids: string[] }).ids.length })}
+                    </ContextMenu.Item>
+                </ContextMenu.Content>
             </ContextMenu>
         );
     },
@@ -91,25 +103,25 @@ export interface QueueContextMenuProps {
 
 export interface AlbumContextMenuProps {
     ids: string[];
-    type: 'album';
+    type: ServerItemType.ALBUM;
 }
 
 export interface TrackContextMenuProps {
     ids: string[];
-    type: 'track';
+    type: ServerItemType.TRACK;
 }
 
 export interface AlbumArtistContextMenuProps {
     ids: string[];
-    type: 'albumArtist';
+    type: ServerItemType.ALBUM_ARTIST;
 }
 
 export interface GenreContextMenuProps {
     ids: string[];
-    type: 'genre';
+    type: ServerItemType.GENRE;
 }
 
 export interface PlaylistContextMenuProps {
     ids: string[];
-    type: 'playlist';
+    type: ServerItemType.PLAYLIST;
 }

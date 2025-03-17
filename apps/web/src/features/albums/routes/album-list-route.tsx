@@ -8,7 +8,7 @@ import { InfiniteServerAlbumGrid } from '/@/features/albums/components/infinite-
 import { PaginatedServerAlbumGrid } from '/@/features/albums/components/paginated-server-album-grid';
 import { useAlbumListOptions, useAlbumListParams } from '/@/features/albums/hooks/use-album-list-options';
 import { useAppContext } from '/@/features/authentication/context/app-context';
-import { ItemList } from '/@/features/shared/components/item-list/base/item-list';
+import { ListContainer } from '/@/features/shared/components/item-list/container/list-container';
 import { ItemListPaginationType } from '/@/features/shared/components/item-list/types';
 import { PageContainer } from '/@/features/shared/components/page-container/page-container';
 
@@ -18,16 +18,16 @@ export function AlbumListRoute() {
     return (
         <PageContainer>
             <ListContext.Provider value={listContext}>
-                <ItemList>
-                    <ItemList.Header.Root>
+                <ListContainer>
+                    <ListContainer.Header.Root>
                         <Header />
-                    </ItemList.Header.Root>
-                    <ItemList.Content>
+                    </ListContainer.Header.Root>
+                    <ListContainer.Content>
                         <Suspense fallback={<FullPageLoader />}>
                             <Content />
                         </Suspense>
-                    </ItemList.Content>
-                </ItemList>
+                    </ListContainer.Content>
+                </ListContainer>
             </ListContext.Provider>
         </PageContainer>
     );
@@ -38,17 +38,17 @@ function Header() {
 
     return (
         <>
-            <ItemList.Header.Left>
-                <ItemList.Header.Title>{t('app.albums.title')}</ItemList.Header.Title>
-                <Suspense fallback={<ItemList.Header.ItemCount loading value={0} />}>
+            <ListContainer.Header.Left>
+                <ListContainer.Header.Title>{t('app.albums.title')}</ListContainer.Header.Title>
+                <Suspense fallback={<ListContainer.Header.ItemCount loading value={0} />}>
                     <HeaderItemCount />
                 </Suspense>
-            </ItemList.Header.Left>
-            <ItemList.Header.Footer>
-                <ItemList.Header.Left>
+            </ListContainer.Header.Left>
+            <ListContainer.Header.Footer>
+                <ListContainer.Header.Left>
                     <AlbumListFilters />
-                </ItemList.Header.Left>
-            </ItemList.Header.Footer>
+                </ListContainer.Header.Left>
+            </ListContainer.Header.Footer>
         </>
     );
 }
@@ -58,7 +58,7 @@ function HeaderItemCount() {
     const { params } = useAlbumListParams();
     const { data: itemCount } = useAlbumListCount(server, { query: params });
 
-    return <ItemList.Header.ItemCount value={itemCount || 0} />;
+    return <ListContainer.Header.ItemCount value={itemCount || 0} />;
 }
 
 function Content() {

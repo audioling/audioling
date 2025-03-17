@@ -1,15 +1,14 @@
 import type { AlbumContextMenuProps } from '/@/features/context-menu/context-menu-controller';
-import { Divider } from '@mantine/core';
 import { ServerItemType } from '@repo/shared-types/app-types';
 import { useCallback } from 'react';
 import { ContextMenu } from '/@/components/context-menu/context-menu';
 import { PlayerController } from '/@/controllers/player-controller';
-import { useAppContext } from '/@/features/authentication/context/app-context';
 import { QueueCache } from '/@/features/context-menu/components/queue/queue-cache';
 import { QueueDownload } from '/@/features/context-menu/components/queue/queue-download';
 import { QueueInfo } from '/@/features/context-menu/components/queue/queue-info';
 import { QueueShare } from '/@/features/context-menu/components/queue/queue-share';
 import { AddToPlaylistContextItem } from '/@/features/context-menu/components/shared/add-to-playlist-context-item';
+import { FavoritesContextItem } from '/@/features/context-menu/components/shared/favorites-context-item';
 import {
     PlayLastContextItem,
     PlayNextContextItem,
@@ -18,11 +17,8 @@ import {
 import { RatingContextItem } from '/@/features/context-menu/components/shared/rating-context-item';
 import { useFavoriteAlbum, useUnfavoriteAlbum } from '/@/features/favorites/api/set-album-favorite';
 import { PlayType } from '/@/stores/player-store';
-import { FavoritesContextItem } from '/@/features/context-menu/components/shared/favorites-context-item';
 
 export function AlbumContextMenu({ ids }: AlbumContextMenuProps) {
-    const { server } = useAppContext();
-
     const handlePlay = useCallback(
         (type: PlayType) => {
             PlayerController.call({
@@ -42,28 +38,28 @@ export function AlbumContextMenu({ ids }: AlbumContextMenuProps) {
     const { mutate: unfavoriteAlbum } = useUnfavoriteAlbum();
 
     const handleFavorite = useCallback(() => {
-        favoriteAlbum({ ids, serverId: server.id });
-    }, [favoriteAlbum, ids, server.id]);
+        favoriteAlbum({ ids });
+    }, [favoriteAlbum, ids]);
 
     const handleUnfavorite = useCallback(() => {
-        unfavoriteAlbum({ ids, serverId: server.id });
-    }, [unfavoriteAlbum, ids, server.id]);
+        unfavoriteAlbum({ ids });
+    }, [unfavoriteAlbum, ids]);
 
     return (
-        <ContextMenu.Content>
+        <>
             <PlayNowContextItem onPlay={() => handlePlay(PlayType.NOW)} />
             <PlayNextContextItem onPlay={() => handlePlay(PlayType.NEXT)} />
             <PlayLastContextItem onPlay={() => handlePlay(PlayType.LAST)} />
-            <Divider />
+            <ContextMenu.Divider />
             <AddToPlaylistContextItem albums={ids} />
             <RatingContextItem />
             <FavoritesContextItem onFavorite={handleFavorite} onUnfavorite={handleUnfavorite} />
             <QueueDownload />
             <QueueCache />
-            <Divider />
+            <ContextMenu.Divider />
             <QueueShare />
-            <Divider />
+            <ContextMenu.Divider />
             <QueueInfo />
-        </ContextMenu.Content>
+        </>
     );
 }

@@ -1,7 +1,7 @@
 .left {
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: rem(50px) minmax(0, 1fr);
+    grid-template-columns: rem(65px) minmax(0, 1fr);
     gap: var(--mantine-gap-sm);
     max-width: 30svw;
     padding-right: var(--mantine-gap-md);
@@ -23,15 +23,27 @@
 .image {
     width: 65px;
     height: 65px;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: var(--mantine-radius-md);
+}
+
+.image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .right-column {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    margin-right: var(--mantine-gap-lg);
+    padding-left: var(--mantine-spacing-xs);
+    margin-right: var(--mantine-spacing-lg);
+}
+
+.right-column p {
+    @mixin textEllipsis;
 }
 
 .controls {

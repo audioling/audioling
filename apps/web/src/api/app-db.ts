@@ -251,3 +251,19 @@ export async function getDBItems(appDB: AppDB, type: AppDBType, ids: string[], c
 
     return items;
 }
+
+export async function updateDBItem(appDB: AppDB, type: AppDBType, id: string, value: Partial<AppDBTypeValue>) {
+    const item = await appDB.get(type, id);
+
+    if (!item) {
+        return;
+    }
+
+    return appDB.set(type, {
+        key: id,
+        value: {
+            ...item,
+            ...value,
+        },
+    });
+}

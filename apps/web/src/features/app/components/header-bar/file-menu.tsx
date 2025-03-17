@@ -1,5 +1,6 @@
-import { ActionIcon, Divider, Menu } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 import { Icon } from '/@/components/icon/icon';
+import { Menu } from '/@/components/menu/menu';
 import { useAuthStore } from '/@/stores/auth-store';
 
 export function FileMenu() {
@@ -18,12 +19,11 @@ export function FileMenu() {
                     <Icon icon="menu" />
                 </ActionIcon>
             </Menu.Target>
-            <Menu.Dropdown>
-                <Menu.Item disabled leftSection={<Icon icon="settings" />}>
+            <Menu.Content>
+                <Menu.Item disabled leftIcon="settings">
                     Settings
                 </Menu.Item>
-                <Divider />
-                <Menu.Item leftSection={<Icon icon="signOut" />} onClick={() => signOut(null)}>
+                <Menu.Item onSelect={() => signOut(null)}>
                     Sign out
                 </Menu.Item>
                 {/* <Menu.Divider />
@@ -35,7 +35,7 @@ export function FileMenu() {
                         </Suspense>
                     </Stack>
                 </Menu.Label> */}
-            </Menu.Dropdown>
+            </Menu.Content>
         </Menu>
     );
 }

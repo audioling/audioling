@@ -1,6 +1,7 @@
 /* eslint-disable react/no-clone-element */
 /* eslint-disable react/no-children-map */
 import type { ItemListPaginationState } from '/@/features/shared/components/item-list/types';
+import type { ItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
 import type { AuthServer, ServerItemType } from '@repo/shared-types/app-types';
 import type { CSSProperties, ReactNode, RefObject, SyntheticEvent } from 'react';
 import type { GridIndexLocation, GridStateSnapshot, VirtuosoGridHandle } from 'react-virtuoso';
@@ -20,9 +21,9 @@ import {
     useState,
 } from 'react';
 import { VirtuosoGrid } from 'react-virtuoso';
-import styles from './item-grid.module.css';
+import styles from './item-list-grid.module.css';
 import { ItemCard, type ItemCardProps } from '/@/features/shared/components/item-card/item-card';
-import { useItemListInternalState } from '/@/features/shared/components/item-list/helpers';
+import { useItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
 
 const BaseListComponent = forwardRef<
     HTMLDivElement,
@@ -149,7 +150,12 @@ function ScrollSeekPlaceholderComponent({
     const {
         displayType,
         lines,
-    } = context as { displayType: ItemCardProps<any>['type']; lines: ItemCardProps<any>['lines'] };
+        reducers,
+    } = context as {
+        displayType: ItemCardProps<any>['type'];
+        lines: ItemCardProps<any>['lines'];
+        reducers: ItemListInternalState['reducers'];
+    };
 
     const type = displayType === 'default' ? 'default-skeleton' : displayType;
 
@@ -160,6 +166,7 @@ function ScrollSeekPlaceholderComponent({
                 id={undefined}
                 index={index}
                 lines={lines}
+                reducers={reducers}
                 type={type as any}
             />
         </div>
@@ -202,7 +209,7 @@ interface ItemGridProps<
     virtuosoRef?: RefObject<VirtuosoGridHandle | undefined>;
 }
 
-export function ItemGrid<
+export function ItemListGrid<
     T,
     C,
 >({
@@ -300,6 +307,7 @@ export function ItemGrid<
         onItemSelection: itemSelectionType === 'multiple'
             ? _onMultiSelectionClick
             : itemSelectionType === 'single' ? _onSingleSelectionClick : undefined,
+        reducers,
     }), [
         context,
         displayType,
@@ -308,6 +316,7 @@ export function ItemGrid<
         itemType,
         _onMultiSelectionClick,
         _onSingleSelectionClick,
+        reducers,
     ]);
 
     return (
@@ -336,7 +345,7 @@ export function ItemGrid<
                 scrollSeekConfiguration={{
                     enter: velocity => Math.abs(velocity) > 2000,
                     exit: (velocity) => {
-                        const shouldExit = Math.abs(velocity) < 500;
+                        const shouldExit = Math.abs(velocity) < 100;
                         return shouldExit;
                     },
                 }}

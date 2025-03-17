@@ -1,26 +1,42 @@
+import type { ItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
 import type { PlayType } from '/@/stores/player-store';
 import type { DragData } from '/@/utils/drag-drop';
 import type { MouseEvent } from 'react';
 import { DefaultItemCard, DefaultItemCardSkeleton } from '/@/features/shared/components/item-card/default-item-card';
 
+interface Item {
+    id: string;
+    serverId: string;
+}
+
 export interface ItemCardProps<T> {
     data: T | undefined;
     id: string | undefined;
     index: number;
+    isDragging?: boolean;
     isSelected?: boolean;
     lines?: {
         path?: string;
         property: string;
         transform?: (data: T) => string;
     }[];
-    onContextMenu?: (id: string, serverId: string, event: MouseEvent<HTMLButtonElement>) => void;
-    onDragInitialData?: (id: string) => DragData;
-    onDragStart?: (id: string) => void;
-    onDrop?: (id: string) => void;
-    onFavorite?: (id: string, serverId: string) => void;
-    onItemSelection?: (id: string, index: number, e: MouseEvent<HTMLButtonElement>) => void;
-    onPlay?: (id: string, serverId: string, playType: PlayType) => void;
-    onUnfavorite?: (id: string, serverId: string) => void;
+    onContextMenu?: (
+        item: Item,
+        event: MouseEvent<HTMLButtonElement>,
+        reducers?: ItemListInternalState['reducers'],
+    ) => void;
+    onDragInitialData?: (item: Item, reducers?: ItemListInternalState['reducers']) => DragData;
+    onDragStart?: (item: Item, reducers?: ItemListInternalState['reducers']) => void;
+    onDrop?: (item: Item, reducers?: ItemListInternalState['reducers']) => void;
+    onFavorite?: (item: Item) => void;
+    onItemSelection?: (
+        item: Item,
+        index: number,
+        event: MouseEvent<HTMLButtonElement>
+    ) => void;
+    onPlay?: (item: Item, playType: PlayType) => void;
+    onUnfavorite?: (item: Item) => void;
+    reducers?: ItemListInternalState['reducers'];
     type?: 'default' | 'default-skeleton';
 }
 

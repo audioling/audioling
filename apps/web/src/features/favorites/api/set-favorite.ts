@@ -17,5 +17,4 @@ export async function setFavorite(server: AuthServer, params: AdapterSetFavorite
 
 export interface SetFavoriteRequest {
     ids: string[];
-    serverId: string;
 }

@@ -1,6 +1,6 @@
 import type { AlbumItem } from '/@/app-types';
 import type { ItemCardProps } from '/@/features/shared/components/item-card/item-card';
-import type { ServerItemGridProps } from '/@/features/shared/components/item-list/item-grid/item-grid';
+import type { ServerItemGridProps } from '/@/features/shared/components/item-list/grid-view/item-list-grid';
 import type { AdapterAlbumListQuery } from '@repo/shared-types/adapter-types';
 import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types/app-types';
 import { ServerItemType } from '@repo/shared-types/app-types';
@@ -10,8 +10,8 @@ import { queryAlbumList } from '/@/features/albums/api/get-album-list';
 import { useAlbumListCount } from '/@/features/albums/api/get-album-list-count';
 import { AlbumGridItem } from '/@/features/albums/components/album-grid-item';
 import { albumGridItemLines } from '/@/features/albums/components/album-grid-item-lines';
-import { usePaginatedListData } from '/@/features/shared/components/item-list/hooks/use-paginated-list-data';
-import { ItemGrid } from '/@/features/shared/components/item-list/item-grid/item-grid';
+import { ItemListGrid } from '/@/features/shared/components/item-list/grid-view/item-list-grid';
+import { usePaginatedListData } from '/@/features/shared/components/item-list/utils/use-paginated-list-data';
 
 interface AlbumGridParams {
     sortBy: AlbumListSortOptions;
@@ -40,7 +40,7 @@ function InnerAlbumGrid({ itemSelectionType, pagination, params, server }: Pagin
     });
 
     return (
-        <ItemGrid<string, {
+        <ItemListGrid<string, {
             lines: ItemCardProps<AlbumItem>['lines'];
         }>
             ItemComponent={AlbumGridItem}

@@ -1,7 +1,6 @@
 import type { PlayQueueItem } from '/@/app-types';
 import { useCallback, useMemo } from 'react';
 import { ContextMenu } from '/@/components/context-menu/context-menu';
-import { useAppContext } from '/@/features/authentication/context/app-context';
 import { QueueCache } from '/@/features/context-menu/components/queue/queue-cache';
 import { QueueDownload } from '/@/features/context-menu/components/queue/queue-download';
 import { QueueInfo } from '/@/features/context-menu/components/queue/queue-info';
@@ -19,8 +18,6 @@ interface QueueContextMenuProps {
 }
 
 export function QueueContextMenu({ items }: QueueContextMenuProps) {
-    const { server } = useAppContext();
-
     const { ids, tracks } = useMemo(() => {
         const tracks = items.filter((item): item is PlayQueueItem => item !== undefined);
         const ids = tracks.map(track => track.id);
@@ -31,12 +28,12 @@ export function QueueContextMenu({ items }: QueueContextMenuProps) {
     const { mutate: unfavoriteTrack } = useUnfavoriteTrack();
 
     const handleFavorite = useCallback(() => {
-        favoriteTrack({ ids, serverId: server.id });
-    }, [favoriteTrack, ids, server.id]);
+        favoriteTrack({ ids });
+    }, [favoriteTrack, ids]);
 
     const handleUnfavorite = useCallback(() => {
-        unfavoriteTrack({ ids, serverId: server.id });
-    }, [unfavoriteTrack, ids, server.id]);
+        unfavoriteTrack({ ids });
+    }, [unfavoriteTrack, ids]);
 
     return (
         <ContextMenu.Content>

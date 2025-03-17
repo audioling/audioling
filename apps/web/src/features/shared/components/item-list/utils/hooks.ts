@@ -1,11 +1,7 @@
 import type { ItemListPaginationState } from '/@/features/shared/components/item-list/types';
-import type { AuthServer } from '@repo/shared-types/app-types';
-import type { QueryKey } from '@tanstack/react-query';
-import { ServerItemType } from '@repo/shared-types/app-types';
-import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useState } from 'react';
+import type { AuthServer, ServerItemType } from '@repo/shared-types/app-types';
+import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router';
-import { itemListHelpers } from '/@/features/shared/components/item-list/helpers';
 import { randomString } from '/@/utils/random-string';
 import { safeStringify } from '/@/utils/stringify';
 
@@ -35,57 +31,57 @@ export function useListKey(args: Record<string, unknown>) {
     return key;
 }
 
-interface UseRefreshListProps {
-    itemType: ServerItemType;
-    libraryId: string;
-    queryKey: QueryKey;
-}
+// interface UseRefreshListProps {
+//     itemType: ServerItemType;
+//     libraryId: string;
+//     queryKey: QueryKey;
+// }
 
-export function useRefreshList({ itemType, libraryId, queryKey }: UseRefreshListProps) {
-    const location = useLocation();
-    const queryClient = useQueryClient();
+// export function useRefreshList({ itemType, libraryId, queryKey }: UseRefreshListProps) {
+//     const location = useLocation();
+//     const queryClient = useQueryClient();
 
-    const [listId, setListId] = useState<string>(
-        itemListHelpers.generateListId(libraryId, location.pathname),
-    );
+//     const [listId, setListId] = useState<string>(
+//         itemListHelpers.generateListId(libraryId, location.pathname),
+//     );
 
-    const invalidateAlbumCount = () => { };
-    const invalidateTrackCount = () => { };
-    const invalidateAlbumArtistCount = () => { };
-    const invalidatePlaylistCount = () => { };
+//     const invalidateAlbumCount = () => { };
+//     const invalidateTrackCount = () => { };
+//     const invalidateAlbumArtistCount = () => { };
+//     const invalidatePlaylistCount = () => { };
 
-    const handleRefresh = async () => {
-        switch (itemType) {
-            case ServerItemType.ALBUM:
-                await invalidateAlbumCount.mutateAsync({ libraryId });
-                break;
-            case ServerItemType.TRACK:
-                await invalidateTrackCount.mutateAsync({ libraryId });
-                break;
-            case ServerItemType.ARTIST:
-                await invalidateAlbumArtistCount.mutateAsync({ libraryId });
-                break;
-            case ServerItemType.ALBUM_ARTIST:
-                await invalidateAlbumArtistCount.mutateAsync({ libraryId });
-                break;
-            case ServerItemType.PLAYLIST:
-                await invalidatePlaylistCount.mutateAsync({ libraryId });
-                break;
-        }
+//     const handleRefresh = async () => {
+//         switch (itemType) {
+//             case ServerItemType.ALBUM:
+//                 await invalidateAlbumCount.mutateAsync({ libraryId });
+//                 break;
+//             case ServerItemType.TRACK:
+//                 await invalidateTrackCount.mutateAsync({ libraryId });
+//                 break;
+//             case ServerItemType.ARTIST:
+//                 await invalidateAlbumArtistCount.mutateAsync({ libraryId });
+//                 break;
+//             case ServerItemType.ALBUM_ARTIST:
+//                 await invalidateAlbumArtistCount.mutateAsync({ libraryId });
+//                 break;
+//             case ServerItemType.PLAYLIST:
+//                 await invalidatePlaylistCount.mutateAsync({ libraryId });
+//                 break;
+//         }
 
-        // Invalidate the list fetch query
-        await queryClient.invalidateQueries({ queryKey });
+//         // Invalidate the list fetch query
+//         await queryClient.invalidateQueries({ queryKey });
 
-        queryClient.removeQueries({
-            exact: false,
-            queryKey: [libraryId, 'list', itemType],
-        });
+//         queryClient.removeQueries({
+//             exact: false,
+//             queryKey: [libraryId, 'list', itemType],
+//         });
 
-        setListId(itemListHelpers.generateListId(libraryId, location.pathname));
-    };
+//         setListId(itemListHelpers.generateListId(libraryId, location.pathname));
+//     };
 
-    return { handleRefresh, listId };
-}
+//     return { handleRefresh, listId };
+// }
 
 interface UseListPaginationProps {
     pagination: ItemListPaginationState;

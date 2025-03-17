@@ -62,7 +62,8 @@
 }
 
 .divider {
-    border-top: var(--mantine-color-default-border);
+    height: rem(1px);
+    background-color: var(--mantine-color-default-border);
 }
 
 .label {

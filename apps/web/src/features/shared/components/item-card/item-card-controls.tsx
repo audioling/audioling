@@ -1,3 +1,4 @@
+import type { ItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
 import type { MouseEvent } from 'react';
 import { ActionIcon } from '@mantine/core';
 import { motion } from 'motion/react';
@@ -8,10 +9,15 @@ import { PlayType } from '/@/stores/player-store';
 
 interface ItemCardControlsProps {
     id: string;
-    onContextMenu?: (id: string, serverId: string, event: MouseEvent<HTMLButtonElement>) => void;
-    onFavorite?: (id: string, serverId: string) => void;
-    onPlay?: (id: string, serverId: string, playType: PlayType) => void;
-    onUnfavorite?: (id: string, serverId: string) => void;
+    onContextMenu?: (
+        item: { id: string; serverId: string },
+        event: MouseEvent<HTMLButtonElement>,
+        reducers?: ItemListInternalState['reducers'],
+    ) => void;
+    onFavorite?: (item: { id: string; serverId: string }) => void;
+    onPlay?: (item: { id: string; serverId: string }, playType: PlayType) => void;
+    onUnfavorite?: (item: { id: string; serverId: string }) => void;
+    reducers?: ItemListInternalState['reducers'];
     serverId: string;
     userFavorite: boolean | null;
 }
@@ -22,27 +28,28 @@ export function ItemCardControls({
     onFavorite,
     onPlay,
     onUnfavorite,
+    reducers,
     serverId,
     userFavorite,
 }: ItemCardControlsProps) {
     const handleFavorite = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         if (userFavorite) {
-            onUnfavorite?.(id, serverId);
+            onUnfavorite?.({ id, serverId });
         }
         else {
-            onFavorite?.(id, serverId);
+            onFavorite?.({ id, serverId });
         }
     };
 
     const handlePlay = (e: MouseEvent<HTMLButtonElement>, playType: PlayType) => {
         e.stopPropagation();
-        onPlay?.(id, serverId, playType);
+        onPlay?.({ id, serverId }, playType);
     };
 
     const handleContextMenu = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onContextMenu?.(id, serverId, e);
+        onContextMenu?.({ id, serverId }, e, reducers);
     };
 
     return (
@@ -57,11 +64,14 @@ export function ItemCardControls({
                 <div className={styles.topRight}>
                     {onFavorite && onUnfavorite && (
                         <ActionIcon
-                            size="lg"
+                            size="xs"
                             variant="transparent"
                             onClick={handleFavorite}
                         >
-                            <Icon icon={userFavorite ? 'unfavorite' : 'favorite'} />
+                            <Icon
+                                fill={userFavorite ? 'secondary' : undefined}
+                                icon={userFavorite ? 'unfavorite' : 'favorite'}
+                            />
                         </ActionIcon>
                     )}
                 </div>

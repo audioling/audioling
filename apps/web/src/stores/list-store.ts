@@ -1,5 +1,5 @@
-import type { ItemListColumnOrder } from '/@/features/shared/components/item-list/helpers';
 import type { ItemListPaginationState } from '/@/features/shared/components/item-list/types';
+import type { ItemListColumnOrder } from '/@/features/shared/components/item-list/utils/helpers';
 import merge from 'lodash/merge';
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
@@ -12,26 +12,20 @@ interface State {
     store: Record<string, {
         columnOrder: ItemListColumnOrder;
         displayType: ItemListDisplayType;
-        // folderId: string[];
         initialScrollIndex: number;
         pagination: ItemListPaginationState;
         paginationType: ItemListPaginationType;
         params: Record<string, unknown>;
-        // sortBy: unknown;
-        // sortOrder: ListSortOrder;
     }>;
 }
 
 export interface Actions {
     setColumnOrder: (key: string, columnOrder: ItemListColumnOrder) => void;
     setDisplayType: (key: string, displayType: ItemListDisplayType) => void;
-    // setFolderId: (key: string, folderId: string[]) => void;
     setInitialScrollIndex: (key: string, initialScrollIndex: number) => void;
     setPagination: (key: string, pagination: ItemListPaginationState) => void;
     setPaginationType: (key: string, paginationType: ItemListPaginationType) => void;
     setParams: (key: string, params: Record<string, unknown>) => void;
-    // setSortBy: (key: string, sortBy: unknown) => void;
-    // setSortOrder: (key: string, sortOrder: ListSortOrder) => void;
 }
 
 function setDefaultStore(key: string, state: State) {

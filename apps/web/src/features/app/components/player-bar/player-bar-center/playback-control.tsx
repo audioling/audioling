@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import styles from './playback-control.module.css';
 import { Icon } from '/@/components/icon/icon';
 import { Tooltip } from '/@/components/tooltip/tooltip';
+import { PlayerController } from '/@/controllers/player-controller';
 import {
     PlayerRepeat,
     PlayerShuffle,
     PlayerStatus,
-    usePlayerActions,
     usePlayerRepeat,
     usePlayerShuffle,
     usePlayerStatus,
@@ -18,14 +18,17 @@ import {
 export function PlayPauseButton() {
     const { t } = useTranslation();
     const status = usePlayerStatus();
-    const { mediaPause, mediaPlay } = usePlayerActions();
 
     const handleClick = () => {
         if (status === PlayerStatus.PLAYING) {
-            mediaPause();
+            PlayerController.call({
+                cmd: { mediaPause: null },
+            });
         }
         else {
-            mediaPlay();
+            PlayerController.call({
+                cmd: { mediaPlay: null },
+            });
         }
     };
 
@@ -50,7 +53,12 @@ export function PlayPauseButton() {
 
 export function MediaPreviousButton() {
     const { t } = useTranslation();
-    const { mediaPrevious } = usePlayerActions();
+
+    const handleClick = () => {
+        PlayerController.call({
+            cmd: { mediaPrevious: null },
+        });
+    };
 
     return (
         <Tooltip label={t('app.player.mediaPrevious')} openDelay={500} position="top">
@@ -58,7 +66,7 @@ export function MediaPreviousButton() {
                 radius="xl"
                 size="md"
                 variant="subtle"
-                onClick={mediaPrevious}
+                onClick={handleClick}
             >
                 <Icon fill="primary" icon="mediaPrevious" />
             </ActionIcon>
@@ -68,7 +76,12 @@ export function MediaPreviousButton() {
 
 export function MediaNextButton() {
     const { t } = useTranslation();
-    const { mediaNext } = usePlayerActions();
+
+    const handleClick = () => {
+        PlayerController.call({
+            cmd: { mediaNext: null },
+        });
+    };
 
     return (
         <Tooltip label={t('app.player.mediaNext')} openDelay={500} position="top">
@@ -76,7 +89,7 @@ export function MediaNextButton() {
                 radius="xl"
                 size="md"
                 variant="subtle"
-                onClick={mediaNext}
+                onClick={handleClick}
             >
                 <Icon fill="primary" icon="mediaNext" />
             </ActionIcon>
@@ -86,7 +99,12 @@ export function MediaNextButton() {
 
 export function MediaStepBackwardButton() {
     const { t } = useTranslation();
-    const { mediaStepBackward } = usePlayerActions();
+
+    const handleClick = () => {
+        PlayerController.call({
+            cmd: { mediaStepBackward: null },
+        });
+    };
 
     return (
         <Tooltip label={t('app.player.mediaSeekBackward')} openDelay={500} position="top">
@@ -95,8 +113,7 @@ export function MediaStepBackwardButton() {
                 size="md"
                 variant="subtle"
                 visibleFrom="sm"
-                onClick={mediaStepBackward}
-
+                onClick={handleClick}
             >
                 <Icon fill="primary" icon="mediaStepBackward" />
             </ActionIcon>
@@ -106,7 +123,12 @@ export function MediaStepBackwardButton() {
 
 export function MediaStepForwardButton() {
     const { t } = useTranslation();
-    const { mediaStepForward } = usePlayerActions();
+
+    const handleClick = () => {
+        PlayerController.call({
+            cmd: { mediaStepForward: null },
+        });
+    };
 
     return (
         <Tooltip label={t('app.player.mediaSeekForward')} openDelay={500} position="top">
@@ -115,7 +137,7 @@ export function MediaStepForwardButton() {
                 size="md"
                 variant="subtle"
                 visibleFrom="sm"
-                onClick={mediaStepForward}
+                onClick={handleClick}
             >
                 <Icon fill="primary" icon="mediaStepForward" />
             </ActionIcon>

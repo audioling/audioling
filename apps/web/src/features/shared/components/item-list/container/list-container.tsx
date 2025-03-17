@@ -1,7 +1,7 @@
 import { ActionIcon, Title as MantineTitle } from '@mantine/core';
 import { motion, useSpring, useTransform } from 'motion/react';
 import { type ReactNode, useEffect, useState } from 'react';
-import styles from './item-list.module.css';
+import styles from './list-container.module.css';
 import { Icon } from '/@/components/icon/icon';
 import { ScrollArea } from '/@/components/scroll-area/scroll-area';
 
@@ -9,7 +9,7 @@ interface ItemListProps {
     children: ReactNode;
 }
 
-export function ItemList(props: ItemListProps) {
+export function ListContainer(props: ItemListProps) {
     const { children } = props;
 
     return <div className={styles.container}>{children}</div>;
@@ -140,7 +140,7 @@ function PlayButton(props: PlayButtonProps) {
     );
 }
 
-ItemList.Header = {
+ListContainer.Header = {
     Footer,
     ItemCount,
     Left,
@@ -151,4 +151,4 @@ ItemList.Header = {
     Title,
 };
 
-ItemList.Content = Content;
+ListContainer.Content = Content;

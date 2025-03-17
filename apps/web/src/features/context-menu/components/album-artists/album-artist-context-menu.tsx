@@ -1,28 +1,25 @@
-import type { AlbumArtistContextMenuProps } from '../../context-menu-controller';
+import type { AlbumArtistContextMenuProps } from '/@/features/context-menu/context-menu-controller';
 import { Divider } from '@mantine/core';
 import { ServerItemType } from '@repo/shared-types/app-types';
 import { useCallback } from 'react';
-import {
-    PlayLastContextItem,
-    PlayNextContextItem,
-    PlayNowContextItem,
-} from '../shared/play-context-item';
-import { RatingContextItem } from '../shared/rating-context-item';
 import { ContextMenu } from '/@/components/context-menu/context-menu';
 import { PlayerController } from '/@/controllers/player-controller';
-import { useAppContext } from '/@/features/authentication/context/app-context';
 import { QueueCache } from '/@/features/context-menu/components/queue/queue-cache';
 import { QueueDownload } from '/@/features/context-menu/components/queue/queue-download';
 import { QueueInfo } from '/@/features/context-menu/components/queue/queue-info';
 import { QueueShare } from '/@/features/context-menu/components/queue/queue-share';
 import { AddToPlaylistContextItem } from '/@/features/context-menu/components/shared/add-to-playlist-context-item';
 import { FavoritesContextItem } from '/@/features/context-menu/components/shared/favorites-context-item';
+import {
+    PlayLastContextItem,
+    PlayNextContextItem,
+    PlayNowContextItem,
+} from '/@/features/context-menu/components/shared/play-context-item';
+import { RatingContextItem } from '/@/features/context-menu/components/shared/rating-context-item';
 import { useFavoriteAlbumArtist, useUnfavoriteAlbumArtist } from '/@/features/favorites/api/set-album-artist-favorite';
 import { PlayType } from '/@/stores/player-store';
 
 export function AlbumArtistContextMenu({ ids }: AlbumArtistContextMenuProps) {
-    const { server } = useAppContext();
-
     const handlePlay = useCallback(
         (type: PlayType) => {
             PlayerController.call({
@@ -42,12 +39,12 @@ export function AlbumArtistContextMenu({ ids }: AlbumArtistContextMenuProps) {
     const { mutate: unfavoriteAlbumArtist } = useUnfavoriteAlbumArtist();
 
     const handleFavorite = useCallback(() => {
-        favoriteAlbumArtist({ ids, serverId: server.id });
-    }, [favoriteAlbumArtist, ids, server.id]);
+        favoriteAlbumArtist({ ids });
+    }, [favoriteAlbumArtist, ids]);
 
     const handleUnfavorite = useCallback(() => {
-        unfavoriteAlbumArtist({ ids, serverId: server.id });
-    }, [unfavoriteAlbumArtist, ids, server.id]);
+        unfavoriteAlbumArtist({ ids });
+    }, [unfavoriteAlbumArtist, ids]);
 
     return (
         <ContextMenu.Content>

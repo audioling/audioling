@@ -1,6 +1,14 @@
 .skeleton {
-    --base-color: var(--mantine-color-dark-6) !important;
-    --highlight-color: var(--mantine-color-dark-4) !important;
+    @mixin dark {
+        --base-color: var(--mantine-color-dark-6) !important;
+        --highlight-color: var(--mantine-color-dark-4) !important;
+    }
+
+    @mixin light {
+        --base-color: var(--mantine-color-dark-1) !important;
+        --highlight-color: var(--mantine-color-dark-3) !important;
+    }
+
     --animation-duration: 1.5s !important;
 }
 

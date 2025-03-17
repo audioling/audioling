@@ -5,6 +5,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { createCallable } from 'react-call';
 import { useAppContext } from '/@/features/authentication/context/app-context';
+import { useFavoriteAlbumArtist, useUnfavoriteAlbumArtist } from '/@/features/favorites/api/set-album-artist-favorite';
+import { useFavoriteAlbum, useUnfavoriteAlbum } from '/@/features/favorites/api/set-album-favorite';
+import { useFavoriteTrack, useUnfavoriteTrack } from '/@/features/favorites/api/set-track-favorite';
+import { logger } from '/@/logger';
 import { addToQueueByData, addToQueueByFetch, usePlayerActions } from '/@/stores/player-store';
 
 interface PlayerControllerProps {
@@ -13,7 +17,6 @@ interface PlayerControllerProps {
 
 export const PlayerController = createCallable<PlayerControllerProps, void>(({ call, cmd }) => {
     const queryClient = useQueryClient();
-
     const { server } = useAppContext();
 
     const {
@@ -40,6 +43,13 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         shuffleSelected,
     } = usePlayerActions();
 
+    const { mutate: favoriteTrack } = useFavoriteTrack();
+    const { mutate: unfavoriteTrack } = useUnfavoriteTrack();
+    const { mutate: favoriteAlbum } = useFavoriteAlbum();
+    const { mutate: unfavoriteAlbum } = useUnfavoriteAlbum();
+    const { mutate: favoriteAlbumArtist } = useFavoriteAlbumArtist();
+    const { mutate: unfavoriteAlbumArtist } = useUnfavoriteAlbumArtist();
+
     const isExecuted = useRef<boolean>(false);
 
     useEffect(() => {
@@ -50,6 +60,8 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         isExecuted.current = true;
 
         const action = Object.keys(cmd)[0] as keyof PlayerCommand;
+
+        logger.info(`player-controller: ${action}`, cmd);
 
         switch (action) {
             case 'addToQueueByData': {
@@ -126,6 +138,57 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
 
             case 'mediaToggleMute': {
                 mediaToggleMute();
+                break;
+            }
+
+            case 'setFavoriteTracks': {
+                const command = cmd as SetFavoriteTracks;
+
+                if (command.setFavoriteTracks.favorite) {
+                    favoriteTrack({
+                        ids: command.setFavoriteTracks.ids,
+                    });
+                }
+                else {
+                    unfavoriteTrack({
+                        ids: command.setFavoriteTracks.ids,
+                    });
+                }
+
+                break;
+            }
+
+            case 'setFavoriteAlbums': {
+                const command = cmd as SetFavoriteAlbums;
+
+                if (command.setFavoriteAlbums.favorite) {
+                    favoriteAlbum({
+                        ids: command.setFavoriteAlbums.ids,
+                    });
+                }
+                else {
+                    unfavoriteAlbum({
+                        ids: command.setFavoriteAlbums.ids,
+                    });
+                }
+
+                break;
+            }
+
+            case 'setFavoriteAlbumArtists': {
+                const command = cmd as SetFavoriteAlbumArtists;
+
+                if (command.setFavoriteAlbumArtists.favorite) {
+                    favoriteAlbumArtist({
+                        ids: command.setFavoriteAlbumArtists.ids,
+                    });
+                }
+                else {
+                    unfavoriteAlbumArtist({
+                        ids: command.setFavoriteAlbumArtists.ids,
+                    });
+                }
+
                 break;
             }
 
@@ -219,6 +282,12 @@ export const PlayerController = createCallable<PlayerControllerProps, void>(({ c
         mediaSeekToTimestamp,
         mediaToggleMute,
         shuffleAll,
+        favoriteTrack,
+        unfavoriteTrack,
+        favoriteAlbum,
+        unfavoriteAlbum,
+        favoriteAlbumArtist,
+        unfavoriteAlbumArtist,
     ]);
 
     return null;
@@ -245,9 +314,33 @@ export type PlayerCommand =
     | Shuffle
     | ShuffleAll
     | ShuffleSelected
+    | SetFavoriteTracks
+    | SetFavoriteAlbums
+    | SetFavoriteAlbumArtists
     | SetVolume
     | IncreaseVolume
     | DecreaseVolume;
+
+interface SetFavoriteTracks {
+    setFavoriteTracks: {
+        favorite: boolean;
+        ids: string[];
+    };
+}
+
+interface SetFavoriteAlbums {
+    setFavoriteAlbums: {
+        favorite: boolean;
+        ids: string[];
+    };
+}
+
+interface SetFavoriteAlbumArtists {
+    setFavoriteAlbumArtists: {
+        favorite: boolean;
+        ids: string[];
+    };
+}
 
 interface SetVolume {
     setVolume: {

@@ -43,7 +43,7 @@ const darkColors: MantineColorsTuple = [
 export const defaultTheme: AppTheme = {
     app: {
         'global-bg-dark': '#0d0d0f',
-        'global-bg-light': '#e6e6e6',
+        'global-bg-light': '#ffffff',
         'global-fg-dark': '#e6e6e6',
         'global-fg-light': '#0d0d0f',
         'global-primary-color-contrast': '#0d0d0f',
@@ -69,7 +69,7 @@ export const defaultTheme: AppTheme = {
         fontFamilyMonospace: 'Inter',
         primaryShade: {
             dark: 1,
-            light: 9,
+            light: 1,
         },
     },
 };

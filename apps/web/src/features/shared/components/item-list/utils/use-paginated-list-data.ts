@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { appDBTypeMap } from '/@/api/app-db';
 import { useAppContext } from '/@/features/authentication/context/app-context';
-import { itemListHelpers } from '/@/features/shared/components/item-list/helpers';
+import { itemListHelpers } from '/@/features/shared/components/item-list/utils/helpers';
 
 export function usePaginatedListData<
     TParams extends Record<string, any>,

@@ -1,5 +1,8 @@
 import type { GenreContextMenuProps } from '/@/features/context-menu/context-menu-controller';
+import { ServerItemType } from '@repo/shared-types/app-types';
 import { useCallback } from 'react';
+import { ContextMenu } from '/@/components/context-menu/context-menu';
+import { PlayerController } from '/@/controllers/player-controller';
 import { QueueInfo } from '/@/features/context-menu/components/queue/queue-info';
 import { AddToPlaylistContextItem } from '/@/features/context-menu/components/shared/add-to-playlist-context-item';
 import {
@@ -7,10 +10,7 @@ import {
     PlayNextContextItem,
     PlayNowContextItem,
 } from '/@/features/context-menu/components/shared/play-context-item';
-import { PlayerController } from '../../../../controllers/player-controller';
 import { PlayType } from '/@/stores/player-store';
-import { ServerItemType } from '@repo/shared-types/app-types';
-import { ContextMenu } from '/@/components/context-menu/context-menu';
 
 export function GenreContextMenu({ ids }: GenreContextMenuProps) {
     const handlePlay = useCallback(

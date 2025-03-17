@@ -39,7 +39,9 @@
             "addToFavorites": "Add to favorites",
             "removeFromFavorites": "Remove from favorites",
             "draggingItems_one": "Dragging 1 item",
-            "draggingItems_other": "Dragging {{count}} items"
+            "draggingItems_other": "Dragging {{count}} items",
+            "selectedItems_one": "Selected 1 item",
+            "selectedItems_other": "Selected {{count}} items"
         },
         "player": {
             "mediaPrevious": "Previous",
@@ -51,10 +53,12 @@
             "mediaSeekBackward": "Seek Backward",
             "mediaSeekForward": "Seek Forward",
             "crossfade": "Crossfade",
+            "transitionType": "Transition",
             "speed": "Speed",
             "queueType": "Queue Type",
             "default": "Default",
-            "priority": "Priority"
+            "priority": "Priority",
+            "noTrackSelected": "No track selected"
         },
         "albums": {
             "title": "Albums",

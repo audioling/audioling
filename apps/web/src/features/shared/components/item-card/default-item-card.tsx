@@ -1,4 +1,5 @@
 import type { ItemCardProps } from '/@/features/shared/components/item-card/item-card';
+import type { DragData } from '/@/utils/drag-drop';
 import type { MouseEvent } from 'react';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
@@ -6,7 +7,7 @@ import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/elem
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import { Checkbox, Text } from '@mantine/core';
 import clsx from 'clsx';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import styles from './default-item-card.module.css';
 import { DragPreview } from '/@/components/drag-preview/drag-preview';
@@ -18,6 +19,7 @@ export function DefaultItemCard({
     data,
     id,
     index,
+    isDragging,
     isSelected,
     lines,
     onContextMenu,
@@ -28,10 +30,15 @@ export function DefaultItemCard({
     onItemSelection,
     onPlay,
     onUnfavorite,
+    reducers,
 }: Omit<ItemCardProps<any>, 'type'>) {
     const ref = useRef<HTMLDivElement>(null);
-    const [isDragging, setIsDragging] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
+
+    const item = useMemo(() => ({
+        id: id as string,
+        serverId: data?._serverId || '',
+    }), [id, data]);
 
     useEffect(() => {
         if (!ref.current || !id || !data) {
@@ -42,26 +49,30 @@ export function DefaultItemCard({
             draggable({
                 element: ref.current,
                 getInitialData: () => {
-                    return onDragInitialData?.(id) ?? {};
+                    return onDragInitialData?.(item, reducers) ?? {};
                 },
                 onDragStart: async () => {
-                    setIsDragging(true);
-                    return onDragStart?.(id);
+                    reducers?.setIsDragging(true);
+                    return onDragStart?.(item, reducers);
                 },
-                onDrop: () => setIsDragging(false),
+                onDrop: () => {
+                    reducers?.setIsDragging(false);
+                },
                 onGenerateDragPreview: (data) => {
                     disableNativeDragPreview({ nativeSetDragImage: data.nativeSetDragImage });
                     setCustomNativeDragPreview({
                         nativeSetDragImage: data.nativeSetDragImage,
                         render: ({ container }) => {
                             const root = createRoot(container);
-                            root.render(<DragPreview itemCount={1} />);
+                            root.render(
+                                <DragPreview itemCount={(data.source.data as unknown as DragData<any>).id.length} />,
+                            );
                         },
                     });
                 },
             }),
         );
-    }, [onDragInitialData, onDragStart, onDrop, data, id, isHovering]);
+    }, [onDragInitialData, onDragStart, onDrop, data, id, isHovering, reducers, item]);
 
     if (!data || !id) {
         return <DefaultItemCardSkeleton lines={lines || []} />;
@@ -75,8 +86,10 @@ export function DefaultItemCard({
                 [styles.selected]: isSelected,
             })}
             tabIndex={0}
+            onContextMenu={(e) => {
+                onContextMenu?.(item, e as unknown as MouseEvent<HTMLButtonElement>, reducers);
+            }}
             onFocus={() => setIsHovering(true)}
-
         >
             <div
                 className={clsx(styles.imageSection, { [styles.hovered]: isHovering })}
@@ -89,13 +102,14 @@ export function DefaultItemCard({
                         checked={isSelected}
                         className={styles.selection}
                         onChange={(e) => {
-                            onItemSelection?.(id, index, (e.nativeEvent as unknown as MouseEvent<HTMLButtonElement>));
+                            onItemSelection?.(item, index, (e.nativeEvent as unknown as MouseEvent<HTMLButtonElement>));
                         }}
                     />
                 )}
                 {isHovering && (
                     <ItemCardControls
                         id={data.id}
+                        reducers={reducers}
                         serverId={data._serverId}
                         userFavorite={data.userFavorite}
                         onContextMenu={onContextMenu}
