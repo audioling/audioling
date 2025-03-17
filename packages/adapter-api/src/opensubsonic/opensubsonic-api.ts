@@ -1511,8 +1511,6 @@ adapter.meta = {
         return [null, null];
     },
     setFavorite: async (request, server) => {
-        const url = `${server.baseUrl}/rest/star.view`;
-
         const trackIds = { add: [] as string[], remove: [] as string[] };
         const albumIds = { add: [] as string[], remove: [] as string[] };
         const artistIds = { add: [] as string[], remove: [] as string[] };
@@ -1549,6 +1547,8 @@ adapter.meta = {
             || trackIds.remove.length > 0;
 
         if (shouldAdd) {
+            const url = `${server.baseUrl}/rest/star.view`;
+
             const query: QueryParams<OS['star']['os']['1']['get']> = {
                 albumId: albumIds.add,
                 artistId: artistIds.add,
@@ -1566,6 +1566,8 @@ adapter.meta = {
         }
 
         if (shouldRemove) {
+            const url = `${server.baseUrl}/rest/unstar.view`;
+
             const query: QueryParams<OS['unstar']['os']['1']['get']> = {
                 albumId: albumIds.remove,
                 artistId: artistIds.remove,
