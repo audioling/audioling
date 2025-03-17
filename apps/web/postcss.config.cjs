@@ -1,6 +1,14 @@
 module.exports = {
     plugins: {
-        'postcss-preset-mantine': {},
+        'postcss-preset-mantine': {
+            mixins: {
+                textEllipsis: {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                },
+            },
+        },
         'postcss-simple-vars': {
             variables: {
                 'mantine-breakpoint-2xl': '120em', // 1920px 4K

@@ -3,8 +3,7 @@
 }
 
 .ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    @mixin textEllipsis;
 }
 
 .centered {
