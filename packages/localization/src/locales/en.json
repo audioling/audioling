@@ -37,7 +37,9 @@
     "app": {
         "actions": {
             "addToFavorites": "Add to favorites",
-            "removeFromFavorites": "Remove from favorites"
+            "removeFromFavorites": "Remove from favorites",
+            "draggingItems_one": "Dragging 1 item",
+            "draggingItems_other": "Dragging {{count}} items"
         },
         "player": {
             "mediaPrevious": "Previous",
