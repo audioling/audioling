@@ -2,8 +2,8 @@
     z-index: 8000;
     width: 14rem;
     padding: var(--mantine-spacing-xs);
-    background-color: darken(var(--mantine-color-body), 20%);
-    border: var(--mantine-color-default-border);
+    background-color: darken(var(--mantine-color-body), 5%);
+    border: 1px solid lighten(var(--mantine-color-body), 10%);
     border-radius: var(--mantine-radius-md);
     box-shadow: var(--mantine-shadow-md);
 }
@@ -26,16 +26,17 @@
     color: var(--mantine-color-text);
     cursor: default;
     user-select: none;
-
-    &:hover {
-        color: var(--mantine-color-text);
-        background-color: lighten(var(--mantine-color-body), 30%);
-    }
 }
 
-.item[data-highlighted] {
-    color: var(--mantine-color-default-text);
-    background-color: var(--mantine-color-default-background);
+.item[data-highlighted],
+.sub-item[data-highlighted] {
+    @mixin dark {
+        background-color: lighten(var(--mantine-color-body), 5%);
+    }
+
+    @mixin light {
+        background-color: darken(var(--mantine-color-body), 5%);
+    }
 }
 
 .left-icon {

@@ -18,11 +18,6 @@
     color: var(--mantine-color-text);
     cursor: default;
     user-select: none;
-
-    &:hover {
-        color: var(--mantine-color-text);
-        background-color: lighten(var(--mantine-color-body), 30%);
-    }
 }
 
 .left-icon {
@@ -57,7 +52,13 @@
 }
 
 .item[data-highlighted] {
-    background-color: lighten(var(--mantine-color-body), 5%);
+    @mixin dark {
+        background-color: lighten(var(--mantine-color-body), 5%);
+    }
+
+    @mixin light {
+        background-color: darken(var(--mantine-color-body), 5%);
+    }
 }
 
 .divider {

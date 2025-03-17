@@ -166,7 +166,10 @@ function SubmenuTarget(props: SubmenuTargetProps) {
 
     return (
         <RadixContextMenu.SubTrigger
-            className={clsx({ [styles.disabled]: disabled })}
+            className={clsx({
+                [styles.disabled]: disabled,
+                [styles.subItem]: true,
+            })}
             disabled={disabled}
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
