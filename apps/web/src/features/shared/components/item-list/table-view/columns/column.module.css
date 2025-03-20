@@ -1,0 +1,123 @@
+.cell {
+    position: relative;
+    display: block;
+    align-content: center;
+    height: 100%;
+    padding: 0 var(--mantine-spacing-sm);
+
+    @mixin textEllipsis;
+}
+
+.text {
+    max-width: 80%;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.remove {
+    justify-self: center;
+}
+
+.skeleton {
+    display: flex;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 var(--mantine-spacing-sm);
+
+    @mixin textEllipsis;
+}
+
+.clamp-container {
+    display: flex;
+}
+
+.centered {
+    align-items: center;
+    justify-content: center;
+}
+
+.skeleton-image-container {
+    display: block;
+    width: auto;
+    height: 100%;
+    max-height: 95% !important;
+    aspect-ratio: 1 / 1;
+    margin: auto;
+    line-height: 0;
+    object-fit: contain;
+    border-radius: var(--mantine-radius-md);
+}
+
+.skeleton-image {
+    display: block;
+    width: auto;
+    height: 100%;
+}
+
+.image-cell {
+    position: relative;
+    display: block;
+    align-content: center;
+    height: 100%;
+    max-height: 95% !important;
+    padding: 0 var(--mantine-spacing-sm);
+}
+
+.image {
+    display: block;
+    width: auto !important;
+    aspect-ratio: 1 / 1;
+    margin: auto;
+    object-fit: cover;
+    border-radius: var(--mantine-radius-md);
+}
+
+.name {
+    display: -webkit-box;
+    text-overflow: none;
+    white-space: normal;
+}
+
+.standalone-combined {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--mantine-spacing-sm);
+    align-items: center;
+    width: 100%;
+    padding: 0 var(--mantine-spacing-sm);
+}
+
+.standalone-combined .inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.standalone-combined .inner > div {
+    @mixin textEllipsis;
+}
+
+.playing {
+    color: var(--mantine-color-secondary-7);
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 60%;
+    border-radius: 50%;
+    opacity: 0.5;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &:active {
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+}

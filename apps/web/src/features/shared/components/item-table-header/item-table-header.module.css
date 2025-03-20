@@ -1,0 +1,37 @@
+.header-cell {
+    display: flex;
+    align-items: center;
+    padding: var(--mantine-spacing-xs);
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.dragged-over-left {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -1px;
+        width: 2px;
+        content: '';
+        background-color: var(--mantine-color-secondary-7);
+    }
+}
+
+.dragged-over-right {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        right: -1px;
+        bottom: 0;
+        width: 2px;
+        content: '';
+        background-color: var(--mantine-color-secondary-7);
+    }
+}
