@@ -4,7 +4,7 @@
     gap: var(--mantine-spacing-xs);
     width: 100%;
     height: 100%;
-    padding: var(--mantine-spacing-xs);
+    padding: var(--mantine-spacing-sm);
 
     @mixin dark {
         background-color: lighten(var(--mantine-color-body), 2%);
