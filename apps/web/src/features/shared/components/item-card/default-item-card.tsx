@@ -83,7 +83,6 @@ export function DefaultItemCard({
             ref={ref}
             className={clsx(styles.container, {
                 [styles.dragging]: isDragging,
-                [styles.selected]: isSelected,
             })}
             tabIndex={0}
             onContextMenu={(e) => {
@@ -92,11 +91,14 @@ export function DefaultItemCard({
             onFocus={() => setIsHovering(true)}
         >
             <div
-                className={clsx(styles.imageSection, { [styles.hovered]: isHovering })}
+                className={clsx(styles.imageSection, {
+                    [styles.hovered]: isHovering,
+                    // [styles.selected]: isSelected,
+                })}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
             >
-                <ItemImage className={styles.image} id={id} size="card" />
+                <ItemImage className={clsx(styles.image, { [styles.selected]: isSelected })} id={id} size="card" />
                 {(isHovering || isSelected) && onItemSelection && (
                     <Checkbox
                         checked={isSelected}
