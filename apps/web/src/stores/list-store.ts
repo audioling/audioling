@@ -154,12 +154,21 @@ export function useListStoreOptions(key: string, defaults?: {
         paginationType,
     } = useListStoreBase(useShallow(state => state.store[key])) || {};
 
+    const setDisplayType = useListStore.use.setDisplayType();
+    const setPagination = useListStore.use.setPagination();
+    const setPaginationType = useListStore.use.setPaginationType();
+    const setColumnOrder = useListStore.use.setColumnOrder();
+
     const options = {
         columnOrder,
         displayType,
         initialScrollIndex,
         pagination,
         paginationType,
+        setColumnOrder,
+        setDisplayType,
+        setPagination,
+        setPaginationType,
     };
 
     // Remove all entries that are undefined
