@@ -44,7 +44,6 @@
 .scroll-seek-placeholder {
     display: flex;
     grid-column: span 2;
-    padding: rem(4px);
 }
 
 .full-width-content {

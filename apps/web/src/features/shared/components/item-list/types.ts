@@ -1,4 +1,4 @@
-import type { ServerItemType } from '@repo/shared-types/app-types';
+import type { AuthServer, ServerItemType } from '@repo/shared-types/app-types';
 
 export enum ItemListDisplayType {
     GRID = 'grid',
@@ -20,4 +20,11 @@ export interface ItemListSelection {
         id: string;
         type: ServerItemType;
     }[];
+}
+
+export interface ServerItemListProps<TParams> {
+    itemSelectionType?: 'single' | 'multiple';
+    pagination: ItemListPaginationState;
+    params: TParams;
+    server: AuthServer;
 }

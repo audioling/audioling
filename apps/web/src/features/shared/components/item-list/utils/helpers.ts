@@ -203,13 +203,15 @@ export const itemListHelpers = {
 };
 
 export interface ItemListInternalReducers {
-    _itemExpandedReducer: Dispatch<SelectionStateAction>;
-    _itemSelectionReducer: Dispatch<SelectionStateAction>;
+    _itemExpanded: Dispatch<SelectionStateAction>;
+    _itemSelection: Dispatch<SelectionStateAction>;
     addSelection: (id: string) => void;
     clearAndSetGroupCollapsedById: (id: string) => void;
     clearAndSetSelectionById: (id: string) => void;
     clearGroupCollapsed: () => void;
     clearSelection: () => void;
+    getExpanded: () => Record<string, boolean>;
+    getExpandedById: (id: string) => boolean;
     getGroupCollapsed: () => Record<string, boolean>;
     getGroupCollapsedById: (id: string) => boolean;
     getIsDragging: () => boolean;
@@ -412,8 +414,8 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
     };
 
     const reducers = {
-        _itemExpandedReducer: dispatchItemExpanded,
-        _itemSelectionReducer: dispatchItemSelection,
+        _itemExpanded: dispatchItemExpanded,
+        _itemSelection: dispatchItemSelection,
         addSelection: (id: string) => {
             dispatchItemSelection({ id, type: 'addById' });
         },
@@ -428,6 +430,12 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         },
         clearSelection: () => {
             dispatchItemSelection({ type: 'clear' });
+        },
+        getExpanded: () => {
+            return itemExpanded;
+        },
+        getExpandedById: (id: string) => {
+            return itemExpanded[id];
         },
         getGroupCollapsed: () => {
             return groupCollapsed;

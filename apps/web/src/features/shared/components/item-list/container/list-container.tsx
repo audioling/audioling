@@ -1,66 +1,67 @@
-import { ActionIcon, Title as MantineTitle } from '@mantine/core';
+import { ActionIcon, Text as MantineText, Title as MantineTitle } from '@mantine/core';
 import { motion, useSpring, useTransform } from 'motion/react';
 import { type ReactNode, useEffect, useState } from 'react';
 import styles from './list-container.module.css';
 import { Icon } from '/@/components/icon/icon';
 import { ScrollArea } from '/@/components/scroll-area/scroll-area';
+import { MotionText } from '/@/components/text/text';
 
-interface ItemListProps {
+interface ListContainerProps {
     children: ReactNode;
 }
 
-export function ListContainer(props: ItemListProps) {
+export function ListContainer(props: ListContainerProps) {
     const { children } = props;
 
     return <div className={styles.container}>{children}</div>;
 }
 
-interface ItemListHeaderProps {
+interface HeaderProps {
     children: ReactNode;
 }
 
-function Header(props: ItemListHeaderProps) {
+function Header(props: HeaderProps) {
     const { children } = props;
 
     return <div className={styles.header}>{children}</div>;
 }
 
-interface ItemListLeftProps {
+interface LeftProps {
     children: ReactNode;
 }
 
-function Left(props: ItemListLeftProps) {
+function Left(props: LeftProps) {
     const { children } = props;
 
     return <div className={styles.left}>{children}</div>;
 }
 
-interface ItemListRightProps {
+interface RightProps {
     children: ReactNode;
 }
 
-function Right(props: ItemListRightProps) {
+function Right(props: RightProps) {
     const { children } = props;
 
     return <div className={styles.right}>{children}</div>;
 }
 
-interface ItemListTitleProps {
+interface TitleProps {
     children: ReactNode;
 }
 
-function Title(props: ItemListTitleProps) {
+function Title(props: TitleProps) {
     const { children } = props;
 
     return <MantineTitle className={styles.title} order={1}>{children}</MantineTitle>;
 }
 
-interface ItemListItemCountProps {
+interface ItemCountProps {
     loading?: boolean;
     value: number;
 }
 
-function ItemCount({ loading, value }: ItemListItemCountProps) {
+function ItemCount({ loading, value }: ItemCountProps) {
     const spring = useSpring(value, { damping: 15, mass: 0.8, stiffness: 75 });
     const display = useTransform(spring, current => Math.round(current).toLocaleString());
 
@@ -74,38 +75,38 @@ function ItemCount({ loading, value }: ItemListItemCountProps) {
     }, [previousValue, spring, value]);
 
     if (loading) {
-        return <span className={styles.itemCount}>-</span>;
+        return <MantineText className={styles.itemCount} variant="secondary">-</MantineText>;
     }
 
-    return <motion.span className={styles.itemCount}>{display}</motion.span>;
+    return <MotionText className={styles.itemCount} variant="secondary">{display}</MotionText>;
 }
 
-interface ItemListFooterProps {
+interface BlockProps {
     children: ReactNode;
 }
 
-function Footer(props: ItemListFooterProps) {
+function Block(props: BlockProps) {
     const { children } = props;
 
-    return <div className={styles.footer}>{children}</div>;
+    return <div className={styles.block}>{children}</div>;
 }
 
-interface ItemListContentProps {
+interface ContentProps {
     children: ReactNode;
 }
 
-function Content(props: ItemListContentProps) {
+function Content(props: ContentProps) {
     const { children } = props;
 
     return <div className={styles.content}>{children}</div>;
 }
 
-interface ItemListQueryBuilderProps {
+interface QueryBuilderProps {
     children: ReactNode;
     isOpen: boolean;
 }
 
-function QueryBuilder(props: ItemListQueryBuilderProps) {
+function QueryBuilder(props: QueryBuilderProps) {
     const { children, isOpen } = props;
 
     return (
@@ -140,15 +141,12 @@ function PlayButton(props: PlayButtonProps) {
     );
 }
 
-ListContainer.Header = {
-    Footer,
-    ItemCount,
-    Left,
-    PlayButton,
-    QueryBuilder,
-    Right,
-    Root: Header,
-    Title,
-};
-
+ListContainer.Header = Header;
+ListContainer.Block = Block;
+ListContainer.Left = Left;
+ListContainer.Right = Right;
+ListContainer.Title = Title;
+ListContainer.ItemCount = ItemCount;
 ListContainer.Content = Content;
+ListContainer.QueryBuilder = QueryBuilder;
+ListContainer.PlayButton = PlayButton;

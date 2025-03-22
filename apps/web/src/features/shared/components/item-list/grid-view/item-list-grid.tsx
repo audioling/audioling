@@ -1,19 +1,15 @@
-/* eslint-disable react/no-clone-element */
-/* eslint-disable react/no-children-map */
-import type { ItemListPaginationState } from '/@/features/shared/components/item-list/types';
-import type { ItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
-import type { AuthServer, ServerItemType } from '@repo/shared-types/app-types';
+import type { ServerItemType } from '@repo/shared-types/app-types';
 import type { CSSProperties, ReactNode, RefObject, SyntheticEvent } from 'react';
-import type { GridIndexLocation, GridStateSnapshot, VirtuosoGridHandle } from 'react-virtuoso';
+import type {
+    GridIndexLocation,
+    GridScrollSeekPlaceholderProps,
+    GridStateSnapshot,
+    VirtuosoGridHandle,
+} from 'react-virtuoso';
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'motion/react';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import {
-    Children,
-    cloneElement,
     forwardRef,
-    isValidElement,
-    Suspense,
     useEffect,
     useImperativeHandle,
     useMemo,
@@ -29,14 +25,13 @@ const BaseListComponent = forwardRef<
     HTMLDivElement,
     { children?: ReactNode; className?: string; style?: CSSProperties }
 >((props, ref) => {
-    const { children, className, style, ...rest } = props;
+    const { children, className, style } = props;
 
     return (
         <div
             ref={ref}
             className={clsx(styles.gridListComponent, className)}
-            style={{ ...style }}
-            {...rest}
+            style={style}
         >
             {children}
         </div>
@@ -57,105 +52,23 @@ const BaseItemComponent = forwardRef<
         'virtuosoRef'?: RefObject<VirtuosoGridHandle>;
     }
 >((props, ref) => {
-    const { children, 'data-index': index, enableExpanded, virtuosoRef } = props;
-
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    useEffect(() => {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.attributeName === 'style') {
-                    const expandedIndex = getComputedStyle(document.documentElement)
-                        .getPropertyValue('--opened-item-index')
-                        .trim();
-                    setIsExpanded(expandedIndex === index.toString());
-                }
-            });
-        });
-
-        observer.observe(document.documentElement, {
-            attributeFilter: ['style'],
-            attributes: true,
-        });
-
-        return () => observer.disconnect();
-    }, [index]);
-
-    const handleClick = () => {
-        if (!enableExpanded) {
-            return;
-        }
-
-        if (isExpanded) {
-            document.documentElement.style.removeProperty('--opened-item-index');
-        }
-        else {
-            document.documentElement.style.setProperty('--opened-item-index', index.toString());
-
-            virtuosoRef?.current?.scrollToIndex({
-                align: 'start',
-                behavior: 'smooth',
-                index,
-            });
-        }
-    };
+    const { children, 'data-index': index } = props;
 
     return (
         <>
-            <div ref={ref} className={clsx(styles.gridItemComponent)} onClick={handleClick}>
+            <div ref={ref} className={clsx(styles.gridItemComponent)} data-index={index}>
                 {children}
             </div>
-            <AnimatePresence mode="wait">
-                {isExpanded && (
-                    <motion.div
-                        animate={{
-                            height: '35svh',
-                            maxHeight: '400px',
-                            opacity: 1,
-                            overflow: 'hidden',
-                            y: 0,
-                        }}
-                        className={styles.fullWidthContent}
-                        exit={{ height: '0px', opacity: 0, overflow: 'hidden' }}
-                        initial={{ height: '0px', opacity: 0, overflow: 'hidden' }}
-                        transition={{
-                            height: { duration: 0 },
-                            maxHeight: { duration: 0 },
-                            x: { duration: 0.5 },
-                        }}
-                    >
-                        <Suspense fallback={null}>
-                            {Children.map(children, (child) => {
-                                if (isValidElement(child)) {
-                                    return cloneElement<any>(child, {
-                                        isExpanded: true,
-                                    });
-                                }
-                                return child;
-                            })}
-                        </Suspense>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+
         </>
     );
 });
 
 BaseItemComponent.displayName = 'BaseItemComponent';
 
-function ScrollSeekPlaceholderComponent({
-    context,
-    index,
-}: any) {
-    const {
-        displayType,
-        lines,
-        reducers,
-    } = context as {
-        displayType: ItemCardProps<any>['type'];
-        lines: ItemCardProps<any>['lines'];
-        reducers: ItemListInternalState['reducers'];
-    };
+function ScrollSeekPlaceholderComponent(props: GridScrollSeekPlaceholderProps & { context: unknown }) {
+    const { context, index } = props;
+    const { displayType, lines, reducers } = context as any;
 
     const type = displayType === 'default' ? 'default-skeleton' : displayType;
 
@@ -205,7 +118,6 @@ interface ItemGridProps<
     onScroll?: (event: SyntheticEvent) => void;
     onStartReached?: (index: number) => void;
     onStateChanged?: (state: GridStateSnapshot) => void;
-    restoreState?: GridStateSnapshot | null | undefined;
     virtuosoRef?: RefObject<VirtuosoGridHandle | undefined>;
 }
 
@@ -227,7 +139,6 @@ export function ItemListGrid<
     onScroll,
     onStartReached,
     onStateChanged,
-    restoreState,
     virtuosoRef,
 }: ItemGridProps<T, C>) {
     const rootRef = useRef(null);
@@ -341,7 +252,6 @@ export function ItemListGrid<
                 itemContent={ItemComponent}
                 overscan={0}
                 rangeChanged={onRangeChanged}
-                restoreStateFrom={restoreState}
                 scrollSeekConfiguration={{
                     enter: velocity => Math.abs(velocity) > 2000,
                     exit: (velocity) => {
@@ -358,11 +268,4 @@ export function ItemListGrid<
             />
         </div>
     );
-}
-
-export interface ServerItemGridProps<TParams> {
-    itemSelectionType?: 'single' | 'multiple';
-    pagination: ItemListPaginationState;
-    params: TParams;
-    server: AuthServer;
 }

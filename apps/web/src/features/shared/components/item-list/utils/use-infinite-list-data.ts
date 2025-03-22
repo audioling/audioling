@@ -40,7 +40,7 @@ export function useInfiniteListData<
         gcTime: toMs.hours(1),
         queryFn: () => {
             return {
-                items: itemListHelpers.getInitialData(itemCount),
+                items: itemListHelpers.getInitialData(itemCount) as (string | undefined)[],
                 loadedPages: {},
             };
         },
