@@ -2,6 +2,7 @@ import type { ItemListPaginationState } from '/@/features/shared/components/item
 import type { ServerItemType } from '@repo/shared-types/app-types';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import type { Dispatch, MouseEvent } from 'react';
+import type { VirtuosoHandle } from 'react-virtuoso';
 import { nanoid } from 'nanoid';
 import { useReducer, useRef, useState } from 'react';
 
@@ -220,6 +221,17 @@ export interface ItemListInternalReducers {
     getSelection: () => Record<string, boolean>;
     getSelectionById: (id: string) => boolean;
     removeSelectionById: (id: string) => void;
+    scrollTo: (location: {
+        behavior?: 'auto' | 'smooth' | 'instant';
+        left?: number;
+        top?: number;
+    }) => void;
+    scrollToIndex: (location: {
+        align?: 'start' | 'center' | 'end';
+        behavior: 'auto' | 'smooth';
+        index: number;
+        offset?: number;
+    }) => void;
     setGroupCollapsed: (values: Record<string, boolean>) => void;
     setGroupCollapsedById: (id: string, expanded: boolean) => void;
     setIsDragging: (isDragging: boolean) => void;
@@ -272,6 +284,7 @@ type SelectionStateAction =
         value: boolean;
     }
     | {
+        behavior?: 'single' | 'multiple';
         id: string;
         type: 'toggleById';
     };
@@ -308,6 +321,10 @@ function selectionStateReducer(
         }
 
         case 'toggleById': {
+            if (action.behavior === 'single') {
+                return { [action.id]: !state[action.id] };
+            }
+
             return { ...state, [action.id]: !state[action.id] };
         }
     }
@@ -316,8 +333,9 @@ function selectionStateReducer(
 export function useItemListInternalState<TDataType, TItemType>(args: {
     data: (TDataType | undefined)[];
     getItemId?: (index: number, item: TItemType) => string;
+    ref?: VirtuosoHandle;
 }): ItemListInternalState {
-    const { data, getItemId } = args;
+    const { data, getItemId, ref } = args;
     const [itemSelection, dispatchItemSelection] = useReducer(selectionStateReducer, {});
     const [itemExpanded, dispatchItemExpanded] = useReducer(selectionStateReducer, {});
     const [groupCollapsed, dispatchGroupCollapsed] = useReducer(selectionStateReducer, {});
@@ -330,6 +348,8 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         index: number,
         e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
     ) => {
+        e.stopPropagation();
+
         // If SHIFT is pressed, toggle the range selection
         if (e.shiftKey) {
             const currentIndex = index;
@@ -397,7 +417,13 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         lastSelectedIndex.current = index;
     };
 
-    const _onSingleSelectionClick = (item: { id: string; serverId: string }) => {
+    const _onSingleSelectionClick = (
+        item: { id: string; serverId: string },
+        _index: number,
+        e: MouseEvent<HTMLDivElement | HTMLButtonElement>,
+    ) => {
+        e.stopPropagation();
+
         const isSelfSelected = itemSelection[item.id];
 
         if (isSelfSelected && Object.keys(itemSelection).length === 1) {
@@ -497,6 +523,30 @@ export function useItemListInternalState<TDataType, TItemType>(args: {
         },
         removeSelectionById: (id: string) => {
             dispatchItemSelection({ id, type: 'removeById' });
+        },
+        scrollTo: (location: {
+            behavior?: 'auto' | 'smooth' | 'instant';
+            left?: number;
+            top?: number;
+        }) => {
+            ref?.scrollTo({
+                behavior: location.behavior,
+                left: location.left,
+                top: location.top,
+            });
+        },
+        scrollToIndex: (location: {
+            align?: 'start' | 'center' | 'end' ;
+            behavior: 'auto' | 'smooth';
+            index: number;
+            offset?: number;
+        }) => {
+            ref?.scrollToIndex({
+                align: location.align,
+                behavior: location.behavior,
+                index: location.index,
+                offset: location.offset,
+            });
         },
         setGroupCollapsed: (values: Record<string, boolean>) => {
             dispatchGroupCollapsed({ type: 'set', values });

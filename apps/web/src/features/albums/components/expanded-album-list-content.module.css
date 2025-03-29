@@ -1,0 +1,105 @@
+.expanded {
+    position: relative;
+    display: grid;
+    grid-template-areas: 'content image';
+    grid-template-columns: 100% auto;
+    gap: var(--mantine-spacing-md);
+    width: 100%;
+    height: 35dvh;
+    min-height: rem(250px);
+    max-height: rem(350px);
+    overflow: hidden;
+    user-select: none;
+    border-radius: var(--mantine-radius-md);
+    container-type: inline-size;
+    container-name: album-item-expanded;
+
+    @container (min-width: $mantine-breakpoint-xs) {
+        grid-template-columns: 70% auto;
+    }
+
+    @container (min-width: $mantine-breakpoint-md) {
+        grid-template-columns: 60% auto;
+    }
+
+    @container (min-width: $mantine-breakpoint-lg) {
+        grid-template-columns: 60% auto;
+    }
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-sm);
+}
+
+.content {
+    display: grid;
+    grid-area: content;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--mantine-spacing-md);
+    width: 100%;
+    height: 100%;
+    padding: var(--mantine-spacing-md);
+    overflow: hidden;
+}
+
+.item-title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+}
+
+.image-container {
+    position: relative;
+    display: flex;
+    grid-area: image;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.background-image {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    filter: blur(4px);
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        content: '';
+        background: linear-gradient(to right, var(--bg-color) 0%, transparent 100%);
+    }
+}
+
+.tracks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-sm);
+    height: 100%;
+}
+
+.tracks * {
+    color: black;
+}
+
+.tracks.dark * {
+    color: white;
+}
+
+.cell-duration {
+    width: 100px;
+}
+
+.cell-index {
+    width: 35px;
+    text-align: left;
+}

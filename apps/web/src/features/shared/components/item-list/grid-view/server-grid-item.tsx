@@ -49,6 +49,17 @@ export function InnerServerGridItem<T>(props: InnerServerGridItemProps<T>) {
 
     const { data } = useAppDBItem(itemType as AppDBType, id);
 
+    const handleClick = () => {
+        if (id) {
+            reducers._itemExpanded({ behavior: 'single', id, type: 'toggleById' });
+            reducers.scrollToIndex({
+                align: 'start',
+                behavior: 'smooth',
+                index,
+            });
+        }
+    };
+
     return (
         <ItemCard
             data={data as T}
@@ -59,6 +70,7 @@ export function InnerServerGridItem<T>(props: InnerServerGridItemProps<T>) {
             lines={lines}
             reducers={reducers}
             type={displayType}
+            onClick={handleClick}
             onContextMenu={onContextMenu}
             onDragInitialData={onDragInitialData}
             onDragStart={onDragStart}

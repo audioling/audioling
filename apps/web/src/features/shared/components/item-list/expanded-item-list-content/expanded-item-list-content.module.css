@@ -1,0 +1,8 @@
+.container {
+    width: 100%;
+    height: 35dvh;
+    min-height: rem(250px);
+    max-height: rem(350px);
+    margin-top: var(--mantine-spacing-xs);
+    margin-bottom: var(--mantine-spacing-xs);
+}

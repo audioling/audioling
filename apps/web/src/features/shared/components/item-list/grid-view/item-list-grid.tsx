@@ -5,6 +5,7 @@ import type {
     GridScrollSeekPlaceholderProps,
     GridStateSnapshot,
     VirtuosoGridHandle,
+    VirtuosoHandle,
 } from 'react-virtuoso';
 import clsx from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
@@ -19,6 +20,9 @@ import {
 import { VirtuosoGrid } from 'react-virtuoso';
 import styles from './item-list-grid.module.css';
 import { ItemCard, type ItemCardProps } from '/@/features/shared/components/item-card/item-card';
+import {
+    ExpandedItemListContent,
+} from '/@/features/shared/components/item-list/expanded-item-list-content/expanded-item-list-content';
 import { useItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
 
 const BaseListComponent = forwardRef<
@@ -45,21 +49,29 @@ const BaseItemComponent = forwardRef<
     {
         'children'?: ReactNode;
         'className'?: string;
-        'context'?: unknown;
+        'context'?: any;
         'data-index': number;
         'enableExpanded'?: boolean;
         'style'?: CSSProperties;
         'virtuosoRef'?: RefObject<VirtuosoGridHandle>;
     }
 >((props, ref) => {
-    const { children, 'data-index': index } = props;
+    const { children, context, 'data-index': index } = props;
+
+    const id = (props.children as any).props.data;
+
+    const isExpanded = context.reducers.getExpandedById(id);
 
     return (
         <>
-            <div ref={ref} className={clsx(styles.gridItemComponent)} data-index={index}>
+            <div ref={ref} className={styles.gridItemComponent} data-index={index}>
                 {children}
             </div>
-
+            {isExpanded && (
+                <div className={styles.expandedItem}>
+                    <ExpandedItemListContent id={id} />
+                </div>
+            )}
         </>
     );
 });
@@ -179,7 +191,7 @@ export function ItemListGrid<
         _onSingleSelectionClick,
         itemSelection,
         reducers,
-    } = useItemListInternalState({ data });
+    } = useItemListInternalState({ data, ref: ref?.current as VirtuosoHandle | undefined });
 
     useImperativeHandle(virtuosoRef, () => ({
         scrollBy: (location: ScrollToOptions) => {
@@ -246,7 +258,7 @@ export function ItemListGrid<
                 context={gridContext}
                 data={data}
                 endReached={onEndReached}
-                increaseViewportBy={300}
+                increaseViewportBy={0}
                 initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={ItemComponent}

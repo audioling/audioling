@@ -22,6 +22,7 @@ export function DefaultItemCard({
     isDragging,
     isSelected,
     lines,
+    onClick,
     onContextMenu,
     onDragInitialData,
     onDragStart,
@@ -85,6 +86,9 @@ export function DefaultItemCard({
                 [styles.dragging]: isDragging,
             })}
             tabIndex={0}
+            onClick={(e) => {
+                onClick?.(item, e as unknown as MouseEvent<HTMLDivElement | HTMLButtonElement>, reducers);
+            }}
             onContextMenu={(e) => {
                 onContextMenu?.(item, e as unknown as MouseEvent<HTMLButtonElement>, reducers);
             }}
@@ -105,6 +109,9 @@ export function DefaultItemCard({
                         className={styles.selection}
                         onChange={(e) => {
                             onItemSelection?.(item, index, (e.nativeEvent as unknown as MouseEvent<HTMLButtonElement>));
+                        }}
+                        onClick={(e) => {
+                            e.stopPropagation();
                         }}
                     />
                 )}

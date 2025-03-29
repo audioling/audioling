@@ -20,9 +20,14 @@ export interface ItemCardProps<T> {
         property: string;
         transform?: (data: T) => string;
     }[];
+    onClick?: (
+        item: Item,
+        event: MouseEvent<HTMLDivElement | HTMLButtonElement>,
+        reducers?: ItemListInternalState['reducers'],
+    ) => void;
     onContextMenu?: (
         item: Item,
-        event: MouseEvent<HTMLButtonElement>,
+        event: MouseEvent<HTMLDivElement | HTMLButtonElement>,
         reducers?: ItemListInternalState['reducers'],
     ) => void;
     onDragInitialData?: (item: Item, reducers?: ItemListInternalState['reducers']) => DragData;
@@ -32,7 +37,7 @@ export interface ItemCardProps<T> {
     onItemSelection?: (
         item: Item,
         index: number,
-        event: MouseEvent<HTMLButtonElement>
+        event: MouseEvent<HTMLDivElement | HTMLButtonElement>
     ) => void;
     onPlay?: (item: Item, playType: PlayType) => void;
     onUnfavorite?: (item: Item) => void;
