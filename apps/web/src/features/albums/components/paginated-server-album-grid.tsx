@@ -1,6 +1,6 @@
 import type { AlbumItem } from '/@/app-types';
 import type { ItemCardProps } from '/@/features/shared/components/item-card/item-card';
-import type { ServerItemGridProps } from '/@/features/shared/components/item-list/grid-view/item-list-grid';
+import type { ServerItemListProps } from '/@/features/shared/components/item-list/types';
 import type { AdapterAlbumListQuery } from '@repo/shared-types/adapter-types';
 import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types/app-types';
 import { ServerItemType } from '@repo/shared-types/app-types';
@@ -18,7 +18,7 @@ interface AlbumGridParams {
     sortOrder: ListSortOrder;
 }
 
-interface PaginatedServerAlbumGridProps extends ServerItemGridProps<AlbumGridParams> {}
+interface PaginatedServerAlbumGridProps extends ServerItemListProps<AlbumGridParams> {}
 
 export function PaginatedServerAlbumGrid(props: PaginatedServerAlbumGridProps) {
     return (
@@ -40,9 +40,7 @@ function InnerAlbumGrid({ itemSelectionType, pagination, params, server }: Pagin
     });
 
     return (
-        <ItemListGrid<string, {
-            lines: ItemCardProps<AlbumItem>['lines'];
-        }>
+        <ItemListGrid<string, { lines: ItemCardProps<AlbumItem>['lines'] }>
             ItemComponent={AlbumGridItem}
             context={{ lines: albumGridItemLines }}
             data={data}

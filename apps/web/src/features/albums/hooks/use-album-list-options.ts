@@ -1,68 +1,22 @@
 import type { AdapterAlbumListQuery } from '@repo/shared-types/adapter-types';
+import { localize } from '@repo/localization';
 import { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types/app-types';
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { useListContext } from '../../shared/context/list-context';
 import { ItemListDisplayType, ItemListPaginationType } from '/@/features/shared/components/item-list/types';
+import { ItemListColumn } from '/@/features/shared/components/item-list/utils/helpers';
 import { useListStoreOptions, useListStoreParams } from '/@/stores/list-store';
-
-// export function useAlbumListOptions() {
-//     const [searchParams, setSearchParams] = useSearchParams();
-
-//     const sortBy = (searchParams.get('sortBy') || AlbumListSortOptions.NAME) as AlbumListSortOptions;
-//     const sortOrder = (searchParams.get('sortOrder') || ListSortOrder.ASC) as ListSortOrder;
-//     const folderId = searchParams.get('folderId')?.split('[]') || undefined;
-//     const searchTerm = searchParams.get('searchTerm') || undefined;
-
-//     const currentPage = (searchParams.get('currentPage') || '1') as string;
-//     const itemsPerPage = (searchParams.get('itemsPerPage') || '100') as string;
-
-//     const setParams = useCallback((params: {
-//         currentPage?: string;
-//         displayType?: ItemListDisplayType;
-//         folderId?: string;
-//         searchTerm?: string;
-//         sortBy?: AlbumListSortOptions;
-//         sortOrder?: ListSortOrder;
-//     }) => {
-//         setSearchParams((prev) => {
-//             Object.entries(params).forEach(([key, value]) => {
-//                 if (value !== undefined) {
-//                     prev.set(key, value);
-//                 }
-//             });
-
-//             return prev;
-//         });
-//     }, [setSearchParams]);
-
-//     return {
-//         displayType: ItemListDisplayType.GRID,
-//         pagination: {
-//             currentPage: currentPage ? Number.parseInt(currentPage) : 1,
-//             itemsPerPage: itemsPerPage ? Number.parseInt(itemsPerPage) : 500,
-//         },
-//         paginationType: ItemListPaginationType.INFINITE,
-//         params: {
-//             folderId,
-//             searchTerm,
-//             sortBy,
-//             sortOrder,
-//         },
-//         setParams,
-//     };
-// }
 
 export function useAlbumListOptions() {
     const { key } = useListContext();
 
-    const {
-        columnOrder,
-        displayType,
-        initialScrollIndex,
-        pagination,
-        paginationType,
-    } = useListStoreOptions(key, {
+    const options = useListStoreOptions(key, {
+        columnOrder: [
+            ItemListColumn.ROW_INDEX,
+            ItemListColumn.NAME,
+            ItemListColumn.ALBUM_ARTISTS,
+        ],
         displayType: ItemListDisplayType.GRID,
         initialScrollIndex: 0,
         pagination: {
@@ -73,11 +27,8 @@ export function useAlbumListOptions() {
     });
 
     return {
-        columnOrder,
-        displayType,
-        initialScrollIndex,
-        pagination,
-        paginationType,
+        ...options,
+        key,
     };
 }
 
@@ -120,3 +71,17 @@ export function useAlbumListParams() {
         setParams,
     };
 }
+
+export const albumColumnOptions = [
+    { label: localize.t('app.albums.columns.rowIndex_option'), value: ItemListColumn.ROW_INDEX },
+    { label: localize.t('app.albums.columns.image_option'), value: ItemListColumn.IMAGE },
+    { label: localize.t('app.albums.columns.name_option'), value: ItemListColumn.NAME },
+    { label: localize.t('app.albums.columns.artists_option'), value: ItemListColumn.ARTISTS },
+    { label: localize.t('app.albums.columns.genre_option'), value: ItemListColumn.GENRE },
+    { label: localize.t('app.albums.columns.releaseDate_option'), value: ItemListColumn.RELEASE_DATE },
+    { label: localize.t('app.albums.columns.trackCount_option'), value: ItemListColumn.TRACK_COUNT },
+    { label: localize.t('app.albums.columns.year_option'), value: ItemListColumn.YEAR },
+    { label: localize.t('app.albums.columns.rating_option'), value: ItemListColumn.RATING },
+    { label: localize.t('app.albums.columns.favorite_option'), value: ItemListColumn.FAVORITE },
+    { label: localize.t('app.albums.columns.actions_option'), value: ItemListColumn.ACTIONS },
+];
