@@ -20,7 +20,7 @@
     display: flex;
     justify-content: space-between;
     min-width: 8rem;
-    padding: var(--mantine-spacing-xs);
+    padding: var(--mantine-spacing-sm);
     padding-right: 2rem;
     padding-left: 2rem;
     color: var(--mantine-color-text);

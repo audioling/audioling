@@ -41,11 +41,11 @@ export function PlayPauseButton() {
             <ActionIcon
                 className={clsx(styles.playPause, styles.main)}
                 radius="xl"
-                size="lg"
+                size="md"
                 variant="filled"
                 onClick={handleClick}
             >
-                <Icon fill="inherit" icon={status === PlayerStatus.PLAYING ? 'mediaPause' : 'mediaPlay'} size="md" />
+                <Icon fill="inherit" icon={status === PlayerStatus.PLAYING ? 'mediaPause' : 'mediaPlay'} size="sm" />
             </ActionIcon>
         </Tooltip>
     );

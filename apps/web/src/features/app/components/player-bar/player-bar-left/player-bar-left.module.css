@@ -2,9 +2,8 @@
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: rem(65px) minmax(0, 1fr);
-    gap: var(--mantine-gap-sm);
+    gap: var(--mantine-spacing-sm);
     max-width: 30svw;
-    padding-right: var(--mantine-gap-md);
 }
 
 .left-column {

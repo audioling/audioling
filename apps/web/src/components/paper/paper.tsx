@@ -5,7 +5,4 @@ export const PaperComponentOverride = Paper.extend({
     classNames: {
         root: styles.root,
     },
-    defaultProps: {
-        shadow: 'xl',
-    },
 });

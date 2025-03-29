@@ -1,8 +1,11 @@
-import type { AdapterAlbum } from '../../shared-types/src/adapter/adapter-album.js';
-import type { AdapterArtist } from '../../shared-types/src/adapter/adapter-artist.js';
-import type { AdapterGenre } from '../../shared-types/src/adapter/adapter-genre.js';
-import type { AdapterPlaylist, AdapterPlaylistTrack } from '../../shared-types/src/adapter/adapter-playlist.js';
-import type { AdapterTrack } from '../../shared-types/src/adapter/adapter-track.js';
+import type {
+    AdapterAlbum,
+    AdapterArtist,
+    AdapterGenre,
+    AdapterPlaylist,
+    AdapterPlaylistTrack,
+    AdapterTrack,
+} from '@repo/shared-types/adapter-types';
 import {
     AlbumListSortOptions,
     ArtistListSortOptions,

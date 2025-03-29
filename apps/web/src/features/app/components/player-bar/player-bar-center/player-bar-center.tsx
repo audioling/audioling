@@ -8,6 +8,7 @@ import {
     MediaStepForwardButton,
     PlayPauseButton,
 } from '/@/features/app/components/player-bar/player-bar-center/playback-control';
+import { PlayerProgress } from '/@/features/app/components/player-bar/player-bar-center/player-progress';
 
 export function PlayerBarCenter() {
     return (
@@ -21,6 +22,7 @@ export function PlayerBarCenter() {
                 <MediaNextButton />
                 <MediaShuffleButton />
             </div>
+            <PlayerProgress />
         </div>
     );
 }

@@ -1,6 +1,6 @@
 .vertical-slider-container {
     height: 100px;
-    padding: var(--mantine-gap-sm);
+    padding: var(--mantine-spacing-sm);
 }
 
 .horizontal-slider-container {

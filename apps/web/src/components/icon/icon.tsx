@@ -63,6 +63,7 @@ import {
     LuRepeat1,
     LuRotateCw,
     LuSearch,
+    LuSettings2,
     LuShare2,
     LuShieldAlert,
     LuShuffle,
@@ -82,7 +83,6 @@ import {
     LuVolume1,
     LuVolume2,
     LuVolumeX,
-    LuWrench,
     LuX,
 } from 'react-icons/lu';
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
@@ -153,7 +153,7 @@ export const AppIcon = {
     refresh: LuRotateCw,
     remove: LuMinus,
     search: LuSearch,
-    settings: LuWrench,
+    settings: LuSettings2,
     share: LuShare2,
     signIn: LuLogIn,
     signOut: LuLogOut,

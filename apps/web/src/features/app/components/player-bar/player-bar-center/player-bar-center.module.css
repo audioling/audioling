@@ -1,12 +1,15 @@
 .center {
     display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-sm);
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .controls {
     display: flex;
-    gap: var(--mantine-spacing-md);
+    gap: var(--mantine-spacing-sm);
     align-items: center;
     justify-content: center;
 }

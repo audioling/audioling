@@ -12,7 +12,6 @@ interface SortOrderToggleProps {
 export function SortOrderToggle({ buttonProps, onChange, value }: SortOrderToggleProps) {
     return (
         <ActionIcon
-            variant="outline"
             onClick={() => onChange(value === ListSortOrder.ASC ? ListSortOrder.DESC : ListSortOrder.ASC)}
             {...buttonProps}
         >

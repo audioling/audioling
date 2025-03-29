@@ -1,4 +1,5 @@
-import { Box, Slider } from '@mantine/core';
+import { Box, Slider, Text } from '@mantine/core';
+import clsx from 'clsx';
 import { useCallback, useEffect, useState } from 'react';
 import styles from './player-progress.module.css';
 import { PlayerController } from '/@/controllers/player-controller';
@@ -37,22 +38,21 @@ export function PlayerProgress() {
         });
     }, []);
 
-    if (!duration) {
-        return null;
-    }
-
     return (
         <Box className={styles.container}>
-            {/* {Boolean(duration) && (
-                <Text size="sm" variant="monospace">
-                    {formatDuration(Math.min(value, duration))}
-                </Text>
-            )} */}
+            <Text
+                className={clsx({
+                    [styles.hide]: !duration,
+                })} size="sm" variant="monospace"
+            >
+                {formatDuration(Math.min(value, duration ?? 0))}
+            </Text>
             <Slider
                 classNames={{
                     root: styles.root,
                 }}
                 defaultValue={0}
+                disabled={!duration}
                 label={formatDuration(value)}
                 max={duration}
                 min={0}
@@ -62,11 +62,13 @@ export function PlayerProgress() {
                 onChange={onChange}
                 onChangeEnd={onChangeEnd}
             />
-            {/* {Boolean(duration) && (
-                <Text size="sm" variant="monospace">
-                    {formatDuration(duration)}
-                </Text>
-            )} */}
+            <Text
+                className={clsx({ [styles.hide]: !duration })}
+                size="sm"
+                variant="monospace"
+            >
+                {formatDuration(duration ?? 0)}
+            </Text>
         </Box>
     );
 }

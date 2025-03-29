@@ -1,5 +1,6 @@
 import { Text as MantineText } from '@mantine/core';
 import clsx from 'clsx';
+import { motion } from 'motion/react';
 import styles from './text.module.css';
 
 export const TextComponentOverride = MantineText.extend({
@@ -12,3 +13,5 @@ export const TextComponentOverride = MantineText.extend({
         }),
     }),
 });
+
+export const MotionText = motion.create(MantineText as any);

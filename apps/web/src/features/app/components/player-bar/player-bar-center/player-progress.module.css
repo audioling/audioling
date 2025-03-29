@@ -1,14 +1,17 @@
 .container {
-    position: absolute;
     top: rem(-4px);
     left: 0;
     display: flex;
-    gap: var(--mantine-gap-sm);
+    gap: var(--mantine-spacing-sm);
     align-items: center;
     width: 100%;
 }
 
 .root {
-    --track-bg: transparent;
+    --track-bg: alpha(var(--mantine-color-gray-6), 0.3);
     --slider-color: var(--mantine-color-secondary-7);
+}
+
+.hide {
+    opacity: 0;
 }

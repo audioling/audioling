@@ -11,7 +11,6 @@ interface RefreshButtonProps {
 export function RefreshButton({ buttonProps, loading, onClick }: RefreshButtonProps) {
     return (
         <ActionIcon
-            variant="outline"
             onClick={onClick}
             {...buttonProps}
         >

@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { ListContext, useInitializeListContext } from '../../shared/context/list-context';
 import { FullPageLoader } from '/@/components/loader/loader';
 import { useAlbumListCount } from '/@/features/albums/api/get-album-list-count';
-import { AlbumListFilters } from '/@/features/albums/components/album-list-filters';
+import { AlbumListConfigMenu, AlbumListFilters } from '/@/features/albums/components/album-list-filters';
 import { InfiniteServerAlbumGrid } from '/@/features/albums/components/infinite-server-album-grid';
+import { InfiniteServerAlbumTable } from '/@/features/albums/components/infinite-server-album-table';
 import { PaginatedServerAlbumGrid } from '/@/features/albums/components/paginated-server-album-grid';
 import { useAlbumListOptions, useAlbumListParams } from '/@/features/albums/hooks/use-album-list-options';
 import { useAppContext } from '/@/features/authentication/context/app-context';
 import { ListContainer } from '/@/features/shared/components/item-list/container/list-container';
-import { ItemListPaginationType } from '/@/features/shared/components/item-list/types';
+import { ItemListDisplayType, ItemListPaginationType } from '/@/features/shared/components/item-list/types';
 import { PageContainer } from '/@/features/shared/components/page-container/page-container';
 
 export function AlbumListRoute() {
@@ -19,9 +20,9 @@ export function AlbumListRoute() {
         <PageContainer>
             <ListContext.Provider value={listContext}>
                 <ListContainer>
-                    <ListContainer.Header.Root>
+                    <ListContainer.Header>
                         <Header />
-                    </ListContainer.Header.Root>
+                    </ListContainer.Header>
                     <ListContainer.Content>
                         <Suspense fallback={<FullPageLoader />}>
                             <Content />
@@ -38,17 +39,19 @@ function Header() {
 
     return (
         <>
-            <ListContainer.Header.Left>
-                <ListContainer.Header.Title>{t('app.albums.title')}</ListContainer.Header.Title>
-                <Suspense fallback={<ListContainer.Header.ItemCount loading value={0} />}>
+            <ListContainer.Left>
+                <ListContainer.Title>{t('app.albums.title')}</ListContainer.Title>
+                <Suspense fallback={<ListContainer.ItemCount loading value={0} />}>
                     <HeaderItemCount />
                 </Suspense>
-            </ListContainer.Header.Left>
-            <ListContainer.Header.Footer>
-                <ListContainer.Header.Left>
-                    <AlbumListFilters />
-                </ListContainer.Header.Left>
-            </ListContainer.Header.Footer>
+            </ListContainer.Left>
+            <ListContainer.Right>
+                &nbsp;
+            </ListContainer.Right>
+            <ListContainer.Block>
+                <AlbumListFilters />
+                <AlbumListConfigMenu />
+            </ListContainer.Block>
         </>
     );
 }
@@ -58,18 +61,18 @@ function HeaderItemCount() {
     const { params } = useAlbumListParams();
     const { data: itemCount } = useAlbumListCount(server, { query: params });
 
-    return <ListContainer.Header.ItemCount value={itemCount || 0} />;
+    return <ListContainer.ItemCount value={itemCount || 0} />;
 }
 
 function Content() {
     const { server } = useAppContext();
-    const { pagination, paginationType } = useAlbumListOptions();
+    const { displayType, pagination, paginationType } = useAlbumListOptions();
     const { componentKey, params } = useAlbumListParams();
 
-    switch (paginationType) {
-        case ItemListPaginationType.INFINITE:
+    switch (displayType) {
+        case ItemListDisplayType.TABLE:
             return (
-                <InfiniteServerAlbumGrid
+                <InfiniteServerAlbumTable
                     key={componentKey}
                     itemSelectionType="multiple"
                     pagination={pagination}
@@ -77,16 +80,31 @@ function Content() {
                     server={server}
                 />
             );
-        case ItemListPaginationType.PAGINATED:
-            return (
-                <PaginatedServerAlbumGrid
-                    key={componentKey}
-                    itemSelectionType="multiple"
-                    pagination={pagination}
-                    params={params}
-                    server={server}
-                />
-            );
+        case ItemListDisplayType.GRID:
+            switch (paginationType) {
+                case ItemListPaginationType.INFINITE:
+                    return (
+                        <InfiniteServerAlbumGrid
+                            key={componentKey}
+                            itemSelectionType="multiple"
+                            pagination={pagination}
+                            params={params}
+                            server={server}
+                        />
+                    );
+                case ItemListPaginationType.PAGINATED:
+                    return (
+                        <PaginatedServerAlbumGrid
+                            key={componentKey}
+                            itemSelectionType="multiple"
+                            pagination={pagination}
+                            params={params}
+                            server={server}
+                        />
+                    );
+                default:
+                    return null;
+            }
         default:
             return null;
     }

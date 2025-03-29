@@ -21,7 +21,6 @@ export function SelectionMenu<T>({
             <Menu.Target>
                 <Button
                     leftSection={<Icon icon="sort" />}
-                    variant="outline"
                     {...buttonProps}
                 >
                     <Text>{options.find(option => option.value === value)?.label}</Text>
