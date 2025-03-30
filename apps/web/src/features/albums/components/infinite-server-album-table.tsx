@@ -5,33 +5,48 @@ import type { AdapterAlbumListQuery } from '@repo/shared-types/adapter-types';
 import type { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types/app-types';
 import { ServerItemType } from '@repo/shared-types/app-types';
 import { Suspense } from 'react';
-import { ItemListGrid } from '../../shared/components/item-list/grid-view/item-list-grid';
-import { useInfiniteListData } from '../../shared/components/item-list/utils/use-infinite-list-data';
-import { useListContext } from '../../shared/context/list-context';
 import { FullPageLoader } from '/@/components/loader/loader';
 import { queryAlbumList } from '/@/features/albums/api/get-album-list';
 import { useAlbumListCount } from '/@/features/albums/api/get-album-list-count';
-import { AlbumGridItem } from '/@/features/albums/components/album-grid-item';
 import { albumGridItemLines } from '/@/features/albums/components/album-grid-item-lines';
+import { AlbumTableItem } from '/@/features/albums/components/album-table-item';
+import { ItemListTable } from '/@/features/shared/components/item-list/table-view/item-list-table';
+import { ItemListColumn, itemListHelpers } from '/@/features/shared/components/item-list/utils/helpers';
+import { useInfiniteListData } from '/@/features/shared/components/item-list/utils/use-infinite-list-data';
+import { useListContext } from '/@/features/shared/context/list-context';
 
-interface AlbumGridParams {
+interface AlbumTableParams {
     sortBy: AlbumListSortOptions;
     sortOrder: ListSortOrder;
 }
 
-interface InfiniteServerAlbumGridProps extends ServerItemListProps<AlbumGridParams> {}
+interface InfiniteServerAlbumTableProps extends ServerItemListProps<AlbumTableParams> {}
 
-export function InfiniteServerAlbumGrid(props: InfiniteServerAlbumGridProps) {
+export function InfiniteServerAlbumTable(props: InfiniteServerAlbumTableProps) {
     return (
         <Suspense fallback={<FullPageLoader />}>
-            <InnerAlbumGrid {...props} />
+            <InnerAlbumTable {...props} />
         </Suspense>
     );
 }
 
-function InnerAlbumGrid({ itemSelectionType, pagination, params, server }: InfiniteServerAlbumGridProps) {
-    const { data: itemCount } = useAlbumListCount(server, { query: params });
+function InnerAlbumTable({
+    itemSelectionType,
+    pagination,
+    params,
+    server,
+}: InfiniteServerAlbumTableProps) {
     const { key } = useListContext();
+
+    const { data: itemCount } = useAlbumListCount(server, { query: params });
+    const columns = itemListHelpers.table.getColumns([
+        ItemListColumn.ROW_INDEX,
+        ItemListColumn.IMAGE,
+        ItemListColumn.NAME,
+        ItemListColumn.DURATION,
+        ItemListColumn.PLAY_COUNT,
+        ItemListColumn.ACTIONS,
+    ]);
 
     const { data, handleRangeChanged } = useInfiniteListData<AdapterAlbumListQuery, any>(server, {
         itemCount,
@@ -43,11 +58,11 @@ function InnerAlbumGrid({ itemSelectionType, pagination, params, server }: Infin
     });
 
     return (
-        <ItemListGrid<string, { lines: ItemCardProps<AlbumItem>['lines'] }>
-            ItemComponent={AlbumGridItem}
+        <ItemListTable<string, { lines: ItemCardProps<AlbumItem>['lines'] }>
+            ItemComponent={AlbumTableItem}
+            columns={columns}
             context={{ lines: albumGridItemLines }}
             data={data}
-            displayType="default"
             itemCount={itemCount}
             itemSelectionType={itemSelectionType}
             itemType={ServerItemType.ALBUM}

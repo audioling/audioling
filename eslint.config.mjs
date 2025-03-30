@@ -11,6 +11,7 @@ export default antfu(
         react: true,
         rules: {
             ...sortKeysCustomOrder.configs['flat/recommended'].rules,
+            'react-refresh/only-export-components': 'off',
             'style/jsx-child-element-spacing': 'error',
             'style/jsx-closing-tag-location': [
                 'error',

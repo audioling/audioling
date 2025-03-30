@@ -1,6 +1,6 @@
 .cell {
     position: relative;
-    display: block;
+    display: flex;
     align-content: center;
     height: 100%;
     padding: 0 var(--mantine-spacing-sm);
@@ -42,8 +42,7 @@
 .skeleton-image-container {
     display: block;
     width: auto;
-    height: 100%;
-    max-height: 95% !important;
+    height: 90% !important;
     aspect-ratio: 1 / 1;
     margin: auto;
     line-height: 0;
@@ -62,7 +61,6 @@
     display: block;
     align-content: center;
     height: 100%;
-    max-height: 95% !important;
     padding: 0 var(--mantine-spacing-sm);
 }
 
@@ -73,6 +71,10 @@
     margin: auto;
     object-fit: cover;
     border-radius: var(--mantine-radius-md);
+}
+
+.image-container {
+    height: 90%;
 }
 
 .name {

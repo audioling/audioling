@@ -41,7 +41,7 @@ export function usePaginatedListData<
             const fetchParams = {
                 ...params,
                 limit: pagination.itemsPerPage,
-                offset: pagination.currentPage * pagination.itemsPerPage,
+                offset: (pagination.currentPage - 1) * pagination.itemsPerPage,
             };
 
             const { items } = await queryFn(queryClient, server, fetchParams as unknown as TParams);

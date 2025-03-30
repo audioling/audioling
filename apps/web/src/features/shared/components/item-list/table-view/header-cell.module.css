@@ -1,15 +1,41 @@
 .header-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: var(--mantine-spacing-sm) var(--mantine-spacing-xs);
+    font-size: var(--mantine-font-size-sm);
     text-transform: uppercase;
+
+    svg {
+        width: var(--mantine-font-size-sm);
+        height: var(--mantine-font-size-sm);
+    }
+
+    @mixin textEllipsis;
 }
 
-.center {
+.justify-center {
     justify-content: center;
 }
 
-.start {
+.justify-start {
     justify-content: flex-start;
 }
 
-.end {
+.justify-end {
     justify-content: flex-end;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.align-start {
+    align-items: flex-start;
+}
+
+.align-end {
+    align-items: flex-end;
 }

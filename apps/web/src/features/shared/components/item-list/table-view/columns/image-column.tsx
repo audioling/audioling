@@ -11,9 +11,9 @@ import type { ItemListCellProps, ItemListColumn } from '/@/features/shared/compo
 import type { MouseEvent } from 'react';
 import { ActionIcon } from '@mantine/core';
 import { ServerItemType } from '@repo/shared-types/app-types';
-import Skeleton from 'react-loading-skeleton';
 import styles from './column.module.css';
 import { Icon } from '/@/components/icon/icon';
+import { Skeleton } from '/@/components/skeleton/skeleton';
 import { PlayerController } from '/@/controllers/player-controller';
 import { ItemImage } from '/@/features/shared/components/item-image/item-image';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
@@ -21,7 +21,9 @@ import { PlayType } from '/@/stores/player-store';
 
 const playButtonOmittedItemTypes = [ServerItemType.PLAYLIST_TRACK];
 
-function Cell({ isHovered, item, itemType }: ItemListCellProps) {
+function Cell(props: ItemListCellProps) {
+    const { isHovered, item, itemType } = props;
+
     if (typeof item === 'object' && item) {
         if ('imageUrl' in item) {
             const handlePlay = (e: MouseEvent<HTMLButtonElement>) => {
@@ -109,8 +111,9 @@ function Cell({ isHovered, item, itemType }: ItemListCellProps) {
                 <div className={styles.imageCell}>
                     <ItemImage
                         className={styles.image}
+                        containerClassName={styles.imageContainer}
+                        id={item.imageUrl as string | string[]}
                         size="table"
-                        src={item.imageUrl as string | string[]}
                     />
                     {isHovered && !playButtonOmittedItemTypes.includes(itemType) && (
                         <ActionIcon

@@ -26,11 +26,13 @@ function Cell(props: ItemListCellProps) {
     }
 }
 
-function DefaultCell({ item }: ItemListCellProps) {
+function DefaultCell(props: ItemListCellProps) {
+    const { item } = props;
+
     if (typeof item === 'object' && item) {
         if ('name' in item && typeof item.name === 'string') {
             return (
-                <ItemCell>
+                <ItemCell lineClamp={2} {...props}>
                     {item.name}
                 </ItemCell>
             );

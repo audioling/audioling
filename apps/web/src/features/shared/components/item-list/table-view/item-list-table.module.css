@@ -10,9 +10,11 @@
     height: 100%;
 }
 
-.base-item-component {
+.base-item-component,
+.scroll-seek-placeholder {
     display: grid;
-    height: 40px;
+    gap: var(--mantine-spacing-xs) 0;
+    height: rem(50px);
 }
 
 .table-list-component {
@@ -23,6 +25,7 @@
 
 .header {
     display: grid;
+    box-shadow: var(--mantine-shadow-md);
 }
 
 .rows {

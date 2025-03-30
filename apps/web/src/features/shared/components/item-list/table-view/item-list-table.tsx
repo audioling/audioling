@@ -2,6 +2,7 @@ import type {
     ItemListColumn,
     ItemListColumnDefinitions,
     ItemListColumnOrder,
+    ItemListInternalState,
 } from '/@/features/shared/components/item-list/utils/helpers';
 import type { DragData } from '/@/utils/drag-drop';
 import type { ServerItemType } from '@repo/shared-types/app-types';
@@ -17,6 +18,7 @@ import type {
     FlatScrollIntoViewLocation,
     ItemProps,
     ListProps,
+    ScrollSeekPlaceholderProps,
     StateCallback,
     VirtuosoHandle,
 } from 'react-virtuoso';
@@ -35,13 +37,17 @@ import React, {
 import { Virtuoso } from 'react-virtuoso';
 import styles from './item-list-table.module.css';
 import { ComponentErrorBoundary } from '/@/components/error-boundary/component-error-boundary';
+import {
+    ExpandedItemListContent,
+} from '/@/features/shared/components/item-list/expanded-item-list-content/expanded-item-list-content';
 import { itemListHelpers, useItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
 import { ItemTableHeader } from '/@/features/shared/components/item-table-header/item-table-header';
+import { ItemTableRow } from '/@/features/shared/components/item-table-row/item-table-row';
 import { DragTarget } from '/@/utils/drag-drop';
 
 const BaseListComponent = forwardRef<
     HTMLDivElement,
-    ListProps & { context: Record<string, any> }
+    ListProps & { context: any }
 >((props, ref) => {
     const { children, context, style, ...rest } = props;
 
@@ -49,7 +55,7 @@ const BaseListComponent = forwardRef<
         <div
             ref={ref as unknown as RefObject<HTMLTableSectionElement>}
             className={styles.baseListComponent}
-            style={{ ...style }}
+            style={style}
             {...rest}
         >
             {children}
@@ -59,31 +65,50 @@ const BaseListComponent = forwardRef<
 
 const BaseItemComponent = forwardRef<
     HTMLDivElement,
-    ItemProps<any> & { context: Record<string, any> }
+    ItemProps<any> & { context: any }
 >((props, ref) => {
-    const { children, context, style, ...rest } = props;
+    const { children, context, 'data-index': index, style, ...rest } = props;
+
+    const id = (props.children as any).props.data;
+
+    const isExpanded = context.reducers.getExpandedById(id);
 
     return (
-        <div
-            ref={ref}
-            className={styles.baseItemComponent}
-            style={{ ...context.columnStyles }}
-            {...rest}
-        >
-            {children}
-        </div>
+        <>
+            <div
+                ref={ref}
+                className={styles.baseItemComponent}
+                data-index={index}
+                data-item-group-index={rest['data-item-group-index']}
+                data-item-id={rest.item}
+                data-known-size={rest['data-known-size']}
+                style={context.columnStyles}
+            >
+                {children}
+            </div>
+            {isExpanded && (
+                <ExpandedItemListContent id={id} />
+            )}
+        </>
+
     );
 });
 
-// export interface TableContext {
-//     columnOrder?: ItemListColumn[];
-//     columnStyles?: { sizes: string[]; styles: { gridTemplateColumns: string } };
-//     currentTrack?: PlayQueueItem;
-//     libraryId: string;
-//     listKey: string;
-//     onChangeColumnOrder?: (columnOrder: ItemListColumn[]) => void;
-//     startIndex?: number;
-// }
+function ScrollSeekPlaceholderComponent(props: ScrollSeekPlaceholderProps & { context: Record<string, any> }) {
+    const { context, index } = props;
+
+    return (
+        <div className={styles.scrollSeekPlaceholder}>
+            <ItemTableRow
+                columns={context.columns}
+                data={undefined}
+                id={undefined}
+                index={index}
+                type="default-skeleton"
+            />
+        </div>
+    );
+}
 
 export type ItemListTableComponent = Parameters<typeof Virtuoso>['0']['itemContent'];
 
@@ -98,6 +123,7 @@ export interface ItemListTableProps<T, C> {
     getItemId?: (index: number) => string;
     HeaderComponent?: ElementType;
     initialScrollIndex?: number;
+    internalState: ItemListInternalState;
     isScrolling?: (isScrolling: boolean) => void;
     ItemComponent: ItemListTableComponent;
     itemCount: number;
@@ -197,9 +223,14 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
     const {
         _onMultiSelectionClick,
         _onSingleSelectionClick,
+        itemExpanded,
         itemSelection,
         reducers,
-    } = useItemListInternalState<TDataType, TItemType>({ data, getItemId });
+    } = useItemListInternalState<TDataType, TItemType>({
+        data,
+        getItemId,
+        ref: ref?.current as VirtuosoHandle | undefined,
+    });
 
     const columnStyles = useMemo(() => {
         const headerSizes = columns.map(column => column.size);
@@ -269,8 +300,10 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
 
     const tableContext = useMemo(() => ({
         ...context,
+        columnOrder,
         columns,
         columnStyles,
+        itemExpanded,
         itemSelection,
         itemSelectionType,
         itemType,
@@ -278,16 +311,20 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
             ? _onMultiSelectionClick
             : itemSelectionType === 'single' ? _onSingleSelectionClick : undefined,
         reducers,
+        tableId,
     }), [
         context,
+        columnOrder,
         columns,
         columnStyles,
+        itemExpanded,
         itemSelection,
         itemSelectionType,
         itemType,
         _onMultiSelectionClick,
         _onSingleSelectionClick,
         reducers,
+        tableId,
     ]);
 
     return (
@@ -316,23 +353,24 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
                                 : undefined,
                             Item: BaseItemComponent,
                             List: BaseListComponent,
+                            // ScrollSeekPlaceholder: ScrollSeekPlaceholderComponent,
                         }}
                         context={tableContext}
                         data={data}
                         endReached={onEndReached}
-                        increaseViewportBy={300}
+                        increaseViewportBy={350}
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
                         itemContent={ItemComponent}
                         overscan={0}
                         rangeChanged={onRangeChanged}
-                        scrollSeekConfiguration={{
-                            enter: velocity => Math.abs(velocity) > 2000,
-                            exit: (velocity) => {
-                                const shouldExit = Math.abs(velocity) < 100;
-                                return shouldExit;
-                            },
-                        }}
+                        // scrollSeekConfiguration={{
+                        //     enter: velocity => Math.abs(velocity) > 2000,
+                        //     exit: (velocity) => {
+                        //         const shouldExit = Math.abs(velocity) < 100;
+                        //         return shouldExit;
+                        //     },
+                        // }}
                         scrollerRef={setScroller}
                         startReached={onStartReached}
                         style={{ overflow: 'hidden' }}

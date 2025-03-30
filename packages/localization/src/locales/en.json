@@ -43,6 +43,58 @@
             "selectedItems_one": "Selected 1 item",
             "selectedItems_other": "Selected {{count}} items"
         },
+        "itemList": {
+            "display": {
+                "grid": "Grid",
+                "table": "Table"
+            },
+            "pagination": {
+                "infinite": "Infinite",
+                "paginated": "Paginated"
+            },
+            "columns": {
+                "albumArtists_label": "Album Artists",
+                "albumArtists_option": "Album Artists",
+                "albumCount_label": "Albums",
+                "albumCount_option": "Albums",
+                "artists_label": "Artists",
+                "artists_option": "Artists",
+                "duration_label": "Duration",
+                "duration_option": "Duration",
+                "image_label": "",
+                "image_option": "Image",
+                "name_label": "Name",
+                "name_option": "Name",
+                "playCount_label": "Plays",
+                "playCount_option": "Plays",
+                "bpm_label": "BPM",
+                "bpm_option": "BPM",
+                "fileName_label": "File Name",
+                "fileName_option": "File Name",
+                "filePath_label": "File Path",
+                "filePath_option": "File Path",
+                "fileSize_label": "File Size",
+                "fileSize_option": "File Size",
+                "genre_label": "Genre",
+                "genre_option": "Genre",
+                "lastPlayed_label": "Last Played",
+                "lastPlayed_option": "Last Played",
+                "quality_label": "Quality",
+                "quality_option": "Quality",
+                "rowIndex_label": "",
+                "rowIndex_option": "Row Index",
+                "rating_label": "Rating",
+                "rating_option": "Rating",
+                "releaseDate_label": "Release Date",
+                "releaseDate_option": "Release Date",
+                "trackCount_label": "Tracks",
+                "trackCount_option": "Tracks",
+                "trackNumber_label": "Track",
+                "trackNumber_option": "Track",
+                "year_label": "Year",
+                "year_option": "Year"
+            }
+        },
         "player": {
             "mediaPrevious": "Previous",
             "mediaNext": "Next",

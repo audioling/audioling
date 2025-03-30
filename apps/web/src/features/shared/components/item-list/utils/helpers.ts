@@ -1,3 +1,4 @@
+// import type { TableContext } from '/@/features/shared/components/item-list/table-view/item-list-table';
 import type { ItemListPaginationState } from '/@/features/shared/components/item-list/types';
 import type { ServerItemType } from '@repo/shared-types/app-types';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
@@ -5,6 +6,35 @@ import type { Dispatch, MouseEvent } from 'react';
 import type { VirtuosoHandle } from 'react-virtuoso';
 import { nanoid } from 'nanoid';
 import { useReducer, useRef, useState } from 'react';
+import { actionsColumn } from '/@/features/shared/components/item-list/table-view/columns/actions-column';
+import { addToPlaylistColumn } from '/@/features/shared/components/item-list/table-view/columns/add-to-playlist-column';
+import { albumArtistsColumn } from '/@/features/shared/components/item-list/table-view/columns/album-artists.column';
+import { albumColumn } from '/@/features/shared/components/item-list/table-view/columns/album-column';
+import { albumCountColumn } from '/@/features/shared/components/item-list/table-view/columns/album-count-column';
+import { artistsColumn } from '/@/features/shared/components/item-list/table-view/columns/artists-column';
+import { bpmColumn } from '/@/features/shared/components/item-list/table-view/columns/bpm-column';
+import { dateAddedColumn } from '/@/features/shared/components/item-list/table-view/columns/date-added-column';
+import { discNumberColumn } from '/@/features/shared/components/item-list/table-view/columns/disc-number-column';
+import { durationColumn } from '/@/features/shared/components/item-list/table-view/columns/duration-column';
+import { favoriteColumn } from '/@/features/shared/components/item-list/table-view/columns/favorite-column';
+import { fileNameColumn } from '/@/features/shared/components/item-list/table-view/columns/file-name-column';
+import { filePathColumn } from '/@/features/shared/components/item-list/table-view/columns/file-path-column';
+import { fileSizeColumn } from '/@/features/shared/components/item-list/table-view/columns/file-size-column';
+import { genreColumn } from '/@/features/shared/components/item-list/table-view/columns/genre-column';
+import { imageColumn } from '/@/features/shared/components/item-list/table-view/columns/image-column';
+import { lastPlayedColumn } from '/@/features/shared/components/item-list/table-view/columns/last-played-column';
+import { nameColumn } from '/@/features/shared/components/item-list/table-view/columns/name-column';
+import { playCountColumn } from '/@/features/shared/components/item-list/table-view/columns/play-count-column';
+import { qualityColumn } from '/@/features/shared/components/item-list/table-view/columns/quality-column';
+import { ratingColumn } from '/@/features/shared/components/item-list/table-view/columns/rating-column';
+import { releaseDateColumn } from '/@/features/shared/components/item-list/table-view/columns/release-date-column';
+import { rowIndexColumn } from '/@/features/shared/components/item-list/table-view/columns/row-index-column';
+import {
+    standaloneCombinedColumn,
+} from '/@/features/shared/components/item-list/table-view/columns/standalone-combined-column';
+import { trackCountColumn } from '/@/features/shared/components/item-list/table-view/columns/track-count-column';
+import { trackNumberColumn } from '/@/features/shared/components/item-list/table-view/columns/track-number-column';
+import { yearColumn } from '/@/features/shared/components/item-list/table-view/columns/year-column';
 
 export enum ItemListColumn {
     ACTIONS = 'actions',
@@ -36,56 +66,57 @@ export enum ItemListColumn {
     YEAR = 'year',
 }
 
-// export interface ItemListColumnDefinition {
-//     cell: React.ComponentType<ItemListCellProps>;
-//     header: React.ComponentType;
-//     id: ItemListColumn;
-//     size: number;
-// }
+export interface ItemListColumnDefinition {
+    cell: React.ComponentType<ItemListCellProps>;
+    header: React.ComponentType;
+    id: ItemListColumn;
+    size: number;
+}
 
-// export type ItemListColumnDefinitions = ItemListColumnDefinition[];
+export type ItemListColumnDefinitions = ItemListColumnDefinition[];
 
-// export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDefinition>> = {
-//     [ItemListColumn.ROW_INDEX]: rowIndexColumn,
-//     [ItemListColumn.NAME]: nameColumn,
-//     [ItemListColumn.STANDALONE_COMBINED]: standaloneCombinedColumn,
-//     [ItemListColumn.ALBUM]: albumColumn,
-//     [ItemListColumn.ALBUM_ARTISTS]: albumArtistsColumn,
-//     [ItemListColumn.ARTISTS]: artistsColumn,
-//     [ItemListColumn.DATE_ADDED]: dateAddedColumn,
-//     [ItemListColumn.DURATION]: durationColumn,
-//     [ItemListColumn.FAVORITE]: favoriteColumn,
-//     [ItemListColumn.GENRE]: genreColumn,
-//     [ItemListColumn.IMAGE]: imageColumn,
-//     [ItemListColumn.LAST_PLAYED]: lastPlayedColumn,
-//     [ItemListColumn.PLAY_COUNT]: playCountColumn,
-//     [ItemListColumn.BPM]: bpmColumn,
-//     [ItemListColumn.ALBUM_COUNT]: albumCountColumn,
-//     [ItemListColumn.TRACK_COUNT]: trackCountColumn,
-//     [ItemListColumn.TRACK_NUMBER]: trackNumberColumn,
-//     [ItemListColumn.RATING]: ratingColumn,
-//     [ItemListColumn.RELEASE_DATE]: releaseDateColumn,
-//     [ItemListColumn.YEAR]: yearColumn,
-//     [ItemListColumn.ACTIONS]: actionsColumn,
-//     [ItemListColumn.ADD_TO_PLAYLIST]: addToPlaylistColumn,
-//     [ItemListColumn.FILE_NAME]: fileNameColumn,
-//     [ItemListColumn.FILE_PATH]: filePathColumn,
-//     [ItemListColumn.FILE_SIZE]: fileSizeColumn,
-//     [ItemListColumn.QUALITY]: qualityColumn,
-//     [ItemListColumn.DISC_NUMBER]: discNumberColumn,
-// };
+export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDefinition>> = {
+    [ItemListColumn.ROW_INDEX]: rowIndexColumn,
+    [ItemListColumn.NAME]: nameColumn,
+    [ItemListColumn.STANDALONE_COMBINED]: standaloneCombinedColumn,
+    [ItemListColumn.ALBUM]: albumColumn,
+    [ItemListColumn.ALBUM_ARTISTS]: albumArtistsColumn,
+    [ItemListColumn.ARTISTS]: artistsColumn,
+    [ItemListColumn.DATE_ADDED]: dateAddedColumn,
+    [ItemListColumn.DURATION]: durationColumn,
+    [ItemListColumn.FAVORITE]: favoriteColumn,
+    [ItemListColumn.GENRE]: genreColumn,
+    [ItemListColumn.IMAGE]: imageColumn,
+    [ItemListColumn.LAST_PLAYED]: lastPlayedColumn,
+    [ItemListColumn.PLAY_COUNT]: playCountColumn,
+    [ItemListColumn.BPM]: bpmColumn,
+    [ItemListColumn.ALBUM_COUNT]: albumCountColumn,
+    [ItemListColumn.TRACK_COUNT]: trackCountColumn,
+    [ItemListColumn.TRACK_NUMBER]: trackNumberColumn,
+    [ItemListColumn.RATING]: ratingColumn,
+    [ItemListColumn.RELEASE_DATE]: releaseDateColumn,
+    [ItemListColumn.YEAR]: yearColumn,
+    [ItemListColumn.ACTIONS]: actionsColumn,
+    [ItemListColumn.ADD_TO_PLAYLIST]: addToPlaylistColumn,
+    [ItemListColumn.FILE_NAME]: fileNameColumn,
+    [ItemListColumn.FILE_PATH]: filePathColumn,
+    [ItemListColumn.FILE_SIZE]: fileSizeColumn,
+    [ItemListColumn.QUALITY]: qualityColumn,
+    [ItemListColumn.DISC_NUMBER]: discNumberColumn,
+};
 
-// export interface ItemListCellProps {
-//     context?: TableContext;
-//     handlers?: {
-//         onItemContextMenu?: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
-//     };
-//     index: number;
-//     isHovered?: boolean;
-//     item: unknown | undefined;
-//     itemType: ServerItemType;
-//     startIndex?: number;
-// }
+export interface ItemListCellProps {
+    id: string | undefined;
+    index: number;
+    isHovered?: boolean;
+    isSelected?: boolean;
+    item: unknown | undefined;
+    itemType: ServerItemType;
+    onClick?: (e: MouseEvent<HTMLDivElement>) => void;
+    onContextMenu?: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    reducers?: ItemListInternalReducers;
+    startIndex?: number;
+}
 
 export type ItemListColumnOrder = (typeof ItemListColumn)[keyof typeof ItemListColumn][];
 
@@ -101,11 +132,11 @@ export interface PaginatedItemListProps<T> extends InfiniteItemListProps<T> {
     setPagination: (pagination: ItemListPaginationState) => void;
 }
 
-// export function numberToColumnSize(size: number, unit: 'px' | 'fr') {
-//     if (unit === 'px')
-//         return size;
-//     return size + 100000;
-// }
+export function numberToColumnSize(size: number, unit: 'px' | 'fr') {
+    if (unit === 'px')
+        return size;
+    return size + 100000;
+}
 
 export const itemListHelpers = {
     generateListId(libraryId: string, pathname: string) {
@@ -164,27 +195,29 @@ export const itemListHelpers = {
 
         return pagesToLoad;
     },
-    // table: {
-    //     columnSizeToStyle(columnSize: number) {
-    //         if (columnSize > 100000)
-    //             return `minmax(0px, ${columnSize - 100000}fr)`;
-    //         return `${columnSize}px`;
-    //     },
-    //     getColumns(columnOrder: ItemListColumnOrder) {
-    //         const listColumns = [];
+    table: {
+        columnSizeToStyle(columnSize: number) {
+            if (columnSize > 100000)
+                return `minmax(0px, ${columnSize - 100000}fr)`;
+            return `${columnSize}px`;
+        },
+        getColumns(columnOrder: ItemListColumnOrder): ItemListColumnDefinitions {
+            const listColumns = [];
 
-    //         for (const column of columnOrder) {
-    //             // listColumns.push(itemListColumnMap[column]);
-    //         }
+            for (const column of columnOrder) {
+                if (itemListColumnMap[column]) {
+                    listColumns.push(itemListColumnMap[column]);
+                }
+            }
 
-    //         return listColumns;
-    //     },
-    //     numberToColumnSize(size: number, unit: 'px' | 'fr') {
-    //         if (unit === 'px')
-    //             return size;
-    //         return size + 100000;
-    //     },
-    // },
+            return listColumns;
+        },
+        numberToColumnSize(size: number, unit: 'px' | 'fr') {
+            if (unit === 'px')
+                return size;
+            return size + 100000;
+        },
+    },
     updateFavorite<T>(
         queryClient: QueryClient,
         queryKey: QueryKey,

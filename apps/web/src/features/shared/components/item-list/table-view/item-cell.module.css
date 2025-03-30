@@ -1,11 +1,17 @@
 .cell {
     position: relative;
-    display: block;
+    display: flex;
     align-content: center;
+    align-items: center;
+    width: 100%;
     height: 100%;
     padding: 0 var(--mantine-spacing-xs);
 
     @mixin textEllipsis;
+}
+
+.clamp-container {
+    display: flex;
 }
 
 .center {
@@ -18,4 +24,28 @@
 
 .end {
     justify-content: flex-end;
+}
+
+.line-clamp-1 {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    white-space: normal;
+    -webkit-box-orient: vertical;
 }

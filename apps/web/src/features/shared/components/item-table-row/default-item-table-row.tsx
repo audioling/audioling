@@ -1,4 +1,3 @@
-import type { ItemListColumnDefinitions } from '/@/features/shared/components/item-list/utils/helpers';
 import type { ItemTableRowProps } from '/@/features/shared/components/item-table-row/item-table-row';
 
 export function DefaultItemTableRow<T>({
@@ -8,6 +7,7 @@ export function DefaultItemTableRow<T>({
     index,
     isDragging,
     isSelected,
+    onClick,
     onContextMenu,
     onDragInitialData,
     onDragStart,
@@ -18,28 +18,30 @@ export function DefaultItemTableRow<T>({
     onUnfavorite,
     reducers,
 }: ItemTableRowProps<T>) {
-    if (!data) {
-        return <DefaultItemTableRowSkeleton columns={columns} />;
-    }
+    // const isExpanded = id ? reducers?.getExpandedById(id) : false;
+
+    // const handleClick = () => {
+    //     if (id) {
+    //         reducers?._itemExpanded({ id, type: 'toggleById' });
+    //         reducers?.scrollToIndex({
+    //             behavior: 'smooth',
+    //             index,
+    //         });
+    //     }
+    // };
 
     return (
         <>
             {columns.map(column => (
-                <column.cell key={column.id} index={index} isSelected={isSelected} item={data} />
-            ))}
-        </>
-    );
-}
-
-interface DefaultItemTableRowProps<T> {
-    columns: ItemListColumnDefinitions;
-}
-
-function DefaultItemTableRowSkeleton({ columns }: DefaultItemTableRowProps<any>) {
-    return (
-        <>
-            {columns.map(column => (
-                <div key={column.id}>Loading...</div>
+                <column.cell
+                    key={column.id}
+                    id={id}
+                    index={index}
+                    isSelected={isSelected}
+                    item={data}
+                    reducers={reducers}
+                    onClick={onClick}
+                />
             ))}
         </>
     );

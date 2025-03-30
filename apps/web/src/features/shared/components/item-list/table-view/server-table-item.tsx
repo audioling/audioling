@@ -1,6 +1,9 @@
 import type { AppDBType } from '/@/api/app-db';
 import type { ItemCardProps } from '/@/features/shared/components/item-card/item-card';
-import type { ItemListColumnDefinitions, ItemListInternalState } from '/@/features/shared/components/item-list/utils/helpers';
+import type {
+    ItemListColumnDefinitions,
+    ItemListInternalState,
+} from '/@/features/shared/components/item-list/utils/helpers';
 import type { ServerItemType } from '@repo/shared-types/app-types';
 import { ItemTableRow } from '../../item-table-row/item-table-row';
 import { useAppDBItem } from '/@/api/app-db';
@@ -49,6 +52,17 @@ export function InnerServerTableItem<T>(props: InnerServerTableItemProps<T>) {
 
     const { data } = useAppDBItem(itemType as AppDBType, id);
 
+    const handleClick = () => {
+        if (id) {
+            reducers._itemExpanded({ behavior: 'single', id, type: 'toggleById' });
+            reducers.scrollToIndex({
+                align: 'start',
+                behavior: 'smooth',
+                index,
+            });
+        }
+    };
+
     return (
         <ItemTableRow
             columns={columns}
@@ -59,6 +73,7 @@ export function InnerServerTableItem<T>(props: InnerServerTableItemProps<T>) {
             isSelected={isSelected}
             reducers={reducers}
             type={displayType}
+            onClick={handleClick}
             onContextMenu={onContextMenu}
             onDragInitialData={onDragInitialData}
             onDragStart={onDragStart}

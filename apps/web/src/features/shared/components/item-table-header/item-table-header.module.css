@@ -1,7 +1,6 @@
 .header-cell {
     display: flex;
     align-items: center;
-    padding: var(--mantine-spacing-xs);
 }
 
 .dragging {

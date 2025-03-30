@@ -26,8 +26,9 @@ function Cell(props: ItemListCellProps) {
 
 function DefaultCell({ index, startIndex }: ItemListCellProps) {
     return (
-        <ItemCell isSecondary>
+        <ItemCell isSecondary justify="center">
             {index + (startIndex ?? 0) + 1}
+            {' '}
         </ItemCell>
     );
 }

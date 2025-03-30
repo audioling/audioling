@@ -27,7 +27,7 @@ export const playCountColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell justify="center">
-            {localize.t('app.itemList.columns.playCount')}
+            {localize.t('app.itemList.columns.playCount', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'playCount' as ItemListColumn.PLAY_COUNT,

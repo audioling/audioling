@@ -19,6 +19,7 @@ export interface ItemTableRowProps<T> {
     index: number;
     isDragging?: boolean;
     isSelected?: boolean;
+    onClick?: (item: Item) => void;
     onContextMenu?: (
         item: Item,
         event: MouseEvent<HTMLButtonElement>,
