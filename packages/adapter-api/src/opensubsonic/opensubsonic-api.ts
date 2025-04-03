@@ -1,5 +1,6 @@
 import type { OpenSubsonicApiClient as OS } from '@audioling/open-subsonic-api-client';
 import type {
+    AdapterAlbum,
     AdapterAlbumListQuery,
     AdapterAPI,
     AdapterArtistListQuery,
@@ -381,7 +382,7 @@ adapter.album = {
             query: {
                 fromYear,
                 musicFolderId: request.query.folderId ? Number(request.query.folderId[0]) : undefined,
-                offset,
+                offset: Math.max(offset, 0),
                 size: request.query.limit,
                 toYear,
                 type: sortType,
@@ -392,9 +393,19 @@ adapter.album = {
             return [{ code: 500, message: result as unknown as string }, null];
         }
 
+        const isPartialResult = offset < 0;
+
+        const skip = Math.max(offset + Number(request.query.limit), 0);
+
         let items = (result.albumList2.album || []).map(
-            osUtils.converter.albumToAdapter,
-        );
+            (album, index) => {
+                if (isPartialResult && index >= skip) {
+                    return null;
+                }
+
+                return osUtils.converter.albumToAdapter(album);
+            },
+        ).filter(Boolean) as AdapterAlbum[];
 
         if (reverseResult) {
             items = items.reverse();
