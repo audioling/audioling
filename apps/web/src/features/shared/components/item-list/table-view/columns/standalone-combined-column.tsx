@@ -1,10 +1,12 @@
 import type { PlayQueueItem, TrackItem } from '/@/app-types';
 import type { ItemListCellProps, ItemListColumn } from '/@/features/shared/components/item-list/utils/helpers';
 import { Text } from '@mantine/core';
+import { localize } from '@repo/localization';
 import { ServerItemType } from '@repo/shared-types/app-types';
 import clsx from 'clsx';
 import styles from './column.module.css';
 import { CellSkeleton, EmptyCell } from '/@/features/shared/components/item-list/table-view/columns/shared';
+import { HeaderCell } from '/@/features/shared/components/item-list/table-view/header-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 import { useCurrentTrack } from '/@/stores/player-store';
 
@@ -40,7 +42,7 @@ function DefaultCell({ item }: ItemListCellProps) {
                         <Text>{item.name}</Text>
                         {item.artists.length
                             ? (
-                                    <Text isSecondary>
+                                    <Text variant="secondary">
                                         {item.artists.map(artist => artist.name).join(', ')}
                                     </Text>
                                 )
@@ -74,7 +76,7 @@ function QueueTrackCell({ item }: ItemListCellProps) {
                         <Text className={clsx({ [styles.playing]: isPlaying })}>{item.name}</Text>
                         {item.artists.length
                             ? (
-                                    <Text isSecondary>
+                                    <Text variant="secondary">
                                         {item.artists.map(artist => artist.name).join(', ')}
                                     </Text>
                                 )
@@ -108,7 +110,7 @@ function TrackCell({ item }: ItemListCellProps) {
                         <Text className={clsx({ [styles.playing]: isPlaying })}>{item.name}</Text>
                         {item.artists.length
                             ? (
-                                    <Text isSecondary>
+                                    <Text variant="secondary">
                                         {item.artists.map(artist => artist.name).join(', ')}
                                     </Text>
                                 )
@@ -126,7 +128,7 @@ function TrackCell({ item }: ItemListCellProps) {
 
 export const standaloneCombinedColumn = {
     cell: Cell,
-    header: () => <Text isUppercase>Name</Text>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.name', { context: 'label' })}</HeaderCell>,
     id: 'combined' as ItemListColumn.STANDALONE_COMBINED,
     size: numberToColumnSize(1, 'fr'),
 };

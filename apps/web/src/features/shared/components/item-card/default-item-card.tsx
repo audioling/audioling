@@ -95,10 +95,7 @@ export function DefaultItemCard({
             onFocus={() => setIsHovering(true)}
         >
             <div
-                className={clsx(styles.imageSection, {
-                    [styles.hovered]: isHovering,
-                    // [styles.selected]: isSelected,
-                })}
+                className={clsx(styles.imageSection, { [styles.hovered]: isHovering })}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
             >

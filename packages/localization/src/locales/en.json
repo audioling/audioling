@@ -44,15 +44,18 @@
             "selectedItems_other": "Selected {{count}} items"
         },
         "itemList": {
-            "display": {
-                "grid": "Grid",
-                "table": "Table"
-            },
-            "pagination": {
-                "infinite": "Infinite",
-                "paginated": "Paginated"
+            "config": {
+                "display_label": "Display",
+                "display_option_grid": "Grid",
+                "display_option_table": "Table",
+                "pagination_label": "Pagination",
+                "pagination_option_infinite": "Infinite",
+                "pagination_option_pages": "Pages",
+                "pageSize_label": "{{count}} items per page"
             },
             "columns": {
+                "actions_label": "Actions",
+                "actions_option": "Actions",
                 "albumArtists_label": "Album Artists",
                 "albumArtists_option": "Album Artists",
                 "albumCount_label": "Albums",
@@ -69,14 +72,16 @@
                 "playCount_option": "Plays",
                 "bpm_label": "BPM",
                 "bpm_option": "BPM",
+                "favorite_label": "",
+                "favorite_option": "Favorite",
                 "fileName_label": "File Name",
                 "fileName_option": "File Name",
                 "filePath_label": "File Path",
                 "filePath_option": "File Path",
                 "fileSize_label": "File Size",
                 "fileSize_option": "File Size",
-                "genre_label": "Genre",
-                "genre_option": "Genre",
+                "genre_label": "Genres",
+                "genre_option": "Genres",
                 "lastPlayed_label": "Last Played",
                 "lastPlayed_option": "Last Played",
                 "quality_label": "Quality",
@@ -90,9 +95,9 @@
                 "trackCount_label": "Tracks",
                 "trackCount_option": "Tracks",
                 "trackNumber_label": "Track",
-                "trackNumber_option": "Track",
+                "trackNumber_option": "Track Number",
                 "year_label": "Year",
-                "year_option": "Year"
+                "year_option": "Release Year"
             }
         },
         "player": {

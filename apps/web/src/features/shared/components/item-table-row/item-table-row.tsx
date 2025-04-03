@@ -4,6 +4,7 @@ import type {
 } from '/@/features/shared/components/item-list/utils/helpers';
 import type { PlayType } from '/@/stores/player-store';
 import type { DragData } from '/@/utils/drag-drop';
+import type { ServerItemType } from '@repo/shared-types/app-types';
 import type { MouseEvent } from 'react';
 import { DefaultItemTableRow } from '/@/features/shared/components/item-table-row/default-item-table-row';
 
@@ -19,7 +20,12 @@ export interface ItemTableRowProps<T> {
     index: number;
     isDragging?: boolean;
     isSelected?: boolean;
-    onClick?: (item: Item) => void;
+    itemType: ServerItemType;
+    onClick?: (
+        item: Item,
+        event: MouseEvent<HTMLDivElement>,
+        reducers?: ItemListInternalState['reducers'],
+    ) => void;
     onContextMenu?: (
         item: Item,
         event: MouseEvent<HTMLButtonElement>,

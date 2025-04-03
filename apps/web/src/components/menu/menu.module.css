@@ -12,9 +12,7 @@
     display: flex;
     justify-content: space-between;
     min-width: 8rem;
-    padding: var(--mantine-spacing-sm);
-    padding-right: 2rem;
-    padding-left: 2rem;
+    padding: var(--mantine-spacing-sm) var(--mantine-spacing-xl);
     color: var(--mantine-color-text);
     cursor: default;
     user-select: none;

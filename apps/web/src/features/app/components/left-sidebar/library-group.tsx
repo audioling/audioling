@@ -3,8 +3,9 @@ import { NavLink } from '@mantine/core';
 import { localize } from '@repo/localization';
 import { useMemo } from 'react';
 import { generatePath, NavLink as RNavLink, useLocation } from 'react-router';
+import styles from './left-sidebar.module.css';
 import { Icon } from '/@/components/icon/icon';
-import { useAppContext } from '../../../authentication/context/app-context';
+import { useAppContext } from '/@/features/authentication/context/app-context';
 import { AppRoute } from '/@/routes/types';
 import { LeftSidebarGroup, LibraryGroupItem, useSettingsStore } from '/@/stores/settings-store';
 
@@ -70,6 +71,9 @@ export function LibraryGroup() {
                 <NavLink
                     key={item.label}
                     active={location.pathname === generatePath(item.route, { serverId: server.id })}
+                    classNames={{
+                        section: styles.linkSection,
+                    }}
                     component={RNavLink}
                     label={item.label}
                     leftSection={item.icon ? <Icon icon={item.icon} /> : null}

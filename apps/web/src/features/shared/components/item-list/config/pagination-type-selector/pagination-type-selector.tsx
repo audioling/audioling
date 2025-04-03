@@ -1,7 +1,7 @@
-import { SegmentedControl, Stack } from '@mantine/core';
+import { SegmentedControl, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
+import styles from './pagination-type-selector.module.css';
 import { Icon } from '/@/components/icon/icon';
-import { Tooltip } from '/@/components/tooltip/tooltip';
 import { ItemListPaginationType } from '/@/features/shared/components/item-list/types';
 
 interface PaginationTypeSelectorProps {
@@ -14,30 +14,29 @@ export function PaginationTypeSelector({ onChange, value }: PaginationTypeSelect
 
     return (
         <SegmentedControl
+            classNames={{ root: styles.segmentedControl }}
             data={[
                 {
                     label: (
-                        <Tooltip label={t('app.itemList.pagination.infinite')}>
-                            <Stack align="center" justify="center" p="xs">
-                                <Icon icon="listInfinite" />
-                            </Stack>
-                        </Tooltip>
+                        <Stack align="center" gap="xs" justify="center" p="xs">
+                            <Icon icon="listInfinite" />
+                            <Text size="xs">{t('app.itemList.config.pagination', { context: 'option_infinite' })}</Text>
+                        </Stack>
 
                     ),
                     value: ItemListPaginationType.INFINITE,
                 },
                 {
                     label: (
-                        <Tooltip label={t('app.itemList.pagination.paginated')}>
-                            <Stack align="center" justify="center" p="xs">
-                                <Icon icon="listPaginated" />
-                            </Stack>
-                        </Tooltip>
-
+                        <Stack align="center" gap="xs" justify="center" p="xs">
+                            <Icon icon="listPaginated" />
+                            <Text size="xs">{t('app.itemList.config.pagination', { context: 'option_pages' })}</Text>
+                        </Stack>
                     ),
                     value: ItemListPaginationType.PAGINATED,
                 },
             ]}
+            size="xs"
             value={value}
             onChange={value => onChange(value as ItemListPaginationType)}
         />

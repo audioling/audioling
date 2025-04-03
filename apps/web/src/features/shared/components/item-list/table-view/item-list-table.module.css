@@ -8,13 +8,34 @@
 .base-list-component {
     width: 100%;
     height: 100%;
+
+    :global(.base-item-component) > div,
+    :global(.scroll-seek-placeholder) > div {
+        display: grid;
+        grid-template-rows: rem(48px);
+        grid-template-columns: var(--grid-template-columns);
+        gap: var(--mantine-spacing-xs) 0;
+        align-items: center;
+    }
 }
 
 .base-item-component,
 .scroll-seek-placeholder {
-    display: grid;
-    gap: var(--mantine-spacing-xs) 0;
-    height: rem(50px);
+    @mixin dark {
+        border-bottom: 1px solid alpha(var(--mantine-color-gray-7), 0.1);
+    }
+
+    @mixin light {
+        border-bottom: 1px solid alpha(var(--mantine-color-gray-8), 0.1);
+    }
+
+    /* & > div {
+        display: grid;
+        grid-template-rows: rem(48px);
+        grid-template-columns: var(--grid-template-columns);
+        gap: var(--mantine-spacing-xs) 0;
+        align-items: center;
+    } */
 }
 
 .table-list-component {

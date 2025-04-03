@@ -1,7 +1,7 @@
-import { SegmentedControl, Stack } from '@mantine/core';
+import { SegmentedControl, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
+import styles from './display-type-selector.module.css';
 import { Icon } from '/@/components/icon/icon';
-import { Tooltip } from '/@/components/tooltip/tooltip';
 import { ItemListDisplayType } from '/@/features/shared/components/item-list/types';
 
 interface DisplayTypeSelectorProps {
@@ -11,32 +11,35 @@ interface DisplayTypeSelectorProps {
 
 export function DisplayTypeSelector({ onChange, value }: DisplayTypeSelectorProps) {
     const { t } = useTranslation();
+
     return (
         <SegmentedControl
+            classNames={{
+                root: styles.segmentedControl,
+            }}
             data={[
                 {
                     label: (
-                        <Tooltip label={t('app.itemList.display.grid')}>
-                            <Stack align="center" justify="center" p="xs">
-                                <Icon icon="layoutGrid" />
-                            </Stack>
-                        </Tooltip>
+                        <Stack align="center" gap="xs" justify="center" p="xs">
+                            <Icon icon="layoutGrid" />
+                            <Text size="xs">{t('app.itemList.config.display', { context: 'option_grid' })}</Text>
+                        </Stack>
 
                     ),
                     value: ItemListDisplayType.GRID,
                 },
                 {
                     label: (
-                        <Tooltip label={t('app.itemList.display.table')}>
-                            <Stack align="center" justify="center" p="xs">
-                                <Icon icon="layoutTable" />
-                            </Stack>
-                        </Tooltip>
+                        <Stack align="center" gap="xs" justify="center" p="xs">
+                            <Icon icon="layoutTable" />
+                            <Text size="xs">{t('app.itemList.config.display', { context: 'option_table' })}</Text>
+                        </Stack>
 
                     ),
                     value: ItemListDisplayType.TABLE,
                 },
             ]}
+            size="xs"
             value={value}
             onChange={value => onChange(value as ItemListDisplayType)}
         />

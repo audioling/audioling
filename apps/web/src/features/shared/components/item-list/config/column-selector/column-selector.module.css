@@ -1,0 +1,9 @@
+.disabled {
+    cursor: default !important;
+    user-select: none;
+    opacity: 0.5;
+}
+
+.scroll-area {
+    max-height: 220px;
+}

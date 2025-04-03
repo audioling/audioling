@@ -11,7 +11,6 @@ import { useAlbumListCount } from '/@/features/albums/api/get-album-list-count';
 import { albumGridItemLines } from '/@/features/albums/components/album-grid-item-lines';
 import { AlbumTableItem } from '/@/features/albums/components/album-table-item';
 import { ItemListTable } from '/@/features/shared/components/item-list/table-view/item-list-table';
-import { ItemListColumn, itemListHelpers } from '/@/features/shared/components/item-list/utils/helpers';
 import { useInfiniteListData } from '/@/features/shared/components/item-list/utils/use-infinite-list-data';
 import { useListContext } from '/@/features/shared/context/list-context';
 
@@ -31,6 +30,7 @@ export function InfiniteServerAlbumTable(props: InfiniteServerAlbumTableProps) {
 }
 
 function InnerAlbumTable({
+    columnOrder,
     itemSelectionType,
     pagination,
     params,
@@ -39,14 +39,6 @@ function InnerAlbumTable({
     const { key } = useListContext();
 
     const { data: itemCount } = useAlbumListCount(server, { query: params });
-    const columns = itemListHelpers.table.getColumns([
-        ItemListColumn.ROW_INDEX,
-        ItemListColumn.IMAGE,
-        ItemListColumn.NAME,
-        ItemListColumn.DURATION,
-        ItemListColumn.PLAY_COUNT,
-        ItemListColumn.ACTIONS,
-    ]);
 
     const { data, handleRangeChanged } = useInfiniteListData<AdapterAlbumListQuery, any>(server, {
         itemCount,
@@ -60,7 +52,8 @@ function InnerAlbumTable({
     return (
         <ItemListTable<string, { lines: ItemCardProps<AlbumItem>['lines'] }>
             ItemComponent={AlbumTableItem}
-            columns={columns}
+            columnOrder={columnOrder || []}
+            // columns={columns}
             context={{ lines: albumGridItemLines }}
             data={data}
             itemCount={itemCount}

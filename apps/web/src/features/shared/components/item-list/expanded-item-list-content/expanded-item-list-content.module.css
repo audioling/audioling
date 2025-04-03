@@ -5,4 +5,5 @@
     max-height: rem(350px);
     margin-top: var(--mantine-spacing-xs);
     margin-bottom: var(--mantine-spacing-xs);
+    container-type: inline-size;
 }

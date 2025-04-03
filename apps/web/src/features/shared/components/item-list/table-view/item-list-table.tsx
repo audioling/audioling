@@ -2,11 +2,11 @@ import type {
     ItemListColumn,
     ItemListColumnDefinitions,
     ItemListColumnOrder,
-    ItemListInternalState,
 } from '/@/features/shared/components/item-list/utils/helpers';
 import type { DragData } from '/@/utils/drag-drop';
 import type { ServerItemType } from '@repo/shared-types/app-types';
 import type {
+    CSSProperties,
     ElementType,
     MutableRefObject,
     RefObject,
@@ -23,7 +23,7 @@ import type {
     VirtuosoHandle,
 } from 'react-virtuoso';
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
-import clsx from 'clsx';
+import clsx, { } from 'clsx';
 import { useOverlayScrollbars } from 'overlayscrollbars-react';
 import React, {
     forwardRef,
@@ -51,11 +51,18 @@ const BaseListComponent = forwardRef<
 >((props, ref) => {
     const { children, context, style, ...rest } = props;
 
+    const cssVars = {
+        '--grid-template-columns': context.columnStyles.gridTemplateColumns,
+    } as CSSProperties;
+
     return (
         <div
             ref={ref as unknown as RefObject<HTMLTableSectionElement>}
             className={styles.baseListComponent}
-            style={style}
+            style={{
+                ...style,
+                ...cssVars,
+            }}
             {...rest}
         >
             {children}
@@ -77,12 +84,11 @@ const BaseItemComponent = forwardRef<
         <>
             <div
                 ref={ref}
-                className={styles.baseItemComponent}
+                className={clsx(styles.baseItemComponent, 'base-item-component')}
                 data-index={index}
                 data-item-group-index={rest['data-item-group-index']}
                 data-item-id={rest.item}
                 data-known-size={rest['data-known-size']}
-                style={context.columnStyles}
             >
                 {children}
             </div>
@@ -90,7 +96,6 @@ const BaseItemComponent = forwardRef<
                 <ExpandedItemListContent id={id} />
             )}
         </>
-
     );
 });
 
@@ -98,13 +103,15 @@ function ScrollSeekPlaceholderComponent(props: ScrollSeekPlaceholderProps & { co
     const { context, index } = props;
 
     return (
-        <div className={styles.scrollSeekPlaceholder}>
+        <div className={clsx(styles.scrollSeekPlaceholder, 'scroll-seek-placeholder')}>
             <ItemTableRow
                 columns={context.columns}
                 data={undefined}
                 id={undefined}
                 index={index}
-                type="default-skeleton"
+                itemType={context.itemType}
+
+                type="default"
             />
         </div>
     );
@@ -114,7 +121,6 @@ export type ItemListTableComponent = Parameters<typeof Virtuoso>['0']['itemConte
 
 export interface ItemListTableProps<T, C> {
     columnOrder: ItemListColumnOrder;
-    columns: ItemListColumnDefinitions;
     context: C;
     data: (T | undefined)[];
     disableAutoScroll?: boolean;
@@ -123,7 +129,6 @@ export interface ItemListTableProps<T, C> {
     getItemId?: (index: number) => string;
     HeaderComponent?: ElementType;
     initialScrollIndex?: number;
-    internalState: ItemListInternalState;
     isScrolling?: (isScrolling: boolean) => void;
     ItemComponent: ItemListTableComponent;
     itemCount: number;
@@ -149,7 +154,6 @@ export interface ItemListTableHandle extends VirtuosoHandle {
 export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TDataType, TItemType>) {
     const {
         columnOrder,
-        columns,
         context,
         data,
         disableAutoScroll,
@@ -184,7 +188,7 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
             overflow: { x: 'scroll', y: 'scroll' },
             paddingAbsolute: true,
             scrollbars: {
-                autoHide: 'move',
+                autoHide: 'leave',
                 autoHideDelay: 500,
                 pointers: ['mouse', 'pen', 'touch'],
                 theme: 'al-os-scrollbar',
@@ -192,6 +196,8 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
             },
         },
     });
+
+    const columns = useMemo(() => itemListHelpers.table.getColumns(columnOrder), [columnOrder]);
 
     useEffect(() => {
         const { current: root } = rowsRef;
@@ -353,7 +359,7 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
                                 : undefined,
                             Item: BaseItemComponent,
                             List: BaseListComponent,
-                            // ScrollSeekPlaceholder: ScrollSeekPlaceholderComponent,
+                            ScrollSeekPlaceholder: ScrollSeekPlaceholderComponent,
                         }}
                         context={tableContext}
                         data={data}
@@ -364,13 +370,13 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
                         itemContent={ItemComponent}
                         overscan={0}
                         rangeChanged={onRangeChanged}
-                        // scrollSeekConfiguration={{
-                        //     enter: velocity => Math.abs(velocity) > 2000,
-                        //     exit: (velocity) => {
-                        //         const shouldExit = Math.abs(velocity) < 100;
-                        //         return shouldExit;
-                        //     },
-                        // }}
+                        scrollSeekConfiguration={{
+                            enter: velocity => Math.abs(velocity) > 2000,
+                            exit: (velocity) => {
+                                const shouldExit = Math.abs(velocity) < 100;
+                                return shouldExit;
+                            },
+                        }}
                         scrollerRef={setScroller}
                         startReached={onStartReached}
                         style={{ overflow: 'hidden' }}
@@ -392,9 +398,6 @@ export function TableHeader(props: {
     tableId: string;
 }) {
     const { columnOrder, columns, columnStyles, onChangeColumnOrder, tableId } = props;
-
-    // if (!columnOrder)
-    //     return null;
 
     return (
         <div className={styles.header} style={{ ...columnStyles }}>

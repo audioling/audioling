@@ -10,6 +10,7 @@ export enum DragTarget {
     ARTIST = ServerItemType.ARTIST,
     GENRE = ServerItemType.GENRE,
     ALBUM_ARTIST = ServerItemType.ALBUM_ARTIST,
+    GENERIC = 'generic',
     TABLE_COLUMN = 'tableColumn',
     QUERY_BUILDER_ROW = 'queryBuilderRow',
     QUERY_BUILDER_GROUP = 'queryBuilderGroup',
@@ -79,16 +80,29 @@ export const dndUtils = {
         const indexTo = list.indexOf(idTo);
 
         // If dragging to the same position, do nothing
-        if (indexFrom === indexTo)
+        if (indexFrom === indexTo) {
             return list;
+        }
 
         // If dragging to the right, but is left edge, do nothing
-        if (edge === 'left' && indexTo > indexFrom)
+        if (edge === 'left' && indexTo > indexFrom) {
             return list;
+        }
 
         // If dragging to the left, but is right edge, do nothing
-        if (edge === 'right' && indexTo < indexFrom)
+        if (edge === 'right' && indexTo < indexFrom) {
             return list;
+        }
+
+        // If dragging to the top, but is bottom edge, do nothing
+        if (edge === 'top' && indexTo > indexFrom) {
+            return list;
+        }
+
+        // If dragging to the bottom, but is top edge, do nothing
+        if (edge === 'bottom' && indexTo < indexFrom) {
+            return list;
+        }
 
         return dndUtils.reorderByIndex({ index: indexFrom, list, newIndex: indexTo });
     },

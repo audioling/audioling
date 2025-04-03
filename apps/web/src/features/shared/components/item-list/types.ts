@@ -1,3 +1,4 @@
+import type { ItemListColumnOrder } from '/@/features/shared/components/item-list/utils/helpers';
 import type { AuthServer, ServerItemType } from '@repo/shared-types/app-types';
 
 export enum ItemListDisplayType {
@@ -23,6 +24,7 @@ export interface ItemListSelection {
 }
 
 export interface ServerItemListProps<TParams> {
+    columnOrder?: ItemListColumnOrder;
     itemSelectionType?: 'single' | 'multiple';
     pagination: ItemListPaginationState;
     params: TParams;

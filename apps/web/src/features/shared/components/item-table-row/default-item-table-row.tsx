@@ -1,4 +1,7 @@
 import type { ItemTableRowProps } from '/@/features/shared/components/item-table-row/item-table-row';
+import type { MouseEvent } from 'react';
+import { useMemo } from 'react';
+import styles from './default-item-table-row.module.css';
 
 export function DefaultItemTableRow<T>({
     columns,
@@ -7,6 +10,7 @@ export function DefaultItemTableRow<T>({
     index,
     isDragging,
     isSelected,
+    itemType,
     onClick,
     onContextMenu,
     onDragInitialData,
@@ -18,20 +22,16 @@ export function DefaultItemTableRow<T>({
     onUnfavorite,
     reducers,
 }: ItemTableRowProps<T>) {
-    // const isExpanded = id ? reducers?.getExpandedById(id) : false;
-
-    // const handleClick = () => {
-    //     if (id) {
-    //         reducers?._itemExpanded({ id, type: 'toggleById' });
-    //         reducers?.scrollToIndex({
-    //             behavior: 'smooth',
-    //             index,
-    //         });
-    //     }
-    // };
+    const item = useMemo(() => ({
+        id: id as string,
+        serverId: (data as any)?._serverId || '',
+    }), [id, data]);
 
     return (
-        <>
+        <div
+            className={styles.tableRow}
+            onClick={e => onClick?.(item, e as unknown as MouseEvent<HTMLDivElement>, reducers)}
+        >
             {columns.map(column => (
                 <column.cell
                     key={column.id}
@@ -39,10 +39,10 @@ export function DefaultItemTableRow<T>({
                     index={index}
                     isSelected={isSelected}
                     item={data}
+                    itemType={itemType}
                     reducers={reducers}
-                    onClick={onClick}
                 />
             ))}
-        </>
+        </div>
     );
 }

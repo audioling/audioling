@@ -25,7 +25,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const genreColumn = {
     cell: Cell,
-    header: () => <HeaderCell>{localize.t('app.itemList.columns.genre')}</HeaderCell>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.genre', { context: 'label' })}</HeaderCell>,
     id: 'genre' as ItemListColumn.GENRE,
     size: numberToColumnSize(1, 'fr'),
 };

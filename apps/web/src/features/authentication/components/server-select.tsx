@@ -24,7 +24,7 @@ export function ServerSelect() {
                     {Object.values(servers).map(server => (
                         <Button
                             key={server.id}
-                            size="compact-sm"
+                            size="sm"
                             variant="default"
                             onClick={() => handleClick(server.id)}
                         >

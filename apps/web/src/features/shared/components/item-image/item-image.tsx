@@ -39,6 +39,6 @@ function getImageUrl(
     }
 
     return (Array.isArray(id) ? id : [id]).map(
-        id => adapter._getCoverArtUrl({ id, size: size === 'card' ? 300 : 100, type: ServerItemType.ALBUM }, server),
+        id => adapter._getCoverArtUrl({ id, size: size === 'card' ? 300 : 50, type: ServerItemType.ALBUM }, server),
     );
 }

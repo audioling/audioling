@@ -1,5 +1,4 @@
 import type { AdapterAlbumListQuery } from '@repo/shared-types/adapter-types';
-import { localize } from '@repo/localization';
 import { AlbumListSortOptions, ListSortOrder } from '@repo/shared-types/app-types';
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
@@ -71,17 +70,3 @@ export function useAlbumListParams() {
         setParams,
     };
 }
-
-export const albumColumnOptions = [
-    { label: localize.t('app.albums.columns.rowIndex_option'), value: ItemListColumn.ROW_INDEX },
-    { label: localize.t('app.albums.columns.image_option'), value: ItemListColumn.IMAGE },
-    { label: localize.t('app.albums.columns.name_option'), value: ItemListColumn.NAME },
-    { label: localize.t('app.albums.columns.artists_option'), value: ItemListColumn.ARTISTS },
-    { label: localize.t('app.albums.columns.genre_option'), value: ItemListColumn.GENRE },
-    { label: localize.t('app.albums.columns.releaseDate_option'), value: ItemListColumn.RELEASE_DATE },
-    { label: localize.t('app.albums.columns.trackCount_option'), value: ItemListColumn.TRACK_COUNT },
-    { label: localize.t('app.albums.columns.year_option'), value: ItemListColumn.YEAR },
-    { label: localize.t('app.albums.columns.rating_option'), value: ItemListColumn.RATING },
-    { label: localize.t('app.albums.columns.favorite_option'), value: ItemListColumn.FAVORITE },
-    { label: localize.t('app.albums.columns.actions_option'), value: ItemListColumn.ACTIONS },
-];

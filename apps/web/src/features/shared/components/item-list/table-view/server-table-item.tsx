@@ -71,6 +71,7 @@ export function InnerServerTableItem<T>(props: InnerServerTableItemProps<T>) {
             index={index}
             isDragging={isDragging}
             isSelected={isSelected}
+            itemType={itemType}
             reducers={reducers}
             type={displayType}
             onClick={handleClick}

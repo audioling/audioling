@@ -29,7 +29,8 @@
     }
 }
 
-.root:hover {
+.root:hover,
+.root:focus {
     .thumb {
         opacity: 1;
     }

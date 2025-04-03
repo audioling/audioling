@@ -14,3 +14,7 @@
         background-color: darken(var(--mantine-color-body), 1%);
     }
 }
+
+.link-section {
+    margin-inline-end: var(--mantine-spacing-md);
+}

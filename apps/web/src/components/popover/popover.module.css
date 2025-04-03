@@ -1,5 +1,6 @@
 .dropdown {
-    background-color: var(--mantine-color-body);
-    border: 1px solid var(--mantine-color-default-border);
+    padding: var(--mantine-spacing-sm);
+    background-color: darken(var(--mantine-color-body), 5%);
+    border: 1px solid lighten(var(--mantine-color-body), 10%);
     box-shadow: var(--mantine-shadow-md);
 }

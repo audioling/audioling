@@ -15,19 +15,23 @@ interface ItemCellProps {
 export function ItemCell({ children, className, isSecondary, justify, lineClamp = 1, onClick }: ItemCellProps) {
     if (lineClamp === 1) {
         return (
-            <Text
-                className={clsx(className, {
-                    [styles.cell]: true,
-                    [styles.center]: justify === 'center',
-                    [styles.start]: justify === 'start',
-                    [styles.end]: justify === 'end',
-                })}
-                component="div"
-                variant={isSecondary ? 'secondary' : undefined}
-                onClick={onClick}
+            <div className={clsx(styles.cell, {
+                [styles.center]: justify === 'center',
+                [styles.start]: justify === 'start',
+                [styles.end]: justify === 'end',
+            })}
             >
-                {children}
-            </Text>
+                <Text
+                    className={clsx(className, {
+                        [styles.inner]: true,
+                    })}
+                    component="div"
+                    variant={isSecondary ? 'secondary' : undefined}
+                    onClick={onClick}
+                >
+                    {children}
+                </Text>
+            </div>
         );
     }
 
