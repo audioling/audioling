@@ -1,24 +1,27 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { Text } from '@mantine/core';
 import clsx from 'clsx';
+import { NavLink, type NavLinkProps } from 'react-router';
 import styles from './item-cell.module.css';
 
 interface ItemCellProps {
     children: ReactNode;
     className?: string;
+    group?: boolean;
     isSecondary?: boolean;
     justify?: 'center' | 'start' | 'end';
     lineClamp?: number;
     onClick?: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
-export function ItemCell({ children, className, isSecondary, justify, lineClamp = 1, onClick }: ItemCellProps) {
+export function ItemCell({ children, className, group, isSecondary, justify, lineClamp = 1, onClick }: ItemCellProps) {
     if (lineClamp === 1) {
         return (
             <div className={clsx(styles.cell, {
                 [styles.center]: justify === 'center',
                 [styles.start]: justify === 'start',
                 [styles.end]: justify === 'end',
+                [styles.group]: group,
             })}
             >
                 <Text
@@ -53,5 +56,18 @@ export function ItemCell({ children, className, isSecondary, justify, lineClamp 
                 {children}
             </Text>
         </div>
+    );
+}
+
+interface ItemCellLinkProps {
+    children: ReactNode;
+    to: NavLinkProps['to'];
+}
+
+export function ItemCellLink({ children, to }: ItemCellLinkProps) {
+    return (
+        <NavLink className={styles.link} to={to}>
+            {children}
+        </NavLink>
     );
 }

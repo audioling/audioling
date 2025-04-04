@@ -28,7 +28,7 @@ export const fileSizeColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell justify="center">
-            {localize.t('app.itemList.columns.fileSize')}
+            {localize.t('app.itemList.columns.fileSize', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'fileSize' as ItemListColumn.FILE_SIZE,

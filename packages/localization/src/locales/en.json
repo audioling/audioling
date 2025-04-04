@@ -62,7 +62,11 @@
                 "albumCount_option": "Albums",
                 "artists_label": "Artists",
                 "artists_option": "Artists",
-                "duration_label": "Duration",
+                "dateAdded_label": "Date Added",
+                "dateAdded_option": "Date Added",
+                "discNumber_label": "Disc",
+                "discNumber_option": "Disc Number",
+                "duration_label": "",
                 "duration_option": "Duration",
                 "image_label": "",
                 "image_option": "Image",
@@ -88,16 +92,17 @@
                 "quality_option": "Quality",
                 "rowIndex_label": "",
                 "rowIndex_option": "Row Index",
-                "rating_label": "Rating",
+                "rating_label": "",
                 "rating_option": "Rating",
                 "releaseDate_label": "Release Date",
                 "releaseDate_option": "Release Date",
+                "releaseYear_label": "Year",
+                "releaseYear_option": "Release Year",
                 "trackCount_label": "Tracks",
-                "trackCount_option": "Tracks",
+                "trackCount_option": "Track Count",
                 "trackNumber_label": "Track",
-                "trackNumber_option": "Track Number",
-                "year_label": "Year",
-                "year_option": "Release Year"
+                "trackNumber_option": "Track Number"
+
             }
         },
         "player": {

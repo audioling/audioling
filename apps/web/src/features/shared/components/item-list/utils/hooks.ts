@@ -123,12 +123,12 @@ export type ItemQueryData = Record<string, unknown>;
 
 export function listDataQueryKey(server: AuthServer, type: ServerItemType, key?: string, params?: Record<string, any>) {
     if (!key) {
-        return [server.id, type, 'list-data'];
+        return [server.id, 'list-data', type];
     }
 
     if (!params) {
-        return [server.id, type, 'list-data', key];
+        return [server.id, 'list-data', type, key];
     }
 
-    return [server.id, type, 'list-data', key, params];
+    return [server.id, 'list-data', type, key, params];
 }

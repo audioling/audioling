@@ -25,7 +25,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const lastPlayedColumn = {
     cell: Cell,
-    header: () => <HeaderCell>{localize.t('app.itemList.columns.lastPlayed')}</HeaderCell>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.lastPlayed', { context: 'label' })}</HeaderCell>,
     id: 'lastPlayed' as ItemListColumn.LAST_PLAYED,
     size: numberToColumnSize(100, 'px'),
 };

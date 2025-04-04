@@ -25,7 +25,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const fileNameColumn = {
     cell: Cell,
-    header: () => <HeaderCell>{localize.t('app.itemList.columns.fileName')}</HeaderCell>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.fileName', { context: 'label' })}</HeaderCell>,
     id: 'fileName' as ItemListColumn.FILE_NAME,
     size: numberToColumnSize(1, 'fr'),
 };

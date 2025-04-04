@@ -27,7 +27,7 @@ export const trackCountColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell justify="center">
-            {localize.t('app.itemList.columns.trackCount')}
+            {localize.t('app.itemList.columns.trackCount', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'trackCount' as ItemListColumn.TRACK_COUNT,

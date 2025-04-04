@@ -1,7 +1,9 @@
+import type { ArtistItem } from '/@/app-types';
 import type { ItemListCellProps, ItemListColumn } from '/@/features/shared/components/item-list/utils/helpers';
+import { Fragment } from 'react';
 import { CellSkeleton, EmptyCell } from '/@/features/shared/components/item-list/table-view/columns/shared';
 import { HeaderCell } from '/@/features/shared/components/item-list/table-view/header-cell';
-import { ItemCell } from '/@/features/shared/components/item-list/table-view/item-cell';
+import { ItemCell, ItemCellLink } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
 function Cell({ item }: ItemListCellProps) {
@@ -13,7 +15,14 @@ function Cell({ item }: ItemListCellProps) {
         if ('artists' in item && Array.isArray(item.artists)) {
             return (
                 <ItemCell isSecondary>
-                    {item.artists.map(artist => artist.name).join(', ')}
+                    {item.artists.map((artist, index) => (
+                        <Fragment key={artist.id}>
+                            <ItemCellLink to={`/artist/${artist.id}`}>
+                                {artist.name}
+                            </ItemCellLink>
+                            {index < (item.artists as ArtistItem[]).length - 1 && ', '}
+                        </Fragment>
+                    ))}
                 </ItemCell>
             );
         }

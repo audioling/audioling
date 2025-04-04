@@ -27,7 +27,7 @@ export const bpmColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell justify="center">
-            {localize.t('app.itemList.columns.bpm')}
+            {localize.t('app.itemList.columns.bpm', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'bpm' as ItemListColumn.BPM,

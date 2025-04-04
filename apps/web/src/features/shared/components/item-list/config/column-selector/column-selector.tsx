@@ -15,7 +15,7 @@ export const albumColumnOptions = [
     { label: localize.t('app.itemList.columns.genre_option'), value: ItemListColumn.GENRE },
     { label: localize.t('app.itemList.columns.releaseDate_option'), value: ItemListColumn.RELEASE_DATE },
     { label: localize.t('app.itemList.columns.trackCount_option'), value: ItemListColumn.TRACK_COUNT },
-    { label: localize.t('app.itemList.columns.year_option'), value: ItemListColumn.YEAR },
+    { label: localize.t('app.itemList.columns.releaseYear_option'), value: ItemListColumn.YEAR },
     { label: localize.t('app.itemList.columns.rating_option'), value: ItemListColumn.RATING },
     { label: localize.t('app.itemList.columns.favorite_option'), value: ItemListColumn.FAVORITE },
     { label: localize.t('app.itemList.columns.actions_option'), value: ItemListColumn.ACTIONS },

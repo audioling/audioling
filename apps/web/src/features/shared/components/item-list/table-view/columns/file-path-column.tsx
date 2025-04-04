@@ -25,7 +25,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const filePathColumn = {
     cell: Cell,
-    header: () => <HeaderCell>{localize.t('app.itemList.columns.filePath')}</HeaderCell>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.filePath', { context: 'label' })}</HeaderCell>,
     id: 'filePath' as ItemListColumn.FILE_PATH,
     size: numberToColumnSize(1, 'fr'),
 };

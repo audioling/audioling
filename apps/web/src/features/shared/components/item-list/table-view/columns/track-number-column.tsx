@@ -27,7 +27,7 @@ export const trackNumberColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell justify="center">
-            {localize.t('app.itemList.columns.trackNumber')}
+            {localize.t('app.itemList.columns.trackNumber', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'trackNumber' as ItemListColumn.TRACK_NUMBER,

@@ -110,8 +110,7 @@ function ScrollSeekPlaceholderComponent(props: ScrollSeekPlaceholderProps & { co
                 id={undefined}
                 index={index}
                 itemType={context.itemType}
-
-                type="default"
+                type="default-skeleton"
             />
         </div>
     );

@@ -11,10 +11,10 @@ function Cell({ item }: ItemListCellProps) {
     }
 
     if (typeof item === 'object' && item) {
-        if ('releaseYear' in item && typeof item.releaseYear === 'number') {
+        if ('minReleaseYear' in item && typeof item.minReleaseYear === 'number') {
             return (
                 <ItemCell isSecondary>
-                    {item.releaseYear}
+                    {item.minReleaseYear}
                 </ItemCell>
             );
         }
@@ -27,7 +27,7 @@ export const yearColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell>
-            {localize.t('app.itemList.columns.year')}
+            {localize.t('app.itemList.columns.releaseYear', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'year' as ItemListColumn.YEAR,

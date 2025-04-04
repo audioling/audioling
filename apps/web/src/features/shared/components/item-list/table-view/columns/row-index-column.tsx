@@ -1,4 +1,4 @@
-import type { PlayQueueItem, TrackItem } from '/@/app-types';
+import type { PlayQueueItem } from '/@/app-types';
 import type { ItemListCellProps, ItemListColumn } from '/@/features/shared/components/item-list/utils/helpers';
 import { ActionIcon } from '@mantine/core';
 import { ServerItemType } from '@repo/shared-types/app-types';
@@ -33,10 +33,10 @@ function DefaultCell({ index, startIndex }: ItemListCellProps) {
     );
 }
 
-function TrackCell({ index, item, startIndex }: ItemListCellProps) {
-    const { track } = useCurrentTrack();
-    const cellItem = item as TrackItem | undefined;
-    const isPlaying = track !== undefined && cellItem?.id === track?.id;
+function TrackCell({ index, startIndex }: ItemListCellProps) {
+    // const { track } = useCurrentTrack();
+    // const cellItem = item as TrackItem | undefined;
+    // const isPlaying = track !== undefined && cellItem?.id === track?.id;
 
     return (
         <ItemCell isSecondary justify="center">

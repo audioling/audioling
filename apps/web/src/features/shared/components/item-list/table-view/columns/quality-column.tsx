@@ -25,7 +25,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const qualityColumn = {
     cell: Cell,
-    header: () => <HeaderCell>{localize.t('app.itemList.columns.quality')}</HeaderCell>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.quality', { context: 'label' })}</HeaderCell>,
     id: 'quality' as ItemListColumn.QUALITY,
     size: numberToColumnSize(70, 'px'),
 };

@@ -25,7 +25,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const albumColumn = {
     cell: Cell,
-    header: () => <HeaderCell>{localize.t('app.itemList.columns.album')}</HeaderCell>,
+    header: () => <HeaderCell>{localize.t('app.itemList.columns.album', { context: 'label' })}</HeaderCell>,
     id: 'album' as ItemListColumn.ALBUM,
     size: numberToColumnSize(1, 'fr'),
 };

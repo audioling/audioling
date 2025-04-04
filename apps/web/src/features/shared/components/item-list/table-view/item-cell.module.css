@@ -6,6 +6,13 @@
     width: 100%;
     height: 100%;
     padding: 0 var(--mantine-spacing-sm);
+    user-select: all;
+}
+
+.group {
+    display: flex;
+    flex-direction: row;
+    gap: var(--mantine-spacing-md);
 }
 
 .inner {
@@ -52,4 +59,8 @@
     -webkit-line-clamp: 3;
     white-space: normal;
     -webkit-box-orient: vertical;
+}
+
+.link:hover {
+    text-decoration: underline;
 }

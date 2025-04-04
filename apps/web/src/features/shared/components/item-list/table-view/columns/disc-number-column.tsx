@@ -1,4 +1,5 @@
 import type { ItemListCellProps, ItemListColumn } from '/@/features/shared/components/item-list/utils/helpers';
+import { localize } from '@repo/localization';
 import { CellSkeleton, EmptyCell } from '/@/features/shared/components/item-list/table-view/columns/shared';
 import { HeaderCell } from '/@/features/shared/components/item-list/table-view/header-cell';
 import { ItemCell } from '/@/features/shared/components/item-list/table-view/item-cell';
@@ -26,7 +27,7 @@ export const discNumberColumn = {
     cell: Cell,
     header: () => (
         <HeaderCell justify="center">
-            Disc
+            {localize.t('app.itemList.columns.discNumber', { context: 'label' })}
         </HeaderCell>
     ),
     id: 'discNumber' as ItemListColumn.DISC_NUMBER,
