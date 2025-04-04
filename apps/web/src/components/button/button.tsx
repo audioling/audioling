@@ -4,6 +4,7 @@ import styles from './button.module.css';
 export const ButtonComponentOverride = Button.extend({
     classNames: () => ({
         root: styles.root,
+        section: styles.section,
     }),
     vars: (_theme, props) => {
         const variant = props.variant ?? 'filled';

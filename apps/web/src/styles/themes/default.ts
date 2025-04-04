@@ -42,16 +42,16 @@ const darkColors: MantineColorsTuple = [
 
 export const defaultTheme: AppTheme = {
     app: {
-        'global-bg-dark': '#0d0d0d',
+        'global-bg-dark': '#090909',
         'global-bg-light': '#ffffff',
         'global-fg-dark': '#e6e6e6',
         'global-fg-light': '#0d0d0f',
         'global-primary-color-contrast': '#0d0d0f',
-        'global-scrollbar-size': '10px',
-        'global-scrollbar-thumb-active-background-color': 'var(--mantine-color-dark-5)',
+        'global-scrollbar-size': '6px',
+        'global-scrollbar-thumb-active-background-color': 'rgba(255, 255, 255, 0.4)',
         'global-scrollbar-thumb-background-color': 'rgba(255, 255, 255, 0.1)',
         'global-scrollbar-thumb-border-radius': '0px',
-        'global-scrollbar-thumb-hover-background-color': 'rgba(255, 255, 255, 0.1)',
+        'global-scrollbar-thumb-hover-background-color': 'rgba(255, 255, 255, 0.4)',
         'global-scrollbar-track-background-color': 'transparent',
         'global-scrollbar-track-border-radius': '6px',
         'global-scrollbar-track-hover-background-color': 'transparent',

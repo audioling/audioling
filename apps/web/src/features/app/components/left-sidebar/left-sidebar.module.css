@@ -7,7 +7,7 @@
     padding: var(--mantine-spacing-sm);
 
     @mixin dark {
-        background-color: lighten(var(--mantine-color-body), 2%);
+        background-color: lighten(var(--mantine-color-body), 1%);
     }
 
     @mixin light {
@@ -17,4 +17,8 @@
 
 .link-section {
     margin-inline-end: var(--mantine-spacing-md);
+}
+
+.label {
+    font-size: var(--mantine-font-size-md);
 }

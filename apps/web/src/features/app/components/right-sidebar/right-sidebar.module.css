@@ -7,7 +7,7 @@
     padding: var(--mantine-spacing-xs);
 
     @mixin dark {
-        background-color: lighten(var(--mantine-color-body), 2%);
+        background-color: lighten(var(--mantine-color-body), 1%);
     }
 
     @mixin light {

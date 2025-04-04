@@ -4,6 +4,7 @@
     font-family: var(--mantine-font-family);
     font-size: var(--mantine-font-size-md);
     font-weight: 500;
+    color: var(--mantine-color-text);
     user-select: none;
     background-color: darken(var(--mantine-color-body), 5%);
     border: 1px solid var(--mantine-color-default-border);

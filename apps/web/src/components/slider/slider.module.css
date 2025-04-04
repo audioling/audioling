@@ -13,20 +13,12 @@
     font-family: var(--mantine-font-family);
     font-size: var(--mantine-font-size-md);
     font-weight: 500;
+    color: var(--mantine-color-text);
     user-select: none;
+    background-color: darken(var(--mantine-color-body), 5%);
     border: 1px solid var(--mantine-color-default-border);
     border-radius: var(--mantine-radius-xs);
     box-shadow: var(mantine-shadow-lg);
-
-    @mixin light {
-        color: var(--mantine-color-dark-6);
-        background-color: var(--mantine-color-light-3);
-    }
-
-    @mixin dark {
-        color: var(--mantine-color-light-9);
-        background-color: var(--mantine-color-dark-6);
-    }
 }
 
 .root:hover,

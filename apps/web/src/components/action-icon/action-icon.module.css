@@ -15,6 +15,7 @@
         border-color 0.2s ease-in-out;
 
     &[data-variant='default'] {
+        color: var(--mantine-color-text);
         border: 1px solid var(--mantine-color-default-border);
 
         &:hover {
@@ -29,6 +30,7 @@
     &[data-variant='outline'] {
         --ai-border: var(--mantine-color-default-border);
 
+        color: var(--mantine-color-text);
         border: 1px solid lighten(var(--mantine-color-default-border), 10%);
 
         &:hover {
@@ -47,6 +49,8 @@
     }
 
     &[data-variant='subtle'] {
+        color: var(--mantine-color-text);
+
         &:hover {
             background-color: lighten(var(--ai-bg), 10%);
         }
@@ -67,6 +71,8 @@
     }
 
     &[data-variant='transparent'] {
+        color: var(--mantine-color-text);
+
         &:hover {
             background-color: transparent;
         }

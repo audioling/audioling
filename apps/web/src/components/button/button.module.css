@@ -9,8 +9,8 @@
     --button-height-compact-md: calc(1.875rem * var(--mantine-scale));
     --button-height-compact-lg: calc(2.125rem * var(--mantine-scale));
     --button-height-compact-xl: calc(2.5rem * var(--mantine-scale));
-    --button-padding-x-xs: calc(0.625rem * var(--mantine-scale));
-    --button-padding-x-sm: calc(0.875rem * var(--mantine-scale));
+    --button-padding-x-xs: calc(0.5rem * var(--mantine-scale));
+    --button-padding-x-sm: calc(0.625rem * var(--mantine-scale));
     --button-padding-x-md: calc(1rem * var(--mantine-scale));
     --button-padding-x-lg: calc(1.25rem * var(--mantine-scale));
     --button-padding-x-xl: calc(1.5rem * var(--mantine-scale));
@@ -27,6 +27,7 @@
         border-color 0.2s ease-in-out;
 
     &[data-variant='default'] {
+        color: var(--mantine-color-text);
         border: 1px solid var(--mantine-color-default-border);
 
         &:hover {
@@ -41,6 +42,7 @@
     &[data-variant='outline'] {
         --button-border: var(--mantine-color-default-border);
 
+        color: var(--mantine-color-text);
         border: 1px solid lighten(var(--mantine-color-default-border), 10%);
 
         &:hover {
@@ -59,6 +61,8 @@
     }
 
     &[data-variant='subtle'] {
+        color: var(--mantine-color-text);
+
         &:focus-visible {
             background-color: lighten(var(--button-bg), 10%);
         }
@@ -75,6 +79,8 @@
     }
 
     &[data-variant='transparent'] {
+        color: var(--mantine-color-text);
+
         &:hover {
             background-color: transparent;
         }
@@ -83,4 +89,8 @@
             border: 1px solid lighten(var(--mantine-color-default-border), 25%);
         }
     }
+}
+
+.section {
+    margin-inline-end: var(--mantine-spacing-sm);
 }

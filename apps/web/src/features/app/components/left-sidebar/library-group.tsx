@@ -72,6 +72,7 @@ export function LibraryGroup() {
                     key={item.label}
                     active={location.pathname === generatePath(item.route, { serverId: server.id })}
                     classNames={{
+                        label: styles.label,
                         section: styles.linkSection,
                     }}
                     component={RNavLink}

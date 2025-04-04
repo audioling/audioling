@@ -1,6 +1,6 @@
 :root {
     --focus-border: var(--mantine-color-secondary-7) !important;
-    --separator-border: var(--mantine-color-default-border) !important;
+    --separator-border: transparent !important;
 }
 
 body {
