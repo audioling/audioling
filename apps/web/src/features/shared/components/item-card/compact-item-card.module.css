@@ -1,0 +1,107 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-xs);
+    width: 100%;
+    padding: var(--mantine-spacing-sm);
+}
+
+.image-section {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        content: '';
+        border-radius: var(--mantine-radius-md);
+        opacity: 0.7;
+        transition: all 0.2s ease-in-out;
+
+        @mixin dark {
+            background: linear-gradient(0deg, rgb(0 0 0 / 100%) 20%, rgb(0 0 0 / 0%) 100%);
+        }
+
+        @mixin light {
+            background: linear-gradient(0deg, rgb(0 0 0 / 60%) 20%, rgb(0 0 0 / 0%) 100%);
+        }
+    }
+}
+
+.selection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: var(--mantine-spacing-sm);
+}
+
+.selected {
+    border-radius: var(--mantine-radius-md);
+    box-shadow: 0 0 0 3px var(--mantine-color-secondary-7);
+    opacity: 0.7;
+}
+
+.image {
+    border-radius: var(--mantine-radius-md);
+}
+
+.lines-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    padding: var(--mantine-spacing-sm);
+}
+
+.lines {
+    display: flex;
+    flex-direction: column;
+    gap: rem(1px);
+}
+
+.lines > * {
+    font-weight: 600;
+
+    @mixin textEllipsis;
+}
+
+.skeleton-lines > * {
+    width: 100%;
+
+    &:nth-child(2) {
+        width: 80%;
+    }
+
+    &:nth-child(3) {
+        width: 60%;
+    }
+}
+
+.inline {
+    display: inline-flex;
+    gap: var(--mantine-spacing-xs);
+    color: darken(var(--mantine-color-text), 40%);
+
+    @mixin textEllipsis;
+}
+
+.inline > * {
+    @mixin textEllipsis;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}

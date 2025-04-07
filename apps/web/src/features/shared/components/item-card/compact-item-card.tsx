@@ -15,7 +15,7 @@ import { Skeleton } from '/@/components/skeleton/skeleton';
 import { ItemCardControls } from '/@/features/shared/components/item-card/item-card-controls';
 import { ItemImage } from '/@/features/shared/components/item-image/item-image';
 
-export function DefaultItemCard({
+export function CompactItemCard({
     data,
     id,
     index,
@@ -76,7 +76,7 @@ export function DefaultItemCard({
     }, [onDragInitialData, onDragStart, onDrop, data, id, isHovered, reducers, item]);
 
     if (!data || !id) {
-        return <DefaultItemCardSkeleton lines={lines || []} />;
+        return <CompactItemCardSkeleton lines={lines || []} />;
     }
 
     return (
@@ -124,31 +124,32 @@ export function DefaultItemCard({
                         onUnfavorite={onUnfavorite}
                     />
                 )}
-            </div>
-            <div className={styles.linesSection}>
-                <div className={styles.lines}>
-                    {(lines || []).map((line, index) => (
-                        <Line
-                            key={line.property as string}
-                            data={data}
-                            index={index}
-                            property={line.property}
-                            transform={line.transform}
-                        />
-                    ))}
+                <div className={styles.linesSection}>
+                    <div className={styles.lines}>
+                        {(lines || []).map((line, index) => (
+                            <Line
+                                key={line.property as string}
+                                data={data}
+                                index={index}
+                                property={line.property}
+                                transform={line.transform}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
+
         </div>
     );
 }
 
-interface DefaultItemCardSkeletonProps {
+interface CompactItemCardSkeletonProps {
     lines: {
         property: string;
     }[];
 }
 
-export function DefaultItemCardSkeleton({ lines }: DefaultItemCardSkeletonProps) {
+export function CompactItemCardSkeleton({ lines }: CompactItemCardSkeletonProps) {
     return (
         <div className={styles.container}>
             <div className={styles.imageSection}>
@@ -181,10 +182,10 @@ function Line<TData extends Record<string, any>>({
     if (!property.includes('.')) {
         if (typeof transform === 'function') {
             const line = transform(data);
-            return <Text variant={index === 0 ? undefined : 'secondary'}>{line || '\u00A0'}</Text>;
+            return <Text>{line || '\u00A0'}</Text>;
         }
 
-        return <Text variant={index === 0 ? undefined : 'secondary'}>{data[property] || '\u00A0'}</Text>;
+        return <Text>{data[property] || '\u00A0'}</Text>;
     }
 
     const [rootProperty, subProperty] = property.split('.');
@@ -196,7 +197,7 @@ function Line<TData extends Record<string, any>>({
 
     return (
         <div className={styles.inline}>
-            <Text variant={index === 0 ? undefined : 'secondary'}>
+            <Text>
                 {propertyData.map((item: { id: string; name: string }, i: number) => (
                     <Fragment key={item.id}>
                         {item.name || '\u00A0'}

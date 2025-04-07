@@ -2,6 +2,7 @@ import type { ItemListInternalState } from '/@/features/shared/components/item-l
 import type { PlayType } from '/@/stores/player-store';
 import type { DragData } from '/@/utils/drag-drop';
 import type { MouseEvent } from 'react';
+import { CompactItemCard, CompactItemCardSkeleton } from '/@/features/shared/components/item-card/compact-item-card';
 import { DefaultItemCard, DefaultItemCardSkeleton } from '/@/features/shared/components/item-card/default-item-card';
 
 interface Item {
@@ -42,7 +43,7 @@ export interface ItemCardProps<T> {
     onPlay?: (item: Item, playType: PlayType) => void;
     onUnfavorite?: (item: Item) => void;
     reducers?: ItemListInternalState['reducers'];
-    type?: 'default' | 'default-skeleton';
+    type?: 'default' | 'default-skeleton' | 'compact' | 'compact-skeleton';
 }
 
 export function ItemCard<T>(props: ItemCardProps<T>) {
@@ -53,6 +54,10 @@ export function ItemCard<T>(props: ItemCardProps<T>) {
             return <DefaultItemCard {...rest} />;
         case 'default-skeleton':
             return <DefaultItemCardSkeleton lines={rest.lines || []} />;
+        case 'compact':
+            return <CompactItemCard {...rest} />;
+        case 'compact-skeleton':
+            return <CompactItemCardSkeleton lines={rest.lines || []} />;
         default:
             return <DefaultItemCard {...rest} />;
     }
