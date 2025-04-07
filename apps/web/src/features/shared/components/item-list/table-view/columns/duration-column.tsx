@@ -6,16 +6,16 @@ import { ItemCell } from '/@/features/shared/components/item-list/table-view/ite
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 import { formatDuration } from '/@/utils/format-duration';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={40} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('duration' in item && typeof item.duration === 'number') {
+    if (typeof data === 'object' && data) {
+        if ('duration' in data && typeof data.duration === 'number') {
             return (
                 <ItemCell isSecondary justify="center">
-                    {formatDuration(item.duration)}
+                    {formatDuration(data.duration)}
                 </ItemCell>
             );
         }

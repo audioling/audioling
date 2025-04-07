@@ -2,6 +2,7 @@ import type { AlbumItem } from '/@/app-types';
 import type { ItemListTableComponent } from '/@/features/shared/components/item-list/table-view/item-list-table';
 import type { InnerServerTableItemProps } from '/@/features/shared/components/item-list/table-view/server-table-item';
 import { memo } from 'react';
+import { albumListItemProps } from '/@/features/albums/components/album-list-item';
 import { InnerServerTableItem } from '/@/features/shared/components/item-list/table-view/server-table-item';
 
 function InnerAlbumTableItemBase<T extends AlbumItem>({
@@ -14,6 +15,7 @@ function InnerAlbumTableItemBase<T extends AlbumItem>({
             context={context}
             data={data}
             index={index}
+            {...albumListItemProps}
         />
     );
 }

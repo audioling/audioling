@@ -6,16 +6,16 @@ import { ItemCell } from '/@/features/shared/components/item-list/table-view/ite
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 import { formatSize } from '/@/utils/format-size';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={50} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('fileSize' in item && typeof item.fileSize === 'number') {
+    if (typeof data === 'object' && data) {
+        if ('fileSize' in data && typeof data.fileSize === 'number') {
             return (
                 <ItemCell isSecondary justify="center">
-                    {formatSize(item.fileSize)}
+                    {formatSize(data.fileSize)}
                 </ItemCell>
             );
         }

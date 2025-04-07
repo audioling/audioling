@@ -1,7 +1,9 @@
 import type { PlayQueueItem } from '/@/app-types';
 import type { ItemListCellProps, ItemListColumn } from '/@/features/shared/components/item-list/utils/helpers';
-import { ActionIcon } from '@mantine/core';
+import type { MouseEvent } from 'react';
+import { ActionIcon, Checkbox } from '@mantine/core';
 import { ServerItemType } from '@repo/shared-types/app-types';
+import styles from './column.module.css';
 import { Icon } from '/@/components/icon/icon';
 import { SoundBars } from '/@/components/sound-bars/sound-bars';
 import { PlayerController } from '/@/controllers/player-controller';
@@ -24,11 +26,32 @@ function Cell(props: ItemListCellProps) {
     }
 }
 
-function DefaultCell({ index, startIndex }: ItemListCellProps) {
+function DefaultCell({ index, isHovered, isSelected, onItemSelection, startIndex }: ItemListCellProps) {
+    if ((isHovered || isSelected)) {
+        return (
+            <ItemCell
+                justify="center"
+            >
+                <Checkbox
+                    checked={isSelected}
+                    className={styles.selection}
+                    size="sm"
+                    onChange={(e) => {
+                        onItemSelection?.(
+                            e as unknown as MouseEvent<HTMLButtonElement>,
+                        );
+                    }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                />
+            </ItemCell>
+        );
+    }
+
     return (
         <ItemCell isSecondary justify="center">
             {index + (startIndex ?? 0) + 1}
-            {' '}
         </ItemCell>
     );
 }
@@ -45,9 +68,9 @@ function TrackCell({ index, startIndex }: ItemListCellProps) {
     );
 }
 
-function QueueTrackCell({ index, isHovered, item }: ItemListCellProps) {
+function QueueTrackCell({ data, index, isHovered }: ItemListCellProps) {
     const { track } = useCurrentTrack();
-    const cellItem = item as PlayQueueItem | undefined;
+    const cellItem = data as PlayQueueItem | undefined;
     const isPlaying = track !== undefined && cellItem?._uniqueId === track?._uniqueId;
     const status = usePlayerStatus();
 

@@ -5,16 +5,16 @@ import { HeaderCell } from '/@/features/shared/components/item-list/table-view/h
 import { ItemCell } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={30} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('discNumber' in item && typeof item.discNumber === 'string') {
+    if (typeof data === 'object' && data) {
+        if ('discNumber' in data && typeof data.discNumber === 'string') {
             return (
                 <ItemCell isSecondary justify="center">
-                    {item.discNumber}
+                    {data.discNumber}
                 </ItemCell>
             );
         }

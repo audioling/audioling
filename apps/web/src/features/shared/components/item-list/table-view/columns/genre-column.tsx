@@ -7,21 +7,21 @@ import { HeaderCell } from '/@/features/shared/components/item-list/table-view/h
 import { ItemCell, ItemCellLink } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={100} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('genres' in item && Array.isArray(item.genres)) {
+    if (typeof data === 'object' && data) {
+        if ('genres' in data && Array.isArray(data.genres)) {
             return (
                 <ItemCell isSecondary lineClamp={2}>
-                    {item.genres.map((genre, index) => (
+                    {data.genres.map((genre, index) => (
                         <Fragment key={genre.id}>
                             <ItemCellLink to={`/genre/${genre.id}`}>
                                 {genre.name}
                             </ItemCellLink>
-                            {index < (item.genres as GenreItem[]).length - 1 && ', '}
+                            {index < (data.genres as GenreItem[]).length - 1 && ', '}
                         </Fragment>
                     ))}
                 </ItemCell>

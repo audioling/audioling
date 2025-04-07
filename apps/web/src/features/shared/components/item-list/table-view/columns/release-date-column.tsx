@@ -5,16 +5,16 @@ import { HeaderCell } from '/@/features/shared/components/item-list/table-view/h
 import { ItemCell } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={60} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('releaseDate' in item && typeof item.releaseDate === 'string') {
+    if (typeof data === 'object' && data) {
+        if ('releaseDate' in data && typeof data.releaseDate === 'string') {
             return (
                 <ItemCell isSecondary>
-                    {item.releaseDate}
+                    {data.releaseDate}
                 </ItemCell>
             );
         }

@@ -106,14 +106,19 @@ export const itemListColumnMap: Partial<Record<ItemListColumn, ItemListColumnDef
 };
 
 export interface ItemListCellProps {
+    data: unknown | undefined;
     id: string | undefined;
     index: number;
     isHovered?: boolean;
     isSelected?: boolean;
-    item: unknown | undefined;
+    item: { id: string; serverId: string } | undefined;
     itemType: ServerItemType;
     onClick?: (e: MouseEvent<HTMLDivElement>) => void;
-    onContextMenu?: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    onFavorite?: () => void;
+    onItemContextMenu?: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    onItemSelection?: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    onPlay?: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    onUnfavorite?: () => void;
     reducers?: ItemListInternalReducers;
     startIndex?: number;
 }

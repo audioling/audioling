@@ -5,16 +5,16 @@ import { HeaderCell } from '/@/features/shared/components/item-list/table-view/h
 import { ItemCell } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={30} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('bpm' in item && typeof item.bpm === 'number') {
+    if (typeof data === 'object' && data) {
+        if ('bpm' in data && typeof data.bpm === 'number') {
             return (
                 <ItemCell isSecondary justify="center">
-                    {item.bpm}
+                    {data.bpm}
                 </ItemCell>
             );
         }

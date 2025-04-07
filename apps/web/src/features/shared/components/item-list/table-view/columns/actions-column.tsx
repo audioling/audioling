@@ -8,19 +8,19 @@ import {
     numberToColumnSize,
 } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ handlers, isHovered, item }: ItemListCellProps) {
+function Cell({ data, isHovered, onItemContextMenu }: ItemListCellProps) {
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-
-        handlers?.onItemContextMenu?.(e);
+        onItemContextMenu?.(e);
     };
 
-    if (!item || !isHovered) {
+    if (!data || !isHovered) {
         return <EmptyCell />;
     }
 
     return (
         <ActionIcon
+            size="sm"
             variant="transparent"
             onClick={handleClick}
         >
@@ -33,5 +33,5 @@ export const actionsColumn = {
     cell: Cell,
     header: () => '',
     id: 'actions' as ItemListColumn.ACTIONS,
-    size: numberToColumnSize(30, 'px'),
+    size: numberToColumnSize(40, 'px'),
 };

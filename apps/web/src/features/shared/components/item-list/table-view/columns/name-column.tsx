@@ -7,9 +7,9 @@ import { ItemCell } from '/@/features/shared/components/item-list/table-view/ite
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
 function Cell(props: ItemListCellProps) {
-    const { item, itemType } = props;
+    const { data, itemType } = props;
 
-    if (!item) {
+    if (!data) {
         return <CellSkeleton height={20} width={100} />;
     }
 
@@ -25,13 +25,13 @@ function Cell(props: ItemListCellProps) {
 }
 
 function DefaultCell(props: ItemListCellProps) {
-    const { item } = props;
+    const { data } = props;
 
-    if (typeof item === 'object' && item) {
-        if ('name' in item && typeof item.name === 'string') {
+    if (typeof data === 'object' && data) {
+        if ('name' in data && typeof data.name === 'string') {
             return (
                 <ItemCell lineClamp={2} {...props}>
-                    {item.name}
+                    {data.name}
                 </ItemCell>
             );
         }
@@ -40,16 +40,16 @@ function DefaultCell(props: ItemListCellProps) {
     return <EmptyCell />;
 }
 
-function TrackCell({ item }: ItemListCellProps) {
+function TrackCell({ data }: ItemListCellProps) {
     // const { track } = useCurrentTrack();
     // const cellItem = item as TrackItem | undefined;
     // const isPlaying = track !== undefined && cellItem?.id === track?.id;
 
-    if (typeof item === 'object' && item) {
-        if ('name' in item && typeof item.name === 'string') {
+    if (typeof data === 'object' && data) {
+        if ('name' in data && typeof data.name === 'string') {
             return (
                 <ItemCell>
-                    {item.name}
+                    {data.name}
                 </ItemCell>
             );
         }
@@ -58,16 +58,16 @@ function TrackCell({ item }: ItemListCellProps) {
     return <EmptyCell />;
 }
 
-function QueueTrackCell({ item }: ItemListCellProps) {
+function QueueTrackCell({ data }: ItemListCellProps) {
     // const { track } = useCurrentTrack();
     // const cellItem = item as PlayQueueItem | undefined;
     // const isPlaying = track !== undefined && cellItem?._uniqueId === track?._uniqueId;
 
-    if (typeof item === 'object' && item) {
-        if ('name' in item && typeof item.name === 'string') {
+    if (typeof data === 'object' && data) {
+        if ('name' in data && typeof data.name === 'string') {
             return (
                 <ItemCell>
-                    {item.name}
+                    {data.name}
                 </ItemCell>
             );
         }

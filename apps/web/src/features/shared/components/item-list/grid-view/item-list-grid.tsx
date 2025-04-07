@@ -258,7 +258,7 @@ export function ItemListGrid<
                 context={gridContext}
                 data={data}
                 endReached={onEndReached}
-                increaseViewportBy={0}
+                increaseViewportBy={300}
                 initialTopMostItemIndex={initialScrollIndex || 0}
                 isScrolling={isScrolling}
                 itemContent={ItemComponent}

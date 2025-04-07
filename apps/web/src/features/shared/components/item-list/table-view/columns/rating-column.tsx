@@ -3,20 +3,20 @@ import { EmptyCell } from '/@/features/shared/components/item-list/table-view/co
 import { ItemCell } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <EmptyCell />;
     }
 
-    if (typeof item === 'object' && 'userRating' in item && !item.userRating) {
+    if (typeof data === 'object' && 'userRating' in data && !data.userRating) {
         return <EmptyCell />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('userRating' in item && typeof item.userRating === 'number') {
+    if (typeof data === 'object' && data) {
+        if ('userRating' in data && typeof data.userRating === 'number') {
             return (
                 <ItemCell isSecondary justify="center">
-                    {item.userRating}
+                    {data.userRating}
                 </ItemCell>
             );
         }
@@ -27,7 +27,7 @@ function Cell({ item }: ItemListCellProps) {
 
 export const ratingColumn = {
     cell: Cell,
-    header: '',
+    header: () => '',
     id: 'rating' as ItemListColumn.RATING,
     size: numberToColumnSize(100, 'px'),
 };

@@ -9,21 +9,21 @@ import { HeaderCell } from '/@/features/shared/components/item-list/table-view/h
 import { ItemCellLink } from '/@/features/shared/components/item-list/table-view/item-cell';
 import { numberToColumnSize } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={100} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('albumArtists' in item && Array.isArray(item.albumArtists)) {
+    if (typeof data === 'object' && data) {
+        if ('albumArtists' in data && Array.isArray(data.albumArtists)) {
             return (
                 <Text className={styles.cell} variant="secondary">
-                    {item.albumArtists.map((artist, index) => (
+                    {data.albumArtists.map((artist, index) => (
                         <Fragment key={artist.id}>
                             <ItemCellLink to={`/artist/${artist.id}`}>
                                 {artist.name}
                             </ItemCellLink>
-                            {index < (item.albumArtists as ArtistItem[]).length - 1 && ', '}
+                            {index < (data.albumArtists as ArtistItem[]).length - 1 && ', '}
                         </Fragment>
                     ))}
                 </Text>

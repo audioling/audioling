@@ -4,23 +4,33 @@ import type {
     ItemListColumnDefinitions,
     ItemListInternalState,
 } from '/@/features/shared/components/item-list/utils/helpers';
+import type { ItemTableRowProps } from '/@/features/shared/components/item-table-row/item-table-row';
 import type { ServerItemType } from '@repo/shared-types/app-types';
-import { ItemTableRow } from '../../item-table-row/item-table-row';
 import { useAppDBItem } from '/@/api/app-db';
+import { ItemTableRow } from '/@/features/shared/components/item-table-row/item-table-row';
 
 export interface InnerServerTableItemProps<T> {
     context: unknown;
     data: string | undefined;
     index: number;
-    lines?: ItemCardProps<T>['lines'];
-    onContextMenu?: ItemCardProps<T>['onContextMenu'];
-    onDragInitialData?: ItemCardProps<T>['onDragInitialData'];
-    onDragStart?: ItemCardProps<T>['onDragStart'];
-    onDrop?: ItemCardProps<T>['onDrop'];
-    onFavorite?: ItemCardProps<T>['onFavorite'];
-    onPlay?: ItemCardProps<T>['onPlay'];
-    onUnfavorite?: ItemCardProps<T>['onUnfavorite'];
-    type?: ItemCardProps<T>['type'];
+    onContextMenu?: ItemTableRowProps<T>['onContextMenu'];
+    onDragInitialData?: ItemTableRowProps<T>['onDragInitialData'];
+    onDragStart?: ItemTableRowProps<T>['onDragStart'];
+    onDrop?: ItemTableRowProps<T>['onDrop'];
+    onFavorite?: ItemTableRowProps<T>['onFavorite'];
+    onPlay?: ItemTableRowProps<T>['onPlay'];
+    onUnfavorite?: ItemTableRowProps<T>['onUnfavorite'];
+    type?: ItemTableRowProps<T>['type'];
+}
+
+interface TableItemContext<T> {
+    columns: ItemListColumnDefinitions;
+    displayType: ItemCardProps<T>['type'];
+    itemSelection: ItemListInternalState['itemSelection'];
+    itemType: ServerItemType;
+    onItemSelection: ItemListInternalState['_onMultiSelectionClick']
+        | ItemListInternalState['_onSingleSelectionClick'];
+    reducers: ItemListInternalState['reducers'];
 }
 
 export function InnerServerTableItem<T>(props: InnerServerTableItemProps<T>) {
@@ -37,15 +47,14 @@ export function InnerServerTableItem<T>(props: InnerServerTableItemProps<T>) {
         onUnfavorite,
     } = props;
 
-    const { columns, displayType, itemSelection, itemType, onItemSelection, reducers } = context as {
-        columns: ItemListColumnDefinitions;
-        displayType: ItemCardProps<T>['type'];
-        itemSelection: ItemListInternalState['itemSelection'];
-        itemType: ServerItemType;
-        onItemSelection: ItemListInternalState['_onMultiSelectionClick']
-            | ItemListInternalState['_onSingleSelectionClick'];
-        reducers: ItemListInternalState['reducers'];
-    };
+    const {
+        columns,
+        displayType,
+        itemSelection,
+        itemType,
+        onItemSelection,
+        reducers,
+    } = context as TableItemContext<T>;
 
     const isSelected = Boolean(id ? itemSelection[id] : undefined);
     const isDragging = reducers.getIsDragging() && isSelected;
@@ -73,7 +82,7 @@ export function InnerServerTableItem<T>(props: InnerServerTableItemProps<T>) {
             isSelected={isSelected}
             itemType={itemType}
             reducers={reducers}
-            type={displayType}
+            type={displayType as ItemTableRowProps<T>['type']}
             onClick={handleClick}
             onContextMenu={onContextMenu}
             onDragInitialData={onDragInitialData}

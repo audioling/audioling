@@ -11,9 +11,9 @@ import { numberToColumnSize } from '/@/features/shared/components/item-list/util
 import { useCurrentTrack } from '/@/stores/player-store';
 
 function Cell(props: ItemListCellProps) {
-    const { item, itemType } = props;
+    const { data, itemType } = props;
 
-    if (!item) {
+    if (!data) {
         return <CellSkeleton height={20} width={100} />;
     }
 
@@ -28,22 +28,22 @@ function Cell(props: ItemListCellProps) {
     }
 }
 
-function DefaultCell({ item }: ItemListCellProps) {
-    if (typeof item === 'object' && item) {
+function DefaultCell({ data }: ItemListCellProps) {
+    if (typeof data === 'object' && data) {
         if (
-            'name' in item
-            && typeof item.name === 'string'
-            && 'artists' in item
-            && Array.isArray(item.artists)
+            'name' in data
+            && typeof data.name === 'string'
+            && 'artists' in data
+            && Array.isArray(data.artists)
         ) {
             return (
                 <div className={styles.standaloneCombined}>
                     <div className={styles.inner}>
-                        <Text>{item.name}</Text>
-                        {item.artists.length
+                        <Text>{data.name}</Text>
+                        {data.artists.length
                             ? (
                                     <Text variant="secondary">
-                                        {item.artists.map(artist => artist.name).join(', ')}
+                                        {data.artists.map(artist => artist.name).join(', ')}
                                     </Text>
                                 )
                             : (
@@ -58,26 +58,26 @@ function DefaultCell({ item }: ItemListCellProps) {
     return <EmptyCell />;
 }
 
-function QueueTrackCell({ item }: ItemListCellProps) {
+function QueueTrackCell({ data }: ItemListCellProps) {
     const { track } = useCurrentTrack();
-    const cellItem = item as PlayQueueItem | undefined;
+    const cellItem = data as PlayQueueItem | undefined;
     const isPlaying = track !== undefined && cellItem?._uniqueId === track?._uniqueId;
 
-    if (typeof item === 'object' && item) {
+    if (typeof data === 'object' && data) {
         if (
-            'name' in item
-            && typeof item.name === 'string'
-            && 'artists' in item
-            && Array.isArray(item.artists)
+            'name' in data
+            && typeof data.name === 'string'
+            && 'artists' in data
+            && Array.isArray(data.artists)
         ) {
             return (
                 <div className={styles.standaloneCombined}>
                     <div className={styles.inner}>
-                        <Text className={clsx({ [styles.playing]: isPlaying })}>{item.name}</Text>
-                        {item.artists.length
+                        <Text className={clsx({ [styles.playing]: isPlaying })}>{data.name}</Text>
+                        {data.artists.length
                             ? (
                                     <Text variant="secondary">
-                                        {item.artists.map(artist => artist.name).join(', ')}
+                                        {data.artists.map(artist => artist.name).join(', ')}
                                     </Text>
                                 )
                             : (
@@ -92,26 +92,26 @@ function QueueTrackCell({ item }: ItemListCellProps) {
     return <EmptyCell />;
 }
 
-function TrackCell({ item }: ItemListCellProps) {
+function TrackCell({ data }: ItemListCellProps) {
     const { track } = useCurrentTrack();
-    const cellItem = item as TrackItem | undefined;
+    const cellItem = data as TrackItem | undefined;
     const isPlaying = track !== undefined && cellItem?.id === track?.id;
 
-    if (typeof item === 'object' && item) {
+    if (typeof data === 'object' && data) {
         if (
-            'name' in item
-            && typeof item.name === 'string'
-            && 'artists' in item
-            && Array.isArray(item.artists)
+            'name' in data
+            && typeof data.name === 'string'
+            && 'artists' in data
+            && Array.isArray(data.artists)
         ) {
             return (
                 <div className={styles.standaloneCombined}>
                     <div className={styles.inner}>
-                        <Text className={clsx({ [styles.playing]: isPlaying })}>{item.name}</Text>
-                        {item.artists.length
+                        <Text className={clsx({ [styles.playing]: isPlaying })}>{data.name}</Text>
+                        {data.artists.length
                             ? (
                                     <Text variant="secondary">
-                                        {item.artists.map(artist => artist.name).join(', ')}
+                                        {data.artists.map(artist => artist.name).join(', ')}
                                     </Text>
                                 )
                             : (

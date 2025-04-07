@@ -21,13 +21,13 @@
 
 .base-item-component,
 .scroll-seek-placeholder {
-    @mixin dark {
+    /* @mixin dark {
         border-bottom: 1px solid alpha(var(--mantine-color-gray-7), 0.1);
     }
 
     @mixin light {
         border-bottom: 1px solid alpha(var(--mantine-color-gray-8), 0.1);
-    }
+    } */
 
     /* & > div {
         display: grid;

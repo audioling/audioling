@@ -363,7 +363,7 @@ export function ItemListTable<TDataType, TItemType>(props: ItemListTableProps<TD
                         context={tableContext}
                         data={data}
                         endReached={onEndReached}
-                        increaseViewportBy={350}
+                        increaseViewportBy={300}
                         initialTopMostItemIndex={initialScrollIndex || 0}
                         isScrolling={isScrolling}
                         itemContent={ItemComponent}

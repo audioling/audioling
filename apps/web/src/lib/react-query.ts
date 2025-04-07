@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
+import { toMs } from '/@/utils/to-ms';
 
 export const queryClient = new QueryClient({
     defaultOptions: {
@@ -8,11 +9,11 @@ export const queryClient = new QueryClient({
             },
         },
         queries: {
-            gcTime: 1000 * 10,
+            gcTime: toMs.minutes(1),
             refetchOnMount: false,
             refetchOnReconnect: false,
             refetchOnWindowFocus: false,
-            staleTime: 0,
+            staleTime: toMs.seconds(10),
         },
     },
 });

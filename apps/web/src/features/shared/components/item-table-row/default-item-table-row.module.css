@@ -1,3 +1,22 @@
 .table-row {
+    position: relative;
     display: grid;
+    cursor: pointer;
+}
+
+.selected {
+    &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        content: '';
+        background-color: rgb(255 255 255 / 5%);
+    }
+}
+
+.dragging {
+    opacity: 0.5;
 }

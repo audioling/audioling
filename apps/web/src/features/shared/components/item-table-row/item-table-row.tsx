@@ -28,7 +28,7 @@ export interface ItemTableRowProps<T> {
     ) => void;
     onContextMenu?: (
         item: Item,
-        event: MouseEvent<HTMLButtonElement>,
+        event: MouseEvent<HTMLButtonElement | HTMLDivElement>,
         reducers?: ItemListInternalState['reducers'],
     ) => void;
     onDragInitialData?: (item: Item, reducers?: ItemListInternalState['reducers']) => DragData;

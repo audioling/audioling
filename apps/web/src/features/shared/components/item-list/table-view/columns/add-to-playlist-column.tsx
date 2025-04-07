@@ -9,23 +9,23 @@ import {
     numberToColumnSize,
 } from '/@/features/shared/components/item-list/utils/helpers';
 
-function Cell({ item }: ItemListCellProps) {
-    if (!item) {
+function Cell({ data }: ItemListCellProps) {
+    if (!data) {
         return <CellSkeleton height={20} width={100} />;
     }
 
-    if (typeof item === 'object' && item) {
-        if ('name' in item && typeof item.name === 'string') {
+    if (typeof data === 'object' && data) {
+        if ('name' in data && typeof data.name === 'string') {
             // const isSkipped = item.name.includes('__duplicate_skip__');
             return (
                 <div className={styles.cell}>
                     <Group justify="between">
                         <Text className={styles.text}>
-                            {item.name
+                            {data.name
                                 .replace('__duplicate__', '')
                                 .replace('__duplicate_skip__', '')}
                         </Text>
-                        {item.name.includes('__duplicate') && (
+                        {data.name.includes('__duplicate') && (
                             <Icon icon="remove" size="lg" />
                         )}
                     </Group>
