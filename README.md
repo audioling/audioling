@@ -1,33 +1,6 @@
-# audioling
+# DEPRECATED NOTICE
 
-  <p align="center">
-    <a href="https://github.com/audioling/audioling/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/audioling/audioling?style=flat-square&color=brightgreen"
-      alt="License">
-    </a>
-    <a href="https://github.com/audioling/audioling/releases">
-      <img src="https://img.shields.io/github/v/release/audioling/audioling?style=flat-square&color=blue"
-      alt="Release">
-    </a>
-    <a href="https://github.com/audioling/audioling/releases">
-      <img src="https://img.shields.io/github/downloads/audioling/audioling/total?style=flat-square&color=orange"
-      alt="Downloads">
-    </a>
-  </p>
-  <p align="center">
-    <a href="https://discord.gg/FVKpcMDy5f">
-      <img src="https://img.shields.io/discord/922656312888811530?color=black&label=discord&logo=discord&logoColor=white"
-      alt="Discord">
-    </a>
-    <a href="https://matrix.to/#/#sonixd:matrix.org">
-      <img src="https://img.shields.io/matrix/sonixd:matrix.org?color=black&label=matrix&logo=matrix&logoColor=white"
-      alt="Matrix">
-    </a>
-  </p>
-
-Rewrite of [feishin](https://github.com/jeffvli/feishin)
-
----
+The development of this project has been discontinued. Development will continue on [feishin](https://github.com/jeffvli/feishin)
 
 ### What is the best way to stay updated on the project?
 

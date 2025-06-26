@@ -1,5 +1,6 @@
 {
     "name": "@audioling/core",
+    "license": "MIT",
     "type": "module",
     "workspaces": [
         "apps/*",
@@ -18,7 +19,7 @@
         "deploy:server": "bun run deploy-server.ts",
         "deploy:server:macos": "bun run deploy-server-macos.ts",
         "init": "bun run init.ts",
-        "lint:apps": "bun --filter './apps/**' lint",
+        "lint:apps": "bun --filter './apps/**' ant",
         "lint:packages": "bun --filter './packages/** lint",
         "prepare": "husky"
     },
